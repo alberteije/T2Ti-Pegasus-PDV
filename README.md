@@ -33,8 +33,7 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
                                             <b>Flutter:</b> O T2Ti Pegasus PDV é desenvolvido em Flutter e, dessa maneira, poderá rodar em diversas plataformas: Windows, Linux, MacOS, Android, iOS e para Web. Nessa fase Beta estamos fazendo testes no Windows e no Android. Com o lançamento do projeto no github sabemos que contaremos com testes realizados por desenvolvedores em outras plataformas. Em breve a T2Ti também iniciará testes nas demais plataformas.
                                         </li>
                                         <li>
-                                            <b> GED - Gestão Eletrônica de Documentos </b> <br />
-                                            <a href="http://t2ti.com/erp2/artigos/GED.pdf" target="_blank">Clique aqui e leia o Artigo T2Ti sobre o módulo GED</a>
+                                            <b> SQLite </b> A versão Lite do T2Ti Pegasus PDV é monousuário e funciona com banco de dados local. O banco de dados escolhido para este fim foi o SQLite.
                                         </li>
                                         <li>
                                             <b> Gerador de Etiquetas </b> <br />
