@@ -107,5 +107,7 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
                     <br />  
 	Pronto! Está tudo certo para usar a aplicação. Abra o projeto no VS Code ou no Android Studio e execute ou então execute a aplicação com o seguinte comando 'flutter run -d windows'.
   	<br /><br />
+	<a href="http://t2ti.com/erp3/">
 	<b>Entre no treinamento T2Ti ERP 3.0 para aprender como desenvolver o ERP completo incluindo o T2Ti Pegasus PDV.</b>
+	</a>
 </html>
