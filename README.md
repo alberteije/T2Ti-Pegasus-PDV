@@ -33,11 +33,11 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
                                             <b>Flutter:</b> O T2Ti Pegasus PDV é desenvolvido em Flutter e, dessa maneira, poderá rodar em diversas plataformas: Windows, Linux, MacOS, Android, iOS e para Web. Nessa fase Beta estamos fazendo testes no Windows e no Android. Com o lançamento do projeto no github sabemos que contaremos com testes realizados por desenvolvedores em outras plataformas. Em breve a T2Ti também iniciará testes nas demais plataformas.
                                         </li>
                                         <li>
-                                            <b> SQLite </b> A versão Lite do T2Ti Pegasus PDV é monousuário e funciona com banco de dados local. O banco de dados escolhido para este fim foi o SQLite.
+						<b> <a href="https://www.sqlite.org/index.html">SQLite:</a> </b> A versão Lite do T2Ti Pegasus PDV é monousuário e funciona com banco de dados local. O banco de dados escolhido para este fim foi o SQLite. A versão Premium funcionará com o SQLite como banco de dados local, mas contará com o recurso de sincronização com o banco de dados da retaguarda.
                                         </li>
                                         <li>
-                                            <b> Gerador de Etiquetas </b> <br />
-                                            <a href="http://t2ti.com/erp2/artigos/GeradorEtiquetas.pdf" target="_blank">Clique aqui e leia o Artigo T2Ti sobre o módulo Gerador de Etiquetas</a>
+                                            <b> <a href="https://moor.simonbinder.eu/">Moor:</a> </b> <br />
+                                            Para facilitar a utilização do banco de dados SQLite nós usamos o ORM Moor
                                         </li>
                                         <li>
                                             <b> Agenda Corporativa </b> <br />
