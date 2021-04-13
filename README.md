@@ -93,23 +93,19 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
                                     </ul>
                         <hr />
                         <h3>Funcionamento - Como Botar pra Rodar</h3> 
-                        <img src="http://t2ti.com/images/erp/erp_c_sharp.jpg" />
-                        <hr />
+                       Você pode fazer um clone do repositório ou baixar o arquivo zipado, de acordo com sua preferência.		
                     <br />  
-                        O ERP C# foi desenvolvido em duas e três camadas. 
-                        O usuário baixa a camada de visão para sua máquina (Smart Client) e se conecta ao servidor de 
-                        aplicaçoes, onde estarão armazenadas as classes de negócio. 
-                        O banco de dados poderá residir na mesma máquina do servidor de aplicações ou em outro 
-                        servidor específico para o banco de dados.       
-                        <br /><br />
-                        Para o servidor utilizamos WCF. Os módulos do tipo SIT (Sistemas de Informação Transacional) 
-                        foram feitos no lado do cliente com WPF. 
-                        Os módulos de frente de loja (NFc-e, SAT e PAF) foram feitos utilizando Windows Forms. 
+                    <br />  
+	Crie um novo projeto com o comando 'Flutter Create pegasus_pdv'. Nós criamos a aplicação no canal Beta por conta do suporte para Desktop. Você pode utilizar o canal Beta ou o canal Dev. para mudar de canal use o comando 'flutter channel beta' e depois o comando 'flutter upgrade'.
+                    <br />  
+                    <br />  
+	Depois de criar o projeto, copie as pastas 'lib' e 'assets' para dentro do seu projeto. Copie ainda os arquivos 'sqlite3.dll' para a raiz do projeto, para que seja possível utilizar a aplicação no Windows. Copie o arquivo 'env.example' para a raiz do projeto e renomeio para '.env'. Preencha os arquivos com os dados necessários.
+                    <br />  
+                    <br />  
+	Finalmente copie o arquivo 'pubspec.yaml' substituindo o arquivo que já existe. Após copiar este arquivo execute o comando 'flutter pub get' para atualizar os pacotes.
+                    <br />  
+                    <br />  
+	Pronto! Está tudo certo para usar a aplicação. Abra o projeto no VS Code ou no Android Studio e execute ou então execute a aplicação com o seguinte comando 'flutter run -d windows'.
   	<br /><br />
-  <i>
-[C# ERP was developed in two and three layers. The user downloads the view layer to his machine (Smart Client) and connects to the application server where the business classes are stored. The database may reside on the same machine as the application server or on another server specific to the DBMS.
-	<br /><br />
-On server side we used WCF. On client side we used WPF. Some modules were made using Windows Forms (NFc-e, SAT e PAF).]
-  </i>
-
+	Se você quiser aprender como desenvolver essa aplicação passo a passo, entre no treinamento T2Ti ERP 3.0 e aprenda a desenvolver o ERP completo, incluindo o T2Ti Pegasus PDV.
 </html>
