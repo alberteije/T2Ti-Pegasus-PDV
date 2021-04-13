@@ -45,6 +45,15 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
                                         <li>
                                             <b><a href="https://pub.dev/packages/flutter_bootstrap"> Flutter Bootstrap: </a></b>                                             						Pacote utilizado para facilitar a criação de telas responsivas.
                                         </li>
+                                        <li>
+                                            <b><a href="https://pub.dev/packages/printing"> Priting: </a></b>                                             						Pacote utilizado para criar relatórios incríveis com os Widgets com opção de impressão e compartilhamento de arquivo PDF.
+                                        </li>
+                                        <li>
+                                            <b><a href="https://pub.dev/packages/flutter_masked_text"> Flutter Masked Text: </a></b>                                             						Pacote utilizado para criar widget de input com máscaras definidas pelo desenvolvedor.
+                                        </li>
+                                        <li>
+                                            <b><a href="https://pub.dev/packages/cpf_cnpj_validator"> CPF/CNPJ Validator: </a></b>                                             						Pacote utilizado para validar CPF e CNPJ.
+                                        </li>
                                     </ul>
                                 </td>
                             </tr>
