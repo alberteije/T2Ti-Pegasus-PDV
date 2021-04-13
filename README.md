@@ -67,12 +67,17 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
                                             <b><a href="https://pub.dev/packages/awesome_dialog"> Awesome Dialog: </a></b>                                             						Pacote utilizado para gerar caixas de diálogo estilizadas bem apresentáveis e de bom gosto.
                                         </li>
                                         <li>
-                                            <b><a href="https://pub.dev/packages/image_picker"> Image Picker: </a></b>                                             						Pacote utilizado para gerar pegar imagens no dispositivo. Usado no momento de alterar o logotipo da empresa que usa a aplicação.
+                                            <b><a href="https://pub.dev/packages/image_picker"> Image Picker: </a></b>                                             						Pacote utilizado para pegar imagens no dispositivo. Usado no momento de alterar o logotipo da empresa que usa a aplicação.
+                                        </li>
+                                        <li>
+                                            <b><a href="https://pub.dev/packages/catcher"> Catcher: </a></b>                                             						Pacote utilizado para capturar os erros e exceções da aplicação e enviá-los para o Sentry para o devido tratamento.
+                                        </li>
+                                        <li>
+                                            <b><a href="https://pub.dev/packages/sentry_flutter"> Sentry: </a></b>                                             						Pacote utilizado para enviar os erros e exceções capturados pelo Catcher para o Sentry para o devido tratamento.
                                         </li>
                                     </ul>
                         <hr />
                         <h3>Funcionamento - Como Botar pra Rodar</h3> 
-                        <hr />
                         <img src="http://t2ti.com/images/erp/erp_c_sharp.jpg" />
                         <hr />
                     <br />  
