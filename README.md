@@ -75,6 +75,15 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
                                         <li>
                                             <b><a href="https://pub.dev/packages/sentry_flutter"> Sentry: </a></b>                                             						Pacote utilizado para enviar os erros e exceções capturados pelo Catcher para o Sentry para o devido tratamento.
                                         </li>
+                                        <li>
+                                            <b><a href="https://pub.dev/packages/desktop_window"> Desktop Window: </a></b>                                             						Pacote utilizado para manipular alguns itens da aplicação quando rodando no ambiente Desktop.
+                                        </li>
+                                        <li>
+                                            <b><a href="https://pub.dev/packages/flutter_dotenv"> Flutter Dotenv: </a></b>                                             						Pacote utilizado para ler os dados do arquivo '.env'. Neste arquivo deixamos alguns dados sesíveis que não sobem para o repositório.
+                                        </li>
+                                        <li>
+                                            <b><a href="https://pub.dev/packages/encrypt"> Encrypt: </a></b>                                             						Pacote utilizado para criptografar e descroptografar os dados do arquivo '.env'.
+                                        </li>
                                     </ul>
                         <hr />
                         <h3>Funcionamento - Como Botar pra Rodar</h3> 
