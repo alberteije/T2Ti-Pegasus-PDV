@@ -99,7 +99,7 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
 	Crie um novo projeto com o comando 'flutter create pegasus_pdv'. Nós criamos a aplicação no canal Beta por conta do suporte para Desktop. Você pode utilizar o canal Beta ou o canal Dev. Para mudar de canal use o comando 'flutter channel beta' e depois o comando 'flutter upgrade'.
                     <br />  
                     <br />  
-	Depois de criar o projeto, copie as pastas 'lib' e 'assets' para dentro do seu projeto. Copie ainda os arquivos 'sqlite3.dll' para a raiz do projeto, para que seja possível utilizar a aplicação no Windows. Copie o arquivo 'env.example' para a raiz do projeto e renomeio para '.env'. Preencha os arquivos com os dados necessários.
+	Depois de criar o projeto, copie as pastas 'lib' e 'assets' para dentro do seu projeto. Copie ainda os arquivos 'sqlite3.dll' para a raiz do projeto, para que seja possível utilizar a aplicação no Windows. Copie o arquivo 'env.example' para a raiz do projeto e renomeio para '.env'. Preencha as chaves do arquivo com os dados necessários.
                     <br />  
                     <br />  
 	Finalmente copie o arquivo 'pubspec.yaml' substituindo o arquivo que já existe. Após copiar este arquivo execute o comando 'flutter pub get' para atualizar os pacotes.
