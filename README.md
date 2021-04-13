@@ -84,6 +84,12 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
                                         <li>
                                             <b><a href="https://pub.dev/packages/encrypt"> Encrypt: </a></b>                                             						Pacote utilizado para criptografar e descroptografar os dados do arquivo '.env'.
                                         </li>
+                                        <li>
+                                            <b><a href="https://pub.dev/packages/url_launcher"> URL Launcher: </a></b>                                             						Pacote utilizado para carregar uma URL no navegador. Usamos para enviar o usuário para uma playlist do Youtube com os vídeos de ajuda da aplicação. Utilizado também para que o usuário entre em contato com a SH através de e-mail.
+                                        </li>
+                                        <li>
+                                            <b><a href="https://pub.dev/packages/email_validator"> Email Validator: </a></b>                                             						Pacote utilizado para validar e-mails.
+                                        </li>
                                     </ul>
                         <hr />
                         <h3>Funcionamento - Como Botar pra Rodar</h3> 
