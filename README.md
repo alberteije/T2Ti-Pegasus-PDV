@@ -6,9 +6,10 @@
   Este repositório mantém o código do sistema T2Ti Pegasus PDV Lite. Este sistema faz parte de um projeto maior chamado T2Ti ERP 3.0. O Projeto T2Ti ERP 3.0 é um Treinamento! No entanto, não se trata de um treinamento usual como se encontra por aí. Durante o treinamento nós simulamos um ambiente real de desenvolvimento e vamos aprontando as aplicações enquanto gravamos as vídeo aulas e fornecemos suporte para os alunos. O T2Ti Pegasus PDV é a primeira aplicação que faz parte do T2Ti ERP 3.0 e é lançada em produção. Veja mais detalhes sobre o Projeto T2Ti ERP 3.0 no seguinte link: http://t2ti.com/erp3/
   <br/><br/>
                     <hr />
-                    <img src="http://t2ti.com/images/erp/t2ti_erp_2.jpg" />
+                    <img src="http://t2ti.com/images/news/erp3-linguagens-flutter.png" />
                     <br />              
-                    <h3>Bloco Administrativo</h3> 
+                    <h3>T2Ti ERP 3.0</h3> 
+O T2Ti ERP 3.0 é feito com várias tecnologias de ponta. O cliente (frontend) é desenvolvido em Flutter e são construídos cinco servidores (backend) nas linguagens: C#, Delphi, Java, Node e PHP. 	
                         <table width="100%" >
                             <tr>
                                 <td>
