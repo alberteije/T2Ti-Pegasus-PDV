@@ -25,17 +25,12 @@ Como mencionado anteriormente, o T2Ti Pegasus PDV é a primeiríssima parte do T
 Clique na imagem acima para acessar a página comercial da aplicação e analisar algumas características do mesmo.
 <hr />
                     <h3>Características do Projeto</h3>
-			<a href="https://t2tisistemas.com/produtos/multi/pegasus-pdv/">
-			<img src="http://t2ti.com/images/erp3/mobile-screen-topo.png" />
-			</a>
-                    <br /> <br /> 
-<table width="100%" >
-                            <tr>
-                                <td>
-                                <b>O Bloco Administrativo é formado por cinco módulos: </b>
+Veja abaixo uma lista de características do projeto. Provavelmente existe alguma coisa que você, desenvovolvedor, está procurando para o seu projeto e vai aproveitar daqui. É possível também que você já inicie seu negócio com essa aplicação. Desejamos tudo de bom e muito sucesso para você!
+	<br />
+	<br />
                                     <ul>
                                         <li>
-                                            <b>Cadastros Base:</b> engloba os cadastros que são usados por diversos módulos do ERP.
+                                            <b>Flutter:</b> O T2Ti Pegasus PDV é desenvolvido em Flutter e, dessa maneira, poderá rodar em diversas plataformas: Windows, Linux, MacOS, Android, iOS e para Web. Nessa fase Beta estamos fazendo testes no Windows e no Android. Com o lançamento do projeto no github sabemos que contaremos com testes realizados por desenvolvedores em outras plataformas. Em breve a T2Ti também iniciará testes nas demais plataformas.
                                         </li>
                                         <li>
                                             <b> GED - Gestão Eletrônica de Documentos </b> <br />
