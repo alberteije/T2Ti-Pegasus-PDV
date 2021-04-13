@@ -3,7 +3,9 @@
                     <div class="titulo_bloco">
                         <h1>T2Ti Pegasus PDV Lite</h1>
                     </div>
-  Este repositório mantém o código do sistema T2Ti Pegasus PDV Lite. Este sistema faz parte de um projeto maior chamado T2Ti ERP 3.0. O Projeto T2Ti ERP 3.0 é um Treinamento! No entanto, não se trata de um treinamento usual como se encontra por aí. Durante o treinamento nós simulamos um ambiente real de desenvolvimento e vamos aprontando as aplicações enquanto gravamos as vídeo aulas e fornecemos suporte para os alunos. O T2Ti Pegasus PDV é a primeira aplicação que faz parte do T2Ti ERP 3.0 e é lançada em produção. Veja mais detalhes sobre o Projeto T2Ti ERP 3.0 no seguinte link: http://t2ti.com/erp3/
+  Este repositório mantém o código do sistema T2Ti Pegasus PDV Lite. Este sistema faz parte de um projeto maior chamado T2Ti ERP 3.0. 
+	<br /><br />
+	O Projeto T2Ti ERP 3.0 é um Treinamento! No entanto, não se trata de um treinamento usual como se encontra por aí. Durante o treinamento nós simulamos um ambiente real de desenvolvimento e vamos aprontando as aplicações enquanto gravamos as vídeo aulas e fornecemos suporte para os alunos. O T2Ti Pegasus PDV é a primeira aplicação que faz parte do T2Ti ERP 3.0 e é lançada em produção. Veja mais detalhes sobre o Projeto T2Ti ERP 3.0 no seguinte link: http://t2ti.com/erp3/
   <br/><br/>
                     <hr />
                     <h3>T2Ti ERP 3.0</h3>
