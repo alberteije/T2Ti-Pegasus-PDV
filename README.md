@@ -36,12 +36,11 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
 						<b> <a href="https://www.sqlite.org/index.html">SQLite:</a> </b> A versão Lite do T2Ti Pegasus PDV é monousuário e funciona com banco de dados local. O banco de dados escolhido para este fim foi o SQLite. A versão Premium funcionará com o SQLite como banco de dados local, mas contará com o recurso de sincronização com o banco de dados da retaguarda.
                                         </li>
                                         <li>
-                                            <b> <a href="https://moor.simonbinder.eu/">Moor:</a> </b> <br />
-                                            Para facilitar a utilização do banco de dados SQLite nós usamos o ORM Moor
+                                            <b> <a href="https://moor.simonbinder.eu/">Moor:</a> </b> Para facilitar a utilização do banco de dados SQLite nós usamos o ORM Moor
                                         </li>
                                         <li>
-                                            <b> Agenda Corporativa </b> <br />
-                                            <a href="http://t2ti.com/erp2/artigos/AgendaCorporativa.pdf" target="_blank">Clique aqui e leia o Artigo T2Ti sobre o módulo Agenda Corporativa</a>
+                                            <b> <a href="https://pub.dev/packages/flutter_barcode_scanner">Barcode Scanner:</a> </b> 
+                                            Pacote utilizado para escanear o código de barra dos produtos utilizando a câmera do celular.
                                         </li>
                                         <li>
                                             <b> BI - Business Intelligence </b> <br />
