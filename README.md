@@ -43,8 +43,7 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
                                             Pacote utilizado para escanear o código de barra dos produtos utilizando a câmera do celular.
                                         </li>
                                         <li>
-                                            <b> BI - Business Intelligence </b> <br />
-                                            <a href="http://t2ti.com/erp2/artigos/BI.pdf" target="_blank">Clique aqui e leia o Artigo T2Ti sobre o módulo BI - Business Intelligence</a>
+                                            <b><a href="https://pub.dev/packages/flutter_bootstrap"> Flutter Bootstrap: </a></b>                                             						Pacote utilizado para facilitar a criação de telas responsivas.
                                         </li>
                                     </ul>
                                 </td>
