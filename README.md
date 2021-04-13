@@ -19,7 +19,7 @@ O T2Ti ERP 3.0 é feito com várias tecnologias de ponta. O cliente (frontend) �
 			<a href="https://t2tisistemas.com/produtos/multi/pegasus-pdv/">
 			<img src="http://t2ti.com/images/erp3/mobile-screen-topo.png" />
 			</a>
-                    <br /> 
+                    <br /> <br /> 
 Como mencionado anteriormente, o T2Ti Pegasus PDV é a primeiríssima parte do T2Ti ERP 3.0 que está indo para produção. Neste momento ele se encontra em fase beta. Você pode baixar os fontes e alterar de acordo com sua vontade e pode também acompanhar o andamento do projeto no Quadro Trello Público criado para este fim. O objetivo aqui é que os participantes do Projeto T2Ti ERP 3.0 vejam como um projeto pode ser mantido no formato Open Source com a participação da comunidade de desenvolvedores.	
                         <table width="100%" >
                             <tr>
