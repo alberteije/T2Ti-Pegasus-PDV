@@ -110,4 +110,10 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
 	<a href="http://t2ti.com/erp3/">
 	<b>Entre no treinamento T2Ti ERP 3.0 para aprender como desenvolver o ERP completo incluindo o T2Ti Pegasus PDV.</b>
 	</a>
+	<hr />
+	Assista ao vídeo de apresentação no Youtube.
+<center>	
+								<a href="https://www.youtube.com/watch?v=HyWsySaM5fk?rel=0">
+									<img src="https://img.youtube.com/vi/HyWsySaM5fk/maxresdefault.jpg" alt="telas" /> </a>
+				</center>	
 </html>
