@@ -25,7 +25,7 @@ Como mencionado anteriormente, o T2Ti Pegasus PDV é a primeiríssima parte do T
 Clique na imagem acima para acessar a página comercial da aplicação e analisar algumas características do mesmo.
 <hr />
                     <h3>Características do Projeto</h3>
-Veja abaixo uma lista de características do projeto. Provavelmente existe alguma coisa que você, desenvovolvedor, está procurando para o seu projeto e vai aproveitar daqui. É possível também que você já inicie seu negócio com essa aplicação. Desejamos tudo de bom e muito sucesso para você!
+Veja abaixo uma lista de características do projeto. Provavelmente existe alguma coisa que você, desenvolvedor, está procurando para o seu projeto e vai aproveitar daqui. É possível também que você já inicie seu negócio com essa aplicação. Desejamos tudo de bom e muito sucesso para você!
 	<br />
 	<br />
                                     <ul>
