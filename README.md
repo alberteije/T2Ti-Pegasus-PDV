@@ -112,6 +112,7 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
 	</a>
 	<hr />
 	Assista ao vídeo de apresentação no Youtube.
+	<br /><br />
 <center>	
 								<a href="https://www.youtube.com/watch?v=HyWsySaM5fk?rel=0">
 									<img src="https://img.youtube.com/vi/HyWsySaM5fk/maxresdefault.jpg" alt="telas" /> </a>
