@@ -10,7 +10,7 @@
                     <hr />
                     <h3>T2Ti ERP 3.0</h3>
 			<a href="http://t2ti.com/erp3/">
-			<img src="http://t2ti.com/images/news/erp3-linguagens-flutter.png" width="500" height="378"/>
+			<img src="http://t2ti.com/images/news/erp3-linguagens-flutter.png" />
 			</a>
                     <br />              
 O T2Ti ERP 3.0 é feito com várias tecnologias de ponta. O cliente (frontend) é desenvolvido em Flutter e são construídos cinco servidores (backend) nas linguagens: C#, Delphi, Java, Node e PHP. 	
