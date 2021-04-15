@@ -61,9 +61,6 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
                                             <b><a href="https://pub.dev/packages/flutter_sparkline"> Flutter Sparkline: </a></b>                                             						Pacote utilizado para gerar um gráfico simples de vendas na tela de Dashboard.
                                         </li>
                                         <li>
-                                            <b><a href="https://pub.dev/packages/flutter_sparkline"> Flutter Sparkline: </a></b>                                             						Pacote utilizado para gerar um gráfico simples de vendas na tela de Dashboard.
-                                        </li>
-                                        <li>
                                             <b><a href="https://pub.dev/packages/awesome_dialog"> Awesome Dialog: </a></b>                                             						Pacote utilizado para gerar caixas de diálogo estilizadas bem apresentáveis e de bom gosto.
                                         </li>
                                         <li>
