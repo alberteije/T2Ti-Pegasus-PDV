@@ -79,7 +79,7 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
                                             <b><a href="https://pub.dev/packages/flutter_dotenv"> Flutter Dotenv: </a></b>                                             						Pacote utilizado para ler os dados do arquivo '.env'. Neste arquivo deixamos alguns dados sesíveis que não sobem para o repositório.
                                         </li>
                                         <li>
-                                            <b><a href="https://pub.dev/packages/encrypt"> Encrypt: </a></b>                                             						Pacote utilizado para criptografar e descroptografar os dados do arquivo '.env'.
+                                            <b><a href="https://pub.dev/packages/encrypt"> Encrypt: </a></b>                                             						Pacote utilizado para criptografar e descriptografar os dados do arquivo '.env'.
                                         </li>
                                         <li>
                                             <b><a href="https://pub.dev/packages/url_launcher"> URL Launcher: </a></b>                                             						Pacote utilizado para carregar uma URL no navegador. Usamos para enviar o usuário para uma playlist do Youtube com os vídeos de ajuda da aplicação. Utilizado também para que o usuário entre em contato com a SH através de e-mail.
