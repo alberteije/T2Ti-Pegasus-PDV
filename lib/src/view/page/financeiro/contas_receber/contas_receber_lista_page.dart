@@ -376,7 +376,10 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
     Navigator.of(context)
       .push(MaterialPageRoute(
         builder: (BuildContext context) => 
-            ContasReceberPersistePage(contasReceberMontado: ContasReceberMontado(), title: 'Contas a Receber - Inserindo', operacao: 'I')))
+            ContasReceberPersistePage(contasReceberMontado: ContasReceberMontado(
+              cliente: Cliente(id: null,),
+              contasReceber: ContasReceber(id: null, dataVencimento: DateTime.now(),),
+            ), title: 'Contas a Receber - Inserindo', operacao: 'I')))
       .then((_) async {
         await _refrescarTela();
     });

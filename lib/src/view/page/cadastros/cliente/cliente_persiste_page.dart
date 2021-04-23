@@ -187,7 +187,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                             child: Padding(
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
                               child: TextFormField(
-                                validator: ValidaCampoFormulario.validarObrigatorio,
+                                validator: ValidaCampoFormulario.validarObrigatorioAlfanumerico,
                                 maxLength: 150,
                                 maxLines: 1,
                                 initialValue: cliente?.nome ?? '',

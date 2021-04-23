@@ -376,7 +376,10 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
     Navigator.of(context)
       .push(MaterialPageRoute(
         builder: (BuildContext context) => 
-            ContasPagarPersistePage(contasPagarMontado: ContasPagarMontado(), title: 'Contas a Pagar - Inserindo', operacao: 'I')))
+            ContasPagarPersistePage(contasPagarMontado: ContasPagarMontado(
+              fornecedor: Fornecedor(id: null,),
+              contasPagar: ContasPagar(id: null, dataVencimento: DateTime.now(),),
+            ), title: 'Contas a Pagar - Inserindo', operacao: 'I')))
       .then((_) async {
         await _refrescarTela();
     });

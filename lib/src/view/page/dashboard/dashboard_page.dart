@@ -743,7 +743,7 @@ class _DashboardPageState extends State<DashboardPage> {
     _totalPagamentosVencidos = await Sessao.db.contasPagarDao.consultarPagamentosVencidos();
 
     // fluxo de caixa - a receber
-    _totalPagar = await Sessao.db.contasReceberDao.consultarFluxo(periodo: _itemDropDownFluxo);
+    _totalReceber = await Sessao.db.contasReceberDao.consultarFluxo(periodo: _itemDropDownFluxo);
 
     // fluxo de caixa - a pagar
     _totalPagar = await Sessao.db.contasPagarDao.consultarFluxo(periodo: _itemDropDownFluxo);

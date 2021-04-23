@@ -204,6 +204,9 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                         if (_objetoJsonRetorno['nome'] != null) {
                                           _importaFornecedorController.text = _objetoJsonRetorno['nome'];
                                           _contasPagar = _contasPagar.copyWith(idFornecedor: _objetoJsonRetorno['id']);
+                                          widget.contasPagarMontado.fornecedor = widget.contasPagarMontado.fornecedor.copyWith(
+                                            nome: _objetoJsonRetorno['nome'],
+                                          );          
                                         }
                                       }
                                     },
@@ -619,7 +622,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
     double valorDesconto = Biblioteca.calcularDesconto(_contasPagar.valorAPagar, _contasPagar.taxaDesconto);
     double valorJuros = Biblioteca.calcularJuros(_contasPagar.valorAPagar, _contasPagar.taxaJuro, _contasPagar.dataVencimento);
     double valorMulta = Biblioteca.calcularMulta(_contasPagar.valorAPagar, _contasPagar.taxaMulta);
-    double valorPago = _contasPagar.valorAPagar + valorJuros + valorMulta - valorDesconto;
+    double valorPago = (_contasPagar.valorAPagar ?? 0) + valorJuros + valorMulta - valorDesconto;
 
     // double subTotal = Biblioteca.multiplicarMonetario(widget.compraDetalhe.compraPedidoDetalhe.quantidade, widget.compraDetalhe.compraPedidoDetalhe.valorUnitario);
     setState(() {

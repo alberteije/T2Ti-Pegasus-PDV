@@ -65,7 +65,7 @@ class ValidaCampoFormulario {
 
   /// validar se os caracteres são alfanumericos
   static String validarAlfanumerico(String value) {
-    final RegExp nameExp = RegExp(r'^[A-Za-z0-9áàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ\-\(\)\/ªº,. ]+$');
+    final RegExp nameExp = RegExp(r'^[A-Za-z0-9ãáàâãéèêíïóôõöúçñÃÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ\-\(\)\/ªº,. ]+$');
     if (!nameExp.hasMatch(value))
       return 'Por favor, informe apenas caracteres alfanuméricos.';
     return null;
@@ -151,10 +151,14 @@ class ValidaCampoFormulario {
 
   /// validar Email
   static String validarEmail(String value) {
-    final emailValido = EmailValidator.validate(value);
-    if (!emailValido) 
-      return 'Por favor, informe um EMail válido.';
-    return null;
+    if (value != "") {
+      final emailValido = EmailValidator.validate(value);
+      if (!emailValido) 
+        return 'Por favor, informe um EMail válido.';
+      return null;
+    } else {
+      return null;
+    }
   }
 
   /// validar se o Email é obrigatório

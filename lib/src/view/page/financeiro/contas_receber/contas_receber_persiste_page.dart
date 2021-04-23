@@ -204,6 +204,9 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                         if (_objetoJsonRetorno['nome'] != null) {
                                           _importaClienteController.text = _objetoJsonRetorno['nome'];
                                           _contasReceber = _contasReceber.copyWith(idCliente: _objetoJsonRetorno['id']);
+                                          widget.contasReceberMontado.cliente = widget.contasReceberMontado.cliente.copyWith(
+                                            nome: _objetoJsonRetorno['nome'],
+                                          );          
                                         }
                                       }
                                     },
@@ -619,7 +622,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
     double valorDesconto = Biblioteca.calcularDesconto(_contasReceber.valorAReceber, _contasReceber.taxaDesconto);
     double valorJuros = Biblioteca.calcularJuros(_contasReceber.valorAReceber, _contasReceber.taxaJuro, _contasReceber.dataVencimento);
     double valorMulta = Biblioteca.calcularMulta(_contasReceber.valorAReceber, _contasReceber.taxaMulta);
-    double valorRecebido = _contasReceber.valorAReceber + valorJuros + valorMulta - valorDesconto;
+    double valorRecebido = (_contasReceber.valorAReceber ?? 0) + valorJuros + valorMulta - valorDesconto;
 
     // double subTotal = Biblioteca.multiplicarMonetario(widget.compraDetalhe.compraPedidoDetalhe.quantidade, widget.compraDetalhe.compraPedidoDetalhe.valorUnitario);
     setState(() {
