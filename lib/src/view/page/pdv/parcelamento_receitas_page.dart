@@ -612,6 +612,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
       } 
 
       // gera as parcelas de acordo com critérios informados
+      Sessao.listaParcelamento = [];
       num somaParcelas = 0;
       num residuo = 0;
       for (var i = 0; i < quantidadeParcelas; i++) {
@@ -628,6 +629,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
             historico: 'Gerado pela venda número ' + Sessao.vendaAtual.id.toString() + ' Parcela ' + (i+1).toString() + ' de ' + _quantidadeParcelasController.text,
           );
         _listaParcelas.add(parcelaReceber);
+        Sessao.listaParcelamento.add(ContasReceberMontado(contasReceber: parcelaReceber));
         somaParcelas = somaParcelas + parcelaReceber.valorAReceber;
       }
       // verifica se sobraram centavos no cálculo e lança na primeira parcela

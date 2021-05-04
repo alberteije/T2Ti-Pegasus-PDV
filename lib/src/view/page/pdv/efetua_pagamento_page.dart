@@ -496,16 +496,18 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
   }
 
   void _adicionarPagamento() {
-    final pagamentoFiltrado = Sessao.listaDadosPagamento.where(((pagamento) => pagamento.idPdvTipoPagamento == _tipoPagamento.id)).toList();    
-    if (pagamentoFiltrado.length == 0) {
-      PdvTotalTipoPagamento itemPagamento = PdvTotalTipoPagamento(
-        id: null,
-        idPdvTipoPagamento: _tipoPagamento.id,
-        dataVenda: DateTime.now(),
-        horaVenda: Biblioteca.horaFormatada(DateTime.now()),
-        valor: _valorController.numberValue
-       );
-      Sessao.listaDadosPagamento.add(itemPagamento);
+    if (_valorController.numberValue > 0) {
+      final pagamentoFiltrado = Sessao.listaDadosPagamento.where(((pagamento) => pagamento.idPdvTipoPagamento == _tipoPagamento.id)).toList();    
+      if (pagamentoFiltrado.length == 0) {
+        PdvTotalTipoPagamento itemPagamento = PdvTotalTipoPagamento(
+          id: null,
+          idPdvTipoPagamento: _tipoPagamento.id,
+          dataVenda: DateTime.now(),
+          horaVenda: Biblioteca.horaFormatada(DateTime.now()),
+          valor: _valorController.numberValue
+        );
+        Sessao.listaDadosPagamento.add(itemPagamento);
+      }
     }
     setState(() {
       _atualizarTotais();

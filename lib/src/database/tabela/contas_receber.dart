@@ -34,6 +34,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 import 'package:moor/moor.dart';
+import 'package:pegasus_pdv/src/infra/infra.dart';
 
 import '../database.dart';
 
@@ -67,4 +68,16 @@ class ContasReceberMontado {
     this.cliente,
     this.contasReceber,
   });
+
+  String getIndex(int index) {
+    switch (index) {
+      case 0:
+        return Biblioteca.dataFormatada(contasReceber.dataVencimento);
+      case 1:
+        return contasReceber.historico;
+      case 2:
+        return Constantes.formatoDecimalValor.format(contasReceber.valorAReceber ?? 0);
+    }
+    return '';
+  }  
 }

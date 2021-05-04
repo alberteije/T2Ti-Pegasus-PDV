@@ -459,15 +459,17 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
   }
 
   void _adicionarPagamento() {
-    final pagamentoFiltrado = _listaFechamento.where(((pagamento) => pagamento.idPdvTipoPagamento == _tipoPagamento.id)).toList();    
-    if (pagamentoFiltrado.length == 0) {
-      PdvFechamento itemPagamento = PdvFechamento(
-        id: null,
-        idPdvTipoPagamento: _tipoPagamento.id,
-        idPdvMovimento: Sessao.movimento.id,
-        valor: _valorController.numberValue
-      );
-      _listaFechamento.add(itemPagamento);
+    if (_valorController.numberValue > 0) {
+      final pagamentoFiltrado = _listaFechamento.where(((pagamento) => pagamento.idPdvTipoPagamento == _tipoPagamento.id)).toList();    
+      if (pagamentoFiltrado.length == 0) {
+        PdvFechamento itemPagamento = PdvFechamento(
+          id: null,
+          idPdvTipoPagamento: _tipoPagamento.id,
+          idPdvMovimento: Sessao.movimento.id,
+          valor: _valorController.numberValue
+        );
+        _listaFechamento.add(itemPagamento);
+      }
     }
     setState(() {
       _atualizarTotais();

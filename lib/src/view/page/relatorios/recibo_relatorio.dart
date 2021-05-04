@@ -146,6 +146,11 @@ class Recibo {
           pw.SizedBox(height: 20),
           _contentFooter(context),
           pw.SizedBox(height: 20),
+          _formaPagamento(context),
+          pw.SizedBox(height: 20),
+          _parcelamentoCabecalho(context),
+          _parcelamento(context),
+          pw.SizedBox(height: 20),
           _termsAndConditions(context),
         ],
       ),
@@ -468,6 +473,23 @@ class Recibo {
                     ],
                   ),
                 ),
+                pw.SizedBox(height: 5),
+                pw.DefaultTextStyle(
+                  style: pw.TextStyle(
+                    color: PdfColors.red,
+                    fontSize: 12,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                  child: pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                      pw.Text('Troco:'),
+                      pw.Text(
+                        'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual.valorTroco ?? 0)}',
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -516,6 +538,145 @@ class Recibo {
         ),
       ],
     );
+  }
+
+  pw.Widget _formaPagamento(pw.Context context) {
+    return pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Expanded(
+          flex: 2,
+          child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+            ],
+          ),
+        ),
+        pw.Expanded(
+          flex: 1,
+          child: pw.DefaultTextStyle(
+            style: pw.TextStyle(
+              fontSize: 10,
+              color: _darkColor,
+            ),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: _listaPagamento(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<pw.Widget> _listaPagamento() {
+    List<pw.Widget> listaPagamentos = [];
+    listaPagamentos.add(pw.Divider(color: _accentColor),);
+    listaPagamentos.add(
+        pw.Text(
+        'Dados de Pagamento',
+        style: pw.TextStyle(
+          fontSize: 12,
+          color: _baseColor,
+          fontWeight: pw.FontWeight.bold,
+        ),
+      ),
+    );
+    listaPagamentos.add(pw.SizedBox(height: 5),);
+                
+    for (var itemPagamento in Sessao.listaDadosPagamento) {
+      var tipoFiltrado = Sessao.listaTipoPagamento.where( ((tipo) => tipo.id == itemPagamento.idPdvTipoPagamento)).toList();    
+      listaPagamentos.add(
+        pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          children: [
+            pw.Text(tipoFiltrado[0].descricao),
+            pw.Text(
+              'R\$ ${Constantes.formatoDecimalValor.format(itemPagamento.valor ?? 0)}'
+            ),
+          ],
+        ),
+      );
+      listaPagamentos.add(pw.SizedBox(height: 5),);
+    }      
+
+    return listaPagamentos;     
+  }
+  
+  pw.Widget _parcelamentoCabecalho(pw.Context context) {
+    if (Sessao.listaParcelamento.length > 0) {
+      return pw.Column(children: [
+        pw.Divider(color: _accentColor),
+        pw.Text(
+          'Informação de Parcelamento',
+          style: pw.TextStyle(
+            fontSize: 12,
+            color: PdfColors.green,
+            fontWeight: pw.FontWeight.bold,
+          ),
+        ),
+        pw.Divider(color: _accentColor),
+      ]);
+    } else {
+      return pw.SizedBox(height: 1);
+    }
+  }
+
+  pw.Widget _parcelamento(pw.Context context) {
+    if (Sessao.listaParcelamento.length > 0) {
+      const tableHeaders = [
+        'Vencimento',
+        'Histórico',
+        'Valor'
+      ];
+
+      return  pw.Table.fromTextArray(
+          border: null,
+          cellAlignment: pw.Alignment.centerLeft,
+          headerDecoration: pw.BoxDecoration(
+            borderRadius: pw.BorderRadius.all(pw.Radius.circular(2)),
+            color: PdfColors.green,
+          ),
+          headerHeight: 25,
+          cellHeight: 40,
+          cellAlignments: {
+            0: pw.Alignment.centerLeft,
+            1: pw.Alignment.center,
+            2: pw.Alignment.centerRight,
+          },
+          headerStyle: pw.TextStyle(
+            color: _baseTextColor,
+            fontSize: 10,
+            fontWeight: pw.FontWeight.bold,
+          ),
+          cellStyle: pw.TextStyle(
+            color: _darkColor,
+            fontSize: 10,
+          ),
+          rowDecoration: pw.BoxDecoration(
+            border: pw.Border(
+              bottom: pw.BorderSide(
+                color: _accentColor,
+                width: .5,
+              ),
+            ),
+          ),
+          headers: List<String>.generate(
+            tableHeaders.length,
+            (col) => tableHeaders[col],
+          ),
+          data: List<List<String>>.generate(
+            Sessao.listaParcelamento.length,
+            (row) => List<String>.generate(
+              tableHeaders.length,
+              (col) => Sessao.listaParcelamento[row].getIndex(col),
+            ),
+          ),
+      );
+      
+    } else {
+      return pw.SizedBox(height: 1);
+    }
   }
 
 }

@@ -76,6 +76,7 @@ class Sessao {
   static List<VendaDetalhe> listaVendaAtualDetalhe = [];
   static List<PdvTipoPagamento> listaTipoPagamento = [];
   static List<PdvTotalTipoPagamento> listaDadosPagamento = [];
+  static List<ContasReceberMontado> listaParcelamento = []; // guarda o parcelamento atual da venda para ser impresso no recibo
   static String retornoJsonLookup; // será usado para popular a grid da janela de lookup
   static RetornoJsonErro objetoJsonErro;
 

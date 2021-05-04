@@ -729,6 +729,7 @@ class _CaixaPageState extends State<CaixaPage> {
       Sessao.vendaAtual = PdvVendaCabecalho(id: null, idPdvMovimento: Sessao.movimento.id,);
       Sessao.listaVendaAtualDetalhe = [];
       Sessao.listaDadosPagamento = [];
+      Sessao.listaParcelamento = [];
       Sessao.statusCaixa = StatusCaixa.aberto;
       Sessao.objetoJsonErro = null;
       _tituloJanela = Constantes.tituloCaixaAberto;
