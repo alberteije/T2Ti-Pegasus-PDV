@@ -251,6 +251,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12',
                             child: TextFormField(
+                              validator: ValidaCampoFormulario.validarEmail,
                               maxLength: 250,
                               maxLines: 3,
                               initialValue: colaborador?.email ?? '',

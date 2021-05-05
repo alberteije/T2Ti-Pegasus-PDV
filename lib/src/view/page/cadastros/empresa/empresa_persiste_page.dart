@@ -149,7 +149,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
                               child: InputDecorator(
                                 decoration: getInputDecoration(
-                                  'Conteúdo para o campo Tipo Empresa',
+                                  'Tipo Empresa (Matriz ou Filial)',
                                   'Tipo Empresa',
                                   true),
                                 isEmpty: Sessao.empresa.tipo == null,
@@ -224,6 +224,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
                               child: TextFormField(
                                 maxLength: 18,
+                                validator: ValidaCampoFormulario.validarCNPJ,
                                 keyboardType: TextInputType.number,
                                 controller: _cnpjController,
                                 decoration: getInputDecoration(
@@ -321,6 +322,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12',
                             child: TextFormField(
+                              validator: ValidaCampoFormulario.validarEmail,
                               maxLength: 250,
                               maxLines: 3,
                               initialValue: Sessao.empresa?.email ?? '',

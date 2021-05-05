@@ -238,12 +238,17 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
     } else {
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
         form.save();
-        if (widget.operacao == 'A') {
-          Sessao.db.produtoUnidadeDao.alterar(produtoUnidade);
+        final unidade = await Sessao.db.produtoUnidadeDao.consultarObjetoFiltro('SIGLA', produtoUnidade.sigla);
+        if (unidade == null) {
+          if (widget.operacao == 'A') {
+            Sessao.db.produtoUnidadeDao.alterar(produtoUnidade);
+          } else {
+            Sessao.db.produtoUnidadeDao.inserir(produtoUnidade);
+        }
+          Navigator.of(context).pop();
         } else {
-          Sessao.db.produtoUnidadeDao.inserir(produtoUnidade);
-       }
-        Navigator.of(context).pop();
+          showInSnackBar('Já existe uma unidade cadastrada com a SIGLA informada.', context);
+        }
       });
     }
   }

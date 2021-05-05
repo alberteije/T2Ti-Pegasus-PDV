@@ -63,6 +63,13 @@ class ProdutoUnidadeDao extends DatabaseAccessor<AppDatabase> with _$ProdutoUnid
     return listaProdutoUnidade;
   }
 
+  Future<ProdutoUnidade> consultarObjetoFiltro(String campo, String valor) async {
+    return (customSelect("SELECT * FROM PRODUTO_UNIDADE WHERE " + campo + " = '" + valor + "'", 
+                                readsFrom: { produtoUnidades }).map((row) {
+                                  return ProdutoUnidade.fromData(row.data, db);  
+                                }).getSingleOrNull());
+  }  
+
   Stream<List<ProdutoUnidade>> observarLista() => select(produtoUnidades).watch();
 
   Future<ProdutoUnidade> consultarObjeto(int pId) {

@@ -63,6 +63,13 @@ class PdvTipoPagamentoDao extends DatabaseAccessor<AppDatabase> with _$PdvTipoPa
     return listaPdvTipoPagamento;
   }
 
+  Future<PdvTipoPagamento> consultarObjetoFiltro(String campo, String valor) async {
+    return (customSelect("SELECT * FROM PDV_TIPO_PAGAMENTO WHERE " + campo + " = '" + valor + "'", 
+                                readsFrom: { pdvTipoPagamentos }).map((row) {
+                                  return PdvTipoPagamento.fromData(row.data, db);  
+                                }).getSingleOrNull());
+  }
+
   Stream<List<PdvTipoPagamento>> observarLista() => select(pdvTipoPagamentos).watch();
 
   Future<PdvTipoPagamento> consultarObjeto(int pId) {
