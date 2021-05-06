@@ -43,13 +43,13 @@ class EcfR06s extends Table {
   IntColumn get idPdvOperador => integer().named('ID_PDV_OPERADOR').nullable().customConstraint('NULLABLE REFERENCES PDV_OPERADOR(ID)')();
   IntColumn get idEcfImpressora => integer().named('ID_ECF_IMPRESSORA').nullable().customConstraint('NULLABLE REFERENCES ECF_IMPRESSORA(ID)')();
   IntColumn get idEcfCaixa => integer().named('ID_ECF_CAIXA').nullable().customConstraint('NULLABLE REFERENCES ECF_CAIXA(ID)')();
-  TextColumn get serieEcf => text().named('SERIE_ECF').withLength(min: 1, max: 20).nullable()();
+  TextColumn get serieEcf => text().named('SERIE_ECF').withLength(min: 0, max: 20).nullable()();
   IntColumn get coo => integer().named('COO').nullable()();
   IntColumn get gnf => integer().named('GNF').nullable()();
   IntColumn get grg => integer().named('GRG').nullable()();
   IntColumn get cdc => integer().named('CDC').nullable()();
-  TextColumn get denominacao => text().named('DENOMINACAO').withLength(min: 1, max: 2).nullable()();
+  TextColumn get denominacao => text().named('DENOMINACAO').withLength(min: 0, max: 2).nullable()();
   DateTimeColumn get dataEmissao => dateTime().named('DATA_EMISSAO').nullable()();
-  TextColumn get horaEmissao => text().named('HORA_EMISSAO').withLength(min: 1, max: 8).nullable()();
-  TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 1, max: 32).nullable()();
+  TextColumn get horaEmissao => text().named('HORA_EMISSAO').withLength(min: 0, max: 8).nullable()();
+  TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()();
 }

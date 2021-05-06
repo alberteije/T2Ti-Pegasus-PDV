@@ -45,9 +45,9 @@ class PdvMovimentos extends Table {
   IntColumn get idPdvCaixa => integer().named('ID_PDV_CAIXA').nullable().customConstraint('NULLABLE REFERENCES PDV_CAIXA(ID)')();
   IntColumn get idGerenteSupervisor => integer().named('ID_GERENTE_SUPERVISOR').nullable().customConstraint('NULLABLE REFERENCES GERENTE_SUPERVISOR(ID)')();
   DateTimeColumn get dataAbertura => dateTime().named('DATA_ABERTURA').nullable()();
-  TextColumn get horaAbertura => text().named('HORA_ABERTURA').withLength(min: 1, max: 8).nullable()();
+  TextColumn get horaAbertura => text().named('HORA_ABERTURA').withLength(min: 0, max: 8).nullable()();
   DateTimeColumn get dataFechamento => dateTime().named('DATA_FECHAMENTO').nullable()();
-  TextColumn get horaFechamento => text().named('HORA_FECHAMENTO').withLength(min: 1, max: 8).nullable()();
+  TextColumn get horaFechamento => text().named('HORA_FECHAMENTO').withLength(min: 0, max: 8).nullable()();
   RealColumn get totalSuprimento => real().named('TOTAL_SUPRIMENTO').nullable()();
   RealColumn get totalSangria => real().named('TOTAL_SANGRIA').nullable()();
   RealColumn get totalNaoFiscal => real().named('TOTAL_NAO_FISCAL').nullable()();
@@ -58,5 +58,5 @@ class PdvMovimentos extends Table {
   RealColumn get totalRecebido => real().named('TOTAL_RECEBIDO').nullable()();
   RealColumn get totalTroco => real().named('TOTAL_TROCO').nullable()();
   RealColumn get totalCancelado => real().named('TOTAL_CANCELADO').nullable()();
-  TextColumn get statusMovimento => text().named('STATUS_MOVIMENTO').withLength(min: 1, max: 1).nullable()();
+  TextColumn get statusMovimento => text().named('STATUS_MOVIMENTO').withLength(min: 0, max: 1).nullable()();
 }

@@ -42,7 +42,7 @@ class PdvSuprimentos extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
   IntColumn get idPdvMovimento => integer().named('ID_PDV_MOVIMENTO').nullable().customConstraint('NULLABLE REFERENCES PDV_MOVIMENTO(ID)')();
   DateTimeColumn get dataSuprimento => dateTime().named('DATA_SUPRIMENTO').nullable()();
-  TextColumn get horaSuprimento => text().named('HORA_SUPRIMENTO').withLength(min: 1, max: 8).nullable()();
+  TextColumn get horaSuprimento => text().named('HORA_SUPRIMENTO').withLength(min: 0, max: 8).nullable()();
   RealColumn get valor => real().named('VALOR').nullable()();
-  TextColumn get observacao => text().named('OBSERVACAO').withLength(min: 1, max: 250).nullable()();
+  TextColumn get observacao => text().named('OBSERVACAO').withLength(min: 0, max: 250).nullable()();
 }

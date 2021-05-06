@@ -216,7 +216,7 @@ class $CfopsTable extends Cfops with TableInfo<$CfopsTable, Cfop> {
   GeneratedTextColumn get descricao => _descricao ??= _constructDescricao();
   GeneratedTextColumn _constructDescricao() {
     return GeneratedTextColumn('DESCRICAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _aplicacaoMeta = const VerificationMeta('aplicacao');
@@ -225,7 +225,7 @@ class $CfopsTable extends Cfops with TableInfo<$CfopsTable, Cfop> {
   GeneratedTextColumn get aplicacao => _aplicacao ??= _constructAplicacao();
   GeneratedTextColumn _constructAplicacao() {
     return GeneratedTextColumn('APLICACAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   @override
@@ -1095,7 +1095,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get nome => _nome ??= _constructNome();
   GeneratedTextColumn _constructNome() {
     return GeneratedTextColumn('NOME', $tableName, true,
-        minTextLength: 1, maxTextLength: 150);
+        minTextLength: 0, maxTextLength: 150);
   }
 
   final VerificationMeta _fantasiaMeta = const VerificationMeta('fantasia');
@@ -1104,7 +1104,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get fantasia => _fantasia ??= _constructFantasia();
   GeneratedTextColumn _constructFantasia() {
     return GeneratedTextColumn('FANTASIA', $tableName, true,
-        minTextLength: 1, maxTextLength: 150);
+        minTextLength: 0, maxTextLength: 150);
   }
 
   final VerificationMeta _emailMeta = const VerificationMeta('email');
@@ -1113,7 +1113,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get email => _email ??= _constructEmail();
   GeneratedTextColumn _constructEmail() {
     return GeneratedTextColumn('EMAIL', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _urlMeta = const VerificationMeta('url');
@@ -1122,7 +1122,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get url => _url ??= _constructUrl();
   GeneratedTextColumn _constructUrl() {
     return GeneratedTextColumn('URL', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _cpfCnpjMeta = const VerificationMeta('cpfCnpj');
@@ -1131,7 +1131,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get cpfCnpj => _cpfCnpj ??= _constructCpfCnpj();
   GeneratedTextColumn _constructCpfCnpj() {
     return GeneratedTextColumn('CPF_CNPJ', $tableName, true,
-        minTextLength: 1, maxTextLength: 14);
+        minTextLength: 0, maxTextLength: 14);
   }
 
   final VerificationMeta _rgMeta = const VerificationMeta('rg');
@@ -1140,7 +1140,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get rg => _rg ??= _constructRg();
   GeneratedTextColumn _constructRg() {
     return GeneratedTextColumn('RG', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _orgaoRgMeta = const VerificationMeta('orgaoRg');
@@ -1149,7 +1149,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get orgaoRg => _orgaoRg ??= _constructOrgaoRg();
   GeneratedTextColumn _constructOrgaoRg() {
     return GeneratedTextColumn('ORGAO_RG', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _dataEmissaoRgMeta =
@@ -1172,7 +1172,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get sexo => _sexo ??= _constructSexo();
   GeneratedTextColumn _constructSexo() {
     return GeneratedTextColumn('SEXO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _inscricaoEstadualMeta =
@@ -1183,7 +1183,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
       _inscricaoEstadual ??= _constructInscricaoEstadual();
   GeneratedTextColumn _constructInscricaoEstadual() {
     return GeneratedTextColumn('INSCRICAO_ESTADUAL', $tableName, true,
-        minTextLength: 1, maxTextLength: 30);
+        minTextLength: 0, maxTextLength: 30);
   }
 
   final VerificationMeta _inscricaoMunicipalMeta =
@@ -1194,7 +1194,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
       _inscricaoMunicipal ??= _constructInscricaoMunicipal();
   GeneratedTextColumn _constructInscricaoMunicipal() {
     return GeneratedTextColumn('INSCRICAO_MUNICIPAL', $tableName, true,
-        minTextLength: 1, maxTextLength: 30);
+        minTextLength: 0, maxTextLength: 30);
   }
 
   final VerificationMeta _tipoPessoaMeta = const VerificationMeta('tipoPessoa');
@@ -1203,7 +1203,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get tipoPessoa => _tipoPessoa ??= _constructTipoPessoa();
   GeneratedTextColumn _constructTipoPessoa() {
     return GeneratedTextColumn('TIPO_PESSOA', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _dataCadastroMeta =
@@ -1226,7 +1226,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get logradouro => _logradouro ??= _constructLogradouro();
   GeneratedTextColumn _constructLogradouro() {
     return GeneratedTextColumn('LOGRADOURO', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _numeroMeta = const VerificationMeta('numero');
@@ -1235,7 +1235,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get numero => _numero ??= _constructNumero();
   GeneratedTextColumn _constructNumero() {
     return GeneratedTextColumn('NUMERO', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _complementoMeta =
@@ -1246,7 +1246,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
       _complemento ??= _constructComplemento();
   GeneratedTextColumn _constructComplemento() {
     return GeneratedTextColumn('COMPLEMENTO', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _cepMeta = const VerificationMeta('cep');
@@ -1255,7 +1255,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get cep => _cep ??= _constructCep();
   GeneratedTextColumn _constructCep() {
     return GeneratedTextColumn('CEP', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _bairroMeta = const VerificationMeta('bairro');
@@ -1264,7 +1264,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get bairro => _bairro ??= _constructBairro();
   GeneratedTextColumn _constructBairro() {
     return GeneratedTextColumn('BAIRRO', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _cidadeMeta = const VerificationMeta('cidade');
@@ -1273,7 +1273,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get cidade => _cidade ??= _constructCidade();
   GeneratedTextColumn _constructCidade() {
     return GeneratedTextColumn('CIDADE', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _ufMeta = const VerificationMeta('uf');
@@ -1282,7 +1282,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get uf => _uf ??= _constructUf();
   GeneratedTextColumn _constructUf() {
     return GeneratedTextColumn('UF', $tableName, true,
-        minTextLength: 1, maxTextLength: 2);
+        minTextLength: 0, maxTextLength: 2);
   }
 
   final VerificationMeta _telefoneMeta = const VerificationMeta('telefone');
@@ -1291,7 +1291,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get telefone => _telefone ??= _constructTelefone();
   GeneratedTextColumn _constructTelefone() {
     return GeneratedTextColumn('TELEFONE', $tableName, true,
-        minTextLength: 1, maxTextLength: 15);
+        minTextLength: 0, maxTextLength: 15);
   }
 
   final VerificationMeta _celularMeta = const VerificationMeta('celular');
@@ -1300,7 +1300,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get celular => _celular ??= _constructCelular();
   GeneratedTextColumn _constructCelular() {
     return GeneratedTextColumn('CELULAR', $tableName, true,
-        minTextLength: 1, maxTextLength: 15);
+        minTextLength: 0, maxTextLength: 15);
   }
 
   final VerificationMeta _contatoMeta = const VerificationMeta('contato');
@@ -1309,7 +1309,7 @@ class $ClientesTable extends Clientes with TableInfo<$ClientesTable, Cliente> {
   GeneratedTextColumn get contato => _contato ??= _constructContato();
   GeneratedTextColumn _constructContato() {
     return GeneratedTextColumn('CONTATO', $tableName, true,
-        minTextLength: 1, maxTextLength: 50);
+        minTextLength: 0, maxTextLength: 50);
   }
 
   final VerificationMeta _codigoIbgeCidadeMeta =
@@ -1867,7 +1867,7 @@ class $ColaboradorsTable extends Colaboradors
   GeneratedTextColumn get nome => _nome ??= _constructNome();
   GeneratedTextColumn _constructNome() {
     return GeneratedTextColumn('NOME', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _cpfMeta = const VerificationMeta('cpf');
@@ -1876,7 +1876,7 @@ class $ColaboradorsTable extends Colaboradors
   GeneratedTextColumn get cpf => _cpf ??= _constructCpf();
   GeneratedTextColumn _constructCpf() {
     return GeneratedTextColumn('CPF', $tableName, true,
-        minTextLength: 1, maxTextLength: 11);
+        minTextLength: 0, maxTextLength: 11);
   }
 
   final VerificationMeta _telefoneMeta = const VerificationMeta('telefone');
@@ -1885,7 +1885,7 @@ class $ColaboradorsTable extends Colaboradors
   GeneratedTextColumn get telefone => _telefone ??= _constructTelefone();
   GeneratedTextColumn _constructTelefone() {
     return GeneratedTextColumn('TELEFONE', $tableName, true,
-        minTextLength: 1, maxTextLength: 15);
+        minTextLength: 0, maxTextLength: 15);
   }
 
   final VerificationMeta _celularMeta = const VerificationMeta('celular');
@@ -1894,7 +1894,7 @@ class $ColaboradorsTable extends Colaboradors
   GeneratedTextColumn get celular => _celular ??= _constructCelular();
   GeneratedTextColumn _constructCelular() {
     return GeneratedTextColumn('CELULAR', $tableName, true,
-        minTextLength: 1, maxTextLength: 15);
+        minTextLength: 0, maxTextLength: 15);
   }
 
   final VerificationMeta _emailMeta = const VerificationMeta('email');
@@ -1903,7 +1903,7 @@ class $ColaboradorsTable extends Colaboradors
   GeneratedTextColumn get email => _email ??= _constructEmail();
   GeneratedTextColumn _constructEmail() {
     return GeneratedTextColumn('EMAIL', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _comissaoVistaMeta =
@@ -1942,7 +1942,7 @@ class $ColaboradorsTable extends Colaboradors
       _nivelAutorizacao ??= _constructNivelAutorizacao();
   GeneratedTextColumn _constructNivelAutorizacao() {
     return GeneratedTextColumn('NIVEL_AUTORIZACAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   @override
@@ -2894,7 +2894,7 @@ class $CompraPedidoCabecalhosTable extends CompraPedidoCabecalhos
       _localEntrega ??= _constructLocalEntrega();
   GeneratedTextColumn _constructLocalEntrega() {
     return GeneratedTextColumn('LOCAL_ENTREGA', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _localCobrancaMeta =
@@ -2905,7 +2905,7 @@ class $CompraPedidoCabecalhosTable extends CompraPedidoCabecalhos
       _localCobranca ??= _constructLocalCobranca();
   GeneratedTextColumn _constructLocalCobranca() {
     return GeneratedTextColumn('LOCAL_COBRANCA', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _contatoMeta = const VerificationMeta('contato');
@@ -2914,7 +2914,7 @@ class $CompraPedidoCabecalhosTable extends CompraPedidoCabecalhos
   GeneratedTextColumn get contato => _contato ??= _constructContato();
   GeneratedTextColumn _constructContato() {
     return GeneratedTextColumn('CONTATO', $tableName, true,
-        minTextLength: 1, maxTextLength: 50);
+        minTextLength: 0, maxTextLength: 50);
   }
 
   final VerificationMeta _valorSubtotalMeta =
@@ -2979,7 +2979,7 @@ class $CompraPedidoCabecalhosTable extends CompraPedidoCabecalhos
       _formaPagamento ??= _constructFormaPagamento();
   GeneratedTextColumn _constructFormaPagamento() {
     return GeneratedTextColumn('FORMA_PAGAMENTO', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _geraFinanceiroMeta =
@@ -2990,7 +2990,7 @@ class $CompraPedidoCabecalhosTable extends CompraPedidoCabecalhos
       _geraFinanceiro ??= _constructGeraFinanceiro();
   GeneratedTextColumn _constructGeraFinanceiro() {
     return GeneratedTextColumn('GERA_FINANCEIRO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _quantidadeParcelasMeta =
@@ -3043,7 +3043,7 @@ class $CompraPedidoCabecalhosTable extends CompraPedidoCabecalhos
       _diaFixoParcela ??= _constructDiaFixoParcela();
   GeneratedTextColumn _constructDiaFixoParcela() {
     return GeneratedTextColumn('DIA_FIXO_PARCELA', $tableName, true,
-        minTextLength: 1, maxTextLength: 2);
+        minTextLength: 0, maxTextLength: 2);
   }
 
   final VerificationMeta _dataRecebimentoItensMeta =
@@ -3068,7 +3068,7 @@ class $CompraPedidoCabecalhosTable extends CompraPedidoCabecalhos
       _horaRecebimentoItens ??= _constructHoraRecebimentoItens();
   GeneratedTextColumn _constructHoraRecebimentoItens() {
     return GeneratedTextColumn('HORA_RECEBIMENTO_ITENS', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _atualizouEstoqueMeta =
@@ -3079,7 +3079,7 @@ class $CompraPedidoCabecalhosTable extends CompraPedidoCabecalhos
       _atualizouEstoque ??= _constructAtualizouEstoque();
   GeneratedTextColumn _constructAtualizouEstoque() {
     return GeneratedTextColumn('ATUALIZOU_ESTOQUE', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _numeroDocumentoEntradaMeta =
@@ -3090,7 +3090,7 @@ class $CompraPedidoCabecalhosTable extends CompraPedidoCabecalhos
       _numeroDocumentoEntrada ??= _constructNumeroDocumentoEntrada();
   GeneratedTextColumn _constructNumeroDocumentoEntrada() {
     return GeneratedTextColumn('NUMERO_DOCUMENTO_ENTRADA', $tableName, true,
-        minTextLength: 1, maxTextLength: 50);
+        minTextLength: 0, maxTextLength: 50);
   }
 
   @override
@@ -3829,7 +3829,7 @@ class $CompraPedidoDetalhesTable extends CompraPedidoDetalhes
   GeneratedTextColumn get cst => _cst ??= _constructCst();
   GeneratedTextColumn _constructCst() {
     return GeneratedTextColumn('CST', $tableName, true,
-        minTextLength: 1, maxTextLength: 2);
+        minTextLength: 0, maxTextLength: 2);
   }
 
   final VerificationMeta _csosnMeta = const VerificationMeta('csosn');
@@ -3838,7 +3838,7 @@ class $CompraPedidoDetalhesTable extends CompraPedidoDetalhes
   GeneratedTextColumn get csosn => _csosn ??= _constructCsosn();
   GeneratedTextColumn _constructCsosn() {
     return GeneratedTextColumn('CSOSN', $tableName, true,
-        minTextLength: 1, maxTextLength: 3);
+        minTextLength: 0, maxTextLength: 3);
   }
 
   final VerificationMeta _cfopMeta = const VerificationMeta('cfop');
@@ -4532,7 +4532,7 @@ class $ContadorsTable extends Contadors
   GeneratedTextColumn get cpf => _cpf ??= _constructCpf();
   GeneratedTextColumn _constructCpf() {
     return GeneratedTextColumn('CPF', $tableName, true,
-        minTextLength: 1, maxTextLength: 11);
+        minTextLength: 0, maxTextLength: 11);
   }
 
   final VerificationMeta _cnpjMeta = const VerificationMeta('cnpj');
@@ -4541,7 +4541,7 @@ class $ContadorsTable extends Contadors
   GeneratedTextColumn get cnpj => _cnpj ??= _constructCnpj();
   GeneratedTextColumn _constructCnpj() {
     return GeneratedTextColumn('CNPJ', $tableName, true,
-        minTextLength: 1, maxTextLength: 14);
+        minTextLength: 0, maxTextLength: 14);
   }
 
   final VerificationMeta _nomeMeta = const VerificationMeta('nome');
@@ -4550,7 +4550,7 @@ class $ContadorsTable extends Contadors
   GeneratedTextColumn get nome => _nome ??= _constructNome();
   GeneratedTextColumn _constructNome() {
     return GeneratedTextColumn('NOME', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _emailMeta = const VerificationMeta('email');
@@ -4559,7 +4559,7 @@ class $ContadorsTable extends Contadors
   GeneratedTextColumn get email => _email ??= _constructEmail();
   GeneratedTextColumn _constructEmail() {
     return GeneratedTextColumn('EMAIL', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _inscricaoCrcMeta =
@@ -4570,7 +4570,7 @@ class $ContadorsTable extends Contadors
       _inscricaoCrc ??= _constructInscricaoCrc();
   GeneratedTextColumn _constructInscricaoCrc() {
     return GeneratedTextColumn('INSCRICAO_CRC', $tableName, true,
-        minTextLength: 1, maxTextLength: 15);
+        minTextLength: 0, maxTextLength: 15);
   }
 
   final VerificationMeta _telefoneMeta = const VerificationMeta('telefone');
@@ -4579,7 +4579,7 @@ class $ContadorsTable extends Contadors
   GeneratedTextColumn get telefone => _telefone ??= _constructTelefone();
   GeneratedTextColumn _constructTelefone() {
     return GeneratedTextColumn('TELEFONE', $tableName, true,
-        minTextLength: 1, maxTextLength: 15);
+        minTextLength: 0, maxTextLength: 15);
   }
 
   final VerificationMeta _celularMeta = const VerificationMeta('celular');
@@ -4588,7 +4588,7 @@ class $ContadorsTable extends Contadors
   GeneratedTextColumn get celular => _celular ??= _constructCelular();
   GeneratedTextColumn _constructCelular() {
     return GeneratedTextColumn('CELULAR', $tableName, true,
-        minTextLength: 1, maxTextLength: 15);
+        minTextLength: 0, maxTextLength: 15);
   }
 
   final VerificationMeta _logradouroMeta = const VerificationMeta('logradouro');
@@ -4597,7 +4597,7 @@ class $ContadorsTable extends Contadors
   GeneratedTextColumn get logradouro => _logradouro ??= _constructLogradouro();
   GeneratedTextColumn _constructLogradouro() {
     return GeneratedTextColumn('LOGRADOURO', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _numeroMeta = const VerificationMeta('numero');
@@ -4606,7 +4606,7 @@ class $ContadorsTable extends Contadors
   GeneratedTextColumn get numero => _numero ??= _constructNumero();
   GeneratedTextColumn _constructNumero() {
     return GeneratedTextColumn('NUMERO', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _complementoMeta =
@@ -4617,7 +4617,7 @@ class $ContadorsTable extends Contadors
       _complemento ??= _constructComplemento();
   GeneratedTextColumn _constructComplemento() {
     return GeneratedTextColumn('COMPLEMENTO', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _bairroMeta = const VerificationMeta('bairro');
@@ -4626,7 +4626,7 @@ class $ContadorsTable extends Contadors
   GeneratedTextColumn get bairro => _bairro ??= _constructBairro();
   GeneratedTextColumn _constructBairro() {
     return GeneratedTextColumn('BAIRRO', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _cidadeMeta = const VerificationMeta('cidade');
@@ -4635,7 +4635,7 @@ class $ContadorsTable extends Contadors
   GeneratedTextColumn get cidade => _cidade ??= _constructCidade();
   GeneratedTextColumn _constructCidade() {
     return GeneratedTextColumn('CIDADE', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _ufMeta = const VerificationMeta('uf');
@@ -4644,7 +4644,7 @@ class $ContadorsTable extends Contadors
   GeneratedTextColumn get uf => _uf ??= _constructUf();
   GeneratedTextColumn _constructUf() {
     return GeneratedTextColumn('UF', $tableName, true,
-        minTextLength: 1, maxTextLength: 2);
+        minTextLength: 0, maxTextLength: 2);
   }
 
   final VerificationMeta _cepMeta = const VerificationMeta('cep');
@@ -4653,7 +4653,7 @@ class $ContadorsTable extends Contadors
   GeneratedTextColumn get cep => _cep ??= _constructCep();
   GeneratedTextColumn _constructCep() {
     return GeneratedTextColumn('CEP', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _codigoIbgeCidadeMeta =
@@ -5578,7 +5578,7 @@ class $ContasPagarsTable extends ContasPagars
       _numeroDocumento ??= _constructNumeroDocumento();
   GeneratedTextColumn _constructNumeroDocumento() {
     return GeneratedTextColumn('NUMERO_DOCUMENTO', $tableName, true,
-        minTextLength: 1, maxTextLength: 50);
+        minTextLength: 0, maxTextLength: 50);
   }
 
   final VerificationMeta _historicoMeta = const VerificationMeta('historico');
@@ -5587,7 +5587,7 @@ class $ContasPagarsTable extends ContasPagars
   GeneratedTextColumn get historico => _historico ??= _constructHistorico();
   GeneratedTextColumn _constructHistorico() {
     return GeneratedTextColumn('HISTORICO', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _statusPagamentoMeta =
@@ -5598,7 +5598,7 @@ class $ContasPagarsTable extends ContasPagars
       _statusPagamento ??= _constructStatusPagamento();
   GeneratedTextColumn _constructStatusPagamento() {
     return GeneratedTextColumn('STATUS_PAGAMENTO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   @override
@@ -6463,7 +6463,7 @@ class $ContasRecebersTable extends ContasRecebers
       _numeroDocumento ??= _constructNumeroDocumento();
   GeneratedTextColumn _constructNumeroDocumento() {
     return GeneratedTextColumn('NUMERO_DOCUMENTO', $tableName, true,
-        minTextLength: 1, maxTextLength: 50);
+        minTextLength: 0, maxTextLength: 50);
   }
 
   final VerificationMeta _historicoMeta = const VerificationMeta('historico');
@@ -6472,7 +6472,7 @@ class $ContasRecebersTable extends ContasRecebers
   GeneratedTextColumn get historico => _historico ??= _constructHistorico();
   GeneratedTextColumn _constructHistorico() {
     return GeneratedTextColumn('HISTORICO', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _statusRecebimentoMeta =
@@ -6483,7 +6483,7 @@ class $ContasRecebersTable extends ContasRecebers
       _statusRecebimento ??= _constructStatusRecebimento();
   GeneratedTextColumn _constructStatusRecebimento() {
     return GeneratedTextColumn('STATUS_RECEBIMENTO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   @override
@@ -6828,7 +6828,7 @@ class $EcfAliquotassTable extends EcfAliquotass
       _totalizadorParcial ??= _constructTotalizadorParcial();
   GeneratedTextColumn _constructTotalizadorParcial() {
     return GeneratedTextColumn('TOTALIZADOR_PARCIAL', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _ecfIcmsStMeta = const VerificationMeta('ecfIcmsSt');
@@ -6837,7 +6837,7 @@ class $EcfAliquotassTable extends EcfAliquotass
   GeneratedTextColumn get ecfIcmsSt => _ecfIcmsSt ??= _constructEcfIcmsSt();
   GeneratedTextColumn _constructEcfIcmsSt() {
     return GeneratedTextColumn('ECF_ICMS_ST', $tableName, true,
-        minTextLength: 1, maxTextLength: 4);
+        minTextLength: 0, maxTextLength: 4);
   }
 
   final VerificationMeta _pafPStMeta = const VerificationMeta('pafPSt');
@@ -6846,7 +6846,7 @@ class $EcfAliquotassTable extends EcfAliquotass
   GeneratedTextColumn get pafPSt => _pafPSt ??= _constructPafPSt();
   GeneratedTextColumn _constructPafPSt() {
     return GeneratedTextColumn('PAF_P_ST', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   @override
@@ -7190,7 +7190,7 @@ class $EcfDocumentosEmitidossTable extends EcfDocumentosEmitidoss
       _horaEmissao ??= _constructHoraEmissao();
   GeneratedTextColumn _constructHoraEmissao() {
     return GeneratedTextColumn('HORA_EMISSAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _tipoMeta = const VerificationMeta('tipo');
@@ -7199,7 +7199,7 @@ class $EcfDocumentosEmitidossTable extends EcfDocumentosEmitidoss
   GeneratedTextColumn get tipo => _tipo ??= _constructTipo();
   GeneratedTextColumn _constructTipo() {
     return GeneratedTextColumn('TIPO', $tableName, true,
-        minTextLength: 1, maxTextLength: 2);
+        minTextLength: 0, maxTextLength: 2);
   }
 
   final VerificationMeta _cooMeta = const VerificationMeta('coo');
@@ -7632,7 +7632,7 @@ class $EcfE3sTable extends EcfE3s with TableInfo<$EcfE3sTable, EcfE3> {
   GeneratedTextColumn get serieEcf => _serieEcf ??= _constructSerieEcf();
   GeneratedTextColumn _constructSerieEcf() {
     return GeneratedTextColumn('SERIE_ECF', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _mfAdicionalMeta =
@@ -7643,7 +7643,7 @@ class $EcfE3sTable extends EcfE3s with TableInfo<$EcfE3sTable, EcfE3> {
       _mfAdicional ??= _constructMfAdicional();
   GeneratedTextColumn _constructMfAdicional() {
     return GeneratedTextColumn('MF_ADICIONAL', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _tipoEcfMeta = const VerificationMeta('tipoEcf');
@@ -7652,7 +7652,7 @@ class $EcfE3sTable extends EcfE3s with TableInfo<$EcfE3sTable, EcfE3> {
   GeneratedTextColumn get tipoEcf => _tipoEcf ??= _constructTipoEcf();
   GeneratedTextColumn _constructTipoEcf() {
     return GeneratedTextColumn('TIPO_ECF', $tableName, true,
-        minTextLength: 1, maxTextLength: 7);
+        minTextLength: 0, maxTextLength: 7);
   }
 
   final VerificationMeta _marcaEcfMeta = const VerificationMeta('marcaEcf');
@@ -7661,7 +7661,7 @@ class $EcfE3sTable extends EcfE3s with TableInfo<$EcfE3sTable, EcfE3> {
   GeneratedTextColumn get marcaEcf => _marcaEcf ??= _constructMarcaEcf();
   GeneratedTextColumn _constructMarcaEcf() {
     return GeneratedTextColumn('MARCA_ECF', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _modeloEcfMeta = const VerificationMeta('modeloEcf');
@@ -7670,7 +7670,7 @@ class $EcfE3sTable extends EcfE3s with TableInfo<$EcfE3sTable, EcfE3> {
   GeneratedTextColumn get modeloEcf => _modeloEcf ??= _constructModeloEcf();
   GeneratedTextColumn _constructModeloEcf() {
     return GeneratedTextColumn('MODELO_ECF', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _dataEstoqueMeta =
@@ -7695,7 +7695,7 @@ class $EcfE3sTable extends EcfE3s with TableInfo<$EcfE3sTable, EcfE3> {
       _horaEstoque ??= _constructHoraEstoque();
   GeneratedTextColumn _constructHoraEstoque() {
     return GeneratedTextColumn('HORA_ESTOQUE', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _hashRegistroMeta =
@@ -7706,7 +7706,7 @@ class $EcfE3sTable extends EcfE3s with TableInfo<$EcfE3sTable, EcfE3> {
       _hashRegistro ??= _constructHashRegistro();
   GeneratedTextColumn _constructHashRegistro() {
     return GeneratedTextColumn('HASH_REGISTRO', $tableName, true,
-        minTextLength: 1, maxTextLength: 32);
+        minTextLength: 0, maxTextLength: 32);
   }
 
   @override
@@ -8489,7 +8489,7 @@ class $EcfImpressorasTable extends EcfImpressoras
   GeneratedTextColumn get codigo => _codigo ??= _constructCodigo();
   GeneratedTextColumn _constructCodigo() {
     return GeneratedTextColumn('CODIGO', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _serieMeta = const VerificationMeta('serie');
@@ -8498,7 +8498,7 @@ class $EcfImpressorasTable extends EcfImpressoras
   GeneratedTextColumn get serie => _serie ??= _constructSerie();
   GeneratedTextColumn _constructSerie() {
     return GeneratedTextColumn('SERIE', $tableName, true,
-        minTextLength: 1, maxTextLength: 30);
+        minTextLength: 0, maxTextLength: 30);
   }
 
   final VerificationMeta _identificacaoMeta =
@@ -8509,7 +8509,7 @@ class $EcfImpressorasTable extends EcfImpressoras
       _identificacao ??= _constructIdentificacao();
   GeneratedTextColumn _constructIdentificacao() {
     return GeneratedTextColumn('IDENTIFICACAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _mcMeta = const VerificationMeta('mc');
@@ -8518,7 +8518,7 @@ class $EcfImpressorasTable extends EcfImpressoras
   GeneratedTextColumn get mc => _mc ??= _constructMc();
   GeneratedTextColumn _constructMc() {
     return GeneratedTextColumn('MC', $tableName, true,
-        minTextLength: 1, maxTextLength: 2);
+        minTextLength: 0, maxTextLength: 2);
   }
 
   final VerificationMeta _mdMeta = const VerificationMeta('md');
@@ -8527,7 +8527,7 @@ class $EcfImpressorasTable extends EcfImpressoras
   GeneratedTextColumn get md => _md ??= _constructMd();
   GeneratedTextColumn _constructMd() {
     return GeneratedTextColumn('MD', $tableName, true,
-        minTextLength: 1, maxTextLength: 2);
+        minTextLength: 0, maxTextLength: 2);
   }
 
   final VerificationMeta _vrMeta = const VerificationMeta('vr');
@@ -8536,7 +8536,7 @@ class $EcfImpressorasTable extends EcfImpressoras
   GeneratedTextColumn get vr => _vr ??= _constructVr();
   GeneratedTextColumn _constructVr() {
     return GeneratedTextColumn('VR', $tableName, true,
-        minTextLength: 1, maxTextLength: 2);
+        minTextLength: 0, maxTextLength: 2);
   }
 
   final VerificationMeta _tipoMeta = const VerificationMeta('tipo');
@@ -8545,7 +8545,7 @@ class $EcfImpressorasTable extends EcfImpressoras
   GeneratedTextColumn get tipo => _tipo ??= _constructTipo();
   GeneratedTextColumn _constructTipo() {
     return GeneratedTextColumn('TIPO', $tableName, true,
-        minTextLength: 1, maxTextLength: 7);
+        minTextLength: 0, maxTextLength: 7);
   }
 
   final VerificationMeta _marcaMeta = const VerificationMeta('marca');
@@ -8554,7 +8554,7 @@ class $EcfImpressorasTable extends EcfImpressoras
   GeneratedTextColumn get marca => _marca ??= _constructMarca();
   GeneratedTextColumn _constructMarca() {
     return GeneratedTextColumn('MARCA', $tableName, true,
-        minTextLength: 1, maxTextLength: 30);
+        minTextLength: 0, maxTextLength: 30);
   }
 
   final VerificationMeta _modeloMeta = const VerificationMeta('modelo');
@@ -8563,7 +8563,7 @@ class $EcfImpressorasTable extends EcfImpressoras
   GeneratedTextColumn get modelo => _modelo ??= _constructModelo();
   GeneratedTextColumn _constructModelo() {
     return GeneratedTextColumn('MODELO', $tableName, true,
-        minTextLength: 1, maxTextLength: 30);
+        minTextLength: 0, maxTextLength: 30);
   }
 
   final VerificationMeta _modeloAcbrMeta = const VerificationMeta('modeloAcbr');
@@ -8572,7 +8572,7 @@ class $EcfImpressorasTable extends EcfImpressoras
   GeneratedTextColumn get modeloAcbr => _modeloAcbr ??= _constructModeloAcbr();
   GeneratedTextColumn _constructModeloAcbr() {
     return GeneratedTextColumn('MODELO_ACBR', $tableName, true,
-        minTextLength: 1, maxTextLength: 30);
+        minTextLength: 0, maxTextLength: 30);
   }
 
   final VerificationMeta _modeloDocumentoFiscalMeta =
@@ -8583,7 +8583,7 @@ class $EcfImpressorasTable extends EcfImpressoras
       _modeloDocumentoFiscal ??= _constructModeloDocumentoFiscal();
   GeneratedTextColumn _constructModeloDocumentoFiscal() {
     return GeneratedTextColumn('MODELO_DOCUMENTO_FISCAL', $tableName, true,
-        minTextLength: 1, maxTextLength: 2);
+        minTextLength: 0, maxTextLength: 2);
   }
 
   final VerificationMeta _versaoMeta = const VerificationMeta('versao');
@@ -8592,7 +8592,7 @@ class $EcfImpressorasTable extends EcfImpressoras
   GeneratedTextColumn get versao => _versao ??= _constructVersao();
   GeneratedTextColumn _constructVersao() {
     return GeneratedTextColumn('VERSAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 30);
+        minTextLength: 0, maxTextLength: 30);
   }
 
   final VerificationMeta _leMeta = const VerificationMeta('le');
@@ -8601,7 +8601,7 @@ class $EcfImpressorasTable extends EcfImpressoras
   GeneratedTextColumn get le => _le ??= _constructLe();
   GeneratedTextColumn _constructLe() {
     return GeneratedTextColumn('LE', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _lefMeta = const VerificationMeta('lef');
@@ -8610,7 +8610,7 @@ class $EcfImpressorasTable extends EcfImpressoras
   GeneratedTextColumn get lef => _lef ??= _constructLef();
   GeneratedTextColumn _constructLef() {
     return GeneratedTextColumn('LEF', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _mfdMeta = const VerificationMeta('mfd');
@@ -8619,7 +8619,7 @@ class $EcfImpressorasTable extends EcfImpressoras
   GeneratedTextColumn get mfd => _mfd ??= _constructMfd();
   GeneratedTextColumn _constructMfd() {
     return GeneratedTextColumn('MFD', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _lacreNaMfdMeta = const VerificationMeta('lacreNaMfd');
@@ -8628,7 +8628,7 @@ class $EcfImpressorasTable extends EcfImpressoras
   GeneratedTextColumn get lacreNaMfd => _lacreNaMfd ??= _constructLacreNaMfd();
   GeneratedTextColumn _constructLacreNaMfd() {
     return GeneratedTextColumn('LACRE_NA_MFD', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _doctoMeta = const VerificationMeta('docto');
@@ -8637,7 +8637,7 @@ class $EcfImpressorasTable extends EcfImpressoras
   GeneratedTextColumn get docto => _docto ??= _constructDocto();
   GeneratedTextColumn _constructDocto() {
     return GeneratedTextColumn('DOCTO', $tableName, true,
-        minTextLength: 1, maxTextLength: 60);
+        minTextLength: 0, maxTextLength: 60);
   }
 
   final VerificationMeta _dataInstalacaoSbMeta =
@@ -8662,7 +8662,7 @@ class $EcfImpressorasTable extends EcfImpressoras
       _horaInstalacaoSb ??= _constructHoraInstalacaoSb();
   GeneratedTextColumn _constructHoraInstalacaoSb() {
     return GeneratedTextColumn('HORA_INSTALACAO_SB', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   @override
@@ -10193,7 +10193,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
   GeneratedTextColumn get serieEcf => _serieEcf ??= _constructSerieEcf();
   GeneratedTextColumn _constructSerieEcf() {
     return GeneratedTextColumn('SERIE_ECF', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _cnpjEmpresaMeta =
@@ -10204,7 +10204,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
       _cnpjEmpresa ??= _constructCnpjEmpresa();
   GeneratedTextColumn _constructCnpjEmpresa() {
     return GeneratedTextColumn('CNPJ_EMPRESA', $tableName, true,
-        minTextLength: 1, maxTextLength: 14);
+        minTextLength: 0, maxTextLength: 14);
   }
 
   final VerificationMeta _cnpjShMeta = const VerificationMeta('cnpjSh');
@@ -10213,7 +10213,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
   GeneratedTextColumn get cnpjSh => _cnpjSh ??= _constructCnpjSh();
   GeneratedTextColumn _constructCnpjSh() {
     return GeneratedTextColumn('CNPJ_SH', $tableName, true,
-        minTextLength: 1, maxTextLength: 14);
+        minTextLength: 0, maxTextLength: 14);
   }
 
   final VerificationMeta _inscricaoEstadualShMeta =
@@ -10224,7 +10224,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
       _inscricaoEstadualSh ??= _constructInscricaoEstadualSh();
   GeneratedTextColumn _constructInscricaoEstadualSh() {
     return GeneratedTextColumn('INSCRICAO_ESTADUAL_SH', $tableName, true,
-        minTextLength: 1, maxTextLength: 14);
+        minTextLength: 0, maxTextLength: 14);
   }
 
   final VerificationMeta _inscricaoMunicipalShMeta =
@@ -10235,7 +10235,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
       _inscricaoMunicipalSh ??= _constructInscricaoMunicipalSh();
   GeneratedTextColumn _constructInscricaoMunicipalSh() {
     return GeneratedTextColumn('INSCRICAO_MUNICIPAL_SH', $tableName, true,
-        minTextLength: 1, maxTextLength: 14);
+        minTextLength: 0, maxTextLength: 14);
   }
 
   final VerificationMeta _denominacaoShMeta =
@@ -10246,7 +10246,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
       _denominacaoSh ??= _constructDenominacaoSh();
   GeneratedTextColumn _constructDenominacaoSh() {
     return GeneratedTextColumn('DENOMINACAO_SH', $tableName, true,
-        minTextLength: 1, maxTextLength: 40);
+        minTextLength: 0, maxTextLength: 40);
   }
 
   final VerificationMeta _nomePafEcfMeta = const VerificationMeta('nomePafEcf');
@@ -10255,7 +10255,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
   GeneratedTextColumn get nomePafEcf => _nomePafEcf ??= _constructNomePafEcf();
   GeneratedTextColumn _constructNomePafEcf() {
     return GeneratedTextColumn('NOME_PAF_ECF', $tableName, true,
-        minTextLength: 1, maxTextLength: 40);
+        minTextLength: 0, maxTextLength: 40);
   }
 
   final VerificationMeta _versaoPafEcfMeta =
@@ -10266,7 +10266,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
       _versaoPafEcf ??= _constructVersaoPafEcf();
   GeneratedTextColumn _constructVersaoPafEcf() {
     return GeneratedTextColumn('VERSAO_PAF_ECF', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _md5PafEcfMeta = const VerificationMeta('md5PafEcf');
@@ -10275,7 +10275,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
   GeneratedTextColumn get md5PafEcf => _md5PafEcf ??= _constructMd5PafEcf();
   GeneratedTextColumn _constructMd5PafEcf() {
     return GeneratedTextColumn('MD5_PAF_ECF', $tableName, true,
-        minTextLength: 1, maxTextLength: 32);
+        minTextLength: 0, maxTextLength: 32);
   }
 
   final VerificationMeta _dataInicialMeta =
@@ -10310,7 +10310,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
   GeneratedTextColumn get versaoEr => _versaoEr ??= _constructVersaoEr();
   GeneratedTextColumn _constructVersaoEr() {
     return GeneratedTextColumn('VERSAO_ER', $tableName, true,
-        minTextLength: 1, maxTextLength: 4);
+        minTextLength: 0, maxTextLength: 4);
   }
 
   final VerificationMeta _numeroLaudoPafMeta =
@@ -10321,7 +10321,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
       _numeroLaudoPaf ??= _constructNumeroLaudoPaf();
   GeneratedTextColumn _constructNumeroLaudoPaf() {
     return GeneratedTextColumn('NUMERO_LAUDO_PAF', $tableName, true,
-        minTextLength: 1, maxTextLength: 40);
+        minTextLength: 0, maxTextLength: 40);
   }
 
   final VerificationMeta _razaoSocialShMeta =
@@ -10332,7 +10332,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
       _razaoSocialSh ??= _constructRazaoSocialSh();
   GeneratedTextColumn _constructRazaoSocialSh() {
     return GeneratedTextColumn('RAZAO_SOCIAL_SH', $tableName, true,
-        minTextLength: 1, maxTextLength: 40);
+        minTextLength: 0, maxTextLength: 40);
   }
 
   final VerificationMeta _enderecoShMeta = const VerificationMeta('enderecoSh');
@@ -10341,7 +10341,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
   GeneratedTextColumn get enderecoSh => _enderecoSh ??= _constructEnderecoSh();
   GeneratedTextColumn _constructEnderecoSh() {
     return GeneratedTextColumn('ENDERECO_SH', $tableName, true,
-        minTextLength: 1, maxTextLength: 40);
+        minTextLength: 0, maxTextLength: 40);
   }
 
   final VerificationMeta _numeroShMeta = const VerificationMeta('numeroSh');
@@ -10350,7 +10350,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
   GeneratedTextColumn get numeroSh => _numeroSh ??= _constructNumeroSh();
   GeneratedTextColumn _constructNumeroSh() {
     return GeneratedTextColumn('NUMERO_SH', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _complementoShMeta =
@@ -10361,7 +10361,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
       _complementoSh ??= _constructComplementoSh();
   GeneratedTextColumn _constructComplementoSh() {
     return GeneratedTextColumn('COMPLEMENTO_SH', $tableName, true,
-        minTextLength: 1, maxTextLength: 40);
+        minTextLength: 0, maxTextLength: 40);
   }
 
   final VerificationMeta _bairroShMeta = const VerificationMeta('bairroSh');
@@ -10370,7 +10370,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
   GeneratedTextColumn get bairroSh => _bairroSh ??= _constructBairroSh();
   GeneratedTextColumn _constructBairroSh() {
     return GeneratedTextColumn('BAIRRO_SH', $tableName, true,
-        minTextLength: 1, maxTextLength: 40);
+        minTextLength: 0, maxTextLength: 40);
   }
 
   final VerificationMeta _cidadeShMeta = const VerificationMeta('cidadeSh');
@@ -10379,7 +10379,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
   GeneratedTextColumn get cidadeSh => _cidadeSh ??= _constructCidadeSh();
   GeneratedTextColumn _constructCidadeSh() {
     return GeneratedTextColumn('CIDADE_SH', $tableName, true,
-        minTextLength: 1, maxTextLength: 40);
+        minTextLength: 0, maxTextLength: 40);
   }
 
   final VerificationMeta _cepShMeta = const VerificationMeta('cepSh');
@@ -10388,7 +10388,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
   GeneratedTextColumn get cepSh => _cepSh ??= _constructCepSh();
   GeneratedTextColumn _constructCepSh() {
     return GeneratedTextColumn('CEP_SH', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _ufShMeta = const VerificationMeta('ufSh');
@@ -10397,7 +10397,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
   GeneratedTextColumn get ufSh => _ufSh ??= _constructUfSh();
   GeneratedTextColumn _constructUfSh() {
     return GeneratedTextColumn('UF_SH', $tableName, true,
-        minTextLength: 1, maxTextLength: 2);
+        minTextLength: 0, maxTextLength: 2);
   }
 
   final VerificationMeta _telefoneShMeta = const VerificationMeta('telefoneSh');
@@ -10406,7 +10406,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
   GeneratedTextColumn get telefoneSh => _telefoneSh ??= _constructTelefoneSh();
   GeneratedTextColumn _constructTelefoneSh() {
     return GeneratedTextColumn('TELEFONE_SH', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _contatoShMeta = const VerificationMeta('contatoSh');
@@ -10415,7 +10415,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
   GeneratedTextColumn get contatoSh => _contatoSh ??= _constructContatoSh();
   GeneratedTextColumn _constructContatoSh() {
     return GeneratedTextColumn('CONTATO_SH', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _principalExecutavelMeta =
@@ -10426,7 +10426,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
       _principalExecutavel ??= _constructPrincipalExecutavel();
   GeneratedTextColumn _constructPrincipalExecutavel() {
     return GeneratedTextColumn('PRINCIPAL_EXECUTAVEL', $tableName, true,
-        minTextLength: 1, maxTextLength: 40);
+        minTextLength: 0, maxTextLength: 40);
   }
 
   final VerificationMeta _hashRegistroMeta =
@@ -10437,7 +10437,7 @@ class $EcfR01sTable extends EcfR01s with TableInfo<$EcfR01sTable, EcfR01> {
       _hashRegistro ??= _constructHashRegistro();
   GeneratedTextColumn _constructHashRegistro() {
     return GeneratedTextColumn('HASH_REGISTRO', $tableName, true,
-        minTextLength: 1, maxTextLength: 32);
+        minTextLength: 0, maxTextLength: 32);
   }
 
   @override
@@ -11155,7 +11155,7 @@ class $EcfR02sTable extends EcfR02s with TableInfo<$EcfR02sTable, EcfR02> {
   GeneratedTextColumn get serieEcf => _serieEcf ??= _constructSerieEcf();
   GeneratedTextColumn _constructSerieEcf() {
     return GeneratedTextColumn('SERIE_ECF', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _crzMeta = const VerificationMeta('crz');
@@ -11230,7 +11230,7 @@ class $EcfR02sTable extends EcfR02s with TableInfo<$EcfR02sTable, EcfR02> {
       _horaEmissao ??= _constructHoraEmissao();
   GeneratedTextColumn _constructHoraEmissao() {
     return GeneratedTextColumn('HORA_EMISSAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _vendaBrutaMeta = const VerificationMeta('vendaBruta');
@@ -11267,7 +11267,7 @@ class $EcfR02sTable extends EcfR02s with TableInfo<$EcfR02sTable, EcfR02> {
       _hashRegistro ??= _constructHashRegistro();
   GeneratedTextColumn _constructHashRegistro() {
     return GeneratedTextColumn('HASH_REGISTRO', $tableName, true,
-        minTextLength: 1, maxTextLength: 32);
+        minTextLength: 0, maxTextLength: 32);
   }
 
   @override
@@ -11692,7 +11692,7 @@ class $EcfR03sTable extends EcfR03s with TableInfo<$EcfR03sTable, EcfR03> {
   GeneratedTextColumn get serieEcf => _serieEcf ??= _constructSerieEcf();
   GeneratedTextColumn _constructSerieEcf() {
     return GeneratedTextColumn('SERIE_ECF', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _totalizadorParcialMeta =
@@ -11703,7 +11703,7 @@ class $EcfR03sTable extends EcfR03s with TableInfo<$EcfR03sTable, EcfR03> {
       _totalizadorParcial ??= _constructTotalizadorParcial();
   GeneratedTextColumn _constructTotalizadorParcial() {
     return GeneratedTextColumn('TOTALIZADOR_PARCIAL', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _valorAcumuladoMeta =
@@ -11740,7 +11740,7 @@ class $EcfR03sTable extends EcfR03s with TableInfo<$EcfR03sTable, EcfR03> {
       _hashRegistro ??= _constructHashRegistro();
   GeneratedTextColumn _constructHashRegistro() {
     return GeneratedTextColumn('HASH_REGISTRO', $tableName, true,
-        minTextLength: 1, maxTextLength: 32);
+        minTextLength: 0, maxTextLength: 32);
   }
 
   @override
@@ -12308,7 +12308,7 @@ class $EcfR06sTable extends EcfR06s with TableInfo<$EcfR06sTable, EcfR06> {
   GeneratedTextColumn get serieEcf => _serieEcf ??= _constructSerieEcf();
   GeneratedTextColumn _constructSerieEcf() {
     return GeneratedTextColumn('SERIE_ECF', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _cooMeta = const VerificationMeta('coo');
@@ -12367,7 +12367,7 @@ class $EcfR06sTable extends EcfR06s with TableInfo<$EcfR06sTable, EcfR06> {
       _denominacao ??= _constructDenominacao();
   GeneratedTextColumn _constructDenominacao() {
     return GeneratedTextColumn('DENOMINACAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 2);
+        minTextLength: 0, maxTextLength: 2);
   }
 
   final VerificationMeta _dataEmissaoMeta =
@@ -12392,7 +12392,7 @@ class $EcfR06sTable extends EcfR06s with TableInfo<$EcfR06sTable, EcfR06> {
       _horaEmissao ??= _constructHoraEmissao();
   GeneratedTextColumn _constructHoraEmissao() {
     return GeneratedTextColumn('HORA_EMISSAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _hashRegistroMeta =
@@ -12403,7 +12403,7 @@ class $EcfR06sTable extends EcfR06s with TableInfo<$EcfR06sTable, EcfR06> {
       _hashRegistro ??= _constructHashRegistro();
   GeneratedTextColumn _constructHashRegistro() {
     return GeneratedTextColumn('HASH_REGISTRO', $tableName, true,
-        minTextLength: 1, maxTextLength: 32);
+        minTextLength: 0, maxTextLength: 32);
   }
 
   @override
@@ -12863,7 +12863,7 @@ class $EcfR07sTable extends EcfR07s with TableInfo<$EcfR07sTable, EcfR07> {
       _meioPagamento ??= _constructMeioPagamento();
   GeneratedTextColumn _constructMeioPagamento() {
     return GeneratedTextColumn('MEIO_PAGAMENTO', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _valorPagamentoMeta =
@@ -12886,7 +12886,7 @@ class $EcfR07sTable extends EcfR07s with TableInfo<$EcfR07sTable, EcfR07> {
   GeneratedTextColumn get estorno => _estorno ??= _constructEstorno();
   GeneratedTextColumn _constructEstorno() {
     return GeneratedTextColumn('ESTORNO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _valorEstornoMeta =
@@ -12911,7 +12911,7 @@ class $EcfR07sTable extends EcfR07s with TableInfo<$EcfR07sTable, EcfR07> {
       _hashRegistro ??= _constructHashRegistro();
   GeneratedTextColumn _constructHashRegistro() {
     return GeneratedTextColumn('HASH_REGISTRO', $tableName, true,
-        minTextLength: 1, maxTextLength: 32);
+        minTextLength: 0, maxTextLength: 32);
   }
 
   @override
@@ -13260,7 +13260,7 @@ class $EcfRecebimentoNaoFiscalsTable extends EcfRecebimentoNaoFiscals
   GeneratedTextColumn get descricao => _descricao ??= _constructDescricao();
   GeneratedTextColumn _constructDescricao() {
     return GeneratedTextColumn('DESCRICAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 50);
+        minTextLength: 0, maxTextLength: 50);
   }
 
   final VerificationMeta _valorMeta = const VerificationMeta('valor');
@@ -14050,7 +14050,7 @@ class $EcfSintegra60AsTable extends EcfSintegra60As
       _situacaoTributaria ??= _constructSituacaoTributaria();
   GeneratedTextColumn _constructSituacaoTributaria() {
     return GeneratedTextColumn('SITUACAO_TRIBUTARIA', $tableName, true,
-        minTextLength: 1, maxTextLength: 4);
+        minTextLength: 0, maxTextLength: 4);
   }
 
   final VerificationMeta _valorMeta = const VerificationMeta('valor');
@@ -14548,7 +14548,7 @@ class $EcfSintegra60MsTable extends EcfSintegra60Ms
       _numeroSerieEcf ??= _constructNumeroSerieEcf();
   GeneratedTextColumn _constructNumeroSerieEcf() {
     return GeneratedTextColumn('NUMERO_SERIE_ECF', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _numeroEquipamentoMeta =
@@ -14573,7 +14573,7 @@ class $EcfSintegra60MsTable extends EcfSintegra60Ms
       _modeloDocumentoFiscal ??= _constructModeloDocumentoFiscal();
   GeneratedTextColumn _constructModeloDocumentoFiscal() {
     return GeneratedTextColumn('MODELO_DOCUMENTO_FISCAL', $tableName, true,
-        minTextLength: 1, maxTextLength: 2);
+        minTextLength: 0, maxTextLength: 2);
   }
 
   final VerificationMeta _cooInicialMeta = const VerificationMeta('cooInicial');
@@ -15577,7 +15577,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
       _razaoSocial ??= _constructRazaoSocial();
   GeneratedTextColumn _constructRazaoSocial() {
     return GeneratedTextColumn('RAZAO_SOCIAL', $tableName, true,
-        minTextLength: 1, maxTextLength: 150);
+        minTextLength: 0, maxTextLength: 150);
   }
 
   final VerificationMeta _nomeFantasiaMeta =
@@ -15588,7 +15588,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
       _nomeFantasia ??= _constructNomeFantasia();
   GeneratedTextColumn _constructNomeFantasia() {
     return GeneratedTextColumn('NOME_FANTASIA', $tableName, true,
-        minTextLength: 1, maxTextLength: 150);
+        minTextLength: 0, maxTextLength: 150);
   }
 
   final VerificationMeta _cnpjMeta = const VerificationMeta('cnpj');
@@ -15597,7 +15597,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
   GeneratedTextColumn get cnpj => _cnpj ??= _constructCnpj();
   GeneratedTextColumn _constructCnpj() {
     return GeneratedTextColumn('CNPJ', $tableName, true,
-        minTextLength: 1, maxTextLength: 14);
+        minTextLength: 0, maxTextLength: 14);
   }
 
   final VerificationMeta _inscricaoEstadualMeta =
@@ -15608,7 +15608,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
       _inscricaoEstadual ??= _constructInscricaoEstadual();
   GeneratedTextColumn _constructInscricaoEstadual() {
     return GeneratedTextColumn('INSCRICAO_ESTADUAL', $tableName, true,
-        minTextLength: 1, maxTextLength: 30);
+        minTextLength: 0, maxTextLength: 30);
   }
 
   final VerificationMeta _inscricaoMunicipalMeta =
@@ -15619,7 +15619,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
       _inscricaoMunicipal ??= _constructInscricaoMunicipal();
   GeneratedTextColumn _constructInscricaoMunicipal() {
     return GeneratedTextColumn('INSCRICAO_MUNICIPAL', $tableName, true,
-        minTextLength: 1, maxTextLength: 30);
+        minTextLength: 0, maxTextLength: 30);
   }
 
   final VerificationMeta _tipoRegimeMeta = const VerificationMeta('tipoRegime');
@@ -15628,7 +15628,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
   GeneratedTextColumn get tipoRegime => _tipoRegime ??= _constructTipoRegime();
   GeneratedTextColumn _constructTipoRegime() {
     return GeneratedTextColumn('TIPO_REGIME', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _crtMeta = const VerificationMeta('crt');
@@ -15637,7 +15637,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
   GeneratedTextColumn get crt => _crt ??= _constructCrt();
   GeneratedTextColumn _constructCrt() {
     return GeneratedTextColumn('CRT', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _dataConstituicaoMeta =
@@ -15660,7 +15660,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
   GeneratedTextColumn get tipo => _tipo ??= _constructTipo();
   GeneratedTextColumn _constructTipo() {
     return GeneratedTextColumn('TIPO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _emailMeta = const VerificationMeta('email');
@@ -15669,7 +15669,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
   GeneratedTextColumn get email => _email ??= _constructEmail();
   GeneratedTextColumn _constructEmail() {
     return GeneratedTextColumn('EMAIL', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _aliquotaPisMeta =
@@ -15706,7 +15706,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
   GeneratedTextColumn get logradouro => _logradouro ??= _constructLogradouro();
   GeneratedTextColumn _constructLogradouro() {
     return GeneratedTextColumn('LOGRADOURO', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _numeroMeta = const VerificationMeta('numero');
@@ -15715,7 +15715,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
   GeneratedTextColumn get numero => _numero ??= _constructNumero();
   GeneratedTextColumn _constructNumero() {
     return GeneratedTextColumn('NUMERO', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _complementoMeta =
@@ -15726,7 +15726,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
       _complemento ??= _constructComplemento();
   GeneratedTextColumn _constructComplemento() {
     return GeneratedTextColumn('COMPLEMENTO', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _cepMeta = const VerificationMeta('cep');
@@ -15735,7 +15735,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
   GeneratedTextColumn get cep => _cep ??= _constructCep();
   GeneratedTextColumn _constructCep() {
     return GeneratedTextColumn('CEP', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _bairroMeta = const VerificationMeta('bairro');
@@ -15744,7 +15744,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
   GeneratedTextColumn get bairro => _bairro ??= _constructBairro();
   GeneratedTextColumn _constructBairro() {
     return GeneratedTextColumn('BAIRRO', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _cidadeMeta = const VerificationMeta('cidade');
@@ -15753,7 +15753,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
   GeneratedTextColumn get cidade => _cidade ??= _constructCidade();
   GeneratedTextColumn _constructCidade() {
     return GeneratedTextColumn('CIDADE', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _ufMeta = const VerificationMeta('uf');
@@ -15762,7 +15762,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
   GeneratedTextColumn get uf => _uf ??= _constructUf();
   GeneratedTextColumn _constructUf() {
     return GeneratedTextColumn('UF', $tableName, true,
-        minTextLength: 1, maxTextLength: 2);
+        minTextLength: 0, maxTextLength: 2);
   }
 
   final VerificationMeta _foneMeta = const VerificationMeta('fone');
@@ -15771,7 +15771,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
   GeneratedTextColumn get fone => _fone ??= _constructFone();
   GeneratedTextColumn _constructFone() {
     return GeneratedTextColumn('FONE', $tableName, true,
-        minTextLength: 1, maxTextLength: 15);
+        minTextLength: 0, maxTextLength: 15);
   }
 
   final VerificationMeta _contatoMeta = const VerificationMeta('contato');
@@ -15780,7 +15780,7 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
   GeneratedTextColumn get contato => _contato ??= _constructContato();
   GeneratedTextColumn _constructContato() {
     return GeneratedTextColumn('CONTATO', $tableName, true,
-        minTextLength: 1, maxTextLength: 30);
+        minTextLength: 0, maxTextLength: 30);
   }
 
   final VerificationMeta _codigoIbgeCidadeMeta =
@@ -16843,7 +16843,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get nome => _nome ??= _constructNome();
   GeneratedTextColumn _constructNome() {
     return GeneratedTextColumn('NOME', $tableName, true,
-        minTextLength: 1, maxTextLength: 150);
+        minTextLength: 0, maxTextLength: 150);
   }
 
   final VerificationMeta _fantasiaMeta = const VerificationMeta('fantasia');
@@ -16852,7 +16852,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get fantasia => _fantasia ??= _constructFantasia();
   GeneratedTextColumn _constructFantasia() {
     return GeneratedTextColumn('FANTASIA', $tableName, true,
-        minTextLength: 1, maxTextLength: 150);
+        minTextLength: 0, maxTextLength: 150);
   }
 
   final VerificationMeta _emailMeta = const VerificationMeta('email');
@@ -16861,7 +16861,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get email => _email ??= _constructEmail();
   GeneratedTextColumn _constructEmail() {
     return GeneratedTextColumn('EMAIL', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _urlMeta = const VerificationMeta('url');
@@ -16870,7 +16870,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get url => _url ??= _constructUrl();
   GeneratedTextColumn _constructUrl() {
     return GeneratedTextColumn('URL', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _cpfCnpjMeta = const VerificationMeta('cpfCnpj');
@@ -16879,7 +16879,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get cpfCnpj => _cpfCnpj ??= _constructCpfCnpj();
   GeneratedTextColumn _constructCpfCnpj() {
     return GeneratedTextColumn('CPF_CNPJ', $tableName, true,
-        minTextLength: 1, maxTextLength: 14);
+        minTextLength: 0, maxTextLength: 14);
   }
 
   final VerificationMeta _rgMeta = const VerificationMeta('rg');
@@ -16888,7 +16888,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get rg => _rg ??= _constructRg();
   GeneratedTextColumn _constructRg() {
     return GeneratedTextColumn('RG', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _orgaoRgMeta = const VerificationMeta('orgaoRg');
@@ -16897,7 +16897,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get orgaoRg => _orgaoRg ??= _constructOrgaoRg();
   GeneratedTextColumn _constructOrgaoRg() {
     return GeneratedTextColumn('ORGAO_RG', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _dataEmissaoRgMeta =
@@ -16920,7 +16920,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get sexo => _sexo ??= _constructSexo();
   GeneratedTextColumn _constructSexo() {
     return GeneratedTextColumn('SEXO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _inscricaoEstadualMeta =
@@ -16931,7 +16931,7 @@ class $FornecedorsTable extends Fornecedors
       _inscricaoEstadual ??= _constructInscricaoEstadual();
   GeneratedTextColumn _constructInscricaoEstadual() {
     return GeneratedTextColumn('INSCRICAO_ESTADUAL', $tableName, true,
-        minTextLength: 1, maxTextLength: 30);
+        minTextLength: 0, maxTextLength: 30);
   }
 
   final VerificationMeta _inscricaoMunicipalMeta =
@@ -16942,7 +16942,7 @@ class $FornecedorsTable extends Fornecedors
       _inscricaoMunicipal ??= _constructInscricaoMunicipal();
   GeneratedTextColumn _constructInscricaoMunicipal() {
     return GeneratedTextColumn('INSCRICAO_MUNICIPAL', $tableName, true,
-        minTextLength: 1, maxTextLength: 30);
+        minTextLength: 0, maxTextLength: 30);
   }
 
   final VerificationMeta _tipoPessoaMeta = const VerificationMeta('tipoPessoa');
@@ -16951,7 +16951,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get tipoPessoa => _tipoPessoa ??= _constructTipoPessoa();
   GeneratedTextColumn _constructTipoPessoa() {
     return GeneratedTextColumn('TIPO_PESSOA', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _dataCadastroMeta =
@@ -16974,7 +16974,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get logradouro => _logradouro ??= _constructLogradouro();
   GeneratedTextColumn _constructLogradouro() {
     return GeneratedTextColumn('LOGRADOURO', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _numeroMeta = const VerificationMeta('numero');
@@ -16983,7 +16983,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get numero => _numero ??= _constructNumero();
   GeneratedTextColumn _constructNumero() {
     return GeneratedTextColumn('NUMERO', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _complementoMeta =
@@ -16994,7 +16994,7 @@ class $FornecedorsTable extends Fornecedors
       _complemento ??= _constructComplemento();
   GeneratedTextColumn _constructComplemento() {
     return GeneratedTextColumn('COMPLEMENTO', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _cepMeta = const VerificationMeta('cep');
@@ -17003,7 +17003,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get cep => _cep ??= _constructCep();
   GeneratedTextColumn _constructCep() {
     return GeneratedTextColumn('CEP', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _bairroMeta = const VerificationMeta('bairro');
@@ -17012,7 +17012,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get bairro => _bairro ??= _constructBairro();
   GeneratedTextColumn _constructBairro() {
     return GeneratedTextColumn('BAIRRO', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _cidadeMeta = const VerificationMeta('cidade');
@@ -17021,7 +17021,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get cidade => _cidade ??= _constructCidade();
   GeneratedTextColumn _constructCidade() {
     return GeneratedTextColumn('CIDADE', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _ufMeta = const VerificationMeta('uf');
@@ -17030,7 +17030,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get uf => _uf ??= _constructUf();
   GeneratedTextColumn _constructUf() {
     return GeneratedTextColumn('UF', $tableName, true,
-        minTextLength: 1, maxTextLength: 2);
+        minTextLength: 0, maxTextLength: 2);
   }
 
   final VerificationMeta _telefoneMeta = const VerificationMeta('telefone');
@@ -17039,7 +17039,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get telefone => _telefone ??= _constructTelefone();
   GeneratedTextColumn _constructTelefone() {
     return GeneratedTextColumn('TELEFONE', $tableName, true,
-        minTextLength: 1, maxTextLength: 15);
+        minTextLength: 0, maxTextLength: 15);
   }
 
   final VerificationMeta _celularMeta = const VerificationMeta('celular');
@@ -17048,7 +17048,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get celular => _celular ??= _constructCelular();
   GeneratedTextColumn _constructCelular() {
     return GeneratedTextColumn('CELULAR', $tableName, true,
-        minTextLength: 1, maxTextLength: 15);
+        minTextLength: 0, maxTextLength: 15);
   }
 
   final VerificationMeta _contatoMeta = const VerificationMeta('contato');
@@ -17057,7 +17057,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get contato => _contato ??= _constructContato();
   GeneratedTextColumn _constructContato() {
     return GeneratedTextColumn('CONTATO', $tableName, true,
-        minTextLength: 1, maxTextLength: 50);
+        minTextLength: 0, maxTextLength: 50);
   }
 
   final VerificationMeta _codigoIbgeCidadeMeta =
@@ -17757,7 +17757,7 @@ class $IbptsTable extends Ibpts with TableInfo<$IbptsTable, Ibpt> {
   GeneratedTextColumn get ncm => _ncm ??= _constructNcm();
   GeneratedTextColumn _constructNcm() {
     return GeneratedTextColumn('NCM', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _exMeta = const VerificationMeta('ex');
@@ -17766,7 +17766,7 @@ class $IbptsTable extends Ibpts with TableInfo<$IbptsTable, Ibpt> {
   GeneratedTextColumn get ex => _ex ??= _constructEx();
   GeneratedTextColumn _constructEx() {
     return GeneratedTextColumn('EX', $tableName, true,
-        minTextLength: 1, maxTextLength: 2);
+        minTextLength: 0, maxTextLength: 2);
   }
 
   final VerificationMeta _tipoMeta = const VerificationMeta('tipo');
@@ -17775,7 +17775,7 @@ class $IbptsTable extends Ibpts with TableInfo<$IbptsTable, Ibpt> {
   GeneratedTextColumn get tipo => _tipo ??= _constructTipo();
   GeneratedTextColumn _constructTipo() {
     return GeneratedTextColumn('TIPO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _descricaoMeta = const VerificationMeta('descricao');
@@ -17784,7 +17784,7 @@ class $IbptsTable extends Ibpts with TableInfo<$IbptsTable, Ibpt> {
   GeneratedTextColumn get descricao => _descricao ??= _constructDescricao();
   GeneratedTextColumn _constructDescricao() {
     return GeneratedTextColumn('DESCRICAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _nacionalFederalMeta =
@@ -17873,7 +17873,7 @@ class $IbptsTable extends Ibpts with TableInfo<$IbptsTable, Ibpt> {
   GeneratedTextColumn get chave => _chave ??= _constructChave();
   GeneratedTextColumn _constructChave() {
     return GeneratedTextColumn('CHAVE', $tableName, true,
-        minTextLength: 1, maxTextLength: 6);
+        minTextLength: 0, maxTextLength: 6);
   }
 
   final VerificationMeta _versaoMeta = const VerificationMeta('versao');
@@ -17882,7 +17882,7 @@ class $IbptsTable extends Ibpts with TableInfo<$IbptsTable, Ibpt> {
   GeneratedTextColumn get versao => _versao ??= _constructVersao();
   GeneratedTextColumn _constructVersao() {
     return GeneratedTextColumn('VERSAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 6);
+        minTextLength: 0, maxTextLength: 6);
   }
 
   final VerificationMeta _fonteMeta = const VerificationMeta('fonte');
@@ -17891,7 +17891,7 @@ class $IbptsTable extends Ibpts with TableInfo<$IbptsTable, Ibpt> {
   GeneratedTextColumn get fonte => _fonte ??= _constructFonte();
   GeneratedTextColumn _constructFonte() {
     return GeneratedTextColumn('FONTE', $tableName, true,
-        minTextLength: 1, maxTextLength: 34);
+        minTextLength: 0, maxTextLength: 34);
   }
 
   @override
@@ -18255,7 +18255,7 @@ class $LogImportacaosTable extends LogImportacaos
       _horaImportacao ??= _constructHoraImportacao();
   GeneratedTextColumn _constructHoraImportacao() {
     return GeneratedTextColumn('HORA_IMPORTACAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _erroMeta = const VerificationMeta('erro');
@@ -18264,7 +18264,7 @@ class $LogImportacaosTable extends LogImportacaos
   GeneratedTextColumn get erro => _erro ??= _constructErro();
   GeneratedTextColumn _constructErro() {
     return GeneratedTextColumn('ERRO', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _registroMeta = const VerificationMeta('registro');
@@ -18273,7 +18273,7 @@ class $LogImportacaosTable extends LogImportacaos
   GeneratedTextColumn get registro => _registro ??= _constructRegistro();
   GeneratedTextColumn _constructRegistro() {
     return GeneratedTextColumn('REGISTRO', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   @override
@@ -18500,7 +18500,7 @@ class $PdvCaixasTable extends PdvCaixas
   GeneratedTextColumn get nome => _nome ??= _constructNome();
   GeneratedTextColumn _constructNome() {
     return GeneratedTextColumn('NOME', $tableName, true,
-        minTextLength: 1, maxTextLength: 30);
+        minTextLength: 0, maxTextLength: 30);
   }
 
   final VerificationMeta _dataCadastroMeta =
@@ -19705,7 +19705,7 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
       _mensagemCupom ??= _constructMensagemCupom();
   GeneratedTextColumn _constructMensagemCupom() {
     return GeneratedTextColumn('MENSAGEM_CUPOM', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _portaEcfMeta = const VerificationMeta('portaEcf');
@@ -19714,7 +19714,7 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
   GeneratedTextColumn get portaEcf => _portaEcf ??= _constructPortaEcf();
   GeneratedTextColumn _constructPortaEcf() {
     return GeneratedTextColumn('PORTA_ECF', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _ipServidorMeta = const VerificationMeta('ipServidor');
@@ -19723,7 +19723,7 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
   GeneratedTextColumn get ipServidor => _ipServidor ??= _constructIpServidor();
   GeneratedTextColumn _constructIpServidor() {
     return GeneratedTextColumn('IP_SERVIDOR', $tableName, true,
-        minTextLength: 1, maxTextLength: 15);
+        minTextLength: 0, maxTextLength: 15);
   }
 
   final VerificationMeta _ipSitefMeta = const VerificationMeta('ipSitef');
@@ -19732,7 +19732,7 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
   GeneratedTextColumn get ipSitef => _ipSitef ??= _constructIpSitef();
   GeneratedTextColumn _constructIpSitef() {
     return GeneratedTextColumn('IP_SITEF', $tableName, true,
-        minTextLength: 1, maxTextLength: 15);
+        minTextLength: 0, maxTextLength: 15);
   }
 
   final VerificationMeta _tipoTefMeta = const VerificationMeta('tipoTef');
@@ -19741,7 +19741,7 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
   GeneratedTextColumn get tipoTef => _tipoTef ??= _constructTipoTef();
   GeneratedTextColumn _constructTipoTef() {
     return GeneratedTextColumn('TIPO_TEF', $tableName, true,
-        minTextLength: 1, maxTextLength: 2);
+        minTextLength: 0, maxTextLength: 2);
   }
 
   final VerificationMeta _tituloTelaCaixaMeta =
@@ -19752,7 +19752,7 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
       _tituloTelaCaixa ??= _constructTituloTelaCaixa();
   GeneratedTextColumn _constructTituloTelaCaixa() {
     return GeneratedTextColumn('TITULO_TELA_CAIXA', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _caminhoImagensProdutosMeta =
@@ -19763,7 +19763,7 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
       _caminhoImagensProdutos ??= _constructCaminhoImagensProdutos();
   GeneratedTextColumn _constructCaminhoImagensProdutos() {
     return GeneratedTextColumn('CAMINHO_IMAGENS_PRODUTOS', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _caminhoImagensMarketingMeta =
@@ -19774,7 +19774,7 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
       _caminhoImagensMarketing ??= _constructCaminhoImagensMarketing();
   GeneratedTextColumn _constructCaminhoImagensMarketing() {
     return GeneratedTextColumn('CAMINHO_IMAGENS_MARKETING', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _corJanelasInternasMeta =
@@ -19785,7 +19785,7 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
       _corJanelasInternas ??= _constructCorJanelasInternas();
   GeneratedTextColumn _constructCorJanelasInternas() {
     return GeneratedTextColumn('COR_JANELAS_INTERNAS', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _marketingAtivoMeta =
@@ -19796,7 +19796,7 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
       _marketingAtivo ??= _constructMarketingAtivo();
   GeneratedTextColumn _constructMarketingAtivo() {
     return GeneratedTextColumn('MARKETING_ATIVO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _cfopEcfMeta = const VerificationMeta('cfopEcf');
@@ -19845,7 +19845,7 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
       _descricaoSuprimento ??= _constructDescricaoSuprimento();
   GeneratedTextColumn _constructDescricaoSuprimento() {
     return GeneratedTextColumn('DESCRICAO_SUPRIMENTO', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _descricaoSangriaMeta =
@@ -19856,7 +19856,7 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
       _descricaoSangria ??= _constructDescricaoSangria();
   GeneratedTextColumn _constructDescricaoSangria() {
     return GeneratedTextColumn('DESCRICAO_SANGRIA', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _tefTipoGpMeta = const VerificationMeta('tefTipoGp');
@@ -19977,7 +19977,7 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
       _pesquisaParte ??= _constructPesquisaParte();
   GeneratedTextColumn _constructPesquisaParte() {
     return GeneratedTextColumn('PESQUISA_PARTE', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _laudoMeta = const VerificationMeta('laudo');
@@ -19986,7 +19986,7 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
   GeneratedTextColumn get laudo => _laudo ??= _constructLaudo();
   GeneratedTextColumn _constructLaudo() {
     return GeneratedTextColumn('LAUDO', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _dataAtualizacaoEstoqueMeta =
@@ -20011,7 +20011,7 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
       _pedeCpfCupom ??= _constructPedeCpfCupom();
   GeneratedTextColumn _constructPedeCpfCupom() {
     return GeneratedTextColumn('PEDE_CPF_CUPOM', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _tipoIntegracaoMeta =
@@ -20050,7 +20050,7 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
       _gavetaSinalInvertido ??= _constructGavetaSinalInvertido();
   GeneratedTextColumn _constructGavetaSinalInvertido() {
     return GeneratedTextColumn('GAVETA_SINAL_INVERTIDO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _gavetaUtilizacaoMeta =
@@ -20075,7 +20075,7 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
       _usaTecladoReduzido ??= _constructUsaTecladoReduzido();
   GeneratedTextColumn _constructUsaTecladoReduzido() {
     return GeneratedTextColumn('USA_TECLADO_REDUZIDO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   @override
@@ -20808,7 +20808,7 @@ class $PdvConfiguracaoBalancasTable extends PdvConfiguracaoBalancas
       _identificador ??= _constructIdentificador();
   GeneratedTextColumn _constructIdentificador() {
     return GeneratedTextColumn('IDENTIFICADOR', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _handShakeMeta = const VerificationMeta('handShake');
@@ -20877,7 +20877,7 @@ class $PdvConfiguracaoBalancasTable extends PdvConfiguracaoBalancas
   GeneratedTextColumn get porta => _porta ??= _constructPorta();
   GeneratedTextColumn _constructPorta() {
     return GeneratedTextColumn('PORTA', $tableName, true,
-        minTextLength: 1, maxTextLength: 4);
+        minTextLength: 0, maxTextLength: 4);
   }
 
   final VerificationMeta _timeoutMeta = const VerificationMeta('timeout');
@@ -20900,7 +20900,7 @@ class $PdvConfiguracaoBalancasTable extends PdvConfiguracaoBalancas
       _tipoConfiguracao ??= _constructTipoConfiguracao();
   GeneratedTextColumn _constructTipoConfiguracao() {
     return GeneratedTextColumn('TIPO_CONFIGURACAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   @override
@@ -21539,7 +21539,7 @@ class $PdvConfiguracaoLeitorSerialsTable extends PdvConfiguracaoLeitorSerials
   GeneratedTextColumn get usa => _usa ??= _constructUsa();
   GeneratedTextColumn _constructUsa() {
     return GeneratedTextColumn('USA', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _portaMeta = const VerificationMeta('porta');
@@ -21548,7 +21548,7 @@ class $PdvConfiguracaoLeitorSerialsTable extends PdvConfiguracaoLeitorSerials
   GeneratedTextColumn get porta => _porta ??= _constructPorta();
   GeneratedTextColumn _constructPorta() {
     return GeneratedTextColumn('PORTA', $tableName, true,
-        minTextLength: 1, maxTextLength: 4);
+        minTextLength: 0, maxTextLength: 4);
   }
 
   final VerificationMeta _baudMeta = const VerificationMeta('baud');
@@ -21629,7 +21629,7 @@ class $PdvConfiguracaoLeitorSerialsTable extends PdvConfiguracaoLeitorSerials
   GeneratedTextColumn get usarFila => _usarFila ??= _constructUsarFila();
   GeneratedTextColumn _constructUsarFila() {
     return GeneratedTextColumn('USAR_FILA', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _hardFlowMeta = const VerificationMeta('hardFlow');
@@ -21638,7 +21638,7 @@ class $PdvConfiguracaoLeitorSerialsTable extends PdvConfiguracaoLeitorSerials
   GeneratedTextColumn get hardFlow => _hardFlow ??= _constructHardFlow();
   GeneratedTextColumn _constructHardFlow() {
     return GeneratedTextColumn('HARD_FLOW', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _softFlowMeta = const VerificationMeta('softFlow');
@@ -21647,7 +21647,7 @@ class $PdvConfiguracaoLeitorSerialsTable extends PdvConfiguracaoLeitorSerials
   GeneratedTextColumn get softFlow => _softFlow ??= _constructSoftFlow();
   GeneratedTextColumn _constructSoftFlow() {
     return GeneratedTextColumn('SOFT_FLOW', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _sufixoMeta = const VerificationMeta('sufixo');
@@ -21656,7 +21656,7 @@ class $PdvConfiguracaoLeitorSerialsTable extends PdvConfiguracaoLeitorSerials
   GeneratedTextColumn get sufixo => _sufixo ??= _constructSufixo();
   GeneratedTextColumn _constructSufixo() {
     return GeneratedTextColumn('SUFIXO', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _excluirSufixoMeta =
@@ -21667,7 +21667,7 @@ class $PdvConfiguracaoLeitorSerialsTable extends PdvConfiguracaoLeitorSerials
       _excluirSufixo ??= _constructExcluirSufixo();
   GeneratedTextColumn _constructExcluirSufixo() {
     return GeneratedTextColumn('EXCLUIR_SUFIXO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   @override
@@ -22812,7 +22812,7 @@ class $PdvMovimentosTable extends PdvMovimentos
       _horaAbertura ??= _constructHoraAbertura();
   GeneratedTextColumn _constructHoraAbertura() {
     return GeneratedTextColumn('HORA_ABERTURA', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _dataFechamentoMeta =
@@ -22837,7 +22837,7 @@ class $PdvMovimentosTable extends PdvMovimentos
       _horaFechamento ??= _constructHoraFechamento();
   GeneratedTextColumn _constructHoraFechamento() {
     return GeneratedTextColumn('HORA_FECHAMENTO', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _totalSuprimentoMeta =
@@ -22982,7 +22982,7 @@ class $PdvMovimentosTable extends PdvMovimentos
       _statusMovimento ??= _constructStatusMovimento();
   GeneratedTextColumn _constructStatusMovimento() {
     return GeneratedTextColumn('STATUS_MOVIMENTO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   @override
@@ -23363,7 +23363,7 @@ class $PdvOperadorsTable extends PdvOperadors
   GeneratedTextColumn get login => _login ??= _constructLogin();
   GeneratedTextColumn _constructLogin() {
     return GeneratedTextColumn('LOGIN', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _senhaMeta = const VerificationMeta('senha');
@@ -23372,7 +23372,7 @@ class $PdvOperadorsTable extends PdvOperadors
   GeneratedTextColumn get senha => _senha ??= _constructSenha();
   GeneratedTextColumn _constructSenha() {
     return GeneratedTextColumn('SENHA', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   @override
@@ -23718,7 +23718,7 @@ class $PdvSangriasTable extends PdvSangrias
       _horaSangria ??= _constructHoraSangria();
   GeneratedTextColumn _constructHoraSangria() {
     return GeneratedTextColumn('HORA_SANGRIA', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _valorMeta = const VerificationMeta('valor');
@@ -23739,7 +23739,7 @@ class $PdvSangriasTable extends PdvSangrias
   GeneratedTextColumn get observacao => _observacao ??= _constructObservacao();
   GeneratedTextColumn _constructObservacao() {
     return GeneratedTextColumn('OBSERVACAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   @override
@@ -24101,7 +24101,7 @@ class $PdvSuprimentosTable extends PdvSuprimentos
       _horaSuprimento ??= _constructHoraSuprimento();
   GeneratedTextColumn _constructHoraSuprimento() {
     return GeneratedTextColumn('HORA_SUPRIMENTO', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _valorMeta = const VerificationMeta('valor');
@@ -24122,7 +24122,7 @@ class $PdvSuprimentosTable extends PdvSuprimentos
   GeneratedTextColumn get observacao => _observacao ??= _constructObservacao();
   GeneratedTextColumn _constructObservacao() {
     return GeneratedTextColumn('OBSERVACAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   @override
@@ -24513,7 +24513,7 @@ class $PdvTipoPagamentosTable extends PdvTipoPagamentos
   GeneratedTextColumn get codigo => _codigo ??= _constructCodigo();
   GeneratedTextColumn _constructCodigo() {
     return GeneratedTextColumn('CODIGO', $tableName, true,
-        minTextLength: 1, maxTextLength: 3);
+        minTextLength: 0, maxTextLength: 3);
   }
 
   final VerificationMeta _descricaoMeta = const VerificationMeta('descricao');
@@ -24522,7 +24522,7 @@ class $PdvTipoPagamentosTable extends PdvTipoPagamentos
   GeneratedTextColumn get descricao => _descricao ??= _constructDescricao();
   GeneratedTextColumn _constructDescricao() {
     return GeneratedTextColumn('DESCRICAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _tefMeta = const VerificationMeta('tef');
@@ -24531,7 +24531,7 @@ class $PdvTipoPagamentosTable extends PdvTipoPagamentos
   GeneratedTextColumn get tef => _tef ??= _constructTef();
   GeneratedTextColumn _constructTef() {
     return GeneratedTextColumn('TEF', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _imprimeVinculadoMeta =
@@ -24542,7 +24542,7 @@ class $PdvTipoPagamentosTable extends PdvTipoPagamentos
       _imprimeVinculado ??= _constructImprimeVinculado();
   GeneratedTextColumn _constructImprimeVinculado() {
     return GeneratedTextColumn('IMPRIME_VINCULADO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _permiteTrocoMeta =
@@ -24553,7 +24553,7 @@ class $PdvTipoPagamentosTable extends PdvTipoPagamentos
       _permiteTroco ??= _constructPermiteTroco();
   GeneratedTextColumn _constructPermiteTroco() {
     return GeneratedTextColumn('PERMITE_TROCO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _tefTipoGpMeta = const VerificationMeta('tefTipoGp');
@@ -24562,7 +24562,7 @@ class $PdvTipoPagamentosTable extends PdvTipoPagamentos
   GeneratedTextColumn get tefTipoGp => _tefTipoGp ??= _constructTefTipoGp();
   GeneratedTextColumn _constructTefTipoGp() {
     return GeneratedTextColumn('TEF_TIPO_GP', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _geraParcelasMeta =
@@ -24573,7 +24573,7 @@ class $PdvTipoPagamentosTable extends PdvTipoPagamentos
       _geraParcelas ??= _constructGeraParcelas();
   GeneratedTextColumn _constructGeraParcelas() {
     return GeneratedTextColumn('GERA_PARCELAS', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   @override
@@ -25211,7 +25211,7 @@ class $PdvTotalTipoPagamentosTable extends PdvTotalTipoPagamentos
   GeneratedTextColumn get horaVenda => _horaVenda ??= _constructHoraVenda();
   GeneratedTextColumn _constructHoraVenda() {
     return GeneratedTextColumn('HORA_VENDA', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _serieEcfMeta = const VerificationMeta('serieEcf');
@@ -25220,7 +25220,7 @@ class $PdvTotalTipoPagamentosTable extends PdvTotalTipoPagamentos
   GeneratedTextColumn get serieEcf => _serieEcf ??= _constructSerieEcf();
   GeneratedTextColumn _constructSerieEcf() {
     return GeneratedTextColumn('SERIE_ECF', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _cooMeta = const VerificationMeta('coo');
@@ -25277,7 +25277,7 @@ class $PdvTotalTipoPagamentosTable extends PdvTotalTipoPagamentos
   GeneratedTextColumn get nsu => _nsu ??= _constructNsu();
   GeneratedTextColumn _constructNsu() {
     return GeneratedTextColumn('NSU', $tableName, true,
-        minTextLength: 1, maxTextLength: 30);
+        minTextLength: 0, maxTextLength: 30);
   }
 
   final VerificationMeta _estornoMeta = const VerificationMeta('estorno');
@@ -25286,7 +25286,7 @@ class $PdvTotalTipoPagamentosTable extends PdvTotalTipoPagamentos
   GeneratedTextColumn get estorno => _estorno ??= _constructEstorno();
   GeneratedTextColumn _constructEstorno() {
     return GeneratedTextColumn('ESTORNO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _redeMeta = const VerificationMeta('rede');
@@ -25295,7 +25295,7 @@ class $PdvTotalTipoPagamentosTable extends PdvTotalTipoPagamentos
   GeneratedTextColumn get rede => _rede ??= _constructRede();
   GeneratedTextColumn _constructRede() {
     return GeneratedTextColumn('REDE', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _cartaoDcMeta = const VerificationMeta('cartaoDc');
@@ -25304,7 +25304,7 @@ class $PdvTotalTipoPagamentosTable extends PdvTotalTipoPagamentos
   GeneratedTextColumn get cartaoDc => _cartaoDc ??= _constructCartaoDc();
   GeneratedTextColumn _constructCartaoDc() {
     return GeneratedTextColumn('CARTAO_DC', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _hashRegistroMeta =
@@ -25315,7 +25315,7 @@ class $PdvTotalTipoPagamentosTable extends PdvTotalTipoPagamentos
       _hashRegistro ??= _constructHashRegistro();
   GeneratedTextColumn _constructHashRegistro() {
     return GeneratedTextColumn('HASH_REGISTRO', $tableName, true,
-        minTextLength: 1, maxTextLength: 32);
+        minTextLength: 0, maxTextLength: 32);
   }
 
   @override
@@ -26604,7 +26604,7 @@ class $PdvVendaCabecalhosTable extends PdvVendaCabecalhos
   GeneratedTextColumn get serieEcf => _serieEcf ??= _constructSerieEcf();
   GeneratedTextColumn _constructSerieEcf() {
     return GeneratedTextColumn('SERIE_ECF', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _cfopMeta = const VerificationMeta('cfop');
@@ -26661,7 +26661,7 @@ class $PdvVendaCabecalhosTable extends PdvVendaCabecalhos
   GeneratedTextColumn get horaVenda => _horaVenda ??= _constructHoraVenda();
   GeneratedTextColumn _constructHoraVenda() {
     return GeneratedTextColumn('HORA_VENDA', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _valorVendaMeta = const VerificationMeta('valorVenda');
@@ -26926,7 +26926,7 @@ class $PdvVendaCabecalhosTable extends PdvVendaCabecalhos
       _statusVenda ??= _constructStatusVenda();
   GeneratedTextColumn _constructStatusVenda() {
     return GeneratedTextColumn('STATUS_VENDA', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _nomeClienteMeta =
@@ -26937,7 +26937,7 @@ class $PdvVendaCabecalhosTable extends PdvVendaCabecalhos
       _nomeCliente ??= _constructNomeCliente();
   GeneratedTextColumn _constructNomeCliente() {
     return GeneratedTextColumn('NOME_CLIENTE', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _cpfCnpjClienteMeta =
@@ -26948,7 +26948,7 @@ class $PdvVendaCabecalhosTable extends PdvVendaCabecalhos
       _cpfCnpjCliente ??= _constructCpfCnpjCliente();
   GeneratedTextColumn _constructCpfCnpjCliente() {
     return GeneratedTextColumn('CPF_CNPJ_CLIENTE', $tableName, true,
-        minTextLength: 1, maxTextLength: 14);
+        minTextLength: 0, maxTextLength: 14);
   }
 
   final VerificationMeta _cupomCanceladoMeta =
@@ -26959,7 +26959,7 @@ class $PdvVendaCabecalhosTable extends PdvVendaCabecalhos
       _cupomCancelado ??= _constructCupomCancelado();
   GeneratedTextColumn _constructCupomCancelado() {
     return GeneratedTextColumn('CUPOM_CANCELADO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _hashRegistroMeta =
@@ -26970,7 +26970,7 @@ class $PdvVendaCabecalhosTable extends PdvVendaCabecalhos
       _hashRegistro ??= _constructHashRegistro();
   GeneratedTextColumn _constructHashRegistro() {
     return GeneratedTextColumn('HASH_REGISTRO', $tableName, true,
-        minTextLength: 1, maxTextLength: 32);
+        minTextLength: 0, maxTextLength: 32);
   }
 
   @override
@@ -28349,7 +28349,7 @@ class $PdvVendaDetalhesTable extends PdvVendaDetalhes
   GeneratedTextColumn get gtin => _gtin ??= _constructGtin();
   GeneratedTextColumn _constructGtin() {
     return GeneratedTextColumn('GTIN', $tableName, true,
-        minTextLength: 1, maxTextLength: 14);
+        minTextLength: 0, maxTextLength: 14);
   }
 
   final VerificationMeta _ccfMeta = const VerificationMeta('ccf');
@@ -28382,7 +28382,7 @@ class $PdvVendaDetalhesTable extends PdvVendaDetalhes
   GeneratedTextColumn get serieEcf => _serieEcf ??= _constructSerieEcf();
   GeneratedTextColumn _constructSerieEcf() {
     return GeneratedTextColumn('SERIE_ECF', $tableName, true,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 0, maxTextLength: 20);
   }
 
   final VerificationMeta _itemMeta = const VerificationMeta('item');
@@ -28625,7 +28625,7 @@ class $PdvVendaDetalhesTable extends PdvVendaDetalhes
       _totalizadorParcial ??= _constructTotalizadorParcial();
   GeneratedTextColumn _constructTotalizadorParcial() {
     return GeneratedTextColumn('TOTALIZADOR_PARCIAL', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _cstMeta = const VerificationMeta('cst');
@@ -28634,7 +28634,7 @@ class $PdvVendaDetalhesTable extends PdvVendaDetalhes
   GeneratedTextColumn get cst => _cst ??= _constructCst();
   GeneratedTextColumn _constructCst() {
     return GeneratedTextColumn('CST', $tableName, true,
-        minTextLength: 1, maxTextLength: 3);
+        minTextLength: 0, maxTextLength: 3);
   }
 
   final VerificationMeta _canceladoMeta = const VerificationMeta('cancelado');
@@ -28643,7 +28643,7 @@ class $PdvVendaDetalhesTable extends PdvVendaDetalhes
   GeneratedTextColumn get cancelado => _cancelado ??= _constructCancelado();
   GeneratedTextColumn _constructCancelado() {
     return GeneratedTextColumn('CANCELADO', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _movimentaEstoqueMeta =
@@ -28654,7 +28654,7 @@ class $PdvVendaDetalhesTable extends PdvVendaDetalhes
       _movimentaEstoque ??= _constructMovimentaEstoque();
   GeneratedTextColumn _constructMovimentaEstoque() {
     return GeneratedTextColumn('MOVIMENTA_ESTOQUE', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _ecfIcmsStMeta = const VerificationMeta('ecfIcmsSt');
@@ -28663,7 +28663,7 @@ class $PdvVendaDetalhesTable extends PdvVendaDetalhes
   GeneratedTextColumn get ecfIcmsSt => _ecfIcmsSt ??= _constructEcfIcmsSt();
   GeneratedTextColumn _constructEcfIcmsSt() {
     return GeneratedTextColumn('ECF_ICMS_ST', $tableName, true,
-        minTextLength: 1, maxTextLength: 4);
+        minTextLength: 0, maxTextLength: 4);
   }
 
   final VerificationMeta _valorImpostoFederalMeta =
@@ -28716,7 +28716,7 @@ class $PdvVendaDetalhesTable extends PdvVendaDetalhes
       _hashRegistro ??= _constructHashRegistro();
   GeneratedTextColumn _constructHashRegistro() {
     return GeneratedTextColumn('HASH_REGISTRO', $tableName, true,
-        minTextLength: 1, maxTextLength: 32);
+        minTextLength: 0, maxTextLength: 32);
   }
 
   @override
@@ -29853,7 +29853,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
   GeneratedTextColumn get gtin => _gtin ??= _constructGtin();
   GeneratedTextColumn _constructGtin() {
     return GeneratedTextColumn('GTIN', $tableName, true,
-        minTextLength: 1, maxTextLength: 14);
+        minTextLength: 0, maxTextLength: 14);
   }
 
   final VerificationMeta _codigoInternoMeta =
@@ -29864,7 +29864,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
       _codigoInterno ??= _constructCodigoInterno();
   GeneratedTextColumn _constructCodigoInterno() {
     return GeneratedTextColumn('CODIGO_INTERNO', $tableName, true,
-        minTextLength: 1, maxTextLength: 50);
+        minTextLength: 0, maxTextLength: 50);
   }
 
   final VerificationMeta _nomeMeta = const VerificationMeta('nome');
@@ -29873,7 +29873,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
   GeneratedTextColumn get nome => _nome ??= _constructNome();
   GeneratedTextColumn _constructNome() {
     return GeneratedTextColumn('NOME', $tableName, true,
-        minTextLength: 1, maxTextLength: 100);
+        minTextLength: 0, maxTextLength: 100);
   }
 
   final VerificationMeta _descricaoMeta = const VerificationMeta('descricao');
@@ -29882,7 +29882,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
   GeneratedTextColumn get descricao => _descricao ??= _constructDescricao();
   GeneratedTextColumn _constructDescricao() {
     return GeneratedTextColumn('DESCRICAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _descricaoPdvMeta =
@@ -29893,7 +29893,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
       _descricaoPdv ??= _constructDescricaoPdv();
   GeneratedTextColumn _constructDescricaoPdv() {
     return GeneratedTextColumn('DESCRICAO_PDV', $tableName, true,
-        minTextLength: 1, maxTextLength: 30);
+        minTextLength: 0, maxTextLength: 30);
   }
 
   final VerificationMeta _valorCompraMeta =
@@ -29970,7 +29970,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
   GeneratedTextColumn get codigoNcm => _codigoNcm ??= _constructCodigoNcm();
   GeneratedTextColumn _constructCodigoNcm() {
     return GeneratedTextColumn('CODIGO_NCM', $tableName, true,
-        minTextLength: 1, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 8);
   }
 
   final VerificationMeta _iatMeta = const VerificationMeta('iat');
@@ -29979,7 +29979,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
   GeneratedTextColumn get iat => _iat ??= _constructIat();
   GeneratedTextColumn _constructIat() {
     return GeneratedTextColumn('IAT', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _ipptMeta = const VerificationMeta('ippt');
@@ -29988,7 +29988,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
   GeneratedTextColumn get ippt => _ippt ??= _constructIppt();
   GeneratedTextColumn _constructIppt() {
     return GeneratedTextColumn('IPPT', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _tipoItemSpedMeta =
@@ -29999,7 +29999,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
       _tipoItemSped ??= _constructTipoItemSped();
   GeneratedTextColumn _constructTipoItemSped() {
     return GeneratedTextColumn('TIPO_ITEM_SPED', $tableName, true,
-        minTextLength: 1, maxTextLength: 2);
+        minTextLength: 0, maxTextLength: 2);
   }
 
   final VerificationMeta _taxaIpiMeta = const VerificationMeta('taxaIpi');
@@ -30068,7 +30068,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
   GeneratedTextColumn get cst => _cst ??= _constructCst();
   GeneratedTextColumn _constructCst() {
     return GeneratedTextColumn('CST', $tableName, true,
-        minTextLength: 1, maxTextLength: 3);
+        minTextLength: 0, maxTextLength: 3);
   }
 
   final VerificationMeta _csosnMeta = const VerificationMeta('csosn');
@@ -30077,7 +30077,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
   GeneratedTextColumn get csosn => _csosn ??= _constructCsosn();
   GeneratedTextColumn _constructCsosn() {
     return GeneratedTextColumn('CSOSN', $tableName, true,
-        minTextLength: 1, maxTextLength: 4);
+        minTextLength: 0, maxTextLength: 4);
   }
 
   final VerificationMeta _totalizadorParcialMeta =
@@ -30088,7 +30088,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
       _totalizadorParcial ??= _constructTotalizadorParcial();
   GeneratedTextColumn _constructTotalizadorParcial() {
     return GeneratedTextColumn('TOTALIZADOR_PARCIAL', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _ecfIcmsStMeta = const VerificationMeta('ecfIcmsSt');
@@ -30097,7 +30097,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
   GeneratedTextColumn get ecfIcmsSt => _ecfIcmsSt ??= _constructEcfIcmsSt();
   GeneratedTextColumn _constructEcfIcmsSt() {
     return GeneratedTextColumn('ECF_ICMS_ST', $tableName, true,
-        minTextLength: 1, maxTextLength: 4);
+        minTextLength: 0, maxTextLength: 4);
   }
 
   final VerificationMeta _codigoBalancaMeta =
@@ -30120,7 +30120,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
   GeneratedTextColumn get pafPSt => _pafPSt ??= _constructPafPSt();
   GeneratedTextColumn _constructPafPSt() {
     return GeneratedTextColumn('PAF_P_ST', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   final VerificationMeta _hashRegistroMeta =
@@ -30131,7 +30131,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
       _hashRegistro ??= _constructHashRegistro();
   GeneratedTextColumn _constructHashRegistro() {
     return GeneratedTextColumn('HASH_REGISTRO', $tableName, true,
-        minTextLength: 1, maxTextLength: 32);
+        minTextLength: 0, maxTextLength: 32);
   }
 
   @override
@@ -30582,7 +30582,7 @@ class $ProdutoFichaTecnicasTable extends ProdutoFichaTecnicas
   GeneratedTextColumn get descricao => _descricao ??= _constructDescricao();
   GeneratedTextColumn _constructDescricao() {
     return GeneratedTextColumn('DESCRICAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 50);
+        minTextLength: 0, maxTextLength: 50);
   }
 
   final VerificationMeta _idProdutoFilhoMeta =
@@ -31316,7 +31316,7 @@ class $ProdutoUnidadesTable extends ProdutoUnidades
   GeneratedTextColumn get sigla => _sigla ??= _constructSigla();
   GeneratedTextColumn _constructSigla() {
     return GeneratedTextColumn('SIGLA', $tableName, true,
-        minTextLength: 1, maxTextLength: 10);
+        minTextLength: 0, maxTextLength: 10);
   }
 
   final VerificationMeta _descricaoMeta = const VerificationMeta('descricao');
@@ -31325,7 +31325,7 @@ class $ProdutoUnidadesTable extends ProdutoUnidades
   GeneratedTextColumn get descricao => _descricao ??= _constructDescricao();
   GeneratedTextColumn _constructDescricao() {
     return GeneratedTextColumn('DESCRICAO', $tableName, true,
-        minTextLength: 1, maxTextLength: 250);
+        minTextLength: 0, maxTextLength: 250);
   }
 
   final VerificationMeta _podeFracionarMeta =
@@ -31336,7 +31336,7 @@ class $ProdutoUnidadesTable extends ProdutoUnidades
       _podeFracionar ??= _constructPodeFracionar();
   GeneratedTextColumn _constructPodeFracionar() {
     return GeneratedTextColumn('PODE_FRACIONAR', $tableName, true,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 0, maxTextLength: 1);
   }
 
   @override

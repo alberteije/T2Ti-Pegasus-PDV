@@ -42,13 +42,13 @@ class PdvConfiguracaoBalancas extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
   IntColumn get idPdvConfiguracao => integer().named('ID_PDV_CONFIGURACAO').nullable().customConstraint('NULLABLE REFERENCES PDV_CONFIGURACAO(ID)')();
   IntColumn get modelo => integer().named('MODELO').nullable()();
-  TextColumn get identificador => text().named('IDENTIFICADOR').withLength(min: 1, max: 1).nullable()();
+  TextColumn get identificador => text().named('IDENTIFICADOR').withLength(min: 0, max: 1).nullable()();
   IntColumn get handShake => integer().named('HAND_SHAKE').nullable()();
   IntColumn get parity => integer().named('PARITY').nullable()();
   IntColumn get stopBits => integer().named('STOP_BITS').nullable()();
   IntColumn get dataBits => integer().named('DATA_BITS').nullable()();
   IntColumn get baudRate => integer().named('BAUD_RATE').nullable()();
-  TextColumn get porta => text().named('PORTA').withLength(min: 1, max: 4).nullable()();
+  TextColumn get porta => text().named('PORTA').withLength(min: 0, max: 4).nullable()();
   IntColumn get timeout => integer().named('TIMEOUT').nullable()();
-  TextColumn get tipoConfiguracao => text().named('TIPO_CONFIGURACAO').withLength(min: 1, max: 20).nullable()();
+  TextColumn get tipoConfiguracao => text().named('TIPO_CONFIGURACAO').withLength(min: 0, max: 20).nullable()();
 }

@@ -40,7 +40,7 @@ class ProdutoUnidades extends Table {
   String get tableName => 'PRODUTO_UNIDADE';
 
   IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get sigla => text().named('SIGLA').withLength(min: 1, max: 10).nullable()();
-  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 1, max: 250).nullable()();
-  TextColumn get podeFracionar => text().named('PODE_FRACIONAR').withLength(min: 1, max: 1).nullable()();
+  TextColumn get sigla => text().named('SIGLA').withLength(min: 0, max: 10).nullable()();
+  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 0, max: 250).nullable()();
+  TextColumn get podeFracionar => text().named('PODE_FRACIONAR').withLength(min: 0, max: 1).nullable()();
 }

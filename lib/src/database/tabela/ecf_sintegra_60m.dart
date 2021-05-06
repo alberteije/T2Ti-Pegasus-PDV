@@ -41,9 +41,9 @@ class EcfSintegra60Ms extends Table {
 
   IntColumn get id => integer().named('ID').autoIncrement()();
   DateTimeColumn get dataEmissao => dateTime().named('DATA_EMISSAO').nullable()();
-  TextColumn get numeroSerieEcf => text().named('NUMERO_SERIE_ECF').withLength(min: 1, max: 20).nullable()();
+  TextColumn get numeroSerieEcf => text().named('NUMERO_SERIE_ECF').withLength(min: 0, max: 20).nullable()();
   IntColumn get numeroEquipamento => integer().named('NUMERO_EQUIPAMENTO').nullable()();
-  TextColumn get modeloDocumentoFiscal => text().named('MODELO_DOCUMENTO_FISCAL').withLength(min: 1, max: 2).nullable()();
+  TextColumn get modeloDocumentoFiscal => text().named('MODELO_DOCUMENTO_FISCAL').withLength(min: 0, max: 2).nullable()();
   IntColumn get cooInicial => integer().named('COO_INICIAL').nullable()();
   IntColumn get cooFinal => integer().named('COO_FINAL').nullable()();
   IntColumn get crz => integer().named('CRZ').nullable()();

@@ -43,15 +43,15 @@ class PdvTotalTipoPagamentos extends Table {
   IntColumn get idPdvVendaCabecalho => integer().named('ID_PDV_VENDA_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES PDV_VENDA_CABECALHO(ID)')();
   IntColumn get idPdvTipoPagamento => integer().named('ID_PDV_TIPO_PAGAMENTO').nullable().customConstraint('NULLABLE REFERENCES PDV_TIPO_PAGAMENTO(ID)')();
   DateTimeColumn get dataVenda => dateTime().named('DATA_VENDA').nullable()();
-  TextColumn get horaVenda => text().named('HORA_VENDA').withLength(min: 1, max: 8).nullable()();
-  TextColumn get serieEcf => text().named('SERIE_ECF').withLength(min: 1, max: 20).nullable()();
+  TextColumn get horaVenda => text().named('HORA_VENDA').withLength(min: 0, max: 8).nullable()();
+  TextColumn get serieEcf => text().named('SERIE_ECF').withLength(min: 0, max: 20).nullable()();
   IntColumn get coo => integer().named('COO').nullable()();
   IntColumn get ccf => integer().named('CCF').nullable()();
   IntColumn get gnf => integer().named('GNF').nullable()();
   RealColumn get valor => real().named('VALOR').nullable()();
-  TextColumn get nsu => text().named('NSU').withLength(min: 1, max: 30).nullable()();
-  TextColumn get estorno => text().named('ESTORNO').withLength(min: 1, max: 1).nullable()();
-  TextColumn get rede => text().named('REDE').withLength(min: 1, max: 10).nullable()();
-  TextColumn get cartaoDc => text().named('CARTAO_DC').withLength(min: 1, max: 1).nullable()();
-  TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 1, max: 32).nullable()();
+  TextColumn get nsu => text().named('NSU').withLength(min: 0, max: 30).nullable()();
+  TextColumn get estorno => text().named('ESTORNO').withLength(min: 0, max: 1).nullable()();
+  TextColumn get rede => text().named('REDE').withLength(min: 0, max: 10).nullable()();
+  TextColumn get cartaoDc => text().named('CARTAO_DC').withLength(min: 0, max: 1).nullable()();
+  TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()();
 }

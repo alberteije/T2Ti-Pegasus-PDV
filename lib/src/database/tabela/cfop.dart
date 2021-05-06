@@ -41,6 +41,6 @@ class Cfops extends Table {
 
   IntColumn get id => integer().named('ID').autoIncrement()();
   IntColumn get codigo => integer().named('CODIGO').nullable()();
-  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 1, max: 250).nullable()();
-  TextColumn get aplicacao => text().named('APLICACAO').withLength(min: 1, max: 250).nullable()();
+  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 0, max: 250).nullable()();
+  TextColumn get aplicacao => text().named('APLICACAO').withLength(min: 0, max: 250).nullable()();
 }

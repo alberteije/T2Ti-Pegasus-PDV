@@ -42,9 +42,9 @@ class EcfR07s extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
   IntColumn get idEcfR06 => integer().named('ID_ECF_R06').nullable().customConstraint('NULLABLE REFERENCES ECF_R06(ID)')();
   IntColumn get ccf => integer().named('CCF').nullable()();
-  TextColumn get meioPagamento => text().named('MEIO_PAGAMENTO').withLength(min: 1, max: 20).nullable()();
+  TextColumn get meioPagamento => text().named('MEIO_PAGAMENTO').withLength(min: 0, max: 20).nullable()();
   RealColumn get valorPagamento => real().named('VALOR_PAGAMENTO').nullable()();
-  TextColumn get estorno => text().named('ESTORNO').withLength(min: 1, max: 1).nullable()();
+  TextColumn get estorno => text().named('ESTORNO').withLength(min: 0, max: 1).nullable()();
   RealColumn get valorEstorno => real().named('VALOR_ESTORNO').nullable()();
-  TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 1, max: 32).nullable()();
+  TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()();
 }

@@ -41,6 +41,6 @@ class PdvOperadors extends Table {
 
   IntColumn get id => integer().named('ID').autoIncrement()();
   IntColumn get idColaborador => integer().named('ID_COLABORADOR').nullable().customConstraint('NULLABLE REFERENCES COLABORADOR(ID)')();
-  TextColumn get login => text().named('LOGIN').withLength(min: 1, max: 20).nullable()();
-  TextColumn get senha => text().named('SENHA').withLength(min: 1, max: 20).nullable()();
+  TextColumn get login => text().named('LOGIN').withLength(min: 0, max: 20).nullable()();
+  TextColumn get senha => text().named('SENHA').withLength(min: 0, max: 20).nullable()();
 }

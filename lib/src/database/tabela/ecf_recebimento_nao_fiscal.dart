@@ -42,6 +42,6 @@ class EcfRecebimentoNaoFiscals extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
   IntColumn get idPdvMovimento => integer().named('ID_PDV_MOVIMENTO').nullable().customConstraint('NULLABLE REFERENCES PDV_MOVIMENTO(ID)')();
   DateTimeColumn get dataRecebimento => dateTime().named('DATA_RECEBIMENTO').nullable()();
-  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 1, max: 50).nullable()();
+  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 0, max: 50).nullable()();
   RealColumn get valor => real().named('VALOR').nullable()();
 }

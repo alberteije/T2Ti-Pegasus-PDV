@@ -45,12 +45,12 @@ class PdvVendaCabecalhos extends Table {
   IntColumn get idPdvMovimento => integer().named('ID_PDV_MOVIMENTO').nullable().customConstraint('NULLABLE REFERENCES PDV_MOVIMENTO(ID)')();
   IntColumn get idEcfDav => integer().named('ID_ECF_DAV').nullable().customConstraint('NULLABLE REFERENCES ECF_DAV(ID)')();
   IntColumn get idEcfPreVendaCabecalho => integer().named('ID_ECF_PRE_VENDA_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES ECF_PRE_VENDA_CABECALHO(ID)')();
-  TextColumn get serieEcf => text().named('SERIE_ECF').withLength(min: 1, max: 20).nullable()();
+  TextColumn get serieEcf => text().named('SERIE_ECF').withLength(min: 0, max: 20).nullable()();
   IntColumn get cfop => integer().named('CFOP').nullable()();
   IntColumn get coo => integer().named('COO').nullable()();
   IntColumn get ccf => integer().named('CCF').nullable()();
   DateTimeColumn get dataVenda => dateTime().named('DATA_VENDA').nullable()();
-  TextColumn get horaVenda => text().named('HORA_VENDA').withLength(min: 1, max: 8).nullable()();
+  TextColumn get horaVenda => text().named('HORA_VENDA').withLength(min: 0, max: 8).nullable()();
   RealColumn get valorVenda => real().named('VALOR_VENDA').nullable()();
   RealColumn get taxaDesconto => real().named('TAXA_DESCONTO').nullable()();
   RealColumn get valorDesconto => real().named('VALOR_DESCONTO').nullable()();
@@ -70,9 +70,9 @@ class PdvVendaCabecalhos extends Table {
   RealColumn get valorCofins => real().named('VALOR_COFINS').nullable()();
   RealColumn get valorAcrescimoItens => real().named('VALOR_ACRESCIMO_ITENS').nullable()();
   RealColumn get valorDescontoItens => real().named('VALOR_DESCONTO_ITENS').nullable()();
-  TextColumn get statusVenda => text().named('STATUS_VENDA').withLength(min: 1, max: 1).nullable()();
-  TextColumn get nomeCliente => text().named('NOME_CLIENTE').withLength(min: 1, max: 100).nullable()();
-  TextColumn get cpfCnpjCliente => text().named('CPF_CNPJ_CLIENTE').withLength(min: 1, max: 14).nullable()();
-  TextColumn get cupomCancelado => text().named('CUPOM_CANCELADO').withLength(min: 1, max: 1).nullable()();
-  TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 1, max: 32).nullable()();
+  TextColumn get statusVenda => text().named('STATUS_VENDA').withLength(min: 0, max: 1).nullable()();
+  TextColumn get nomeCliente => text().named('NOME_CLIENTE').withLength(min: 0, max: 100).nullable()();
+  TextColumn get cpfCnpjCliente => text().named('CPF_CNPJ_CLIENTE').withLength(min: 0, max: 14).nullable()();
+  TextColumn get cupomCancelado => text().named('CUPOM_CANCELADO').withLength(min: 0, max: 1).nullable()();
+  TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()();
 }

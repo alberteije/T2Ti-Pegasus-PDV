@@ -40,12 +40,12 @@ class EcfE3s extends Table {
   String get tableName => 'ECF_E3';
 
   IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get serieEcf => text().named('SERIE_ECF').withLength(min: 1, max: 20).nullable()();
-  TextColumn get mfAdicional => text().named('MF_ADICIONAL').withLength(min: 1, max: 1).nullable()();
-  TextColumn get tipoEcf => text().named('TIPO_ECF').withLength(min: 1, max: 7).nullable()();
-  TextColumn get marcaEcf => text().named('MARCA_ECF').withLength(min: 1, max: 20).nullable()();
-  TextColumn get modeloEcf => text().named('MODELO_ECF').withLength(min: 1, max: 20).nullable()();
+  TextColumn get serieEcf => text().named('SERIE_ECF').withLength(min: 0, max: 20).nullable()();
+  TextColumn get mfAdicional => text().named('MF_ADICIONAL').withLength(min: 0, max: 1).nullable()();
+  TextColumn get tipoEcf => text().named('TIPO_ECF').withLength(min: 0, max: 7).nullable()();
+  TextColumn get marcaEcf => text().named('MARCA_ECF').withLength(min: 0, max: 20).nullable()();
+  TextColumn get modeloEcf => text().named('MODELO_ECF').withLength(min: 0, max: 20).nullable()();
   DateTimeColumn get dataEstoque => dateTime().named('DATA_ESTOQUE').nullable()();
-  TextColumn get horaEstoque => text().named('HORA_ESTOQUE').withLength(min: 1, max: 8).nullable()();
-  TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 1, max: 32).nullable()();
+  TextColumn get horaEstoque => text().named('HORA_ESTOQUE').withLength(min: 0, max: 8).nullable()();
+  TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()();
 }

@@ -40,17 +40,17 @@ class Ibpts extends Table {
   String get tableName => 'IBPT';
 
   IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get ncm => text().named('NCM').withLength(min: 1, max: 8).nullable()();
-  TextColumn get ex => text().named('EX').withLength(min: 1, max: 2).nullable()();
-  TextColumn get tipo => text().named('TIPO').withLength(min: 1, max: 1).nullable()();
-  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 1, max: 250).nullable()();
+  TextColumn get ncm => text().named('NCM').withLength(min: 0, max: 8).nullable()();
+  TextColumn get ex => text().named('EX').withLength(min: 0, max: 2).nullable()();
+  TextColumn get tipo => text().named('TIPO').withLength(min: 0, max: 1).nullable()();
+  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 0, max: 250).nullable()();
   RealColumn get nacionalFederal => real().named('NACIONAL_FEDERAL').nullable()();
   RealColumn get importadosFederal => real().named('IMPORTADOS_FEDERAL').nullable()();
   RealColumn get estadual => real().named('ESTADUAL').nullable()();
   RealColumn get municipal => real().named('MUNICIPAL').nullable()();
   DateTimeColumn get vigenciaInicio => dateTime().named('VIGENCIA_INICIO').nullable()();
   DateTimeColumn get vigenciaFim => dateTime().named('VIGENCIA_FIM').nullable()();
-  TextColumn get chave => text().named('CHAVE').withLength(min: 1, max: 6).nullable()();
-  TextColumn get versao => text().named('VERSAO').withLength(min: 1, max: 6).nullable()();
-  TextColumn get fonte => text().named('FONTE').withLength(min: 1, max: 34).nullable()();
+  TextColumn get chave => text().named('CHAVE').withLength(min: 0, max: 6).nullable()();
+  TextColumn get versao => text().named('VERSAO').withLength(min: 0, max: 6).nullable()();
+  TextColumn get fonte => text().named('FONTE').withLength(min: 0, max: 34).nullable()();
 }

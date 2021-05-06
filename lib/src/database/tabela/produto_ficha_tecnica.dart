@@ -41,7 +41,7 @@ class ProdutoFichaTecnicas extends Table {
 
   IntColumn get id => integer().named('ID').autoIncrement()();
   IntColumn get idProduto => integer().named('ID_PRODUTO').nullable().customConstraint('NULLABLE REFERENCES PRODUTO(ID)')();
-  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 1, max: 50).nullable()();
+  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 0, max: 50).nullable()();
   IntColumn get idProdutoFilho => integer().named('ID_PRODUTO_FILHO').nullable().customConstraint('NULLABLE REFERENCES PRODUTO_FILHO(ID)')();
   RealColumn get quantidade => real().named('QUANTIDADE').nullable()();
 }

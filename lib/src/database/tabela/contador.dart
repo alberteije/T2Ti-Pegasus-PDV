@@ -40,20 +40,20 @@ class Contadors extends Table {
   String get tableName => 'CONTADOR';
 
   IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get cpf => text().named('CPF').withLength(min: 1, max: 11).nullable()();
-  TextColumn get cnpj => text().named('CNPJ').withLength(min: 1, max: 14).nullable()();
-  TextColumn get nome => text().named('NOME').withLength(min: 1, max: 100).nullable()();
-  TextColumn get email => text().named('EMAIL').withLength(min: 1, max: 250).nullable()();
-  TextColumn get inscricaoCrc => text().named('INSCRICAO_CRC').withLength(min: 1, max: 15).nullable()();
-  TextColumn get telefone => text().named('TELEFONE').withLength(min: 1, max: 15).nullable()();
-  TextColumn get celular => text().named('CELULAR').withLength(min: 1, max: 15).nullable()();
-  TextColumn get logradouro => text().named('LOGRADOURO').withLength(min: 1, max: 100).nullable()();
-  TextColumn get numero => text().named('NUMERO').withLength(min: 1, max: 10).nullable()();
-  TextColumn get complemento => text().named('COMPLEMENTO').withLength(min: 1, max: 100).nullable()();
-  TextColumn get bairro => text().named('BAIRRO').withLength(min: 1, max: 100).nullable()();
-  TextColumn get cidade => text().named('CIDADE').withLength(min: 1, max: 100).nullable()();
-  TextColumn get uf => text().named('UF').withLength(min: 1, max: 2).nullable()();
-  TextColumn get cep => text().named('CEP').withLength(min: 1, max: 8).nullable()();
+  TextColumn get cpf => text().named('CPF').withLength(min: 0, max: 11).nullable()();
+  TextColumn get cnpj => text().named('CNPJ').withLength(min: 0, max: 14).nullable()();
+  TextColumn get nome => text().named('NOME').withLength(min: 0, max: 100).nullable()();
+  TextColumn get email => text().named('EMAIL').withLength(min: 0, max: 250).nullable()();
+  TextColumn get inscricaoCrc => text().named('INSCRICAO_CRC').withLength(min: 0, max: 15).nullable()();
+  TextColumn get telefone => text().named('TELEFONE').withLength(min: 0, max: 15).nullable()();
+  TextColumn get celular => text().named('CELULAR').withLength(min: 0, max: 15).nullable()();
+  TextColumn get logradouro => text().named('LOGRADOURO').withLength(min: 0, max: 100).nullable()();
+  TextColumn get numero => text().named('NUMERO').withLength(min: 0, max: 10).nullable()();
+  TextColumn get complemento => text().named('COMPLEMENTO').withLength(min: 0, max: 100).nullable()();
+  TextColumn get bairro => text().named('BAIRRO').withLength(min: 0, max: 100).nullable()();
+  TextColumn get cidade => text().named('CIDADE').withLength(min: 0, max: 100).nullable()();
+  TextColumn get uf => text().named('UF').withLength(min: 0, max: 2).nullable()();
+  TextColumn get cep => text().named('CEP').withLength(min: 0, max: 8).nullable()();
   IntColumn get codigoIbgeCidade => integer().named('CODIGO_IBGE_CIDADE').nullable()();
   IntColumn get codigoIbgeUf => integer().named('CODIGO_IBGE_UF').nullable()();
 }

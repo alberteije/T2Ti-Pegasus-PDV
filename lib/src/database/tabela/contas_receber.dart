@@ -55,9 +55,9 @@ class ContasRecebers extends Table {
   RealColumn get valorMulta => real().named('VALOR_MULTA').nullable()();
   RealColumn get valorDesconto => real().named('VALOR_DESCONTO').nullable()();
   RealColumn get valorRecebido => real().named('VALOR_RECEBIDO').nullable()();
-  TextColumn get numeroDocumento => text().named('NUMERO_DOCUMENTO').withLength(min: 1, max: 50).nullable()();
-  TextColumn get historico => text().named('HISTORICO').withLength(min: 1, max: 250).nullable()();
-  TextColumn get statusRecebimento => text().named('STATUS_RECEBIMENTO').withLength(min: 1, max: 1).nullable()();
+  TextColumn get numeroDocumento => text().named('NUMERO_DOCUMENTO').withLength(min: 0, max: 50).nullable()();
+  TextColumn get historico => text().named('HISTORICO').withLength(min: 0, max: 250).nullable()();
+  TextColumn get statusRecebimento => text().named('STATUS_RECEBIMENTO').withLength(min: 0, max: 1).nullable()();
 }
 
 class ContasReceberMontado {

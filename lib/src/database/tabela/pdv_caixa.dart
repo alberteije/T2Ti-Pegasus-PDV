@@ -40,6 +40,6 @@ class PdvCaixas extends Table {
   String get tableName => 'PDV_CAIXA';
 
   IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get nome => text().named('NOME').withLength(min: 1, max: 30).nullable()();
+  TextColumn get nome => text().named('NOME').withLength(min: 0, max: 30).nullable()();
   DateTimeColumn get dataCadastro => dateTime().named('DATA_CADASTRO').nullable()();
 }

@@ -210,6 +210,8 @@ class Constantes {
   static const String produtoIcon = "$imageDir/produto-icon.png";
   static const String dashboardIcon = "$imageDir/dashboard-icon.png";
   static const String parcelamentoIcon = "$imageDir/parcelas-icon.png";
+  static const String dialogQuestionIcon = "$imageDir/dialog-question-icon.png";
+  static const String dialogInfoIcon = "$imageDir/dialog-info-icon.png";
   
 // #endregion Imagens
 

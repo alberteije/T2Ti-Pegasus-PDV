@@ -35,82 +35,255 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:pegasus_pdv/src/infra/infra.dart';
+
 
 /// Retorna a dialog box informando que o form foi alterado
 Future gerarDialogBoxFormAlterado(BuildContext context) async {
-  AwesomeDialog(
-    context: context,
-    dialogType: DialogType.QUESTION,
-    borderSide: BorderSide(color: Colors.green, width: 2),
-    width: 400,
-    buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
-    headerAnimationLoop: false,
-    animType: AnimType.BOTTOMSLIDE,
-    title: 'Alterações não Concluídas',
-    desc: 'Deseja fechar o formulário e perder as alterações?',
-    showCloseIcon: true,
-    btnCancelOnPress: ()  {},
-    btnOkOnPress: () async { Navigator.of(context).pop(); },
-    btnOkText: 'Sim',
-    btnCancelText: 'Não',
-  )..show();
+  if (Biblioteca.isMobile()) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.QUESTION,
+      borderSide: BorderSide(color: Colors.green, width: 2),
+      width: 400,
+      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+      headerAnimationLoop: false,
+      animType: AnimType.BOTTOMSLIDE,
+      title: 'Alterações não Concluídas',
+      desc: 'Deseja fechar o formulário e perder as alterações?',
+      showCloseIcon: true,
+      btnCancelOnPress: ()  {},
+      btnOkOnPress: () async { Navigator.of(context).pop(); },
+      btnOkText: 'Sim',
+      btnCancelText: 'Não',
+    )..show();
+  } else {
+    showDialogDesktop(
+      context: context, 
+      titulo: 'Alterações não Concluídas', 
+      mensagem: 'Deseja fechar o formulário e perder as alterações?', 
+      tipo: DialogType.QUESTION, 
+      onOkPressed: () async { Navigator.of(context).pop(); });
+  }
 }
 
 /// Retorna um diálogo de exclusão
 gerarDialogBoxExclusao(BuildContext context, Function onOkPressed, {String mensagemPersonalizada}) {
-  AwesomeDialog(
-    context: context,
-    dialogType: DialogType.QUESTION,
-    borderSide: BorderSide(color: Colors.green, width: 2),
-    width: 400,
-    buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
-    headerAnimationLoop: false,
-    animType: AnimType.BOTTOMSLIDE,
-    title: 'Exclusão de Registro',
-    desc: mensagemPersonalizada == null ? 'Deseja excluir esse registro?' : mensagemPersonalizada,
-    showCloseIcon: true,
-    btnCancelOnPress: () {},
-    btnOkOnPress: onOkPressed,
-    btnOkText: 'Sim',
-    btnCancelText: 'Não',
-  )..show();
-}
+  if (Biblioteca.isMobile()) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.QUESTION,
+      borderSide: BorderSide(color: Colors.green, width: 2),
+      width: 400,
+      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+      headerAnimationLoop: false,
+      animType: AnimType.BOTTOMSLIDE,
+      title: 'Exclusão de Registro',
+      desc: mensagemPersonalizada == null ? 'Deseja excluir esse registro?' : mensagemPersonalizada,
+      showCloseIcon: true,
+      btnCancelOnPress: () {},
+      btnOkOnPress: onOkPressed,
+      btnOkText: 'Sim',
+      btnCancelText: 'Não',
+    )..show();
+  } else {
+    showDialogDesktop(
+      context: context, 
+      titulo: 'Exclusão de Registro', 
+      mensagem: mensagemPersonalizada == null ? 'Deseja excluir esse registro?' : mensagemPersonalizada, 
+      tipo: DialogType.QUESTION, 
+      onOkPressed: onOkPressed);
+  }
+} 
 
 /// Retorna um diálogo de informação
 gerarDialogBoxInformacao(BuildContext context, String mensagem, {Function onOkPressed}) {
-  AwesomeDialog(
-    context: context,
-    dialogType: DialogType.INFO,
-    borderSide: BorderSide(color: Colors.green, width: 2),
-    width: 400,
-    buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
-    headerAnimationLoop: false,
-    animType: AnimType.BOTTOMSLIDE,
-    title: 'Informação do Sistema',
-    desc: mensagem,
-    showCloseIcon: true,
-    btnOkOnPress: onOkPressed == null ? () {} : onOkPressed,
-  )..show();
+  if (Biblioteca.isMobile()) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.INFO,
+      borderSide: BorderSide(color: Colors.green, width: 2),
+      width: 400,
+      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+      headerAnimationLoop: false,
+      animType: AnimType.BOTTOMSLIDE,
+      title: 'Informação do Sistema',
+      desc: mensagem,
+      showCloseIcon: true,
+      btnOkOnPress: onOkPressed == null ? () {} : onOkPressed,
+    )..show();
+  } else {
+    showDialogDesktop(
+      context: context, 
+      titulo: 'Informação do Sistema', 
+      mensagem: mensagem, 
+      tipo: DialogType.INFO, 
+      onOkPressed: onOkPressed);
+  }
 }
 
 /// Retorna um diálogo de confirmação
 gerarDialogBoxConfirmacao(BuildContext context, String mensagem, Function onOkPressed) {
-  AwesomeDialog(
+  if (Biblioteca.isMobile()) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.QUESTION,
+      borderSide: BorderSide(color: Colors.green, width: 2),
+      width: 400,
+      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+      headerAnimationLoop: false,
+      animType: AnimType.BOTTOMSLIDE,
+      title: 'Pergunta do Sistema',
+      desc: mensagem,
+      showCloseIcon: true,
+      btnCancelOnPress: () {},
+      btnOkOnPress: onOkPressed,
+      btnOkText: 'Sim',
+      btnCancelText: 'Não',
+    )..show();
+  } else {
+    showDialogDesktop(
+      context: context, 
+      titulo: 'Pergunta do Sistema', 
+      mensagem: mensagem, 
+      tipo: DialogType.QUESTION, 
+      onOkPressed: onOkPressed);
+  }
+}
+
+/// exibe uma caixa de diálogo no desktop com possibilidade de focar os botões
+showDialogDesktop({BuildContext context, String titulo, String mensagem, DialogType tipo, Function onOkPressed}) {
+  return showDialog<void>(
     context: context,
-    dialogType: DialogType.QUESTION,
-    borderSide: BorderSide(color: Colors.green, width: 2),
-    width: 400,
-    buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
-    headerAnimationLoop: false,
-    animType: AnimType.BOTTOMSLIDE,
-    title: 'Pergunta do Sistema',
-    desc: mensagem,
-    showCloseIcon: true,
-    btnCancelOnPress: () {},
-    btnOkOnPress: onOkPressed,
-    btnOkText: 'Sim',
-    btnCancelText: 'Não',
-  )..show();
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: _corpoDialogoDesktop(context: context, titulo: titulo, mensagem: mensagem, tipo: tipo, onOkPressed: onOkPressed),
+      );      
+    },
+  );
+}
+
+_corpoDialogoDesktop({BuildContext context, String titulo, String mensagem, DialogType tipo, Function onOkPressed}){
+  return Stack(
+    children: <Widget>[
+      Container(
+        width: 400,
+        padding: EdgeInsets.only(left: 20, top: 40, right: 20, bottom: 20),
+        margin: EdgeInsets.only(top: 45),
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(color: Colors.black,offset: Offset(0,10),
+            blurRadius: 10
+            ),
+          ]
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(titulo, style: TextStyle(fontSize: 22,fontWeight: FontWeight.w600),),
+            SizedBox(height: 15,),
+            Text(mensagem, style: TextStyle(fontSize: 14),textAlign: TextAlign.center,),
+            SizedBox(height: 22,),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: _getBotoesRodapeDialogoDesktop(context: context, tipo: tipo, onOkPressed: onOkPressed),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      Positioned(
+        left: 20,
+          right: 20,
+          child: CircleAvatar(
+            backgroundColor: Colors.transparent,
+            radius: 45,
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(45)),
+                child: Image.asset(
+                  tipo == DialogType.QUESTION ? Constantes.dialogQuestionIcon : Constantes.dialogInfoIcon,
+                ),
+            ),
+          ),
+      ),
+    ],
+  );
+}
+
+List<Widget> _getBotoesRodapeDialogoDesktop({BuildContext context, DialogType tipo, Function onOkPressed}) {
+  List<Widget> listaBotoes = [];
+
+  if (tipo == DialogType.INFO) {
+    listaBotoes.add(
+      Container(
+        width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+        child: TextButton(
+          autofocus: true,
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+            overlayColor: MaterialStateProperty.all<Color>(Colors.transparent.withOpacity(0.3)),
+          ),
+          child: Text('OK'),
+          onPressed: onOkPressed == null ? () { Navigator.pop(context); } : onOkPressed,
+        ),              
+      ),
+    );
+  } else {
+    listaBotoes.add(
+      Container(
+        width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+        child: TextButton(
+          autofocus: true,
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+            overlayColor: MaterialStateProperty.all<Color>(Colors.transparent.withOpacity(0.3)),
+          ),
+          child: Text('Sim'),
+          onPressed: onOkPressed == null ? () { Navigator.pop(context); } : () { Navigator.pop(context); onOkPressed.call(); },
+        ),             
+      ),
+    );
+    listaBotoes.add(
+      SizedBox(width: 10.0),
+    );
+    listaBotoes.add(
+      Container(
+        width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+        child: TextButton(
+          autofocus: true,
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+            overlayColor: MaterialStateProperty.all<Color>(Colors.transparent.withOpacity(0.3)),
+          ),
+          child: Text('Não'),
+          onPressed: () {
+              Navigator.of(context).pop();
+            },
+        ),             
+      ),
+    );
+  }
+  return listaBotoes;
 }
 
 /// Mostra uma snackbar com uma mensagem

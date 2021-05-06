@@ -40,11 +40,11 @@ class PdvTipoPagamentos extends Table {
   String get tableName => 'PDV_TIPO_PAGAMENTO';
 
   IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get codigo => text().named('CODIGO').withLength(min: 1, max: 3).nullable()();
-  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 1, max: 20).nullable()();
-  TextColumn get tef => text().named('TEF').withLength(min: 1, max: 1).nullable()();
-  TextColumn get imprimeVinculado => text().named('IMPRIME_VINCULADO').withLength(min: 1, max: 1).nullable()();
-  TextColumn get permiteTroco => text().named('PERMITE_TROCO').withLength(min: 1, max: 1).nullable()();
-  TextColumn get tefTipoGp => text().named('TEF_TIPO_GP').withLength(min: 1, max: 1).nullable()();
-  TextColumn get geraParcelas => text().named('GERA_PARCELAS').withLength(min: 1, max: 1).nullable()();
+  TextColumn get codigo => text().named('CODIGO').withLength(min: 0, max: 3).nullable()();
+  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 0, max: 20).nullable()();
+  TextColumn get tef => text().named('TEF').withLength(min: 0, max: 1).nullable()();
+  TextColumn get imprimeVinculado => text().named('IMPRIME_VINCULADO').withLength(min: 0, max: 1).nullable()();
+  TextColumn get permiteTroco => text().named('PERMITE_TROCO').withLength(min: 0, max: 1).nullable()();
+  TextColumn get tefTipoGp => text().named('TEF_TIPO_GP').withLength(min: 0, max: 1).nullable()();
+  TextColumn get geraParcelas => text().named('GERA_PARCELAS').withLength(min: 0, max: 1).nullable()();
 }

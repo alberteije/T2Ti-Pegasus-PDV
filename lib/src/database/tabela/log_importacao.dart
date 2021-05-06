@@ -41,7 +41,7 @@ class LogImportacaos extends Table {
 
   IntColumn get id => integer().named('ID').autoIncrement()();
   DateTimeColumn get dataImportacao => dateTime().named('DATA_IMPORTACAO').nullable()();
-  TextColumn get horaImportacao => text().named('HORA_IMPORTACAO').withLength(min: 1, max: 8).nullable()();
-  TextColumn get erro => text().named('ERRO').withLength(min: 1, max: 250).nullable()();
-  TextColumn get registro => text().named('REGISTRO').withLength(min: 1, max: 250).nullable()();
+  TextColumn get horaImportacao => text().named('HORA_IMPORTACAO').withLength(min: 0, max: 8).nullable()();
+  TextColumn get erro => text().named('ERRO').withLength(min: 0, max: 250).nullable()();
+  TextColumn get registro => text().named('REGISTRO').withLength(min: 0, max: 250).nullable()();
 }

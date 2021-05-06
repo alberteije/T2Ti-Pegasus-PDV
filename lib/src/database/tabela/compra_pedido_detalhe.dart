@@ -50,8 +50,8 @@ class CompraPedidoDetalhes extends Table {
   RealColumn get taxaDesconto => real().named('TAXA_DESCONTO').nullable()();
   RealColumn get valorDesconto => real().named('VALOR_DESCONTO').nullable()();
   RealColumn get valorTotal => real().named('VALOR_TOTAL').nullable()();
-  TextColumn get cst => text().named('CST').withLength(min: 1, max: 2).nullable()();
-  TextColumn get csosn => text().named('CSOSN').withLength(min: 1, max: 3).nullable()();
+  TextColumn get cst => text().named('CST').withLength(min: 0, max: 2).nullable()();
+  TextColumn get csosn => text().named('CSOSN').withLength(min: 0, max: 3).nullable()();
   IntColumn get cfop => integer().named('CFOP').nullable()();
 }
 

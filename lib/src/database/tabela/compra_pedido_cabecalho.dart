@@ -47,23 +47,23 @@ class CompraPedidoCabecalhos extends Table {
   DateTimeColumn get dataPedido => dateTime().named('DATA_PEDIDO').nullable()();
   DateTimeColumn get dataPrevisaoEntrega => dateTime().named('DATA_PREVISAO_ENTREGA').nullable()();
   DateTimeColumn get dataPrevisaoPagamento => dateTime().named('DATA_PREVISAO_PAGAMENTO').nullable()();
-  TextColumn get localEntrega => text().named('LOCAL_ENTREGA').withLength(min: 1, max: 100).nullable()();
-  TextColumn get localCobranca => text().named('LOCAL_COBRANCA').withLength(min: 1, max: 100).nullable()();
-  TextColumn get contato => text().named('CONTATO').withLength(min: 1, max: 50).nullable()();
+  TextColumn get localEntrega => text().named('LOCAL_ENTREGA').withLength(min: 0, max: 100).nullable()();
+  TextColumn get localCobranca => text().named('LOCAL_COBRANCA').withLength(min: 0, max: 100).nullable()();
+  TextColumn get contato => text().named('CONTATO').withLength(min: 0, max: 50).nullable()();
   RealColumn get valorSubtotal => real().named('VALOR_SUBTOTAL').nullable()();
   RealColumn get taxaDesconto => real().named('TAXA_DESCONTO').nullable()();
   RealColumn get valorDesconto => real().named('VALOR_DESCONTO').nullable()();
   RealColumn get valorTotal => real().named('VALOR_TOTAL').nullable()();
-  TextColumn get formaPagamento => text().named('FORMA_PAGAMENTO').withLength(min: 1, max: 10).nullable()();
-  TextColumn get geraFinanceiro => text().named('GERA_FINANCEIRO').withLength(min: 1, max: 1).nullable()();
+  TextColumn get formaPagamento => text().named('FORMA_PAGAMENTO').withLength(min: 0, max: 10).nullable()();
+  TextColumn get geraFinanceiro => text().named('GERA_FINANCEIRO').withLength(min: 0, max: 1).nullable()();
   IntColumn get quantidadeParcelas => integer().named('QUANTIDADE_PARCELAS').nullable()();
   DateTimeColumn get diaPrimeiroVencimento => dateTime().named('DIA_PRIMEIRO_VENCIMENTO').nullable()();
   IntColumn get intervaloEntreParcelas => integer().named('INTERVALO_ENTRE_PARCELAS').nullable()();
-  TextColumn get diaFixoParcela => text().named('DIA_FIXO_PARCELA').withLength(min: 1, max: 2).nullable()();
+  TextColumn get diaFixoParcela => text().named('DIA_FIXO_PARCELA').withLength(min: 0, max: 2).nullable()();
   DateTimeColumn get dataRecebimentoItens => dateTime().named('DATA_RECEBIMENTO_ITENS').nullable()();
-  TextColumn get horaRecebimentoItens => text().named('HORA_RECEBIMENTO_ITENS').withLength(min: 1, max: 8).nullable()();
-  TextColumn get atualizouEstoque => text().named('ATUALIZOU_ESTOQUE').withLength(min: 1, max: 1).nullable()();
-  TextColumn get numeroDocumentoEntrada => text().named('NUMERO_DOCUMENTO_ENTRADA').withLength(min: 1, max: 50).nullable()();
+  TextColumn get horaRecebimentoItens => text().named('HORA_RECEBIMENTO_ITENS').withLength(min: 0, max: 8).nullable()();
+  TextColumn get atualizouEstoque => text().named('ATUALIZOU_ESTOQUE').withLength(min: 0, max: 1).nullable()();
+  TextColumn get numeroDocumentoEntrada => text().named('NUMERO_DOCUMENTO_ENTRADA').withLength(min: 0, max: 50).nullable()();
 }
 
 class CompraPedidoCabecalhoMontado {

@@ -41,17 +41,17 @@ class PdvConfiguracaoLeitorSerials extends Table {
 
   IntColumn get id => integer().named('ID').autoIncrement()();
   IntColumn get idPdvConfiguracao => integer().named('ID_PDV_CONFIGURACAO').nullable().customConstraint('NULLABLE REFERENCES PDV_CONFIGURACAO(ID)')();
-  TextColumn get usa => text().named('USA').withLength(min: 1, max: 1).nullable()();
-  TextColumn get porta => text().named('PORTA').withLength(min: 1, max: 4).nullable()();
+  TextColumn get usa => text().named('USA').withLength(min: 0, max: 1).nullable()();
+  TextColumn get porta => text().named('PORTA').withLength(min: 0, max: 4).nullable()();
   IntColumn get baud => integer().named('BAUD').nullable()();
   IntColumn get handShake => integer().named('HAND_SHAKE').nullable()();
   IntColumn get parity => integer().named('PARITY').nullable()();
   IntColumn get stopBits => integer().named('STOP_BITS').nullable()();
   IntColumn get dataBits => integer().named('DATA_BITS').nullable()();
   IntColumn get intervalo => integer().named('INTERVALO').nullable()();
-  TextColumn get usarFila => text().named('USAR_FILA').withLength(min: 1, max: 1).nullable()();
-  TextColumn get hardFlow => text().named('HARD_FLOW').withLength(min: 1, max: 1).nullable()();
-  TextColumn get softFlow => text().named('SOFT_FLOW').withLength(min: 1, max: 1).nullable()();
-  TextColumn get sufixo => text().named('SUFIXO').withLength(min: 1, max: 20).nullable()();
-  TextColumn get excluirSufixo => text().named('EXCLUIR_SUFIXO').withLength(min: 1, max: 1).nullable()();
+  TextColumn get usarFila => text().named('USAR_FILA').withLength(min: 0, max: 1).nullable()();
+  TextColumn get hardFlow => text().named('HARD_FLOW').withLength(min: 0, max: 1).nullable()();
+  TextColumn get softFlow => text().named('SOFT_FLOW').withLength(min: 0, max: 1).nullable()();
+  TextColumn get sufixo => text().named('SUFIXO').withLength(min: 0, max: 20).nullable()();
+  TextColumn get excluirSufixo => text().named('EXCLUIR_SUFIXO').withLength(min: 0, max: 1).nullable()();
 }

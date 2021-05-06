@@ -41,6 +41,6 @@ class EcfSintegra60As extends Table {
 
   IntColumn get id => integer().named('ID').autoIncrement()();
   IntColumn get idEcfSintegra60M => integer().named('ID_ECF_SINTEGRA_60M').nullable().customConstraint('NULLABLE REFERENCES ECF_SINTEGRA_60M(ID)')();
-  TextColumn get situacaoTributaria => text().named('SITUACAO_TRIBUTARIA').withLength(min: 1, max: 4).nullable()();
+  TextColumn get situacaoTributaria => text().named('SITUACAO_TRIBUTARIA').withLength(min: 0, max: 4).nullable()();
   RealColumn get valor => real().named('VALOR').nullable()();
 }

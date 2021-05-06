@@ -46,10 +46,10 @@ class PdvVendaDetalhes extends Table {
   IntColumn get idProduto => integer().named('ID_PRODUTO').nullable().customConstraint('NULLABLE REFERENCES PRODUTO(ID)')();
   IntColumn get idPdvVendaCabecalho => integer().named('ID_PDV_VENDA_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES PDV_VENDA_CABECALHO(ID)')();
   IntColumn get cfop => integer().named('CFOP').nullable()();
-  TextColumn get gtin => text().named('GTIN').withLength(min: 1, max: 14).nullable()();
+  TextColumn get gtin => text().named('GTIN').withLength(min: 0, max: 14).nullable()();
   IntColumn get ccf => integer().named('CCF').nullable()();
   IntColumn get coo => integer().named('COO').nullable()();
-  TextColumn get serieEcf => text().named('SERIE_ECF').withLength(min: 1, max: 20).nullable()();
+  TextColumn get serieEcf => text().named('SERIE_ECF').withLength(min: 0, max: 20).nullable()();
   IntColumn get item => integer().named('ITEM').nullable()();
   RealColumn get quantidade => real().named('QUANTIDADE').nullable()();
   RealColumn get valorUnitario => real().named('VALOR_UNITARIO').nullable()();
@@ -68,15 +68,15 @@ class PdvVendaDetalhes extends Table {
   RealColumn get valorCofins => real().named('VALOR_COFINS').nullable()();
   RealColumn get taxaAcrescimo => real().named('TAXA_ACRESCIMO').nullable()();
   RealColumn get valorAcrescimo => real().named('VALOR_ACRESCIMO').nullable()();
-  TextColumn get totalizadorParcial => text().named('TOTALIZADOR_PARCIAL').withLength(min: 1, max: 10).nullable()();
-  TextColumn get cst => text().named('CST').withLength(min: 1, max: 3).nullable()();
-  TextColumn get cancelado => text().named('CANCELADO').withLength(min: 1, max: 1).nullable()();
-  TextColumn get movimentaEstoque => text().named('MOVIMENTA_ESTOQUE').withLength(min: 1, max: 1).nullable()();
-  TextColumn get ecfIcmsSt => text().named('ECF_ICMS_ST').withLength(min: 1, max: 4).nullable()();
+  TextColumn get totalizadorParcial => text().named('TOTALIZADOR_PARCIAL').withLength(min: 0, max: 10).nullable()();
+  TextColumn get cst => text().named('CST').withLength(min: 0, max: 3).nullable()();
+  TextColumn get cancelado => text().named('CANCELADO').withLength(min: 0, max: 1).nullable()();
+  TextColumn get movimentaEstoque => text().named('MOVIMENTA_ESTOQUE').withLength(min: 0, max: 1).nullable()();
+  TextColumn get ecfIcmsSt => text().named('ECF_ICMS_ST').withLength(min: 0, max: 4).nullable()();
   RealColumn get valorImpostoFederal => real().named('VALOR_IMPOSTO_FEDERAL').nullable()();
   RealColumn get valorImpostoEstadual => real().named('VALOR_IMPOSTO_ESTADUAL').nullable()();
   RealColumn get valorImpostoMunicipal => real().named('VALOR_IMPOSTO_MUNICIPAL').nullable()();
-  TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 1, max: 32).nullable()();
+  TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()();
 }
 
 class VendaDetalhe {
