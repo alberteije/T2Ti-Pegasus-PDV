@@ -902,6 +902,8 @@ class _CaixaPageState extends State<CaixaPage> {
               campoPesquisaPadrao: 'nome',
               valorPesquisaPadrao: '%',
               metodoConsultaCallBack: _filtrarClienteLookup,
+              permiteCadastro: true,
+              metodoCadastroCallBack: () { Navigator.pushNamed(context, '/clienteLista',); },
             ),
             fullscreenDialog: true,
           ));
@@ -937,6 +939,8 @@ class _CaixaPageState extends State<CaixaPage> {
             campoPesquisaPadrao: 'nome',
             valorPesquisaPadrao: (criterioPesquisa == null || criterioPesquisa == '') ? '%' : criterioPesquisa,
             metodoConsultaCallBack: _filtrarProdutoLookup,
+            permiteCadastro: true,
+            metodoCadastroCallBack: () { Navigator.pushNamed(context, '/produtoLista',); },
           ),
           fullscreenDialog: true,
         ));

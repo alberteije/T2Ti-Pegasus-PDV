@@ -35,7 +35,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 Based on: Flutter UIKit by Pawan Kumar - https://github.com/iampawan/Flutter-UI-Kit
 *******************************************************************************/
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -308,6 +311,25 @@ class MenuLateralPDV extends StatelessWidget {
             ),
 
             Divider(),
+            ListTile(
+              onTap: () async { 
+                if (Biblioteca.isDesktop()) {
+                  exit(0);
+                } else {
+                  Future.delayed(const Duration(milliseconds: 1000), () {
+                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                  });                  
+                }
+              },
+              title: Text(
+                "Sair",
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
+              ),
+              leading: Icon(
+                FontAwesomeIcons.doorOpen,
+                color: Colors.redAccent.shade700,
+              ),
+            ),
 
             ///
             /// About

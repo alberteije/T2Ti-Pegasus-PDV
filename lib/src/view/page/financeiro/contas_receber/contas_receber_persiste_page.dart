@@ -197,9 +197,11 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                               campoPesquisaPadrao: 'Nome',
                                               valorPesquisaPadrao: '%',
                                               metodoConsultaCallBack: _filtrarClienteLookup,                                             
-                                                ),
-                                                fullscreenDialog: true,
-                                              ));
+                                              permiteCadastro: true,
+                                              metodoCadastroCallBack: () { Navigator.pushNamed(context, '/clienteLista',); },
+                                            ),
+                                            fullscreenDialog: true,
+                                          ));
                                       if (_objetoJsonRetorno != null) {
                                         if (_objetoJsonRetorno['nome'] != null) {
                                           _importaClienteController.text = _objetoJsonRetorno['nome'];

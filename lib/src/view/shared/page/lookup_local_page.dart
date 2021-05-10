@@ -53,6 +53,8 @@ class LookupLocalPage extends StatefulWidget {
   final String valorPesquisaPadrao;
   final String filtroAdicional;
   final Function metodoConsultaCallBack;
+  final Function metodoCadastroCallBack;
+  final bool permiteCadastro;
 
   const LookupLocalPage(
       {Key key,
@@ -63,7 +65,9 @@ class LookupLocalPage extends StatefulWidget {
       this.campoPesquisaPadrao,
       this.valorPesquisaPadrao,
       this.metodoConsultaCallBack,
-      this.filtroAdicional})
+      this.metodoCadastroCallBack,
+      this.filtroAdicional,
+      this.permiteCadastro = false})
       : super(key: key);
 
   @override
@@ -122,14 +126,7 @@ class _LookupLocalPageState extends State<LookupLocalPage> {
           key: _scaffoldKey,
           appBar: AppBar(
             title: Text(widget.title),
-            actions: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.search, color: Colors.white),
-                onPressed: () async {
-                  await _efetuarConsulta();
-                },
-              ),
-            ],
+            actions: _getActions(),
           ),
           body: SafeArea(
             child: ListView(
@@ -260,4 +257,26 @@ class _LookupLocalPageState extends State<LookupLocalPage> {
     return lista;
   }
 
+  List<Widget> _getActions() {
+    List<Widget> botoes = [];
+    botoes.add(
+      IconButton(
+        icon: const Icon(Icons.search, color: Colors.white),
+        onPressed: () async {
+          await _efetuarConsulta();
+        },
+      ),
+    );
+
+    if (widget.permiteCadastro) {
+      botoes.add(
+        IconButton(
+          icon: const Icon(Icons.add, color: Colors.white),
+          onPressed: widget.metodoCadastroCallBack,
+        ),
+      );
+    }
+
+    return botoes;      
+  }
 }

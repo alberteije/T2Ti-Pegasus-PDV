@@ -271,7 +271,9 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                                             campos: ClienteDao.campos,
                                                             campoPesquisaPadrao: 'Nome',
                                                             valorPesquisaPadrao: '%',
-                                                            metodoConsultaCallBack: _filtrarClienteLookup,                                             
+                                                            metodoConsultaCallBack: _filtrarClienteLookup,  
+                                                            permiteCadastro: true,
+                                                            metodoCadastroCallBack: () { Navigator.pushNamed(context, '/clienteLista',); },                                           
                                                           ),
                                                           fullscreenDialog: true,
                                                         ));
@@ -654,14 +656,13 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
         showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
       } else {
         gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
-          // Navigator.of(context).pop();
           await Sessao.db.contasReceberDao.inserirParcelas(_listaParcelas);
-          gerarDialogBoxInformacao(context, 'Financeiro - Contas a Receber atualizado com sucesso.', onOkPressed: () {
+          // gerarDialogBoxInformacao(context, 'Financeiro - Contas a Receber atualizado com sucesso.', onOkPressed: () {
             Navigator.of(context).pop();
-            if (Biblioteca.isDesktop()) { // só deve ser enviado se não estiver usando a Awesome Dialog - temporário
-              Navigator.of(context).pop();
-            }
-          });
+            // if (Biblioteca.isDesktop()) { // só deve ser enviado se não estiver usando a Awesome Dialog - temporário
+            //   Navigator.of(context).pop();
+            // }
+          // });
         });
       }
     }

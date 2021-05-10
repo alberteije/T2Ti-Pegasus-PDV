@@ -211,9 +211,11 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                                 campoPesquisaPadrao: 'Nome',
                                                 valorPesquisaPadrao: '%',
                                                 metodoConsultaCallBack: _filtrarColaboradorLookup,                                             
-                                                  ),
-                                                  fullscreenDialog: true,
-                                                ));
+                                                permiteCadastro: true,
+                                                metodoCadastroCallBack: () { Navigator.pushNamed(context, '/colaboradorLista',); },
+                                              ),
+                                              fullscreenDialog: true,
+                                            ));
                                       if (_objetoJsonRetorno != null) {
                                         if (_objetoJsonRetorno['nome'] != null) {
                                           _importaColaboradorController.text = _objetoJsonRetorno['nome'];
@@ -281,9 +283,11 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                                 campoPesquisaPadrao: 'Nome',
                                                 valorPesquisaPadrao: '%',
                                                 metodoConsultaCallBack: _filtrarFornecedorLookup,                                             
-                                                  ),
-                                                  fullscreenDialog: true,
-                                                ));
+                                                permiteCadastro: true,
+                                                metodoCadastroCallBack: () { Navigator.pushNamed(context, '/fornecedorLista',); },
+                                              ),
+                                              fullscreenDialog: true,
+                                            ));
                                       if (_objetoJsonRetorno != null) {
                                         if (_objetoJsonRetorno['nome'] != null) {
                                           paginaMestreDetalheFoiAlterada = true;

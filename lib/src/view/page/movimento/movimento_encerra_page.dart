@@ -527,13 +527,8 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
         .then((_) async {
           Sessao.movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.horaFormatada(DateTime.now()), statusMovimento: 'A');
           Sessao.movimento = await Sessao.db.pdvMovimentoDao.iniciarMovimento(Sessao.movimento);
-          // gerarDialogBoxInformacao(context, 'Movimento encerrado com sucesso.', onOkPressed: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
-            // if (Biblioteca.isDesktop()) { // só deve ser enviado se não estiver usando a Awesome Dialog - temporário
-            //   Navigator.of(context).pop(); 
-            // }
-          // });
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
         });
     });
   }

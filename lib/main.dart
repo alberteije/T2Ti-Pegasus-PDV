@@ -53,9 +53,9 @@ void main() async {
     DialogReportMode(),
     [
       //Manda os erros para o Sentry
-      SentryHandler(
-        SentryClient(SentryOptions(dsn: Constantes.sentryDns)),
-      ),
+      // SentryHandler(
+      //   SentryClient(SentryOptions(dsn: Constantes.sentryDns)),
+      // ),
 
       ///Imprime os erros no Console
       ConsoleHandler(),

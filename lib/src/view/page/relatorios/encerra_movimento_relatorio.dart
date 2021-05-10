@@ -192,17 +192,17 @@ class Relatorio {
         pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
-              pw.Column(
-                mainAxisSize: pw.MainAxisSize.min,
-                children: [
-                  pw.Container(
-                    alignment: pw.Alignment.center,
-                    padding: pw.EdgeInsets.all(2),
-                    height: 60,
-                    child: pw.Image(_logotipo),
-                  ),
-                ],
-              ),
+            pw.Column(
+              mainAxisSize: pw.MainAxisSize.min,
+              children: [
+                pw.Container(
+                  alignment: pw.Alignment.center,
+                  padding: pw.EdgeInsets.all(2),
+                  height: 60,
+                  child: pw.Image(_logotipo),
+                ),
+              ],
+            ),
             pw.Expanded(
               child: pw.Column(
                 children: [

@@ -193,9 +193,11 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                             campoPesquisaPadrao: 'sigla',
                                             valorPesquisaPadrao: '%',
                                             metodoConsultaCallBack: _filtrarUnidadeLookup,                                             
-                                              ),
-                                              fullscreenDialog: true,
-                                            ));
+                                            permiteCadastro: true,
+                                            metodoCadastroCallBack: () { Navigator.pushNamed(context, '/produtoUnidadeLista',); },
+                                          ),
+                                          fullscreenDialog: true,
+                                        ));
                                       if (_objetoJsonRetorno != null) {
                                         if (_objetoJsonRetorno['sigla'] != null) {
                                           _importaProdutoUnidadeController.text = _objetoJsonRetorno['sigla'];

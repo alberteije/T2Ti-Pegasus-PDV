@@ -201,6 +201,8 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                                 campoPesquisaPadrao: 'nome',
                                                 valorPesquisaPadrao: '%',
                                                 metodoConsultaCallBack: _filtrarProdutoLookup,
+                                                permiteCadastro: true,
+                                                metodoCadastroCallBack: () { Navigator.pushNamed(context, '/produtoLista',); },
                                               ),
                                               fullscreenDialog: true,
                                             ));
