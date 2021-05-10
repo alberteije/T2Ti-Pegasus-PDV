@@ -48,15 +48,30 @@ part 'pdv_movimento_dao.g.dart';
 class PdvMovimentoDao extends DatabaseAccessor<AppDatabase> with _$PdvMovimentoDaoMixin {
   final AppDatabase db;
 
+  List<PdvMovimento> listaMovimento; // será usada para popular a grid na janela do movimento
+
   PdvMovimentoDao(this.db) : super(db);
 
-  Future<List<PdvMovimento>> consultarLista() => select(pdvMovimentos).get();
+  Future<List<PdvMovimento>> consultarLista() async {
+    listaMovimento = await select(pdvMovimentos).get();
+    return listaMovimento;
+  }
 
   Future<List<PdvMovimento>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM PDV_MOVIMENTO WHERE " + campo + " like '%" + valor + "%'", 
+    listaMovimento = await (customSelect("SELECT * FROM PDV_MOVIMENTO WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { pdvMovimentos }).map((row) {
                                   return PdvMovimento.fromData(row.data, db);  
                                 }).get());
+    return listaMovimento;
+  }
+
+  Future<List<PdvMovimento>> consultarListaPeriodo({int mes, int ano}) async {
+    listaMovimento = await (select(pdvMovimentos)
+      ..where((t) => t.dataAbertura.month.equals(mes))
+      ..where((t) => t.dataAbertura.year.equals(ano))
+      ..where((t) => t.statusMovimento.equals('F')))
+      .get();
+    return listaMovimento;
   }
 
   Stream<List<PdvMovimento>> observarLista() => select(pdvMovimentos).watch();
@@ -91,7 +106,7 @@ class PdvMovimentoDao extends DatabaseAccessor<AppDatabase> with _$PdvMovimentoD
     });    
   } 
 
-  Future<void> encerrarMovimento(PdvMovimento pObjeto, {List<PdvFechamento> listaFechamento}) {
+  Future<PdvMovimento> encerrarMovimento(PdvMovimento pObjeto, {List<PdvFechamento> listaFechamento}) {
     return transaction(() async {
       PdvVendaCabecalho totaisVenda = await db.pdvVendaCabecalhoDao.consultarTotaisDia(pObjeto.id);
       PdvSuprimento totaisSuprimento = await db.pdvSuprimentoDao.consultarTotaisDia(pObjeto.id);
@@ -117,7 +132,52 @@ class PdvMovimentoDao extends DatabaseAccessor<AppDatabase> with _$PdvMovimentoD
           into(pdvFechamentos).insert(objeto);  
         }
       }
+      return pObjeto;
     });    
   } 
+
+	static List<String> campos = <String>[
+		'ID', 
+		'NOME_CAIXA', 
+		'DATA_ABERTURA', 
+		'HORA_ABERTURA', 
+		'DATA_FECHAMENTO', 
+		'HORA_FECHAMENTO', 
+		'TOTAL_SUPRIMENTO', 
+		'TOTAL_SANGRIA', 
+		'TOTAL_NAO_FISCAL', 
+		'TOTAL_VENDA', 
+		'TOTAL_DESCONTO', 
+		'TOTAL_ACRESCIMO', 
+		'TOTAL_FINAL', 
+		'TOTAL_RECEBIDO', 
+		'TOTAL_TROCO', 
+		'TOTAL_CANCELADO', 
+		'STATUS_MOVIMENTO', 
+		'DATA_SINCRONIZACAO', 
+		'HORA_SINCRONIZACAO', 
+	];
+	
+	static List<String> colunas = <String>[
+		'Id', 
+		'Nome Caixa', 
+		'Data Abertura', 
+		'Hora Abertura', 
+		'Data Fechamento', 
+		'Hora Fechamento', 
+		'Total Suprimento', 
+		'Total Sangria', 
+		'Total Nao Fiscal', 
+		'Total Venda', 
+		'Total Desconto', 
+		'Total Acrescimo', 
+		'Total Final', 
+		'Total Recebido', 
+		'Total Troco', 
+		'Total Cancelado', 
+		'Status Movimento', 
+		'Data Sincronizacao', 
+		'Hora Sincronizacao', 
+	];
 
 }

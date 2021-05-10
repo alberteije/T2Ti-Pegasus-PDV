@@ -658,6 +658,9 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
           await Sessao.db.contasReceberDao.inserirParcelas(_listaParcelas);
           gerarDialogBoxInformacao(context, 'Financeiro - Contas a Receber atualizado com sucesso.', onOkPressed: () {
             Navigator.of(context).pop();
+            if (Biblioteca.isDesktop()) { // só deve ser enviado se não estiver usando a Awesome Dialog - temporário
+              Navigator.of(context).pop();
+            }
           });
         });
       }

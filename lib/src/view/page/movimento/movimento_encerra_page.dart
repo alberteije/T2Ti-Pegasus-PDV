@@ -43,6 +43,8 @@ import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_pdv.dart';
+import 'package:pegasus_pdv/src/view/page/movimento/movimento_lista_page.dart';
+import 'package:pegasus_pdv/src/view/page/relatorios/encerra_movimento_relatorio.dart';
 
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
 import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
@@ -162,7 +164,7 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
                   SizedBox(
                     height: 5.0,
                   ),
-                  Text("Informe os dados para encerrar o movimento"),
+                  Text("Informe os dados para encerrar o movimento [" + Sessao.movimento.id.toString() + "]"),
                   Divider(
                     indent: 10,
                     endIndent: 10,
@@ -202,6 +204,26 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
                       ),
 					          ],
 				          ),
+                  Divider(
+                    indent: 10,
+                    endIndent: 10,
+                    thickness: 2,
+                  ),
+                  getBotaoGenericoPdv(
+                    descricao: 'Visualizar Movimentos Anteriores',
+                    cor: Colors.blue, 
+                    onPressed: () {
+                      Navigator.of(context)
+                        .push(MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                MovimentoListaPage()))
+                        .then((_) {
+                        });
+                    }
+                  ),                                         
+                  SizedBox(
+                    height: 10.0,
+                  ),
                 ],
               ),
             ),
@@ -498,14 +520,21 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
   void _confirmar() {
     gerarDialogBoxConfirmacao(context, 'Deseja encerrar o movimento atual?', () async {
       _atualizarTotais();
-      await Sessao.db.pdvMovimentoDao.encerrarMovimento(Sessao.movimento, listaFechamento: _listaFechamento);
-      Sessao.movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.horaFormatada(DateTime.now()), statusMovimento: 'A');
-      Sessao.movimento = await Sessao.db.pdvMovimentoDao.iniciarMovimento(Sessao.movimento);
-      gerarDialogBoxInformacao(context, 'Movimento encerrado com sucesso.', onOkPressed: () {
-        // Navigator.of(context).pop();
-        Navigator.of(context).pop();
-        Navigator.of(context).pop();
-      });
+      Sessao.movimento = await Sessao.db.pdvMovimentoDao.encerrarMovimento(Sessao.movimento, listaFechamento: _listaFechamento);
+      Navigator.of(context)
+        .push(MaterialPageRoute(
+          builder: (BuildContext context) => EncerraMovimentoRelatorio(movimento: Sessao.movimento)))
+        .then((_) async {
+          Sessao.movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.horaFormatada(DateTime.now()), statusMovimento: 'A');
+          Sessao.movimento = await Sessao.db.pdvMovimentoDao.iniciarMovimento(Sessao.movimento);
+          // gerarDialogBoxInformacao(context, 'Movimento encerrado com sucesso.', onOkPressed: () {
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+            // if (Biblioteca.isDesktop()) { // só deve ser enviado se não estiver usando a Awesome Dialog - temporário
+            //   Navigator.of(context).pop(); 
+            // }
+          // });
+        });
     });
   }
 

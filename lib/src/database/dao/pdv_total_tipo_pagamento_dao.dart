@@ -63,6 +63,18 @@ class PdvTotalTipoPagamentoDao extends DatabaseAccessor<AppDatabase> with _$PdvT
     return (select(pdvTotalTipoPagamentos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
+  Future<List<PdvTotalTipoPagamento>> consultarListaTotaisAgrupado(int idMovimento) async {
+    return (customSelect("SELECT "  
+    " ID_PDV_TIPO_PAGAMENTO, sum(VALOR) as VALOR "
+    " FROM PDV_TOTAL_TIPO_PAGAMENTO "
+    " where ID_PDV_VENDA_CABECALHO in "
+    " (select ID from PDV_VENDA_CABECALHO where ID_PDV_MOVIMENTO= '" + idMovimento.toString() + "')"
+    " group by ID_PDV_TIPO_PAGAMENTO ",
+      readsFrom: { pdvTotalTipoPagamentos }).map((row) {
+        return PdvTotalTipoPagamento.fromData(row.data, db);  
+      }).get());
+  }  
+
   Future<int> inserir(Insertable<PdvTotalTipoPagamento> pObjeto) {
     return transaction(() async {
       final idInserido = await into(pdvTotalTipoPagamentos).insert(pObjeto);

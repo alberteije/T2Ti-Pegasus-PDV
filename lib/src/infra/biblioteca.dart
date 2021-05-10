@@ -201,6 +201,12 @@ class Biblioteca {
     return dataFormatada;
   }
 
+  static String dataHoraFormatada(DateTime data) {
+    var formatter = DateFormat('dd/MM/yyyy hh:mm:ss');
+    String dataHoraFormatada = formatter.format(data);
+    return dataHoraFormatada;
+  }
+
   /// define o que é a tela pequena e se o dispositivo utilizado tem a tela pequena
   static bool isTelaPequena(BuildContext context) {
 	  return bootStrapValueBasedOnSize(

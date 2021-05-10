@@ -146,8 +146,7 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 90, 10),
               child: Row(
-                children: 
-                <Widget>[
+                children: <Widget>[
                   Expanded(
                     flex: 1,
                     child: 

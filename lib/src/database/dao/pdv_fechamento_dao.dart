@@ -57,6 +57,13 @@ class PdvFechamentoDao extends DatabaseAccessor<AppDatabase> with _$PdvFechament
                                 }).get());
   }
 
+  Future<List<PdvFechamento>> consultarListaMovimento(int idMovimento) async {
+    return (customSelect("SELECT * FROM PDV_FECHAMENTO WHERE ID_PDV_MOVIMENTO= '" + idMovimento.toString() + "'", 
+                                readsFrom: { pdvFechamentos }).map((row) {
+                                  return PdvFechamento.fromData(row.data, db);  
+                                }).get());
+  }
+
   Stream<List<PdvFechamento>> observarLista() => select(pdvFechamentos).watch();
 
   Future<PdvFechamento> consultarObjeto(int pId) {

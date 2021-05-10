@@ -38,10 +38,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 export 'package:pegasus_pdv/src/view/page/pdv/caixa_page.dart';
 export 'package:pegasus_pdv/src/view/page/pdv/efetua_pagamento_page.dart';
 export 'package:pegasus_pdv/src/view/page/pdv/informa_valor_page.dart';
-export 'package:pegasus_pdv/src/view/page/pdv/movimento_encerra_page.dart';
-export 'package:pegasus_pdv/src/view/page/pdv/movimento_inicia_page.dart';
 export 'package:pegasus_pdv/src/view/page/pdv/parcelamento_receitas_page.dart';
 export 'package:pegasus_pdv/src/view/page/pdv/produto_detalhe_page.dart';
+
+// Movimento
+export 'package:pegasus_pdv/src/view/page/movimento/movimento_encerra_page.dart';
+export 'package:pegasus_pdv/src/view/page/movimento/movimento_inicia_page.dart';
+export 'package:pegasus_pdv/src/view/page/movimento/movimento_lista_page.dart';
 
 // Cadastros
 export 'package:pegasus_pdv/src/view/page/cadastros/cliente/cliente_lista_page.dart';
