@@ -78,7 +78,8 @@ class Sessao {
   static List<PdvTotalTipoPagamento> listaDadosPagamento = [];
   static List<ContasReceberMontado> listaParcelamento = []; // guarda o parcelamento atual da venda para ser impresso no recibo
   static String retornoJsonLookup; // será usado para popular a grid da janela de lookup
-  static RetornoJsonErro objetoJsonErro;
+  static RetornoJsonErro objetoJsonErro; // objeto de erro estático que armazena o último erro ocorrido na aplicação
+  static String caminhoBancoDados; // guarda o caminho para o banco de dados
 
 // #endregion objetos globais
 
@@ -115,12 +116,12 @@ class Sessao {
   static Future<void> tratarMovimento() async {
     movimento = await db.pdvMovimentoDao.consultarObjeto('A'); 
     if (movimento == null) {
-      movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.horaFormatada(DateTime.now()), statusMovimento: 'A');
+      movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.formatarHora(DateTime.now()), statusMovimento: 'A');
       movimento = await db.pdvMovimentoDao.iniciarMovimento(movimento);
     } else {
-      if (Biblioteca.dataFormatada(movimento.dataAbertura) != Biblioteca.dataFormatada(DateTime.now())) {
+      if (Biblioteca.formatarData(movimento.dataAbertura) != Biblioteca.formatarData(DateTime.now())) {
         await db.pdvMovimentoDao.encerrarMovimento(movimento);
-        movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.horaFormatada(DateTime.now()), statusMovimento: 'A');
+        movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.formatarHora(DateTime.now()), statusMovimento: 'A');
         movimento = await db.pdvMovimentoDao.iniciarMovimento(movimento);
       }
     }

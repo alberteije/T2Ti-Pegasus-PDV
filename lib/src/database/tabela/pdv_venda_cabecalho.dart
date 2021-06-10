@@ -75,4 +75,5 @@ class PdvVendaCabecalhos extends Table {
   TextColumn get cpfCnpjCliente => text().named('CPF_CNPJ_CLIENTE').withLength(min: 0, max: 14).nullable()();
   TextColumn get cupomCancelado => text().named('CUPOM_CANCELADO').withLength(min: 0, max: 1).nullable()();
   TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()();
+  TextColumn get tipoOperacao => text().named('TIPO_OPERACAO').withLength(min: 0, max: 3).nullable()(); //NFC = NFC-e | SAT = SAT | MFE = MFE | REC = RECIBO
 }

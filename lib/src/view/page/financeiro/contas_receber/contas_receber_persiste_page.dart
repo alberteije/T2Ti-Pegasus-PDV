@@ -594,7 +594,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
         form.save();
         if (widget.operacao == 'A') {
           if (_contasReceber.dataRecebimento != null) {
-            _contasReceber = _contasReceber.copyWith(statusRecebimento: 'P');
+            _contasReceber = _contasReceber.copyWith(statusRecebimento: 'R');
           }
           Sessao.db.contasReceberDao.alterar(_contasReceber);
         } else {

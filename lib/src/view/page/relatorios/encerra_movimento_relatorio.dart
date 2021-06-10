@@ -237,7 +237,7 @@ class Relatorio {
                     padding: pw.EdgeInsets.only(top: 10),
                     alignment: pw.Alignment.bottomRight,
                     child: pw.Text(
-                      'Impresso em: ' + Biblioteca.dataHoraFormatada(DateTime.now()),
+                      'Impresso em: ' + Biblioteca.formatarDataHora(DateTime.now()),
                       style: pw.TextStyle(
                         color: _accentColor,
                         // fontWeight: pw.FontWeight.bold,
@@ -300,7 +300,7 @@ class Relatorio {
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
                         pw.Text('Data de Abertura: '),
-                        pw.Text(Biblioteca.dataFormatada(_movimento.dataAbertura)),
+                        pw.Text(Biblioteca.formatarData(_movimento.dataAbertura)),
                       ],
                     ),
                     pw.SizedBox(height: 5),
@@ -329,7 +329,7 @@ class Relatorio {
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
                         pw.Text('Data de Fechamento: '),
-                        pw.Text(Biblioteca.dataFormatada(_movimento.dataFechamento ?? DateTime.now())),
+                        pw.Text(Biblioteca.formatarData(_movimento.dataFechamento ?? DateTime.now())),
                       ],
                     ),
                     pw.SizedBox(height: 5),
@@ -337,7 +337,7 @@ class Relatorio {
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
                         pw.Text('Hora de Fechamento: '),
-                        pw.Text(_movimento.horaFechamento ?? Biblioteca.horaFormatada(DateTime.now())),
+                        pw.Text(_movimento.horaFechamento ?? Biblioteca.formatarHora(DateTime.now())),
                       ],
                     ),
                   ],

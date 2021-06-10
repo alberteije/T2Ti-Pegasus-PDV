@@ -48,9 +48,14 @@ part 'pdv_venda_cabecalho_dao.g.dart';
 class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVendaCabecalhoDaoMixin {
   final AppDatabase db;
 
+  List<PdvVendaCabecalho> listaPdvVendaCabecalho; // será usada para popular a grid na janela do resumo das vendas
+
   PdvVendaCabecalhoDao(this.db) : super(db);
 
-  Future<List<PdvVendaCabecalho>> consultarLista() => select(pdvVendaCabecalhos).get();
+  Future<List<PdvVendaCabecalho>> consultarLista() async {
+    listaPdvVendaCabecalho = await select(pdvVendaCabecalhos).get();
+    return listaPdvVendaCabecalho;
+  }
 
   Future<int> consultarTotalRegistros() async {
     final lista = await select(pdvVendaCabecalhos).get();
@@ -62,10 +67,49 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
     if (filtroAdicional != null) {
       sql += " AND " + filtroAdicional;
     }
-    return (customSelect(sql, 
+    listaPdvVendaCabecalho = await (customSelect(sql, 
             readsFrom: { pdvVendaCabecalhos }).map((row) {
               return PdvVendaCabecalho.fromData(row.data, db);  
             }).get());
+    return listaPdvVendaCabecalho;
+  }
+
+  Future<List<PdvVendaCabecalho>> consultarVendasPorPeriodoEStatus({String mes, int ano, String status}) async {
+    var sql = "select * FROM PDV_VENDA_CABECALHO WHERE ";
+
+    if (status != null) {
+      switch (status) {
+        case 'Fechadas':
+          sql = sql + " STATUS_VENDA = 'F' ";
+          break;
+        case 'Abertas':
+          sql = sql + " STATUS_VENDA = 'A' ";
+          break;
+        case 'Canceladas':
+          sql = sql + " STATUS_VENDA = 'C' ";
+          break;
+        case 'Todas':
+          sql = sql + " STATUS_VENDA LIKE '%' ";
+          break;
+        default:
+      }
+    } else {
+      sql = sql + " STATUS_VENDA LIKE '%' ";
+    }
+
+    if (mes != null && ano != null) {
+      sql = sql + 
+      " and  "
+      " strftime('%m', date(DATA_VENDA, 'unixepoch')) = '$mes'" 
+      " and  "
+      " strftime('%Y', date(DATA_VENDA, 'unixepoch')) = '$ano'";
+    }
+
+    listaPdvVendaCabecalho = await (customSelect(sql, 
+            readsFrom: { pdvVendaCabecalhos }).map((row) {
+              return PdvVendaCabecalho.fromData(row.data, db);  
+            }).get());
+    return listaPdvVendaCabecalho;
   }
 
   Future<PdvVendaCabecalho> consultarTotaisDia(int idMovimento) async {
@@ -161,6 +205,13 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
       return update(pdvVendaCabecalhos).replace(pObjeto);
     });    
   } 
+
+  Future<bool> cancelarVenda(PdvVendaCabecalho pdvVendaCabecalho) {
+    return transaction(() async {
+      await db.contasReceberDao.excluirReceitasDeUmaVenda(pdvVendaCabecalho.id);
+      return update(pdvVendaCabecalhos).replace(pdvVendaCabecalho);
+    });    
+  }
 
   Future<int> excluir(Insertable<PdvVendaCabecalho> pObjeto) {
     return transaction(() async {

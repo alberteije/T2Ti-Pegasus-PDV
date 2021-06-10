@@ -537,11 +537,7 @@ class _CaixaPageState extends State<CaixaPage> {
   void _cancelarVenda() {
     if (Sessao.statusCaixa == StatusCaixa.vendaEmAndamento) {
       gerarDialogBoxConfirmacao(context, 'Deseja cancelar a venda e iniciar uma nova?', () async {
-        Sessao.vendaAtual = 
-        Sessao.vendaAtual.copyWith(
-          statusVenda: 'C'
-        );
-        await Sessao.db.pdvVendaCabecalhoDao.alterar(Sessao.vendaAtual, Sessao.listaVendaAtualDetalhe);
+        await Sessao.db.pdvVendaCabecalhoDao.excluir(Sessao.vendaAtual);
         // Navigator.of(context).pop();
         _configurarDadosTelaPadrao();
       });
@@ -574,7 +570,7 @@ class _CaixaPageState extends State<CaixaPage> {
   void _imprimirRecibo() {
     Navigator.of(context)
       .push(MaterialPageRoute(
-        builder: (BuildContext context) => ReciboRelatorio()))
+        builder: (BuildContext context) => ReciboRelatorio57()))
       .then((_) {
         _configurarDadosTelaPadrao();
       });
@@ -726,7 +722,7 @@ class _CaixaPageState extends State<CaixaPage> {
   void _configurarDadosTelaPadrao() {
     _fecharMenus();
     setState(() {
-      Sessao.vendaAtual = PdvVendaCabecalho(id: null, idPdvMovimento: Sessao.movimento.id,);
+      Sessao.vendaAtual = PdvVendaCabecalho(id: null, idPdvMovimento: Sessao.movimento.id, tipoOperacao: 'REC');
       Sessao.listaVendaAtualDetalhe = [];
       Sessao.listaDadosPagamento = [];
       Sessao.listaParcelamento = [];
@@ -744,7 +740,7 @@ class _CaixaPageState extends State<CaixaPage> {
       Sessao.vendaAtual.copyWith(
         idPdvMovimento: Sessao.movimento.id,
         dataVenda: DateTime.now(),
-        horaVenda: Biblioteca.horaFormatada(DateTime.now()),
+        horaVenda: Biblioteca.formatarHora(DateTime.now()),
         statusVenda: 'A'
       );
 

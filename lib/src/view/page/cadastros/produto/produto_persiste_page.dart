@@ -470,16 +470,21 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
     } else {
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
         form.save();
-        final produto = await Sessao.db.produtoDao.consultarObjetoFiltro('GTIN', _produto.gtin);
-        if (produto == null) {
-          if (widget.operacao == 'A') {
-            Sessao.db.produtoDao.alterar(_produto);
-          } else {
-            Sessao.db.produtoDao.inserir(_produto);
-          }
-          Navigator.of(context).pop();
+        bool tudoCerto = false;
+        if (widget.operacao == 'A') {
+          await Sessao.db.produtoDao.alterar(_produto);
+          tudoCerto = true;
         } else {
-          showInSnackBar('Já existe um produto cadastrado com o GTIN informado.', context);
+          final produto = await Sessao.db.produtoDao.consultarObjetoFiltro('GTIN', _produto.gtin);
+          if (produto == null) {
+            await Sessao.db.produtoDao.inserir(_produto);
+            tudoCerto = true;
+          } else {
+            showInSnackBar('Já existe um produto cadastrado com o GTIN informado.', context);
+          }
+        }
+        if (tudoCerto) {
+          Navigator.of(context).pop();
         }
       });
     }

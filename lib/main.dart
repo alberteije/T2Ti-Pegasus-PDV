@@ -53,9 +53,9 @@ void main() async {
     DialogReportMode(),
     [
       //Manda os erros para o Sentry
-      // SentryHandler(
-      //   SentryClient(SentryOptions(dsn: Constantes.sentryDns)),
-      // ),
+      SentryHandler(
+        SentryClient(SentryOptions(dsn: Constantes.sentryDns)),
+      ),
 
       ///Imprime os erros no Console
       ConsoleHandler(),
@@ -77,9 +77,14 @@ void main() async {
 }
 
 DynamicLibrary _openOnWindows() {
-  final scriptDir = File(Platform.script.toFilePath()).parent;
-  final libraryNextToScript = File('${scriptDir.path}/sqlite3.dll');
-  return DynamicLibrary.open(libraryNextToScript.path);
+  try {
+    // final scriptDir = File(Platform.script.toFilePath()).parent;
+    // final libraryNextToScript = File('${scriptDir.path}/sqlite3.dll');
+    final libraryNextToScript = File('sqlite3.dll');
+    return DynamicLibrary.open(libraryNextToScript.path);    
+  } catch (e) {
+    throw(e);
+  }
 }
 
 class MyApp extends StatefulWidget {

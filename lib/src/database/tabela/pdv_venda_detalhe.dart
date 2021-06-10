@@ -100,6 +100,8 @@ class VendaDetalhe {
         return Constantes.formatoDecimalQuantidade.format(pdvVendaDetalhe.quantidade ?? 0);
       case 4:
         return Constantes.formatoDecimalValor.format((pdvVendaDetalhe.quantidade ?? 0) * (pdvVendaDetalhe.valorUnitario ?? 0));
+      case 5:
+        return produto.id.toString();
     }
     return '';
   }

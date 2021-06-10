@@ -74,4 +74,11 @@ class PdvConfiguracaos extends Table {
   TextColumn get gavetaSinalInvertido => text().named('GAVETA_SINAL_INVERTIDO').withLength(min: 0, max: 1).nullable()();
   IntColumn get gavetaUtilizacao => integer().named('GAVETA_UTILIZACAO').nullable()();
   TextColumn get usaTecladoReduzido => text().named('USA_TECLADO_REDUZIDO').withLength(min: 0, max: 1).nullable()();
+  TextColumn get modulo => text().named('MODULO').withLength(min: 0, max: 1).nullable()();
+  TextColumn get plano => text().named('PLANO').withLength(min: 0, max: 1).nullable()();
+  RealColumn get planoValor => real().named('PLANO_VALOR').nullable()();
+  TextColumn get planoSituacao => text().named('PLANO_SITUACAO').withLength(min: 0, max: 1).nullable()();
+  TextColumn get reciboFormatoPagina => text().named('RECIBO_FORMATO_PAGINA').withLength(min: 0, max: 2).nullable()();
+  TextColumn get encerraMovimentoAuto => text().named('ENCERRA_MOVIMENTO_AUTO').withLength(min: 0, max: 1).nullable()();
+  TextColumn get permiteEstoqueNegativo => text().named('PERMITE_ESTOQUE_NEGATIVO').withLength(min: 0, max: 1).nullable()();
 }

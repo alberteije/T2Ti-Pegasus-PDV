@@ -44,6 +44,7 @@ class ContasRecebers extends Table {
 
   IntColumn get id => integer().named('ID').autoIncrement()();
   IntColumn get idCliente => integer().named('ID_CLIENTE').nullable().customConstraint('NULLABLE REFERENCES CLIENTE(ID)')();
+  IntColumn get idPdvVendaCabecalho => integer().named('ID_PDV_VENDA_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES PDV_VENDA_CABEALHO(ID)')();
   DateTimeColumn get dataLancamento => dateTime().named('DATA_LANCAMENTO').nullable()();
   DateTimeColumn get dataVencimento => dateTime().named('DATA_VENCIMENTO').nullable()();
   DateTimeColumn get dataRecebimento => dateTime().named('DATA_RECEBIMENTO').nullable()();
@@ -72,7 +73,7 @@ class ContasReceberMontado {
   String getIndex(int index) {
     switch (index) {
       case 0:
-        return Biblioteca.dataFormatada(contasReceber.dataVencimento);
+        return Biblioteca.formatarData(contasReceber.dataVencimento);
       case 1:
         return contasReceber.historico;
       case 2:

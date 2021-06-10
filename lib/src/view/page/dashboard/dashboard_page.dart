@@ -514,6 +514,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           ],
                         )
                       ),
+                      onTap: _chamarVendas,
                     ),
                   ],
                 ),
@@ -784,6 +785,14 @@ class _DashboardPageState extends State<DashboardPage> {
     Navigator.of(context)
       .push(MaterialPageRoute(
         builder: (BuildContext context) => EstoqueListaPage()))
+      .then((_) {    
+    });
+  }
+
+  _chamarVendas() {
+    Navigator.of(context)
+      .push(MaterialPageRoute(
+        builder: (BuildContext context) => VendasListaPage()))
       .then((_) {    
     });
   }

@@ -59,10 +59,13 @@ class MyAboutTile extends StatelessWidget {
           height: 10.0,
         ),
         Text(
-          "Esta é a versão Lite do T2Ti Pegasus PDV. \n\n"
-          "Esse software pode ser encontrado na Play Store \n"
+          "Você está usando o T2Ti Pegasus PDV. \n\n"
+          "Esse software é multi-plataforma e pode ser  \n"
+          "encontrado nas diversas stores (Google, Apple e Microsoft) \n"
           "e também no site da T2Ti Sistemas no seguinte link: \n\n"
-          "https://t2tisistemas.com/",
+		      "https://t2tisistemas.com/ \n\n"
+          "Caminho para o banco de dados: \n" + 
+          Sessao.caminhoBancoDados,
         ),
       ],
       applicationName: Constantes.nomeApp,

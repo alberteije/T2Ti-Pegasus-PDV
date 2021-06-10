@@ -238,18 +238,23 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
     } else {
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
         form.save();
-        final unidade = await Sessao.db.produtoUnidadeDao.consultarObjetoFiltro('SIGLA', produtoUnidade.sigla);
-        if (unidade == null) {
-          if (widget.operacao == 'A') {
-            Sessao.db.produtoUnidadeDao.alterar(produtoUnidade);
-          } else {
-            Sessao.db.produtoUnidadeDao.inserir(produtoUnidade);
-        }
-          Navigator.of(context).pop();
+        bool tudoCerto = false;
+        if (widget.operacao == 'A') {
+          await Sessao.db.produtoUnidadeDao.alterar(produtoUnidade);
+          tudoCerto = true;
         } else {
-          showInSnackBar('Já existe uma unidade cadastrada com a SIGLA informada.', context);
+          final unidade = await Sessao.db.produtoUnidadeDao.consultarObjetoFiltro('SIGLA', produtoUnidade.sigla);
+          if (unidade == null) {
+            await Sessao.db.produtoUnidadeDao.inserir(produtoUnidade);
+            tudoCerto = true;
+          } else {
+            showInSnackBar('Já existe uma unidade cadastrada com a SIGLA informada.', context);
+          }
         }
-      });
+        if (tudoCerto) {
+          Navigator.of(context).pop();
+        }
+    });
     }
   }
 

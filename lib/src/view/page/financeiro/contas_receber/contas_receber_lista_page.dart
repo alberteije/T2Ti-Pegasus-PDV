@@ -426,7 +426,7 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
     for (ContasReceberMontado contasReceberMontado in _listaContasReceberMontado) {
       if (contasReceberMontado.contasReceber.statusRecebimento == 'A') {
         _totalReceber = _totalReceber + (contasReceberMontado.contasReceber.valorAReceber ?? 0);
-      } else if (contasReceberMontado.contasReceber.statusRecebimento == 'P') {
+      } else if (contasReceberMontado.contasReceber.statusRecebimento == 'R') {
         _totalRecebido = _totalRecebido + (contasReceberMontado.contasReceber.valorRecebido ?? 0);
       }
       _totalGeral = _totalGeral + (contasReceberMontado.contasReceber.valorAReceber ?? 0);

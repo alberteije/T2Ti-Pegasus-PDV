@@ -6,9 +6,10 @@ import 'package:moor/moor.dart';
 import 'package:path_provider/path_provider.dart' as paths;
 import 'package:path/path.dart' as p;
 
-import 'package:pegasus_pdv/src/infra/biblioteca.dart';
+import 'package:pegasus_pdv/src/infra/infra.dart';
 
 import 'database_classes.dart';
+import 'migracao_para_schema_2.dart';
 
 part 'database.g.dart';
 
@@ -16,13 +17,17 @@ LazyDatabase _openConnection() {
     if (Biblioteca.isMobile()) {
       final executor = LazyDatabase(() async {
         final dataDir = await paths.getApplicationDocumentsDirectory();
-        final dbFile = File(p.join(dataDir.path, 'pegasus.sqlite'));
+        Sessao.caminhoBancoDados = p.join(dataDir.path, 'pegasus.sqlite');
+        final dbFile = File(Sessao.caminhoBancoDados);
         return VmDatabase(dbFile, logStatements: true);
       });
       return executor;
     } else if (Platform.isWindows) {
       final executor = LazyDatabase(() async {
-        final dbFile = File('pegasus.sqlite');
+        final dataDir = await paths.getApplicationDocumentsDirectory();
+        Sessao.caminhoBancoDados = p.join(dataDir.path, 'pegasus.sqlite');
+        final dbFile = File(Sessao.caminhoBancoDados);
+        // final dbFile = File('pegasus.sqlite');
         return VmDatabase(dbFile, logStatements: true);
       });
       return executor;        
@@ -77,6 +82,60 @@ LazyDatabase _openConnection() {
     ProdutoFichaTecnicas,
     ProdutoPromocaos,
     ProdutoUnidades,
+    NfeAcessoXmls,
+    NfeCabecalhos,
+    NfeCanas,
+    NfeCanaDeducoesSafras,
+    NfeCanaFornecimentoDiarios,
+    NfeConfiguracaos,
+    NfeCteReferenciados,
+    NfeCupomFiscalReferenciados,
+    NfeDeclaracaoImportacaos,
+    NfeDestinatarios,
+    NfeDetEspecificoArmamentos,
+    NfeDetEspecificoCombustivels,
+    NfeDetEspecificoMedicamentos,
+    NfeDetEspecificoVeiculos,
+    NfeDetalhes,
+    NfeDetalheImpostoCofinss,
+    NfeDetalheImpostoCofinsSts,
+    NfeDetalheImpostoIcmss,
+    NfeDetalheImpostoIcmsUfdests,
+    NfeDetalheImpostoIis,
+    NfeDetalheImpostoIpis,
+    NfeDetalheImpostoIssqns,
+    NfeDetalheImpostoPiss,
+    NfeDetalheImpostoPisSts,
+    NfeDuplicatas,
+    NfeEmitentes,
+    NfeExportacaos,
+    NfeFaturas,
+    NfeImportacaoDetalhes,
+    NfeInformacaoPagamentos,
+    NfeItemRastreados,
+    NfeLocalEntregas,
+    NfeLocalRetiradas,
+    NfeNfReferenciadas,
+    NfeNumeros,
+    NfeNumeroInutilizados,
+    NfeProcessoReferenciados,
+    NfeProdRuralReferenciadas,
+    NfeReferenciadas,
+    NfeResponsavelTecnicos,
+    NfeTransportes,
+    NfeTransporteReboques,
+    NfeTransporteVolumes,
+    NfeTransporteVolumeLacres,
+    TributCofinss,
+    TributConfiguraOfGts,
+    TributGrupoTributarios,
+    TributIcmsCustomCabs,
+    TributIcmsCustomDets,
+    TributIcmsUfs,
+    TributIpis,
+    TributIsss,
+    TributOperacaoFiscals,
+    TributPiss,
  ], 
   daos: [
     CfopDao,
@@ -122,16 +181,23 @@ LazyDatabase _openConnection() {
     ProdutoFichaTecnicaDao,
     ProdutoPromocaoDao,
     ProdutoUnidadeDao,
+    NfeCabecalhoDao,
+    NfeConfiguracaoDao,
+    NfeNumeroDao,
+    NfeNumeroInutilizadoDao,
+    TributConfiguraOfGtDao,
+    TributGrupoTributarioDao,
+    TributIcmsCustomCabDao,
+    TributOperacaoFiscalDao,
   ],
     )
 class AppDatabase extends _$AppDatabase {
   // we tell the database where to store the data with this constructor
   AppDatabase() : super(_openConnection());
 
-  // you should bump this number whenever you change or add a table definition. Migrations
-  // are covered later in this readme.
+  // you should bump this number whenever you change or add a table definition.
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -139,6 +205,11 @@ class AppDatabase extends _$AppDatabase {
       await m.createAll();
       await _popularBanco(this);
     },
+    onUpgrade: (Migrator m, int from, int to) async {
+      if (from == 1) {
+        await MigracaoParaSchema2(this).migrarParaSchema2(m, from, to);
+      }
+    },    
   );
 
 }

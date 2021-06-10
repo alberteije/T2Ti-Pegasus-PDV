@@ -239,19 +239,24 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
     } else {
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
-        form.save();
-        final tipoPagamento = await Sessao.db.pdvTipoPagamentoDao.consultarObjetoFiltro('CODIGO', pdvTipoPagamento.codigo);
-        if (tipoPagamento == null) {
-          if (widget.operacao == 'A') {
-            await Sessao.db.pdvTipoPagamentoDao.alterar(pdvTipoPagamento);
-          } else {
+        form.save();        
+        bool tudoCerto = false;
+        if (widget.operacao == 'A') {
+          await Sessao.db.pdvTipoPagamentoDao.alterar(pdvTipoPagamento);
+          tudoCerto = true;
+        } else {
+          final tipoPagamento = await Sessao.db.pdvTipoPagamentoDao.consultarObjetoFiltro('CODIGO', pdvTipoPagamento.codigo);
+          if (tipoPagamento == null) {
             await Sessao.db.pdvTipoPagamentoDao.inserir(pdvTipoPagamento);
-          }
+            tudoCerto = true;
+          } else {
+            showInSnackBar('Já existe um tipo de pagamento cadastrado com o CÓDIGO informado.', context);
+          }        
+        }
+        if (tudoCerto) {
           await Sessao.popularObjetosPrincipais(context); // pode afetar o parcelamento, por isso importante recarregar
           Navigator.of(context).pop();
-        } else {
-          showInSnackBar('Já existe um tipo de pagamento cadastrado com o CÓDIGO informado.', context);
-        }        
+        }
       });
     }
   }

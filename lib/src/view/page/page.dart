@@ -88,4 +88,9 @@ export 'package:pegasus_pdv/src/view/page/estoque/estoque_lista_page.dart';
 export 'package:pegasus_pdv/src/view/page/dashboard/dashboard_page.dart';
 
 // relatórios
-export 'package:pegasus_pdv/src/view/page/relatorios/recibo_relatorio.dart';
+export 'package:pegasus_pdv/src/view/page/relatorios/recibo_relatorio_a4.dart';
+export 'package:pegasus_pdv/src/view/page/relatorios/recibo_relatorio_80.dart';
+export 'package:pegasus_pdv/src/view/page/relatorios/recibo_relatorio_57.dart';
+
+// vendas
+export 'package:pegasus_pdv/src/view/page/vendas/vendas_lista_page.dart';

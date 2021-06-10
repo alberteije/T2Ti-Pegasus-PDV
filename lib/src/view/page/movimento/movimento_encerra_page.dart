@@ -184,7 +184,7 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
                               child: ListTile(
                                 title: Text("Data da Abertura"),
-                                subtitle: Text(Biblioteca.dataFormatada(Sessao.movimento.dataAbertura)), 
+                                subtitle: Text(Biblioteca.formatarData(Sessao.movimento.dataAbertura)), 
                                 leading: Icon(Icons.calendar_today),
                               ),
                             ),
@@ -525,7 +525,7 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
         .push(MaterialPageRoute(
           builder: (BuildContext context) => EncerraMovimentoRelatorio(movimento: Sessao.movimento)))
         .then((_) async {
-          Sessao.movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.horaFormatada(DateTime.now()), statusMovimento: 'A');
+          Sessao.movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.formatarHora(DateTime.now()), statusMovimento: 'A');
           Sessao.movimento = await Sessao.db.pdvMovimentoDao.iniciarMovimento(Sessao.movimento);
           Navigator.of(context).pop();
           Navigator.of(context).pop();

@@ -487,7 +487,7 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
       id: null,
       idPdvTipoPagamento: _tipoPagamento.id,
       dataVenda: DateTime.now(),
-      horaVenda: Biblioteca.horaFormatada(DateTime.now()),
+      horaVenda: Biblioteca.formatarHora(DateTime.now()),
       valor: Sessao.vendaAtual.valorFinal
     );
     Sessao.listaDadosPagamento.add(itemPagamento);
@@ -503,7 +503,7 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
           id: null,
           idPdvTipoPagamento: _tipoPagamento.id,
           dataVenda: DateTime.now(),
-          horaVenda: Biblioteca.horaFormatada(DateTime.now()),
+          horaVenda: Biblioteca.formatarHora(DateTime.now()),
           valor: _valorController.numberValue
         );
         Sessao.listaDadosPagamento.add(itemPagamento);

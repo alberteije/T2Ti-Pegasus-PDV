@@ -168,7 +168,7 @@ class Biblioteca {
 
     // se estivermos trabalhando com o Moor, a data será colocada num formato timestamp
     if (formatoTimeStamp && inteiro != null) {
-      retorno = dataFormatada(DateTime.fromMillisecondsSinceEpoch(inteiro));
+      retorno = formatarData(DateTime.fromMillisecondsSinceEpoch(inteiro));
     } else {
       // se for inteiro, não faz nada, o valor é o mesmo que veio
       // se inteiro é nulo, temos que verificar se é data ou double
@@ -189,22 +189,28 @@ class Biblioteca {
     return retorno;
   }
 
-  static String horaFormatada(DateTime hora) {
+  static String formatarHora(DateTime hora) {
     var formatter = DateFormat('Hms');
     String horaFormatada = formatter.format(hora);
     return horaFormatada;
   }
 
-  static String dataFormatada(DateTime data) {
+  static String formatarData(DateTime data) {
     var formatter = DateFormat('dd/MM/yyyy');
     String dataFormatada = formatter.format(data);
     return dataFormatada;
   }
 
-  static String dataHoraFormatada(DateTime data) {
+  static String formatarDataHora(DateTime data) {
     var formatter = DateFormat('dd/MM/yyyy hh:mm:ss');
     String dataHoraFormatada = formatter.format(data);
     return dataHoraFormatada;
+  }
+
+  static String formatarMes(DateTime data) {
+    var formatter = DateFormat('MM');
+    String mesFormatado = formatter.format(data);
+    return mesFormatado;
   }
 
   /// define o que é a tela pequena e se o dispositivo utilizado tem a tela pequena

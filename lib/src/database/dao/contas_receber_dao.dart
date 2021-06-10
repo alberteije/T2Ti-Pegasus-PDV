@@ -65,6 +65,14 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
     return listaContasReceber;
   }
 
+  Future<List<ContasReceber>> consultarRecebimentosDeUmaVenda(int idPdvVendaCabecalho, String status) async {
+    listaContasReceber = await (customSelect("SELECT * FROM CONTAS_RECEBER WHERE ID_PDV_VENDA_CABECALHO = " 
+                                + idPdvVendaCabecalho.toString() + " AND STATUS_RECEBIMENTO =  '" + status + "'", 
+                                readsFrom: { contasRecebers }).map((row) {
+                                  return ContasReceber.fromData(row.data, db);  
+                                }).get());
+    return listaContasReceber;
+  }
   Future<List<ContasReceberMontado>> consultarListaMontado({int mes, int ano, String status}) async {
     final consulta = select(contasRecebers)
       .join([
@@ -82,7 +90,7 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
           consulta.where(contasRecebers.statusRecebimento.equals('A'));
           break;
         case 'Recebido':
-          consulta.where(contasRecebers.statusRecebimento.equals('P'));          
+          consulta.where(contasRecebers.statusRecebimento.equals('R'));          
           break;
         default:
       }
@@ -196,6 +204,10 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
     return transaction(() async {
       return delete(contasRecebers).delete(pObjeto);
     });    
+  }
+
+  Future<int> excluirReceitasDeUmaVenda(int idPdvVendaCabecalho) async {
+    return await (delete(contasRecebers)..where((t) => t.idPdvVendaCabecalho.equals(idPdvVendaCabecalho))).go();
   }
 
 	static List<String> campos = <String>[

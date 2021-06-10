@@ -115,7 +115,7 @@ class PdvMovimentoDao extends DatabaseAccessor<AppDatabase> with _$PdvMovimentoD
       pObjeto.copyWith(
         statusMovimento: 'F',
         dataFechamento: DateTime.now(),
-        horaFechamento: Biblioteca.horaFormatada(DateTime.now()),        
+        horaFechamento: Biblioteca.formatarHora(DateTime.now()),        
         totalSuprimento: totaisSuprimento.valor,
         totalSangria: totaisSangria.valor,
         totalVenda: totaisVenda.valorVenda,

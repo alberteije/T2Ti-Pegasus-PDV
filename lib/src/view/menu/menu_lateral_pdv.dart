@@ -234,6 +234,25 @@ class MenuLateralPDV extends StatelessWidget {
               onTap: () { 
                 Navigator.of(context)
                   .push(MaterialPageRoute(
+                    builder: (BuildContext context) => VendasListaPage()))
+                  .then((_) {
+                    //Provider.of<BancoViewModel>(context).consultarLista();
+                  });
+                },
+              title: Text(
+                "Vendas",
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
+              ),
+              leading: Icon(
+                FontAwesomeIcons.shoppingCart,
+                color: Colors.blueGrey.shade700,
+                // color: Colors.deepOrange.shade700,
+              ),
+            ),
+            ListTile(
+              onTap: () { 
+                Navigator.of(context)
+                  .push(MaterialPageRoute(
                     builder: (BuildContext context) => DashboardPage()))
                   .then((_) {
                     //Provider.of<BancoViewModel>(context).consultarLista();
@@ -257,7 +276,7 @@ class MenuLateralPDV extends StatelessWidget {
             Container(
               padding: EdgeInsets.only(top: 0, left: 20, right: 0),
               child: Text(
-                "Preferências",
+                "Outros",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12.0, fontStyle: FontStyle.italic),              
               ),
             ),

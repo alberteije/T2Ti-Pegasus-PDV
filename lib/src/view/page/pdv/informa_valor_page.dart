@@ -298,7 +298,7 @@ class _InformaValorPageState extends State<InformaValorPage> {
         id: null,
         idPdvMovimento: Sessao.movimento.id,
         dataSuprimento: DateTime.now(), 
-        horaSuprimento: Biblioteca.horaFormatada(DateTime.now()),
+        horaSuprimento: Biblioteca.formatarHora(DateTime.now()),
         valor: _valorController.numberValue,
         observacao: _observacaoController.text.isEmpty ? null : _observacaoController.text,
       );
@@ -309,7 +309,7 @@ class _InformaValorPageState extends State<InformaValorPage> {
         id: null,
         idPdvMovimento: Sessao.movimento.id,
         dataSangria: DateTime.now(), 
-        horaSangria: Biblioteca.horaFormatada(DateTime.now()), 
+        horaSangria: Biblioteca.formatarHora(DateTime.now()), 
         valor: _valorController.numberValue,
         observacao: _observacaoController.text.isEmpty ? null : _observacaoController.text,
       );

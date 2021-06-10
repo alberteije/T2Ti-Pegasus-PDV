@@ -503,7 +503,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
 
       celulas = [
         DataCell(
-          Text(Biblioteca.dataFormatada( parcelaReceber.dataVencimento)), 
+          Text(Biblioteca.formatarData( parcelaReceber.dataVencimento)), 
         ),
         DataCell(
           Text('${Constantes.formatoDecimalValor.format(parcelaReceber.valorAReceber ?? 0)}'),
@@ -622,6 +622,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
           ContasReceber(
             id: null,
             idCliente: Sessao.vendaAtual.idCliente,
+            idPdvVendaCabecalho: Sessao.vendaAtual.id,
             dataLancamento: DateTime.now(),
             dataVencimento: (diaVencimentoFixo) 
                             ? DateTime.utc(dataPrimeiroVencimento.year, dataPrimeiroVencimento.month + i, dataPrimeiroVencimento.day)

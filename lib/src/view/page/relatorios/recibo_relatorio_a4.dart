@@ -1,6 +1,6 @@
 /*
 Title: T2Ti ERP 3.0                                                                
-Description: Página de relatório do recibo
+Description: Página de relatório do recibo - formato A4
                                                                                 
 The MIT License                                                                 
                                                                                 
@@ -45,13 +45,13 @@ import 'package:printing/printing.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_pdv.dart';
 
-class ReciboRelatorio extends StatefulWidget {
+class ReciboRelatorioA4 extends StatefulWidget {
 
   @override
-  _ReciboRelatorioState createState() => _ReciboRelatorioState();
+  _ReciboRelatorioA4State createState() => _ReciboRelatorioA4State();
 }
 
-class _ReciboRelatorioState extends State<ReciboRelatorio> {
+class _ReciboRelatorioA4State extends State<ReciboRelatorioA4> {
   Map<LogicalKeySet, Intent> _shortcutMap; 
   Map<Type, Action<Intent>> _actionMap;
 
@@ -99,29 +99,29 @@ class _ReciboRelatorioState extends State<ReciboRelatorio> {
 }
 
 Future<Uint8List> _gerarRecibo() async {
-  final recibo = Recibo();
+  final recibo = ReciboA4();
   return await recibo.buildPdf(PdfPageFormat.a4);
 }
 
-class Recibo {
+class ReciboA4 {
   PdfColor _baseColor = PdfColors.blue900;
   PdfColor _accentColor = PdfColors.black;
   PdfColor _darkColor = PdfColors.blueGrey800;
   PdfColor _baseTextColor = PdfColors.blue900.luminance < 0.5 ? PdfColors.white : PdfColors.blueGrey800;
   PdfColor _accentTextColor = PdfColors.blue900.luminance < 0.5 ? PdfColors.white : PdfColors.blueGrey800;
 
-  pw.MemoryImage _logotipo;
-  pw.MemoryImage _rodape;
+  pw.MemoryImage _logotipoImagem;
+  pw.MemoryImage _rodapeImagem;
 
   Future<Uint8List> buildPdf(PdfPageFormat pageFormat) async {
 
     // Create a PDF document.
     final doc = pw.Document();
 
-    _logotipo = pw.MemoryImage(
+    _logotipoImagem = pw.MemoryImage(
       Sessao.empresa.logotipo,
     );
-    _rodape = pw.MemoryImage(
+    _rodapeImagem = pw.MemoryImage(
       (await rootBundle.load('assets/images/rodape_recibo.png')).buffer.asUint8List(),
     );
 
@@ -138,20 +138,20 @@ class Recibo {
           pw.Font.ttf(_fontBold),
           pw.Font.ttf(_fontItalic),
         ),
-        header: _buildHeader,
-        footer: _buildFooter,
+        header: _cabecalho,
+        footer: _rodape,
         build: (context) => [
-          _contentHeader(context),
-          _contentTable(context),
+          _conteudoCabecalho(context),
+          _conteudoItens(context),
           pw.SizedBox(height: 20),
-          _contentFooter(context),
+          _conteudoRodape(context),
           pw.SizedBox(height: 20),
-          _formaPagamento(context),
+          _dadosPagamento(context),
           pw.SizedBox(height: 20),
           _parcelamentoCabecalho(context),
-          _parcelamento(context),
+          _conteudoParcelamento(context),
           pw.SizedBox(height: 20),
-          _termsAndConditions(context),
+          _termosCondicoes(context),
         ],
       ),
     );
@@ -170,12 +170,12 @@ class Recibo {
       ),
       buildBackground: (context) => pw.FullPage(
         ignoreMargins: true,
-        child: pw.Image(_rodape),
+        child: pw.Image(_rodapeImagem),
       ),
     );
   }
 
-  pw.Widget _buildHeader(pw.Context context) {
+  pw.Widget _cabecalho(pw.Context context) {
     return pw.Column(
       children: [
         pw.Row(
@@ -189,7 +189,7 @@ class Recibo {
                     alignment: pw.Alignment.center,
                     padding: pw.EdgeInsets.only(bottom: 8, right: 30),
                     height: 120,
-                    child: pw.Image(_logotipo),
+                    child: pw.Image(_logotipoImagem),
                   ),
                 ],
               ),
@@ -227,7 +227,7 @@ class Recibo {
                         crossAxisCount: 2,
                         children: [
                           pw.Text('Data:'),
-                          pw.Text(Biblioteca.dataFormatada(Sessao.vendaAtual.dataVenda)),
+                          pw.Text(Biblioteca.formatarData(Sessao.vendaAtual.dataVenda)),
                         ],
                       ),
                     ),
@@ -242,7 +242,7 @@ class Recibo {
     );
   }
 
-  pw.Widget _buildFooter(pw.Context context) {
+  pw.Widget _rodape(pw.Context context) {
     return pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.end,
       children: [
@@ -257,7 +257,7 @@ class Recibo {
     );
   }
 
-  pw.Widget _contentHeader(pw.Context context) {
+  pw.Widget _conteudoCabecalho(pw.Context context) {
     return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
@@ -326,7 +326,7 @@ class Recibo {
     );
   }
 
-  pw.Widget _contentTable(pw.Context context) {
+  pw.Widget _conteudoItens(pw.Context context) {
     const tableHeaders = [
       'Código',
       'Descrição',
@@ -382,7 +382,7 @@ class Recibo {
     );
   }
 
-  pw.Widget _contentFooter(pw.Context context) {
+  pw.Widget _conteudoRodape(pw.Context context) {
     return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
@@ -409,13 +409,13 @@ class Recibo {
                 ),
               ),
               pw.Text(
-                (Sessao.empresa.email ?? '') 
-                + ' | ' + 
-                (Sessao.empresa.fone ?? '')
-                + ' | ' + 
-                (Sessao.empresa.bairro ?? '')
-                + ' | ' + 
-                (Sessao.empresa.cidade ?? ''),
+                'Email: ' + (Sessao.empresa.email ?? '') +
+                ' | ' +
+                'Fone: ' + (Sessao.empresa.fone ?? '') +
+                ' | ' +
+                'Bairro: ' + (Sessao.empresa.bairro ?? '') +
+                ' | ' +
+                'Cidade: ' + (Sessao.empresa.cidade ?? ''),
                 style: pw.TextStyle(
                   fontSize: 8,
                   lineSpacing: 5,
@@ -498,7 +498,7 @@ class Recibo {
     );
   }
 
-  pw.Widget _termsAndConditions(pw.Context context) {
+  pw.Widget _termosCondicoes(pw.Context context) {
     final textoRecibo = 'Recebemos do cliente identificado acima o Total informado referente à venda dos '
                       'itens discriminados neste documento.';
     return pw.Row(
@@ -540,7 +540,7 @@ class Recibo {
     );
   }
 
-  pw.Widget _formaPagamento(pw.Context context) {
+  pw.Widget _dadosPagamento(pw.Context context) {
     return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
@@ -622,7 +622,7 @@ class Recibo {
     }
   }
 
-  pw.Widget _parcelamento(pw.Context context) {
+  pw.Widget _conteudoParcelamento(pw.Context context) {
     if (Sessao.listaParcelamento.length > 0) {
       const tableHeaders = [
         'Vencimento',

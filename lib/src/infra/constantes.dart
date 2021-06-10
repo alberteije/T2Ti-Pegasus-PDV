@@ -52,7 +52,7 @@ class Constantes {
   Constantes._() : super();
 
 // #region Arquivo ENV
-  static String chave = '#Sua-Chave-de-32-caracteres-aqui'; // tem que alterar para produção e gerar os valores do ENV com a chave correta
+  static String chave = '#Sua-Chave-de-32-caracteres-aqui'; // #Sua-Chave-de-32-caracteres-aqui tem que alterar para produção e gerar os valores do ENV com a chave correta
   static Key key = Key.fromUtf8(Constantes.chave);
   static IV iv = IV.fromUtf8('');
   static Encrypter encrypter = Encrypter(AES(key, mode: AESMode.ecb));
@@ -62,6 +62,12 @@ class Constantes {
   static String enderecoServidor = (kDebugMode && Biblioteca.isDesktop()) ? DotEnv.env['ENDERECO_SERVIDOR'] : encrypter.decrypt64(DotEnv.env['ENDERECO_SERVIDOR'], iv: iv);
   static String complementoEnderecoServidor = (kDebugMode && Biblioteca.isDesktop()) ? DotEnv.env['COMPLEMENTO_ENDERECO_SERVIDOR'] : encrypter.decrypt64(DotEnv.env['COMPLEMENTO_ENDERECO_SERVIDOR'], iv: iv);
   static String portaServidor = (kDebugMode && Biblioteca.isDesktop()) ? DotEnv.env['PORTA_SERVIDOR'] : encrypter.decrypt64(DotEnv.env['PORTA_SERVIDOR'], iv: iv);
+
+  // static String sentryDns = encrypter.decrypt64(DotEnv.env['SENTRY_DNS'], iv: iv);
+  // static String linguagemServidor = encrypter.decrypt64(DotEnv.env['LINGUAGEM_SERVIDOR'], iv: iv);
+  // static String enderecoServidor = encrypter.decrypt64(DotEnv.env['ENDERECO_SERVIDOR'], iv: iv);
+  // static String complementoEnderecoServidor = encrypter.decrypt64(DotEnv.env['COMPLEMENTO_ENDERECO_SERVIDOR'], iv: iv);
+  // static String portaServidor = encrypter.decrypt64(DotEnv.env['PORTA_SERVIDOR'], iv: iv);
 // #endregion Arquivo ENV  
 
 
