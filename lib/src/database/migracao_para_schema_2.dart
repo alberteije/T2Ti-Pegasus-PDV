@@ -76,6 +76,8 @@ class MigracaoParaSchema2 extends DatabaseAccessor<AppDatabase> {
     await m.addColumn(pdvConfiguracaos, pdvConfiguracaos.planoValor);        
     await m.addColumn(pdvConfiguracaos, pdvConfiguracaos.planoSituacao);        
     await m.addColumn(pdvConfiguracaos, pdvConfiguracaos.reciboFormatoPagina);        
+    await m.addColumn(pdvConfiguracaos, pdvConfiguracaos.reciboLarguraPagina);        
+    await m.addColumn(pdvConfiguracaos, pdvConfiguracaos.reciboMargemPagina);        
     await m.addColumn(pdvConfiguracaos, pdvConfiguracaos.encerraMovimentoAuto);        
     await m.addColumn(pdvConfiguracaos, pdvConfiguracaos.permiteEstoqueNegativo);        
     await m.addColumn(contasRecebers, contasRecebers.idPdvVendaCabecalho);        

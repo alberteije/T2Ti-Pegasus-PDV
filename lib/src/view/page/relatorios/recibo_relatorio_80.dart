@@ -34,6 +34,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 @contributor Denis Silva (denyjav@yahoo.com.br)                 
 @version 1.0.0
 Adaptado de: https://github.com/DavBfr/dart_pdf/tree/master/printing
+
+OBS: este relatório e o relatório 57 colunas devem ser feitos num mesmo arquivo
+alterando apenas as características comuns de cada um. Por enquanto eles ficarão
+separados por questões didáticas para o Treinamento T2Ti ERP.
 *******************************************************************************/
 import 'dart:typed_data';
 
@@ -100,7 +104,12 @@ class _ReciboRelatorio80State extends State<ReciboRelatorio80> {
 
 Future<Uint8List> _gerarRecibo() async {
   final recibo = Recibo80();
-  return await recibo.buildPdf(PdfPageFormat.roll80);
+  return await recibo.buildPdf(
+    PdfPageFormat(
+      (Sessao.configuracaoPdv.reciboLarguraPagina ?? 80) * 2.83, 
+      double.infinity, 
+      marginAll: (Sessao.configuracaoPdv.reciboMargemPagina ?? 5) * 2.83)
+  );
 }
 
 class Recibo80 {
@@ -270,9 +279,28 @@ class Recibo80 {
             ),
           ),
         ),
+        _dadosVendedor(),
         pw.SizedBox(height: 5),
       ],
     );
+  }
+
+  pw.Widget _dadosVendedor() {
+    if (Sessao.vendaAtual.idColaborador != null) {
+      return pw.Container(
+        alignment: pw.Alignment.topRight,
+        child: pw.Text(
+          'Vendedor: ' + Sessao.vendaAtual.idColaborador.toString(),
+          style: pw.TextStyle(
+            fontWeight: pw.FontWeight.normal,
+            fontSize: 8,
+            fontStyle: pw.FontStyle.italic,
+          ),
+        ),
+      );
+    } else {
+      return pw.SizedBox(height: 1);
+    }
   }
 
   pw.Widget _conteudoItens(pw.Context context) {

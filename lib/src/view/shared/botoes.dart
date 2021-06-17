@@ -266,13 +266,14 @@ InkWell getBotaoDecrementaCaixa({Function decrementar}) {
   );
 }
 
-ElevatedButton getBotaoGenericoPdv({String descricao, Color cor, Function onPressed}) {
+ElevatedButton getBotaoGenericoPdv({String descricao, Color cor, Function onPressed, EdgeInsetsGeometry padding}) {
   return ElevatedButton(
     child: Text(descricao),
     style: ElevatedButton.styleFrom(
       elevation: 2,
       primary: cor, 
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      padding: padding,
     ),
     onPressed: onPressed,
   );

@@ -304,7 +304,7 @@ class _EstoqueListaPageState extends State<EstoqueListaPage> {
     for (ProdutoMontado produtoMontado in _listaProdutoMontado) {
       final produto = produtoMontado.produto;
       if ((produto.quantidadeEstoque ?? 0) < (produto.estoqueMinimo ?? 0)) {
-        double quantidade = (produto.quantidadeEstoque * -1) + produto.estoqueMinimo;
+        double quantidade = (produto.quantidadeEstoque * -1) + (produto.estoqueMinimo ?? 0);
         double valorCompra = produto.valorCompra ?? 1;
         CompraPedidoDetalhe compraPedidoDetalhe = 
           CompraPedidoDetalhe(
@@ -326,6 +326,7 @@ class _EstoqueListaPageState extends State<EstoqueListaPage> {
       CompraPedidoCabecalho compraPedidoCabecalho = 
         CompraPedidoCabecalho(
           id: null,
+          idColaborador: 1, // numa compra realizada a partir do estoque o colaborador ADMINISTRADOR é atribuido por padrão
           dataPedido: DateTime.now(),
           valorSubtotal: totalPedido,
           valorTotal: totalPedido,

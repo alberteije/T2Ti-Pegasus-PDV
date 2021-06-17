@@ -158,6 +158,12 @@ class MenuCadastros extends StatelessWidget {
                         label: "Tipo Pagamento",
                         circleColor: Colors.orange,
                         rota: "/pdvTipoPagamentoLista"),
+                    terceiroBotao: null,
+                    quartoBotao: null,
+                  ),
+                  MenuInternoBotoes(
+                    primeiroBotao: null,
+                    segundoBotao: null,
                     terceiroBotao: BotaoMenu(
                         icon: FontAwesomeIcons.archive,
                         label: "Unidade",

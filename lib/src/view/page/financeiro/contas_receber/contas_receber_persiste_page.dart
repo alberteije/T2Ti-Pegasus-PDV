@@ -592,10 +592,10 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
         _contasReceber = _contasReceber.copyWith(statusRecebimento: 'A');
         form.save();
+        if (_contasReceber.dataRecebimento != null) {
+          _contasReceber = _contasReceber.copyWith(statusRecebimento: 'R');
+        }
         if (widget.operacao == 'A') {
-          if (_contasReceber.dataRecebimento != null) {
-            _contasReceber = _contasReceber.copyWith(statusRecebimento: 'R');
-          }
           Sessao.db.contasReceberDao.alterar(_contasReceber);
         } else {
           Sessao.db.contasReceberDao.inserir(_contasReceber);

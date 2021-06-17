@@ -337,6 +337,7 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
   }
 
   Widget getResumoTotais(BuildContext context) {
+    _refrescarTela();
     return Scrollbar(
     child: SingleChildScrollView(
       dragStartBehavior: DragStartBehavior.down,

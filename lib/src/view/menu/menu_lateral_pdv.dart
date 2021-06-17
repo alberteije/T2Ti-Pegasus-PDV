@@ -52,8 +52,18 @@ import 'package:pegasus_pdv/src/view/page/page.dart';
 import 'package:pegasus_pdv/src/view/shared/about_tile.dart';
 import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
 
-class MenuLateralPDV extends StatelessWidget {
+class MenuLateralPDV extends StatefulWidget {
 
+  @override
+  _MenuLateralPDVState createState() => _MenuLateralPDVState();
+}
+
+class _MenuLateralPDVState extends State<MenuLateralPDV> {  
+  @override
+  void initState() {
+    super.initState();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -280,18 +290,24 @@ class MenuLateralPDV extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12.0, fontStyle: FontStyle.italic),              
               ),
             ),
-            // ListTile(
-            //   onTap:  () async {                
-            //   },
-            //   title: Text(
-            //     "Configurações",
-            //     style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
-            //   ),
-            //   leading: Icon(
-            //     FontAwesomeIcons.cog,
-            //     color: Colors.brown,
-            //   ),
-            // ),
+            ListTile(
+              onTap:  () {                
+                Navigator.of(context)
+                  .push(MaterialPageRoute(
+                    builder: (BuildContext context) => ConfiguracaoPage()))
+                  .then((_) {
+                    //Provider.of<BancoViewModel>(context).consultarLista();
+                  });
+              },
+              title: Text(
+                "Configurações",
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
+              ),
+              leading: Icon(
+                FontAwesomeIcons.cog,
+                color: Colors.brown,
+              ),
+            ),
             ListTile(
               onTap: () async { 
                 final _url = 'https://www.youtube.com/playlist?list=PLMqoOoxxICPfegpWl8Mj2mthn5QocLGuL';

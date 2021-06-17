@@ -319,11 +319,30 @@ class ReciboA4 {
                       ])),
                 ),
               ),
+              _dadosVendedor(),
             ],
           ),
         ),
       ],
     );
+  }
+
+  pw.Widget _dadosVendedor() {
+    if (Sessao.vendaAtual.idColaborador != null) {
+      return pw.Container(
+        alignment: pw.Alignment.topRight,
+        child: pw.Text(
+          'Vendedor: ' + Sessao.vendaAtual.idColaborador.toString(),
+          style: pw.TextStyle(
+            fontWeight: pw.FontWeight.normal,
+            fontSize: 10,
+            fontStyle: pw.FontStyle.italic,
+          ),
+        ),
+      );
+    } else {
+      return pw.SizedBox(height: 1);
+    }
   }
 
   pw.Widget _conteudoItens(pw.Context context) {

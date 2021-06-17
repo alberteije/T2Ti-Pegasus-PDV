@@ -204,14 +204,21 @@ class AppDatabase extends _$AppDatabase {
     onCreate: (Migrator m) async {
       await m.createAll();
       await _popularBanco(this);
+      await _popularBancoSchema02(this);
     },
     onUpgrade: (Migrator m, int from, int to) async {
       if (from == 1) {
         await MigracaoParaSchema2(this).migrarParaSchema2(m, from, to);
+        await _popularBancoSchema02(this);
       }
     },    
   );
 
+}
+
+Future<void> _popularBancoSchema02(AppDatabase db) async {
+  // ---> CONFIGURACAO
+  await db.customStatement("INSERT INTO PDV_CONFIGURACAO (ID, MODULO, RECIBO_FORMATO_PAGINA, RECIBO_LARGURA_PAGINA, RECIBO_MARGEM_PAGINA, PERMITE_ESTOQUE_NEGATIVO) VALUES (1, 'G', 'A4', NULL, NULL, 'S')");
 }
 
 Future<void> _popularBanco(AppDatabase db) async {

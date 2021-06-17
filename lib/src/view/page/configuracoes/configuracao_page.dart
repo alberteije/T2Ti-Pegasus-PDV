@@ -1,7 +1,6 @@
 /*
-Title: T2Ti ERP 3.0                                                              
-Description: Model que permite o cadastro do usuário do PDV na 
-retaguarda da SH
+Title: T2Ti ERP 3.0                                                                
+Description: Página de configurações vinculada à tabela [PDV_CONFIGURACAO]
                                                                                 
 The MIT License                                                                 
                                                                                 
@@ -34,60 +33,87 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 
-import 'package:intl/intl.dart';
+import 'configuracao_aba_cadastro.dart';
+import 'configuracao_aba_geral.dart';
 
-class Usuario {
-	int id;
-	String email;
-	String senha;
-	DateTime dataCadastro;
-	String pendente;
-  String modulo;
-	String whatsapp;
-	String news;
+class ConfiguracaoPage extends StatefulWidget {
 
-	Usuario({
-			this.id,
-			this.email,
-			this.senha,
-			this.dataCadastro,
-			this.pendente,
-      this.modulo,
-			this.whatsapp,
-			this.news,
-		});
+  @override
+  _ConfiguracaoPageState createState() => _ConfiguracaoPageState();
+}
 
-	Usuario.fromJson(Map<String, dynamic> jsonDados) {
-		// id = jsonDados['id'];
-		email = jsonDados['email'];
-		senha = jsonDados['senha'];
-		dataCadastro = jsonDados['dataCadastro'] != null ? DateTime.tryParse(jsonDados['dataCadastro']) : null;
-		pendente = jsonDados['pendente'];
-    modulo = jsonDados['modulo'];
-		whatsapp = jsonDados['whatsapp'];
-		news = jsonDados['news'];
-	}
+class _ConfiguracaoPageState extends State<ConfiguracaoPage> {
+  int _currentIndex = 0;
+  PageController _pageController;
 
-	Map<String, dynamic> get toJson {
-		Map<String, dynamic> jsonDados = Map<String, dynamic>();
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+  
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
-		// jsonDados['id'] = this.id ?? 0;
-		jsonDados['email'] = this.email;
-		jsonDados['senha'] = this.senha;
-		jsonDados['dataCadastro'] = this.dataCadastro != null ? DateFormat('yyyy-MM-ddT00:00:00').format(this.dataCadastro) : null;
-		jsonDados['pendente'] = this.pendente;
-    jsonDados['modulo'] = this.modulo;
-		jsonDados['whatsapp'] = this.whatsapp;
-		jsonDados['news'] = this.news;
-	
-		return jsonDados;
-	}
-	
-	String objetoEncodeJson(Usuario objeto) {
-	  final jsonDados = objeto.toJson;
-	  return json.encode(jsonDados);
-	}
-	
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Configurações")),
+      body: SizedBox.expand(
+        child: PageView(
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() => _currentIndex = index);
+          },
+          children: <Widget>[
+            Container(color: Colors.blueGrey, 
+              child: ConfiguracaoAbaGeral(),
+            ),
+            Container(color: Colors.red, 
+              child: ConfiguracaoAbaCadastro(title: 'Informações sobre NFC-e', modulo: 'NFC'),
+            ),
+            Container(color: Colors.green, 
+              child: ConfiguracaoAbaCadastro(title: 'Informações sobre SAT', modulo: 'SAT'),
+            ),
+            Container(color: Colors.blue, 
+              child: ConfiguracaoAbaCadastro(title: 'Informações sobre MFE', modulo: 'MFE'),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomNavyBar(
+        selectedIndex: _currentIndex,
+        onItemSelected: (index) {
+          setState(() => _currentIndex = index);
+          _pageController.jumpToPage(index);
+        },
+        items: <BottomNavyBarItem>[
+          BottomNavyBarItem(
+            title: Text('Geral'),
+            icon: Icon(Icons.settings)
+          ),
+          BottomNavyBarItem(
+            title: Text('NFC-e'),
+            icon: Icon(Icons.description_outlined)
+          ),
+          BottomNavyBarItem(
+            title: Text('SAT'),
+            icon: Icon(Icons.print_outlined)
+          ),
+          BottomNavyBarItem(
+            title: Text('MFE'),
+            icon: Icon(Icons.scanner_outlined)
+          ),
+        ],
+      ),
+    );
+  }
+
+  
 }

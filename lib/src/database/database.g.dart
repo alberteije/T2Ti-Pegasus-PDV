@@ -18651,6 +18651,8 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
   final double planoValor;
   final String planoSituacao;
   final String reciboFormatoPagina;
+  final double reciboLarguraPagina;
+  final double reciboMargemPagina;
   final String encerraMovimentoAuto;
   final String permiteEstoqueNegativo;
   PdvConfiguracao(
@@ -18694,6 +18696,8 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
       this.planoValor,
       this.planoSituacao,
       this.reciboFormatoPagina,
+      this.reciboLarguraPagina,
+      this.reciboMargemPagina,
       this.encerraMovimentoAuto,
       this.permiteEstoqueNegativo});
   factory PdvConfiguracao.fromData(
@@ -18784,6 +18788,10 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
           .mapFromDatabaseResponse(data['${effectivePrefix}PLANO_SITUACAO']),
       reciboFormatoPagina: stringType.mapFromDatabaseResponse(
           data['${effectivePrefix}RECIBO_FORMATO_PAGINA']),
+      reciboLarguraPagina: doubleType.mapFromDatabaseResponse(
+          data['${effectivePrefix}RECIBO_LARGURA_PAGINA']),
+      reciboMargemPagina: doubleType.mapFromDatabaseResponse(
+          data['${effectivePrefix}RECIBO_MARGEM_PAGINA']),
       encerraMovimentoAuto: stringType.mapFromDatabaseResponse(
           data['${effectivePrefix}ENCERRA_MOVIMENTO_AUTO']),
       permiteEstoqueNegativo: stringType.mapFromDatabaseResponse(
@@ -18916,6 +18924,12 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
     if (!nullToAbsent || reciboFormatoPagina != null) {
       map['RECIBO_FORMATO_PAGINA'] = Variable<String>(reciboFormatoPagina);
     }
+    if (!nullToAbsent || reciboLarguraPagina != null) {
+      map['RECIBO_LARGURA_PAGINA'] = Variable<double>(reciboLarguraPagina);
+    }
+    if (!nullToAbsent || reciboMargemPagina != null) {
+      map['RECIBO_MARGEM_PAGINA'] = Variable<double>(reciboMargemPagina);
+    }
     if (!nullToAbsent || encerraMovimentoAuto != null) {
       map['ENCERRA_MOVIMENTO_AUTO'] = Variable<String>(encerraMovimentoAuto);
     }
@@ -19043,6 +19057,12 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
       reciboFormatoPagina: reciboFormatoPagina == null && nullToAbsent
           ? const Value.absent()
           : Value(reciboFormatoPagina),
+      reciboLarguraPagina: reciboLarguraPagina == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reciboLarguraPagina),
+      reciboMargemPagina: reciboMargemPagina == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reciboMargemPagina),
       encerraMovimentoAuto: encerraMovimentoAuto == null && nullToAbsent
           ? const Value.absent()
           : Value(encerraMovimentoAuto),
@@ -19105,6 +19125,10 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
       planoSituacao: serializer.fromJson<String>(json['planoSituacao']),
       reciboFormatoPagina:
           serializer.fromJson<String>(json['reciboFormatoPagina']),
+      reciboLarguraPagina:
+          serializer.fromJson<double>(json['reciboLarguraPagina']),
+      reciboMargemPagina:
+          serializer.fromJson<double>(json['reciboMargemPagina']),
       encerraMovimentoAuto:
           serializer.fromJson<String>(json['encerraMovimentoAuto']),
       permiteEstoqueNegativo:
@@ -19159,6 +19183,8 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
       'planoValor': serializer.toJson<double>(planoValor),
       'planoSituacao': serializer.toJson<String>(planoSituacao),
       'reciboFormatoPagina': serializer.toJson<String>(reciboFormatoPagina),
+      'reciboLarguraPagina': serializer.toJson<double>(reciboLarguraPagina),
+      'reciboMargemPagina': serializer.toJson<double>(reciboMargemPagina),
       'encerraMovimentoAuto': serializer.toJson<String>(encerraMovimentoAuto),
       'permiteEstoqueNegativo':
           serializer.toJson<String>(permiteEstoqueNegativo),
@@ -19206,6 +19232,8 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
           double planoValor,
           String planoSituacao,
           String reciboFormatoPagina,
+          double reciboLarguraPagina,
+          double reciboMargemPagina,
           String encerraMovimentoAuto,
           String permiteEstoqueNegativo}) =>
       PdvConfiguracao(
@@ -19253,6 +19281,8 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
         planoValor: planoValor ?? this.planoValor,
         planoSituacao: planoSituacao ?? this.planoSituacao,
         reciboFormatoPagina: reciboFormatoPagina ?? this.reciboFormatoPagina,
+        reciboLarguraPagina: reciboLarguraPagina ?? this.reciboLarguraPagina,
+        reciboMargemPagina: reciboMargemPagina ?? this.reciboMargemPagina,
         encerraMovimentoAuto: encerraMovimentoAuto ?? this.encerraMovimentoAuto,
         permiteEstoqueNegativo:
             permiteEstoqueNegativo ?? this.permiteEstoqueNegativo,
@@ -19300,6 +19330,8 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
           ..write('planoValor: $planoValor, ')
           ..write('planoSituacao: $planoSituacao, ')
           ..write('reciboFormatoPagina: $reciboFormatoPagina, ')
+          ..write('reciboLarguraPagina: $reciboLarguraPagina, ')
+          ..write('reciboMargemPagina: $reciboMargemPagina, ')
           ..write('encerraMovimentoAuto: $encerraMovimentoAuto, ')
           ..write('permiteEstoqueNegativo: $permiteEstoqueNegativo')
           ..write(')'))
@@ -19349,7 +19381,7 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
                                                                               .hashCode,
                                                                           $mrjc(
                                                                               tefTipoGp.hashCode,
-                                                                              $mrjc(tefTempoEspera.hashCode, $mrjc(tefEsperaSts.hashCode, $mrjc(tefNumeroVias.hashCode, $mrjc(decimaisQuantidade.hashCode, $mrjc(decimaisValor.hashCode, $mrjc(bitsPorSegundo.hashCode, $mrjc(quantidadeMaximaCartoes.hashCode, $mrjc(pesquisaParte.hashCode, $mrjc(laudo.hashCode, $mrjc(dataAtualizacaoEstoque.hashCode, $mrjc(pedeCpfCupom.hashCode, $mrjc(tipoIntegracao.hashCode, $mrjc(timerIntegracao.hashCode, $mrjc(gavetaSinalInvertido.hashCode, $mrjc(gavetaUtilizacao.hashCode, $mrjc(usaTecladoReduzido.hashCode, $mrjc(modulo.hashCode, $mrjc(plano.hashCode, $mrjc(planoValor.hashCode, $mrjc(planoSituacao.hashCode, $mrjc(reciboFormatoPagina.hashCode, $mrjc(encerraMovimentoAuto.hashCode, permiteEstoqueNegativo.hashCode))))))))))))))))))))))))))))))))))))))))));
+                                                                              $mrjc(tefTempoEspera.hashCode, $mrjc(tefEsperaSts.hashCode, $mrjc(tefNumeroVias.hashCode, $mrjc(decimaisQuantidade.hashCode, $mrjc(decimaisValor.hashCode, $mrjc(bitsPorSegundo.hashCode, $mrjc(quantidadeMaximaCartoes.hashCode, $mrjc(pesquisaParte.hashCode, $mrjc(laudo.hashCode, $mrjc(dataAtualizacaoEstoque.hashCode, $mrjc(pedeCpfCupom.hashCode, $mrjc(tipoIntegracao.hashCode, $mrjc(timerIntegracao.hashCode, $mrjc(gavetaSinalInvertido.hashCode, $mrjc(gavetaUtilizacao.hashCode, $mrjc(usaTecladoReduzido.hashCode, $mrjc(modulo.hashCode, $mrjc(plano.hashCode, $mrjc(planoValor.hashCode, $mrjc(planoSituacao.hashCode, $mrjc(reciboFormatoPagina.hashCode, $mrjc(reciboLarguraPagina.hashCode, $mrjc(reciboMargemPagina.hashCode, $mrjc(encerraMovimentoAuto.hashCode, permiteEstoqueNegativo.hashCode))))))))))))))))))))))))))))))))))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -19394,6 +19426,8 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
           other.planoValor == this.planoValor &&
           other.planoSituacao == this.planoSituacao &&
           other.reciboFormatoPagina == this.reciboFormatoPagina &&
+          other.reciboLarguraPagina == this.reciboLarguraPagina &&
+          other.reciboMargemPagina == this.reciboMargemPagina &&
           other.encerraMovimentoAuto == this.encerraMovimentoAuto &&
           other.permiteEstoqueNegativo == this.permiteEstoqueNegativo);
 }
@@ -19439,6 +19473,8 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
   final Value<double> planoValor;
   final Value<String> planoSituacao;
   final Value<String> reciboFormatoPagina;
+  final Value<double> reciboLarguraPagina;
+  final Value<double> reciboMargemPagina;
   final Value<String> encerraMovimentoAuto;
   final Value<String> permiteEstoqueNegativo;
   const PdvConfiguracaosCompanion({
@@ -19482,6 +19518,8 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
     this.planoValor = const Value.absent(),
     this.planoSituacao = const Value.absent(),
     this.reciboFormatoPagina = const Value.absent(),
+    this.reciboLarguraPagina = const Value.absent(),
+    this.reciboMargemPagina = const Value.absent(),
     this.encerraMovimentoAuto = const Value.absent(),
     this.permiteEstoqueNegativo = const Value.absent(),
   });
@@ -19526,6 +19564,8 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
     this.planoValor = const Value.absent(),
     this.planoSituacao = const Value.absent(),
     this.reciboFormatoPagina = const Value.absent(),
+    this.reciboLarguraPagina = const Value.absent(),
+    this.reciboMargemPagina = const Value.absent(),
     this.encerraMovimentoAuto = const Value.absent(),
     this.permiteEstoqueNegativo = const Value.absent(),
   });
@@ -19570,6 +19610,8 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
     Expression<double> planoValor,
     Expression<String> planoSituacao,
     Expression<String> reciboFormatoPagina,
+    Expression<double> reciboLarguraPagina,
+    Expression<double> reciboMargemPagina,
     Expression<String> encerraMovimentoAuto,
     Expression<String> permiteEstoqueNegativo,
   }) {
@@ -19623,6 +19665,10 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
       if (planoSituacao != null) 'PLANO_SITUACAO': planoSituacao,
       if (reciboFormatoPagina != null)
         'RECIBO_FORMATO_PAGINA': reciboFormatoPagina,
+      if (reciboLarguraPagina != null)
+        'RECIBO_LARGURA_PAGINA': reciboLarguraPagina,
+      if (reciboMargemPagina != null)
+        'RECIBO_MARGEM_PAGINA': reciboMargemPagina,
       if (encerraMovimentoAuto != null)
         'ENCERRA_MOVIMENTO_AUTO': encerraMovimentoAuto,
       if (permiteEstoqueNegativo != null)
@@ -19671,6 +19717,8 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
       Value<double> planoValor,
       Value<String> planoSituacao,
       Value<String> reciboFormatoPagina,
+      Value<double> reciboLarguraPagina,
+      Value<double> reciboMargemPagina,
       Value<String> encerraMovimentoAuto,
       Value<String> permiteEstoqueNegativo}) {
     return PdvConfiguracaosCompanion(
@@ -19718,6 +19766,8 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
       planoValor: planoValor ?? this.planoValor,
       planoSituacao: planoSituacao ?? this.planoSituacao,
       reciboFormatoPagina: reciboFormatoPagina ?? this.reciboFormatoPagina,
+      reciboLarguraPagina: reciboLarguraPagina ?? this.reciboLarguraPagina,
+      reciboMargemPagina: reciboMargemPagina ?? this.reciboMargemPagina,
       encerraMovimentoAuto: encerraMovimentoAuto ?? this.encerraMovimentoAuto,
       permiteEstoqueNegativo:
           permiteEstoqueNegativo ?? this.permiteEstoqueNegativo,
@@ -19853,6 +19903,13 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
       map['RECIBO_FORMATO_PAGINA'] =
           Variable<String>(reciboFormatoPagina.value);
     }
+    if (reciboLarguraPagina.present) {
+      map['RECIBO_LARGURA_PAGINA'] =
+          Variable<double>(reciboLarguraPagina.value);
+    }
+    if (reciboMargemPagina.present) {
+      map['RECIBO_MARGEM_PAGINA'] = Variable<double>(reciboMargemPagina.value);
+    }
     if (encerraMovimentoAuto.present) {
       map['ENCERRA_MOVIMENTO_AUTO'] =
           Variable<String>(encerraMovimentoAuto.value);
@@ -19907,6 +19964,8 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
           ..write('planoValor: $planoValor, ')
           ..write('planoSituacao: $planoSituacao, ')
           ..write('reciboFormatoPagina: $reciboFormatoPagina, ')
+          ..write('reciboLarguraPagina: $reciboLarguraPagina, ')
+          ..write('reciboMargemPagina: $reciboMargemPagina, ')
           ..write('encerraMovimentoAuto: $encerraMovimentoAuto, ')
           ..write('permiteEstoqueNegativo: $permiteEstoqueNegativo')
           ..write(')'))
@@ -20381,6 +20440,34 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
         minTextLength: 0, maxTextLength: 2);
   }
 
+  final VerificationMeta _reciboLarguraPaginaMeta =
+      const VerificationMeta('reciboLarguraPagina');
+  GeneratedRealColumn _reciboLarguraPagina;
+  @override
+  GeneratedRealColumn get reciboLarguraPagina =>
+      _reciboLarguraPagina ??= _constructReciboLarguraPagina();
+  GeneratedRealColumn _constructReciboLarguraPagina() {
+    return GeneratedRealColumn(
+      'RECIBO_LARGURA_PAGINA',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _reciboMargemPaginaMeta =
+      const VerificationMeta('reciboMargemPagina');
+  GeneratedRealColumn _reciboMargemPagina;
+  @override
+  GeneratedRealColumn get reciboMargemPagina =>
+      _reciboMargemPagina ??= _constructReciboMargemPagina();
+  GeneratedRealColumn _constructReciboMargemPagina() {
+    return GeneratedRealColumn(
+      'RECIBO_MARGEM_PAGINA',
+      $tableName,
+      true,
+    );
+  }
+
   final VerificationMeta _encerraMovimentoAutoMeta =
       const VerificationMeta('encerraMovimentoAuto');
   GeneratedTextColumn _encerraMovimentoAuto;
@@ -20445,6 +20532,8 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
         planoValor,
         planoSituacao,
         reciboFormatoPagina,
+        reciboLarguraPagina,
+        reciboMargemPagina,
         encerraMovimentoAuto,
         permiteEstoqueNegativo
       ];
@@ -20679,6 +20768,18 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
           _reciboFormatoPaginaMeta,
           reciboFormatoPagina.isAcceptableOrUnknown(
               data['RECIBO_FORMATO_PAGINA'], _reciboFormatoPaginaMeta));
+    }
+    if (data.containsKey('RECIBO_LARGURA_PAGINA')) {
+      context.handle(
+          _reciboLarguraPaginaMeta,
+          reciboLarguraPagina.isAcceptableOrUnknown(
+              data['RECIBO_LARGURA_PAGINA'], _reciboLarguraPaginaMeta));
+    }
+    if (data.containsKey('RECIBO_MARGEM_PAGINA')) {
+      context.handle(
+          _reciboMargemPaginaMeta,
+          reciboMargemPagina.isAcceptableOrUnknown(
+              data['RECIBO_MARGEM_PAGINA'], _reciboMargemPaginaMeta));
     }
     if (data.containsKey('ENCERRA_MOVIMENTO_AUTO')) {
       context.handle(

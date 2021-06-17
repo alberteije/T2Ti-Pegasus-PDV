@@ -592,10 +592,10 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
         _contasPagar = _contasPagar.copyWith(statusPagamento: 'A');
         form.save();
+        if (_contasPagar.dataPagamento != null) {
+          _contasPagar = _contasPagar.copyWith(statusPagamento: 'P');
+        }
         if (widget.operacao == 'A') {
-          if (_contasPagar.dataPagamento != null) {
-            _contasPagar = _contasPagar.copyWith(statusPagamento: 'P');
-          }
           Sessao.db.contasPagarDao.alterar(_contasPagar);
         } else {
           Sessao.db.contasPagarDao.inserir(_contasPagar);

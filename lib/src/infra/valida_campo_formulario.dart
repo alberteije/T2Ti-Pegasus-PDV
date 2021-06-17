@@ -80,7 +80,7 @@ class ValidaCampoFormulario {
       return campoObrigario;
     }
   }
-
+ 
   /// validar se os caracteres são numericos
   static String validarNumerico(String value) {
     final RegExp nameExp = RegExp(r'^[0-9]+$');

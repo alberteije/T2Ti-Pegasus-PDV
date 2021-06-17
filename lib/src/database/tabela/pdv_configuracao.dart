@@ -79,6 +79,8 @@ class PdvConfiguracaos extends Table {
   RealColumn get planoValor => real().named('PLANO_VALOR').nullable()();
   TextColumn get planoSituacao => text().named('PLANO_SITUACAO').withLength(min: 0, max: 1).nullable()();
   TextColumn get reciboFormatoPagina => text().named('RECIBO_FORMATO_PAGINA').withLength(min: 0, max: 2).nullable()();
+  RealColumn get reciboLarguraPagina => real().named('RECIBO_LARGURA_PAGINA').nullable()();
+  RealColumn get reciboMargemPagina => real().named('RECIBO_MARGEM_PAGINA').nullable()();
   TextColumn get encerraMovimentoAuto => text().named('ENCERRA_MOVIMENTO_AUTO').withLength(min: 0, max: 1).nullable()();
   TextColumn get permiteEstoqueNegativo => text().named('PERMITE_ESTOQUE_NEGATIVO').withLength(min: 0, max: 1).nullable()();
 }

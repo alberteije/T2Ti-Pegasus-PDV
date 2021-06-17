@@ -740,11 +740,13 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
     final pickedFile = await _pickerImagem.getImage(
       source: ImageSource.gallery, imageQuality: 50
     );
-    Sessao.empresa = Sessao.empresa.copyWith(
-      logotipo: await pickedFile.readAsBytes(),
-    );
-    setState(() {
-    });
+    if (pickedFile != null) {
+      Sessao.empresa = Sessao.empresa.copyWith(
+        logotipo: await pickedFile.readAsBytes(),
+      );
+      setState(() {
+      });
+    }
   }
 
   Widget _getEditUrl() {

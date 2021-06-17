@@ -626,7 +626,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
             dataLancamento: DateTime.now(),
             dataVencimento: (diaVencimentoFixo) 
                             ? DateTime.utc(dataPrimeiroVencimento.year, dataPrimeiroVencimento.month + i, dataPrimeiroVencimento.day)
-                            : dataPrimeiroVencimento.add(new Duration(days: intervaloEntreParcelas * i)),
+                            : dataPrimeiroVencimento.add(Duration(days: intervaloEntreParcelas * i)),
             valorAReceber: num.parse((widget.totalParcelamento / quantidadeParcelas).toStringAsFixed(Constantes.decimaisValor)),
             statusRecebimento: 'A',
             historico: 'Gerado pela venda número ' + Sessao.vendaAtual.id.toString() + ' Parcela ' + (i+1).toString() + ' de ' + _quantidadeParcelasController.text,

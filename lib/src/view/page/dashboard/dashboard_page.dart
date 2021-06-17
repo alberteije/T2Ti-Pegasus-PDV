@@ -208,7 +208,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                             style: TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.w600,
-                                            fontSize: 15.0),
+                                            fontSize: Biblioteca.isTelaPequena(context) ? 13.0 : 15.0),
                                           ),
                                           DropdownButton(
                                             isDense: true,
@@ -224,7 +224,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                     style: TextStyle(
                                                         color: Colors.blue,
                                                         fontWeight: FontWeight.w400,
-                                                        fontSize: 14.0)),
+                                                        fontSize: Biblioteca.isTelaPequena(context) ? 12.0 : 14.0)),
                                               );
                                             }).toList()
                                           ),
@@ -275,8 +275,18 @@ class _DashboardPageState extends State<DashboardPage> {
                                         'Saldo: ' + 'R\$ ${Constantes.formatoDecimalValor.format(_totalReceitas - _totalDespesas)}',
                                         style: 
                                         _totalDespesas > _totalReceitas
-                                        ? TextStyle(fontWeight: FontWeight.w600, fontSize: 17.0, color: Colors.red, fontStyle: FontStyle.italic)
-                                        : TextStyle(fontWeight: FontWeight.w600, fontSize: 17.0, color: Colors.blue, fontStyle: FontStyle.italic),
+                                        ? TextStyle(
+                                          fontWeight: FontWeight.w600, 
+                                          fontSize: 17.0, 
+                                          color: Colors.red, 
+                                          fontStyle: FontStyle.italic
+                                          )
+                                        : TextStyle(
+                                          fontWeight: FontWeight.w600, 
+                                          fontSize: 17.0, 
+                                          color: Colors.blue, 
+                                          fontStyle: FontStyle.italic
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -305,7 +315,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                             style: TextStyle(
                                               color: Colors.black,
                                               fontWeight: FontWeight.w600,
-                                              fontSize: 15.0),
+                                              fontSize: Biblioteca.isTelaPequena(context) ? 13.0 : 15.0),
                                           ),
                                           DropdownButton(
                                             isDense: true,
@@ -321,7 +331,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                   style: TextStyle(
                                                       color: Colors.blue,
                                                       fontWeight: FontWeight.w400,
-                                                      fontSize: 14.0)),
+                                                      fontSize: Biblioteca.isTelaPequena(context) ? 12.0 : 14.0)),
                                               );
                                             }).toList()
                                           ),
@@ -476,7 +486,10 @@ class _DashboardPageState extends State<DashboardPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Text('Total das Vendas',
-                                        style: TextStyle(color: Colors.green)),
+                                        style: TextStyle(
+                                          color: Colors.green,
+                                          fontSize: Biblioteca.isTelaPequena(context) ? 13.0 : 15.0,
+                                          )),
                                     Text('R\$ ${Constantes.formatoDecimalValor.format(_totalVendas ?? 0)}',
                                         style: TextStyle(
                                             color: Colors.black,
@@ -499,7 +512,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                         style: TextStyle(
                                             color: Colors.blue,
                                             fontWeight: FontWeight.w400,
-                                            fontSize: 14.0)),
+                                            fontSize: Biblioteca.isTelaPequena(context) ? 12.0 : 14.0)),
                                     );
                                   }).toList()
                                 ),
@@ -567,7 +580,9 @@ class _DashboardPageState extends State<DashboardPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text('Itens com Estoque Crítico',
-                                  style: TextStyle(color: Colors.redAccent)),
+                                  style: TextStyle(
+                                    color: Colors.redAccent,
+                                    fontSize: Biblioteca.isTelaPequena(context) ? 12.0 : 14.0)),
                                 Text(_estoqueCritico.toString(),
                                   style: TextStyle(
                                       color: Colors.black,
@@ -624,17 +639,15 @@ class _DashboardPageState extends State<DashboardPage> {
             shape: CircleBorder(),
             child: Padding(
               padding: EdgeInsets.all(16.0),
-              child: Icon(icone,
-                  color: Colors.white, size: 30.0),
+              child: Icon(icone, color: Colors.white, size: 30.0),
             )),
           Padding(padding: EdgeInsets.only(bottom: 16.0)),
-          Text(descricao,
-            style: TextStyle(color: Colors.black87)),
+          Text(descricao, style: TextStyle(color: Colors.black87)),
           Text('R\$ ${Constantes.formatoDecimalValor.format(valor ?? 0)}', //valor
             style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w600,
-                fontSize: 24.0)),
+              color: Colors.black,
+              fontWeight: FontWeight.w600,
+              fontSize: Biblioteca.isTelaPequena(context) ? 16.00 : 24.0)),
         ]
       ),
     );

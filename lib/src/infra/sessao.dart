@@ -71,7 +71,7 @@ class Sessao {
 
   static PdvMovimento movimento;
   static Empresa empresa;
-  static PdvConfiguracao configuracao = PdvConfiguracao(id: null);
+  static PdvConfiguracao configuracaoPdv;
   static PdvVendaCabecalho vendaAtual = PdvVendaCabecalho(id: null);
   static List<VendaDetalhe> listaVendaAtualDetalhe = [];
   static List<PdvTipoPagamento> listaTipoPagamento = [];
@@ -98,7 +98,10 @@ class Sessao {
       );
       await db.empresaDao.alterar(Sessao.empresa);
     }
-    configuracao = await db.pdvConfiguracaoDao.consultarObjeto(1); // pega a configuracao - deve ter apenas um registro no banco de dados
+    configuracaoPdv = await db.pdvConfiguracaoDao.consultarObjeto(1); // pega a configuracao - deve ter apenas um registro no banco de dados
+    // if (configuracaoPdv == null) {
+
+    // }
     listaTipoPagamento = await db.pdvTipoPagamentoDao.consultarLista(); // pega os tipos de pagamento e poe numa lista
 
     if (kDebugMode && Biblioteca.isDesktop()) {

@@ -162,6 +162,28 @@ class UsuarioService extends ServiceBase {
       await tratarRetornoErro(response.body, response.headers);
       return null;
     }
-
   } 
+
+  Future<Usuario> gravarDadosInformacao(Usuario usuario) async {
+    final response = await clienteHTTP.post(
+      Uri.tryParse('$endpoint/usuario/grava-dados-informacao'),
+      headers: {
+        "content-type": "application/json",
+        },
+      body: usuario.objetoEncodeJson(usuario),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      if (response.headers["content-type"].contains("html")) {
+        tratarRetornoErro(response.body, response.headers);
+        return null;
+      } else {
+        var usuarioJson = json.decode(response.body);
+        return Usuario.fromJson(usuarioJson);
+      }
+    } else {
+      await tratarRetornoErro(response.body, response.headers);
+      return null;
+    }
+  }   
 }

@@ -352,7 +352,7 @@ class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoLi
   }
 
   Future _refrescarTela() async {
-    if (CompraPedidoCabecalhoListaPage.compraPedidoCabecalho != null) {
+    if (CompraPedidoCabecalhoListaPage.compraPedidoCabecalho != null) { // vai entrar aqui caso a tela do estoque tenha enviado itens
       _inserir();      
     }
     await Sessao.db.compraPedidoCabecalhoDao.consultarListaMontado(mes: _mesAno.month, ano: _mesAno.year);

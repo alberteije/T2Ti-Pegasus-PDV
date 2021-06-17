@@ -40,6 +40,7 @@ export 'package:pegasus_pdv/src/view/page/pdv/efetua_pagamento_page.dart';
 export 'package:pegasus_pdv/src/view/page/pdv/informa_valor_page.dart';
 export 'package:pegasus_pdv/src/view/page/pdv/parcelamento_receitas_page.dart';
 export 'package:pegasus_pdv/src/view/page/pdv/produto_detalhe_page.dart';
+export 'package:pegasus_pdv/src/view/page/pdv/identifica_cliente_page.dart';
 
 // Movimento
 export 'package:pegasus_pdv/src/view/page/movimento/movimento_encerra_page.dart';
@@ -94,3 +95,7 @@ export 'package:pegasus_pdv/src/view/page/relatorios/recibo_relatorio_57.dart';
 
 // vendas
 export 'package:pegasus_pdv/src/view/page/vendas/vendas_lista_page.dart';
+
+// configurações
+export 'package:pegasus_pdv/src/view/page/configuracoes/configuracao_page.dart';
+

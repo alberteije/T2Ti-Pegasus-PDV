@@ -909,7 +909,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                   dataLancamento: DateTime.now(),
                   dataVencimento: (diaFixoParcela != null && diaFixoParcela != '') 
                                   ? DateTime.utc(primeiroVencimento.year, primeiroVencimento.month + i, primeiroVencimento.day)
-                                  : primeiroVencimento.add(new Duration(days: intervaloEntreParcelas * i)),
+                                  : primeiroVencimento.add(Duration(days: intervaloEntreParcelas * i)),
                   valorAPagar: num.parse((CompraPedidoCabecalhoPage.compraPedidoCabecalho.valorTotal / quantidadeParcelas).toStringAsFixed(Constantes.decimaisValor)),
                   statusPagamento: 'A',
                   historico: 'Gerado pelo módulo compras. Parcela ' + (i+1).toString() + ' de ' + quantidadeParcelas.toString(),

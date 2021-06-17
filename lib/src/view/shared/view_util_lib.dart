@@ -134,6 +134,27 @@ class ViewUtilLib {
   static EdgeInsets paddingAbaPersistePage = EdgeInsets.symmetric(horizontal: 16.0);
 // #region Padding
 
+static SliderThemeData sliderThemeData(BuildContext context) {
+  return SliderTheme.of(context).copyWith(
+    activeTrackColor: Colors.blue[700],
+    inactiveTrackColor: Colors.blue[100],
+    trackShape: RoundedRectSliderTrackShape(),
+    trackHeight: 4.0,
+    thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12.0),
+    thumbColor: Colors.blueAccent,
+    overlayColor: Colors.blue.withAlpha(32),
+    overlayShape: RoundSliderOverlayShape(overlayRadius: 28.0),
+    tickMarkShape: RoundSliderTickMarkShape(),
+    activeTickMarkColor: Colors.blue[700],
+    inactiveTickMarkColor: Colors.blue[100],
+    valueIndicatorShape: PaddleSliderValueIndicatorShape(),
+    valueIndicatorColor: Colors.blueAccent,
+    valueIndicatorTextStyle: TextStyle(
+      color: Colors.white,
+    ),
+  );
+}
+
 }
 
 /// Controla o Date Picker

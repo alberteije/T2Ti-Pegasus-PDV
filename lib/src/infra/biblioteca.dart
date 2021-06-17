@@ -55,7 +55,7 @@ class Biblioteca {
   /// útil para campos do tipo: CPF, CNPJ, CEP, etc
   static String removerMascara(dynamic value) {
     if (value != null) {
-      return value.replaceAll(new RegExp(r'[^\w\s]+'), '');
+      return value.replaceAll(RegExp(r'[^\w\s]+'), '');
     } else {
       return null;
     }

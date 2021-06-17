@@ -426,12 +426,11 @@ class _PdvVendaCabecalhoDataSource extends DataTableSource {
       cells: <DataCell>[
         DataCell(
           ((pdvVendaCabecalho.cupomCancelado != null) && (pdvVendaCabecalho.cupomCancelado == 'S'))  
-          ?
-            Text('Cancelada')
-          :
-            getBotaoGenericoPdv(
-              descricao: 'Cancelar',
+          ? Text('Cancelada')
+          : getBotaoGenericoPdv(
+              descricao: 'Cancela',
               cor: Colors.red.shade400, 
+              padding: EdgeInsets.all(5),
               onPressed: () {
                 _cancelarVenda(pdvVendaCabecalho, context, refrescarTela: refrescarTela);
               }

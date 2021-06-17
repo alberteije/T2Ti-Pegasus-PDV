@@ -157,7 +157,7 @@ class _CaixaPageState extends State<CaixaPage> {
             body: Column(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top: 10, bottom: 5, left: 10, right: 10),
+                  padding: EdgeInsets.only(top: 10, bottom: 5, left: 10, right: 10),
                   child: Row(
                     children: <Widget>[
                       Expanded(
@@ -206,6 +206,7 @@ class _CaixaPageState extends State<CaixaPage> {
                   ),
                 ),
                 clienteSelecionado(context),
+                vendedorSelecionado(context),
                 rodape(context)
               ],
             ),
@@ -293,7 +294,7 @@ class _CaixaPageState extends State<CaixaPage> {
   }
 
   Widget clienteSelecionado(BuildContext context) {
-    if (Sessao.vendaAtual.nomeCliente != null) {
+    if (Sessao.vendaAtual.nomeCliente != null || Sessao.vendaAtual.cpfCnpjCliente != null) {
       return Material(
         color: Colors.blueGrey,
         child: Row(
@@ -302,7 +303,31 @@ class _CaixaPageState extends State<CaixaPage> {
             Padding(
               padding: const EdgeInsets.only(top: 5, bottom: 5, left: 0, right: 0),
               child: Text(
-                "Cliente: " + Sessao.vendaAtual.nomeCliente, 
+                "Cliente: " + (Sessao.vendaAtual.nomeCliente ?? '') + ' - CPF: ' + (Sessao.vendaAtual.cpfCnpjCliente ?? ''),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Material();
+    }
+  }
+
+  Widget vendedorSelecionado(BuildContext context) {
+    if (Sessao.vendaAtual.idColaborador != null) {
+      return Material(
+        color: Colors.blueGrey.shade900,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 5, bottom: 5, left: 0, right: 0),
+              child: Text(
+                "Vendedor: " + Sessao.vendaAtual.idColaborador.toString(),
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.white),
@@ -357,10 +382,12 @@ class _CaixaPageState extends State<CaixaPage> {
                   width: Biblioteca.isTelaPequena(context) ? 130 : 150,
                   child:ElevatedButton(
                     child: Text("Encerrar Venda", 
-                      style: Biblioteca.isTelaPequena(context) ? TextStyle(fontSize: 16) : TextStyle(fontSize: 18)),
+                      style: Biblioteca.isTelaPequena(context) ? TextStyle(fontSize: 15) : TextStyle(fontSize: 18)),
                     style: ElevatedButton.styleFrom(
                       elevation: 4,
-                      padding: Biblioteca.isTelaPequena(context) ? EdgeInsets.all(8.0) : EdgeInsets.all(15.0),
+                      padding: Biblioteca.isTelaPequena(context) 
+                                ? EdgeInsets.only(left: 6.0, right: 6.0, top: 12.0, bottom: 12.0) 
+                                : EdgeInsets.all(15.0),
                       primary: Colors.green.shade700, 
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
                     ),
@@ -570,7 +597,15 @@ class _CaixaPageState extends State<CaixaPage> {
   void _imprimirRecibo() {
     Navigator.of(context)
       .push(MaterialPageRoute(
-        builder: (BuildContext context) => ReciboRelatorio57()))
+        builder: (BuildContext context) { 
+          if (Sessao.configuracaoPdv.reciboFormatoPagina == 'A4') {
+            return ReciboRelatorioA4(); 
+          } else if (Sessao.configuracaoPdv.reciboFormatoPagina == '80') {
+            return ReciboRelatorio80(); 
+          } else {
+            return ReciboRelatorio57(); 
+          }
+        }))
       .then((_) {
         _configurarDadosTelaPadrao();
       });
@@ -645,7 +680,6 @@ class _CaixaPageState extends State<CaixaPage> {
       if (_fornecidoDescontoNoItem) {
         gerarDialogBoxInformacao(context, 'Não é possível fornecer desconto nos itens e no total da venda.');
       } else {
-
         Navigator.of(context)
           .push(MaterialPageRoute(
               builder: (BuildContext context) => InformaValorPage(title: 'Desconto na Venda', operacao: 'DESCONTO', )))
@@ -784,25 +818,30 @@ class _CaixaPageState extends State<CaixaPage> {
   }
 
   void _comporItemParaVenda() {
-    PdvVendaDetalhe pdvVendaDetalhe = 
-    PdvVendaDetalhe(
-      id: null, 
-      idProduto: _produto.id,
-      gtin: _produto.gtin == '' ? _produto.id.toString() : _produto.gtin,
-      cst: _produto.cst,
-      taxaIcms: _produto.taxaIcms,
-      movimentaEstoque: _produto.ippt == 'T' ? 'S' : 'N',
-      quantidade: _quantidadeInformada,
-      valorUnitario: _produto.valorVenda,
-      valorTotalItem: _quantidadeInformada * _produto.valorVenda,
-      valorTotal: _quantidadeInformada * _produto.valorVenda,
-    );
+    final _quantidadeFutura = (_produto.quantidadeEstoque ?? 0) - _quantidadeInformada;
+    if ((Sessao.configuracaoPdv.permiteEstoqueNegativo ?? 'S') == 'N' && _quantidadeFutura < 0) {
+      _exibirMensagemEstoqueNegativo();
+    } else {
+      PdvVendaDetalhe pdvVendaDetalhe = 
+      PdvVendaDetalhe(
+        id: null, 
+        idProduto: _produto.id,
+        gtin: _produto.gtin == '' ? _produto.id.toString() : _produto.gtin,
+        cst: _produto.cst,
+        taxaIcms: _produto.taxaIcms,
+        movimentaEstoque: _produto.ippt == 'T' ? 'S' : 'N',
+        quantidade: _quantidadeInformada,
+        valorUnitario: _produto.valorVenda,
+        valorTotalItem: _quantidadeInformada * _produto.valorVenda,
+        valorTotal: _quantidadeInformada * _produto.valorVenda,
+      );
 
-    VendaDetalhe vendaDetalhe = VendaDetalhe(pdvVendaDetalhe: pdvVendaDetalhe, produto: _produto);
-    setState(() {
-      Sessao.listaVendaAtualDetalhe.add(vendaDetalhe);
-      _atualizarTotais();
-    });
+      VendaDetalhe vendaDetalhe = VendaDetalhe(pdvVendaDetalhe: pdvVendaDetalhe, produto: _produto);
+      setState(() {
+        Sessao.listaVendaAtualDetalhe.add(vendaDetalhe);
+        _atualizarTotais();
+      });      
+    }
   }
   
   void _atualizarTotais() {
@@ -847,6 +886,10 @@ class _CaixaPageState extends State<CaixaPage> {
     gerarDialogBoxInformacao(context, 'Não existem itens na venda.');
   }
 
+  void _exibirMensagemEstoqueNegativo() {
+    gerarDialogBoxInformacao(context, 'Não é permitido vender um item com estoque negativo.');
+  }
+
   void _fecharMenus() {
     _menuController.close();
     if (_keyScaffold.currentState.isEndDrawerOpen) {
@@ -870,10 +913,12 @@ class _CaixaPageState extends State<CaixaPage> {
             fullscreenDialog: true,
           ));
       if (objetoJsonRetorno != null) {
-        Sessao.vendaAtual = 
-        Sessao.vendaAtual.copyWith(
-          idColaborador: objetoJsonRetorno['id'],
-        );
+        setState(() {
+          Sessao.vendaAtual = 
+          Sessao.vendaAtual.copyWith(
+            idColaborador: objetoJsonRetorno['id'],
+          );
+        });
       }
       _fecharMenus();
     } else {
@@ -888,40 +933,17 @@ class _CaixaPageState extends State<CaixaPage> {
 
   void _identificarCliente() async {
     if (Sessao.statusCaixa == StatusCaixa.vendaEmAndamento) {
-      Map<String, dynamic> objetoJsonRetorno = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => LookupLocalPage(
-              title: 'Importar Cliente',
-              colunas: ClienteDao.colunas,
-              campos: ClienteDao.campos,
-              campoPesquisaPadrao: 'nome',
-              valorPesquisaPadrao: '%',
-              metodoConsultaCallBack: _filtrarClienteLookup,
-              permiteCadastro: true,
-              metodoCadastroCallBack: () { Navigator.pushNamed(context, '/clienteLista',); },
-            ),
-            fullscreenDialog: true,
-          ));
-      if (objetoJsonRetorno != null) {
-        setState(() {
-          Sessao.vendaAtual = 
-          Sessao.vendaAtual.copyWith(
-            idCliente: objetoJsonRetorno['id'],
-            nomeCliente: objetoJsonRetorno['nome'],
-            cpfCnpjCliente: objetoJsonRetorno['cpfCnpj'],
-          );
-        });
-      }
+      Navigator.of(context)
+        .push(MaterialPageRoute(
+            builder: (BuildContext context) => IdentificaClientePage(title: 'Identifica Cliente')))
+        .then((_) {
+          setState(() {
+          });
+        });      
       _fecharMenus();
     } else {
       _exibirMensagemNaoExisteVendaEmAndamento();
     }
-  }
-
-  void _filtrarClienteLookup(String campo, String valor) async {
-    var listaFiltrada = await Sessao.db.clienteDao.consultarListaFiltro(campo, valor);
-    Sessao.retornoJsonLookup = jsonEncode(listaFiltrada);
   }
 
   void _importarProduto({String criterioPesquisa}) async {

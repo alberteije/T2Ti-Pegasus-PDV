@@ -192,23 +192,19 @@ class _CompraPedidoCabecalhoPageState extends State<CompraPedidoCabecalhoPage> w
   }
 
   bool _salvarForms() {
-	  var _formsValidos = false;  
-	  
     // valida e salva o form CompraPedidoCabecalhoDetalhe
     FormState formCompraPedidoCabecalho = _compraPedidoCabecalhoPersisteFormKey.currentState;
     if (formCompraPedidoCabecalho != null) {
       if (!formCompraPedidoCabecalho.validate()) {
         _abasController.animateTo(0);
-		    _formsValidos = false;
+		    return false;
       } else {
         _compraPedidoCabecalhoPersisteFormKey.currentState?.save();
-		    _formsValidos = true;
+		    return true;
       }
     }
 
-    // valida e salva os forms OneToOne
-	  return _formsValidos;
-    // return true;
+    return true;
   }
 
   void _salvarCompraPedidoCabecalho() async {

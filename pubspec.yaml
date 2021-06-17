@@ -49,6 +49,7 @@ dependencies:
   email_validator: ^1.0.6
   flutter_dotenv: ^3.1.0
   encrypt: ^5.0.0
+  bottom_navy_bar: ^6.0.0
   
   # file_picker: ^3.0.0
   # get_it: ^1.0.3+2

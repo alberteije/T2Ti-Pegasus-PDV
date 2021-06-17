@@ -1,6 +1,7 @@
 /*
 Title: T2Ti ERP 3.0                                                                
-Description: Página de registro do usuário
+Description: Página de cadastro da configuração para recebimento de informações
+sobre NFC-e, MFE e SAT
                                                                                 
 The MIT License                                                                 
                                                                                 
@@ -44,16 +45,17 @@ import 'package:pegasus_pdv/src/service/service.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
-class RegistroPage extends StatefulWidget {
+class ConfiguracaoAbaCadastro extends StatefulWidget {
   final String title;
+  final String modulo;
   
-  const RegistroPage({Key key, this.title}): super(key: key);
+  const ConfiguracaoAbaCadastro({Key key, this.title, this.modulo}): super(key: key);
 
   @override
-  _RegistroPageState createState() => _RegistroPageState();
+  _ConfiguracaoAbaCadastroState createState() => _ConfiguracaoAbaCadastroState();
 }
 
-class _RegistroPageState extends State<RegistroPage> {
+class _ConfiguracaoAbaCadastroState extends State<ConfiguracaoAbaCadastro> {
   final _emailController = TextEditingController(text: Sessao.empresa.email ?? '');
   final _whatsappController = MaskedTextController(
     mask: Constantes.mascaraTELEFONE,
@@ -62,19 +64,30 @@ class _RegistroPageState extends State<RegistroPage> {
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   final _valorFoco = FocusNode();
 
-  String _textoInformativo = 'Informe seus dados abaixo para continuar usando a aplicação. Nenhum valor será cobrado, apenas '
-                             'armazenaremos seus dados para lhe enviar informações valiosas sobre as novidades da T2Ti.';
+  String _textoInformativo = '';
+  String _textoAgradecimento = '';
 
   @override
   Widget build(BuildContext context) {
-    return  WillPopScope(
-      onWillPop: () async => false,
-      child: Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),        
-        elevation: 0,
-        backgroundColor: Colors.transparent,
+
+    switch (widget.modulo) {
+      case 'NFC':
+        _textoInformativo = 'Em breve você poderá emitir NFC-e a partir deste sistema. Se quiser receber informações sobre '
+                            'a emissão da NFC-e a partir do Pegasus PDV, informe seus dados abaixo.';        
+        break;
+      case 'SAT':
+        _textoInformativo = 'Em breve você poderá emitir SAT a partir deste sistema. Se quiser receber informações sobre '
+                            'a emissão do SAT a partir do Pegasus PDV, informe seus dados abaixo.';        
+        break;
+      case 'MFE':
+        _textoInformativo = 'Em breve você poderá emitir MFE (CE) a partir deste sistema. Se quiser receber informações sobre '
+                            'a emissão do MFE (CE) a partir do Pegasus PDV, informe seus dados abaixo.';        
+        break;
+      default:
+    }
+
+    return Scaffold(
+      body: SizedBox.expand(
         child: contentBox(context),
       ),
     );
@@ -87,40 +100,11 @@ class _RegistroPageState extends State<RegistroPage> {
         Form(
           key: _formKey,
           autovalidateMode: _autoValidate,
-          child: Stack(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
-                width: 500,
-                padding: EdgeInsets.only(left: 20, top: 55, right: 20, bottom: 10),
-                margin: EdgeInsets.only(top: 45),
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  color: Colors.blueGrey,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(color: Colors.black,offset: Offset(0, 10), blurRadius: 10),
-                  ]
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    cabecalhoTela(context),
-                    conteudoTela(context),
-                  ],
-                ),
-              ),
-              Positioned(
-                left: 20,
-                right: 20,
-                child: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  radius: 45,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(45)),
-                      child: Image.asset(Constantes.profileImage)
-                  ),
-                ),
-              ),
+              cabecalhoTela(context),
+              conteudoTela(context),
             ],
           ),
         ),
@@ -136,8 +120,9 @@ class _RegistroPageState extends State<RegistroPage> {
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
-              color: Colors.white,
+              color: Colors.blueGrey.shade100,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(
                     height: 10.0,
@@ -150,8 +135,19 @@ class _RegistroPageState extends State<RegistroPage> {
                     height: 5.0,
                   ),
                   Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Text(_textoInformativo),                
+                    padding: EdgeInsets.all(10),
+                    child: Text(_textoInformativo, textAlign: TextAlign.center,),                
+                  ),
+                  Visibility(
+                    visible: _textoAgradecimento != '',
+                    child: Padding(
+                      padding: EdgeInsets.all(2),
+                      child: Text(
+                        _textoAgradecimento, 
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0, color: Colors.red),
+                        ),                
+                    ),
                   ),
                   Divider(
                     indent: 10,
@@ -173,16 +169,19 @@ class _RegistroPageState extends State<RegistroPage> {
   Container conteudoTela(BuildContext context) {
     return Container(
       child: Stack(
+        alignment: AlignmentDirectional.center,
         children: <Widget>[
           Container(
             padding: EdgeInsets.only(top: 10.0, left: 0.0, right: 0.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
-              color: Colors.white,
+              color: Colors.yellow.shade50,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     const SizedBox(height: 10.0),
                     TextFormField(
@@ -256,23 +255,15 @@ class _RegistroPageState extends State<RegistroPage> {
       Usuario usuario = Usuario(
         email: _emailController.text,
         whatsapp: _whatsappController.text,
-        pendente: 'S',
+        modulo: widget.modulo,
         news: 'S',
       );
-      // chama o método registrar e observa o que acontece
-      usuario = await servico.registrar(usuario);
-      // se continua pendente, pede para o usuário confirmar o e-mail que recebeu
+      // grava o usuário no servidor
+      usuario = await servico.gravarDadosInformacao(usuario);
       if (usuario != null) {
-        if (usuario.pendente == 'S') {
-          setState(() {
-            _textoInformativo = 'Confirme seus dados no e-mail que foi enviado para sua conta. Dessa forma, seu cadastro será concluído.';
-          });
-        } else {
-          // senão, altera a empresa local informando que o usuário foi registrado e fecha a janela
-          Sessao.empresa = Sessao.empresa.copyWith(registrado: true);
-          await Sessao.db.empresaDao.alterar(Sessao.empresa);
-          Navigator.pop(context, true);
-        }
+        setState(() {
+          _textoAgradecimento = 'Obrigado, seu cadastro foi realizado com sucesso. Entraremos em contato quando tivermos novidades.';
+        });
       }
     }
   }

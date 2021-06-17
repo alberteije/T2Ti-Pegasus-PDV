@@ -164,7 +164,10 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
                   SizedBox(
                     height: 5.0,
                   ),
-                  Text("Informe os dados para encerrar o movimento [" + Sessao.movimento.id.toString() + "]"),
+                  Text(
+                    "Informe os dados para encerrar o movimento [" + Sessao.movimento.id.toString() + "]",
+                    textAlign: TextAlign.center,
+                    ),
                   Divider(
                     indent: 10,
                     endIndent: 10,
