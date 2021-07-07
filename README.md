@@ -15,7 +15,7 @@
                     <br />              
 O T2Ti ERP 3.0 é feito com várias tecnologias de ponta. O cliente (frontend) é desenvolvido em Flutter e são construídos cinco servidores (backend) nas linguagens: C#, Delphi, Java, Node e PHP. 	
                     <hr />
-                    <h3>T2Ti Pegasus PDV Lite</h3>
+                    <h3>T2Ti Pegasus PDV</h3>
 			<a href="https://t2tisistemas.com/produtos/multi/pegasus-pdv/">
 			<img src="http://t2ti.com/images/erp3/mobile-screen-topo.png" />
 			</a>
