@@ -47,6 +47,7 @@ class EmpresaDao extends DatabaseAccessor<AppDatabase> with _$EmpresaDaoMixin {
   final AppDatabase db;
 
   List<Empresa> listaEmpresa; // será usada para popular a grid na janela do empresa
+  Empresa objetoDaSessao;
 
   EmpresaDao(this.db) : super(db);
 
@@ -65,20 +66,24 @@ class EmpresaDao extends DatabaseAccessor<AppDatabase> with _$EmpresaDaoMixin {
 
   Stream<List<Empresa>> observarLista() => select(empresas).watch();
 
-  Future<Empresa> consultarObjeto(int pId) {
-    return (select(empresas)..where((t) => t.id.equals(pId))).getSingleOrNull();
+  Future<Empresa> consultarObjeto(int pId) async {
+    objetoDaSessao = await (select(empresas)..where((t) => t.id.equals(pId))).getSingleOrNull();
+    aplicarDomains();
+    return objetoDaSessao;
   } 
 
   Future<int> inserir(Insertable<Empresa> pObjeto) {
     return transaction(() async {
-      final idInserido = await into(empresas).insert(pObjeto);
+      final empresa = removerDomains(pObjeto);
+      final idInserido = await into(empresas).insert(empresa);
       return idInserido;
     });    
   } 
 
   Future<bool> alterar(Insertable<Empresa> pObjeto) {
     return transaction(() async {
-      return update(empresas).replace(pObjeto);
+      final empresa = removerDomains(pObjeto);
+      return update(empresas).replace(empresa);
     });    
   } 
 
@@ -87,6 +92,44 @@ class EmpresaDao extends DatabaseAccessor<AppDatabase> with _$EmpresaDaoMixin {
       return delete(empresas).delete(pObjeto);
     });    
   }
+
+  Empresa removerDomains(Empresa empresa) {
+    if (empresa.crt != null) {
+      empresa = empresa.copyWith(
+        crt: empresa.crt.substring(0,1)
+      );
+    }
+    if (empresa.tipo != null) {
+      empresa = empresa.copyWith(
+        tipo: empresa.tipo.substring(0,1)
+      );
+    }
+    return empresa;
+  }
+
+  void aplicarDomains() {
+    switch (objetoDaSessao.crt) {
+      case '1' :
+        objetoDaSessao = objetoDaSessao.copyWith(crt: '1-Simples Nacional',);
+        break;
+      case '2' :
+        objetoDaSessao = objetoDaSessao.copyWith(crt: '2-Simples Nacional - excesso de sublimite da receita bruta',);
+        break;
+      case '3' :
+        objetoDaSessao = objetoDaSessao.copyWith(crt: '3-Regime Normal',);
+        break;
+      default:
+    }      
+    switch (objetoDaSessao.tipo) {
+      case 'M' :
+        objetoDaSessao = objetoDaSessao.copyWith(tipo: 'Matriz',);
+        break;
+      case 'F' :
+        objetoDaSessao = objetoDaSessao.copyWith(tipo: 'Filial',);
+        break;
+      default:
+    }      
+  } 
 
 	static List<String> campos = <String>[
 		'ID', 
@@ -129,5 +172,6 @@ class EmpresaDao extends DatabaseAccessor<AppDatabase> with _$EmpresaDaoMixin {
 		'Fone', 
 		'Contato', 
 	];
+
   
 }

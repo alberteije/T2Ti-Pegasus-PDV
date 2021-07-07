@@ -35,6 +35,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'package:moor/moor.dart';
 
+import '../database.dart';
+import '../database_classes.dart';
+
 @DataClassName("NfeCabecalho")
 class NfeCabecalhos extends Table {
   String get tableName => 'NFE_CABECALHO';
@@ -116,5 +119,19 @@ class NfeCabecalhos extends Table {
   TextColumn get compraContrato => text().named('COMPRA_CONTRATO').withLength(min: 0, max: 60).nullable()();
   TextColumn get qrcode => text().named('QRCODE').withLength(min: 0, max: 250).nullable()();
   TextColumn get urlChave => text().named('URL_CHAVE').withLength(min: 0, max: 85).nullable()();
-  TextColumn get statusNota => text().named('STATUS_NOTA').withLength(min: 0, max: 1).nullable()();
+  TextColumn get statusNota => text().named('STATUS_NOTA').withLength(min: 0, max: 1).nullable()(); //"0-Em Edição"-"1-Salva"-"2-Validada"-"3-Assinada"-"4-Autorizada"
+}
+
+class NfeCabecalhoMontado {
+  NfeCabecalho nfeCabecalho;
+  NfeDestinatario nfeDestinatario;
+  List<NfeInformacaoPagamento> listaNfeInformacaoPagamento;
+  List<NfeDetalheMontado> listaNfeDetalheMontado;
+
+  NfeCabecalhoMontado({
+    this.nfeCabecalho,
+    this.nfeDestinatario,
+    this.listaNfeInformacaoPagamento,
+    this.listaNfeDetalheMontado,
+  });
 }

@@ -73,6 +73,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
 
   Map<LogicalKeySet, Intent> _shortcutMap; 
   Map<Type, Action<Intent>> _actionMap;
+  final _foco = FocusNode();
 
   Produto _produto;
 
@@ -94,6 +95,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
     if (_produto == null) {
       _produto = Produto(id: null);
     }
+    _foco.requestFocus();
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -113,6 +115,8 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
   Widget build(BuildContext context) {
     final _importaProdutoUnidadeController = TextEditingController();
     _importaProdutoUnidadeController.text = widget.produtoMontado?.produtoUnidade?.sigla ?? '';
+    final _importaTributGrupoTributarioController = TextEditingController();
+    _importaTributGrupoTributarioController.text = widget.produtoMontado?.tributGrupoTributario?.descricao ?? '';
 	
     final _valorCompraController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _produto?.valorCompra ?? 0);
     final _valorVendaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _produto?.valorVenda ?? 0);
@@ -160,6 +164,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                   flex: 1,
                                   child: Container(
                                     child: TextFormField(
+                                      focusNode: _foco,
                                       validator: ValidaCampoFormulario.validarObrigatorio,
                                       controller: _importaProdutoUnidadeController,
                                       readOnly: true,
@@ -214,6 +219,80 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                             ),
                           ),
                         ],
+                      ),
+                      Visibility(
+                        visible: Sessao.configuracaoPdv.modulo != 'G',
+                        child: Divider(color: Colors.white,),
+                      ),
+                      Visibility(
+                        visible: Sessao.configuracaoPdv.modulo != 'G',
+                        child: BootstrapRow(
+                          height: 60,
+                          children: <BootstrapCol>[
+                            BootstrapCol(
+                              sizes: 'col-12',
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      child: TextFormField(
+                                        focusNode: _foco,
+                                        validator: ValidaCampoFormulario.validarObrigatorio,
+                                        controller: _importaTributGrupoTributarioController,
+                                        readOnly: true,
+                                        decoration: getInputDecoration(
+                                          'Conteúdo para o campo Grupo Tributário',
+                                          'Grupo Tributário *',
+                                          false),
+                                        onSaved: (String value) {
+                                        },
+                                        onChanged: (text) {
+                                          _formFoiAlterado = true;
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 0,
+                                    child: IconButton(
+                                      tooltip: 'Importar Grupo Tributário',
+                                      icon: ViewUtilLib.getIconBotaoLookup(),
+                                      onPressed: () async {
+                                        ///chamando o lookup
+                                        Map<String, dynamic> _objetoJsonRetorno =
+                                          await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                            builder: (BuildContext context) => LookupLocalPage(
+                                              title: 'Importar Grupo Tributário',
+                                              colunas: TributGrupoTributarioDao.colunas,
+                                              campos: TributGrupoTributarioDao.campos,
+                                              campoPesquisaPadrao: 'descricao',
+                                              valorPesquisaPadrao: '%',
+                                              metodoConsultaCallBack: _filtrarGrupoTributarioLookup,                                             
+                                              // permiteCadastro: true,
+                                              // metodoCadastroCallBack: () { Navigator.pushNamed(context, '/produtoUnidadeLista',); },
+                                            ),
+                                            fullscreenDialog: true,
+                                          ));
+                                        if (_objetoJsonRetorno != null) {
+                                          if (_objetoJsonRetorno['descricao'] != null) {
+                                            _importaTributGrupoTributarioController.text = _objetoJsonRetorno['descricao'];
+                                            _produto = _produto.copyWith(idTributGrupoTributario: _objetoJsonRetorno['id']);
+                                            widget.produtoMontado.tributGrupoTributario = widget.produtoMontado.tributGrupoTributario.copyWith(
+                                              descricao: _objetoJsonRetorno['descricao'],
+                                            );
+                                          }
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Divider(color: Colors.white,),
                       BootstrapRow(
@@ -459,6 +538,11 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
 
   void _filtrarUnidadeLookup(String campo, String valor) async {
     final listaFiltrada = await Sessao.db.produtoUnidadeDao.consultarListaFiltro(campo, valor);
+    Sessao.retornoJsonLookup = jsonEncode(listaFiltrada);
+  }
+
+  void _filtrarGrupoTributarioLookup(String campo, String valor) async {
+    final listaFiltrada = await Sessao.db.tributGrupoTributarioDao.consultarListaFiltro(campo, valor);
     Sessao.retornoJsonLookup = jsonEncode(listaFiltrada);
   }
 

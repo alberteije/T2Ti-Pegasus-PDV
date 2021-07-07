@@ -129,7 +129,7 @@ class Recibo80 {
       Sessao.empresa.logotipo,
     );
 
-    final _fontNormal = await rootBundle.load('assets/fonts/roboto-normal.ttf');
+    final _fontNormal = await rootBundle.load('assets/fonts/lucida-console.ttf');
     final _fontBold = await rootBundle.load('assets/fonts/roboto-bold.ttf');
     final _fontItalic = await rootBundle.load('assets/fonts/roboto-italic.ttf');
 
@@ -315,10 +315,10 @@ class Recibo80 {
       ),
       cellHeight: 20,
       columnWidths: {
-        0: pw.FlexColumnWidth(35),
-        1: pw.FlexColumnWidth(45),
-        2: pw.FlexColumnWidth(20),
-        3: pw.FlexColumnWidth(20),
+        0: pw.FlexColumnWidth(12),
+        1: pw.FlexColumnWidth(38),
+        2: pw.FlexColumnWidth(15),
+        3: pw.FlexColumnWidth(15),
         4: pw.FlexColumnWidth(20),
       },
       cellAlignments: {
@@ -354,7 +354,7 @@ class Recibo80 {
         Sessao.listaVendaAtualDetalhe.length,
         (row) => List<String>.generate(
           tableHeaders.length,
-          (col) => Sessao.listaVendaAtualDetalhe[row].getIndex(col),
+          (col) => col == 0 ? Sessao.listaVendaAtualDetalhe[row].getIndex(5) : Sessao.listaVendaAtualDetalhe[row].getIndex(col),
         ),
       ),
     );
@@ -524,7 +524,7 @@ class Recibo80 {
           child: pw.Divider(color: _accentColor),
         ),
         pw.Text(
-          'Informação de Parcelamento',
+          'Parcelas',
           style: pw.TextStyle(
             fontSize: 12,
             color: _baseColor,
@@ -553,6 +553,11 @@ class Recibo80 {
           color: _baseColor,
         ),
         headerHeight: 20,
+        columnWidths: {
+          0: pw.FlexColumnWidth(35),
+          1: pw.FlexColumnWidth(40),
+          2: pw.FlexColumnWidth(25),
+        },
         cellAlignments: {
           0: pw.Alignment.centerLeft,
           1: pw.Alignment.center,

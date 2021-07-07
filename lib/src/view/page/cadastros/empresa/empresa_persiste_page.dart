@@ -71,6 +71,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
 
   Map<LogicalKeySet, Intent> _shortcutMap; 
   Map<Type, Action<Intent>> _actionMap;
+  final _foco = FocusNode();
 
   final _imagemController = TextEditingController();
   
@@ -86,6 +87,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
         onInvoke: _tratarAcoesAtalhos,
       ),
     };
+    _foco.requestFocus();
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -155,12 +157,13 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                 isEmpty: Sessao.empresa.tipo == null,
                                 child: getDropDownButton(Sessao.empresa.tipo,
                                   (String newValue) {
+                                    _formFoiAlterado = true;
                                     setState(() {
                                       Sessao.empresa = Sessao.empresa.copyWith(tipo: newValue);
                                     });
                                 }, <String>[
-                                  'M',
-                                  'F',
+                                  'Matriz',
+                                  'Filial',
                               ])),
                             ),
                           ),
@@ -169,6 +172,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             child: Padding(
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
                               child: TextFormField(
+                                focusNode: _foco,
                                 validator: ValidaCampoFormulario.validarObrigatorio,
                                 maxLength: 150,
                                 maxLines: 1,
@@ -214,6 +218,41 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                           ),
                         ],
                       ),
+                      Visibility(
+                        visible: Sessao.configuracaoPdv.modulo != 'G',
+                        child: Divider(color: Colors.white,),
+                      ),
+                      Visibility(
+                        visible: Sessao.configuracaoPdv.modulo != 'G',
+                        child: BootstrapRow(
+                          height: 60,
+                          children: <BootstrapCol>[
+                            BootstrapCol(
+                              sizes: 'col-12',
+                              child: InputDecorator(
+                                decoration: getInputDecoration(
+                                  'Selecione a Opção Desejada',
+                                  'CRT',
+                                  true),
+                                isEmpty: Sessao.empresa.crt == null,
+                                child: getDropDownButton(Sessao.empresa.crt,
+                                  (String newValue) {
+                                    _formFoiAlterado = true;
+                                    setState(() {
+                                      Sessao.empresa = Sessao.empresa.copyWith(crt: newValue);
+                                    });
+                                    }, <String>[
+                                      '1-Simples Nacional',
+                                      '2-Simples Nacional - excesso de sublimite da receita bruta',
+                                      '3-Regime Normal',
+                                    ],
+                                    validator: ValidaCampoFormulario.validarObrigatorio,
+                                  )
+                                ),							
+                            ),
+                          ],
+                        ),
+                      ),
                       Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
@@ -257,6 +296,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                   firstDate: DateTime.parse('1900-01-01'),
                                   lastDate: DateTime.now(),
                                   onChanged: (DateTime value) {
+                                    _formFoiAlterado = true;
                                     setState(() {
                                       Sessao.empresa = Sessao.empresa.copyWith(dataConstituicao: value);
                                     });
@@ -404,9 +444,10 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                 isEmpty: Sessao.empresa?.uf == null,
                                 child: getDropDownButton(Sessao.empresa.uf,
                                   (String newValue) {
-                                setState(() {
-                                  Sessao.empresa = Sessao.empresa.copyWith(uf: newValue);
-                                });
+                                    _formFoiAlterado = true;
+                                    setState(() {
+                                      Sessao.empresa = Sessao.empresa.copyWith(uf: newValue);
+                                    });
                                 }, DropdownLista.listaUF)),                                                      
                             ),
                           ),
@@ -648,6 +689,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
         form.save();
         await Sessao.db.empresaDao.alterar(Sessao.empresa);
+        Sessao.empresa = await Sessao.db.empresaDao.consultarObjeto(1);
         showInSnackBar('Dados salvos com sucesso.', context, corFundo: Colors.blue);
         Navigator.of(context).pop();
       });
@@ -658,7 +700,11 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
     final FormState form = _formKey.currentState;
     if (form == null || !_formFoiAlterado) return true;
 
-    return await gerarDialogBoxFormAlterado(context);
+    return await gerarDialogBoxFormAlterado(context, 
+      onOkPressed: () async {
+        Sessao.empresa = await Sessao.db.empresaDao.consultarObjeto(1);
+      }
+    );
   }
 
   void _exibirImagemPicker(context) {

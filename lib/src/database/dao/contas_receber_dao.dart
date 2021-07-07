@@ -97,8 +97,8 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
     }
 
     listaContasReceberMontado = await consulta.map((row) {
-        final contasReceber = row.readTable(contasRecebers);
-        final cliente = row.readTable(clientes);
+        final contasReceber = row.readTableOrNull(contasRecebers);
+        final cliente = row.readTableOrNull(clientes);
 
         return ContasReceberMontado(
           contasReceber: contasReceber,

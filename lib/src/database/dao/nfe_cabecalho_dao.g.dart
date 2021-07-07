@@ -8,18 +8,10 @@ part of 'nfe_cabecalho_dao.dart';
 
 mixin _$NfeCabecalhoDaoMixin on DatabaseAccessor<AppDatabase> {
   $NfeCabecalhosTable get nfeCabecalhos => attachedDatabase.nfeCabecalhos;
-  $NfeAcessoXmlsTable get nfeAcessoXmls => attachedDatabase.nfeAcessoXmls;
-  $NfeCteReferenciadosTable get nfeCteReferenciados =>
-      attachedDatabase.nfeCteReferenciados;
-  $NfeCupomFiscalReferenciadosTable get nfeCupomFiscalReferenciados =>
-      attachedDatabase.nfeCupomFiscalReferenciados;
   $NfeDetalhesTable get nfeDetalhes => attachedDatabase.nfeDetalhes;
-  $NfeNfReferenciadasTable get nfeNfReferenciadas =>
-      attachedDatabase.nfeNfReferenciadas;
-  $NfeProcessoReferenciadosTable get nfeProcessoReferenciados =>
-      attachedDatabase.nfeProcessoReferenciados;
-  $NfeProdRuralReferenciadasTable get nfeProdRuralReferenciadas =>
-      attachedDatabase.nfeProdRuralReferenciadas;
-  $NfeReferenciadasTable get nfeReferenciadas =>
-      attachedDatabase.nfeReferenciadas;
+  $NfeDestinatariosTable get nfeDestinatarios => attachedDatabase.nfeDestinatarios;
+  $NfeDetalheImpostoIcmssTable get nfeDetalheImpostoIcmss => attachedDatabase.nfeDetalheImpostoIcmss;
+  $NfeDetalheImpostoPissTable get nfeDetalheImpostoPiss => attachedDatabase.nfeDetalheImpostoPiss;
+  $NfeDetalheImpostoCofinssTable get nfeDetalheImpostoCofinss => attachedDatabase.nfeDetalheImpostoCofinss;
+  $NfeInformacaoPagamentosTable get nfeInformacaoPagamentos => attachedDatabase.nfeInformacaoPagamentos;
 }

@@ -37,6 +37,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
+import 'package:pegasus_pdv/src/controller/controller.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
@@ -65,12 +66,11 @@ class CompraPedidoCabecalhoPage extends StatefulWidget {
   final String title;
   final String operacao;
 
-  static CompraPedidoCabecalho compraPedidoCabecalho;
-  static List<CompraDetalhe> listaCompraDetalhe = [];
+  // static CompraPedidoCabecalho compraPedidoCabecalho;
+  // static List<CompraDetalhe> listaCompraDetalhe = [];
   static bool descontoNosItems = false;
 
-  CompraPedidoCabecalhoPage({this.compraPedidoCabecalhoMontado, this.title, this.operacao, Key key})
-      : super(key: key);
+  CompraPedidoCabecalhoPage({this.compraPedidoCabecalhoMontado, this.title, this.operacao, Key key}): super(key: key);
 
   @override
   _CompraPedidoCabecalhoPageState createState() => _CompraPedidoCabecalhoPageState();
@@ -106,9 +106,9 @@ class _CompraPedidoCabecalhoPageState extends State<CompraPedidoCabecalhoPage> w
         onInvoke: _tratarAcoesAtalhos,
       ),
     };
-    CompraPedidoCabecalhoPage.compraPedidoCabecalho = widget.compraPedidoCabecalhoMontado.compraPedidoCabecalho;
-    if (CompraPedidoCabecalhoPage.compraPedidoCabecalho == null) {
-      CompraPedidoCabecalhoPage.compraPedidoCabecalho = 
+    CompraPedidoCabecalhoController.compraPedidoCabecalho = widget.compraPedidoCabecalhoMontado.compraPedidoCabecalho;
+    if (CompraPedidoCabecalhoController.compraPedidoCabecalho == null) {
+      CompraPedidoCabecalhoController.compraPedidoCabecalho = 
         CompraPedidoCabecalho(
           id: null, 
           dataPedido: DateTime.now(), 
@@ -211,9 +211,9 @@ class _CompraPedidoCabecalhoPageState extends State<CompraPedidoCabecalhoPage> w
 	  if (_salvarForms()) {  
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
         if (widget.operacao == 'A') {
-          await Sessao.db.compraPedidoCabecalhoDao.alterar(CompraPedidoCabecalhoPage.compraPedidoCabecalho, CompraPedidoCabecalhoPage.listaCompraDetalhe);
+          await Sessao.db.compraPedidoCabecalhoDao.alterar(CompraPedidoCabecalhoController.compraPedidoCabecalho, CompraPedidoCabecalhoController.listaCompraDetalhe);
         } else {
-          await Sessao.db.compraPedidoCabecalhoDao.inserir(CompraPedidoCabecalhoPage.compraPedidoCabecalho, CompraPedidoCabecalhoPage.listaCompraDetalhe);
+          await Sessao.db.compraPedidoCabecalhoDao.inserir(CompraPedidoCabecalhoController.compraPedidoCabecalho, CompraPedidoCabecalhoController.listaCompraDetalhe);
         }
         Navigator.pop(context);
       });
@@ -239,7 +239,7 @@ class _CompraPedidoCabecalhoPageState extends State<CompraPedidoCabecalhoPage> w
 
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-      Sessao.db.compraPedidoCabecalhoDao.excluir(CompraPedidoCabecalhoPage.compraPedidoCabecalho, CompraPedidoCabecalhoPage.listaCompraDetalhe);
+      Sessao.db.compraPedidoCabecalhoDao.excluir(CompraPedidoCabecalhoController.compraPedidoCabecalho, CompraPedidoCabecalhoController.listaCompraDetalhe);
       Navigator.of(context).pop();
     }, mensagemPersonalizada: 'Deseja excluir o pedido? Isso poderá causar alterações no estoque e no financeiro!');
   }  

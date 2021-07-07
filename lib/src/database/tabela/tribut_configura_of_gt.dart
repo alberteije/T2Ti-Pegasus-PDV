@@ -35,6 +35,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'package:moor/moor.dart';
 
+import '../database.dart';
+
 @DataClassName("TributConfiguraOfGt")
 class TributConfiguraOfGts extends Table {
   String get tableName => 'TRIBUT_CONFIGURA_OF_GT';
@@ -42,4 +44,22 @@ class TributConfiguraOfGts extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
   IntColumn get idTributGrupoTributario => integer().named('ID_TRIBUT_GRUPO_TRIBUTARIO').nullable().customConstraint('NULLABLE REFERENCES TRIBUT_GRUPO_TRIBUTARIO(ID)')();
   IntColumn get idTributOperacaoFiscal => integer().named('ID_TRIBUT_OPERACAO_FISCAL').nullable().customConstraint('NULLABLE REFERENCES TRIBUT_OPERACAO_FISCAL(ID)')();
+}
+
+class TributConfiguraOfGtMontado {
+  TributConfiguraOfGt tributConfiguraOfGt;
+  TributIcmsUf tributIcmsUf;
+  TributCofins tributCofins;
+  TributPis tributPis;
+  TributGrupoTributario tributGrupoTributario;
+  TributOperacaoFiscal tributOperacaoFiscal;
+
+  TributConfiguraOfGtMontado({
+    this.tributConfiguraOfGt,
+    this.tributIcmsUf,
+    this.tributCofins,
+    this.tributPis,
+    this.tributGrupoTributario,
+    this.tributOperacaoFiscal,
+  });
 }

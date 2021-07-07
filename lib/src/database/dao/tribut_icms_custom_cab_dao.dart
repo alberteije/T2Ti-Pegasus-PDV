@@ -67,36 +67,36 @@ class TributIcmsCustomCabDao extends DatabaseAccessor<AppDatabase> with _$Tribut
   Future<int> inserir(Insertable<TributIcmsCustomCab> pObjeto, List<TributIcmsCustomDet> listaTributIcmsCustomDet) {
     return transaction(() async {
       final idInserido = await into(tributIcmsCustomCabs).insert(pObjeto);
-      inserirFilhos(pObjeto as TributIcmsCustomCab, listaTributIcmsCustomDet);
+      await inserirFilhos(pObjeto as TributIcmsCustomCab, listaTributIcmsCustomDet);
       return idInserido;
     });    
   } 
 
   Future<bool> alterar(Insertable<TributIcmsCustomCab> pObjeto, List<TributIcmsCustomDet> listaTributIcmsCustomDet) {
     return transaction(() async {
-      excluirFilhos(pObjeto as TributIcmsCustomCab);
-      inserirFilhos(pObjeto as TributIcmsCustomCab, listaTributIcmsCustomDet);
+      await excluirFilhos(pObjeto as TributIcmsCustomCab);
+      await inserirFilhos(pObjeto as TributIcmsCustomCab, listaTributIcmsCustomDet);
       return update(tributIcmsCustomCabs).replace(pObjeto);
     });    
   } 
 
   Future<int> excluir(Insertable<TributIcmsCustomCab> pObjeto) {
     return transaction(() async {
-      excluirFilhos(pObjeto as TributIcmsCustomCab);
+      await excluirFilhos(pObjeto as TributIcmsCustomCab);
       return delete(tributIcmsCustomCabs).delete(pObjeto);
     });    
   }
 
-  void inserirFilhos(TributIcmsCustomCab tributIcmsCustomCab, List<TributIcmsCustomDet> listaTributIcmsCustomDet) {
+  Future<void> inserirFilhos(TributIcmsCustomCab tributIcmsCustomCab, List<TributIcmsCustomDet> listaTributIcmsCustomDet) async {
     for (var objeto in listaTributIcmsCustomDet) {
       if (objeto.id == null) {
         objeto = objeto.copyWith(idTributIcmsCustomCab: tributIcmsCustomCab.id);
       }
-      into(tributIcmsCustomDets).insert(objeto);  
+      await into(tributIcmsCustomDets).insert(objeto);  
     }
   }
   
-  void excluirFilhos(TributIcmsCustomCab tributIcmsCustomCab) {
-    (delete(tributIcmsCustomDets)..where((t) => t.idTributIcmsCustomCab.equals(tributIcmsCustomCab.id))).go();
+  Future<void> excluirFilhos(TributIcmsCustomCab tributIcmsCustomCab) async {
+    await (delete(tributIcmsCustomDets)..where((t) => t.idTributIcmsCustomCab.equals(tributIcmsCustomCab.id))).go();
   }
 }

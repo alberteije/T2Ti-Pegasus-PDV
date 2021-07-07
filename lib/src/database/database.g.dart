@@ -18614,6 +18614,7 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
   final int id;
   final int idEcfImpressora;
   final int idPdvCaixa;
+  final int idTributOperacaoFiscalPadrao;
   final String mensagemCupom;
   final String portaEcf;
   final String ipServidor;
@@ -18655,10 +18656,13 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
   final double reciboMargemPagina;
   final String encerraMovimentoAuto;
   final String permiteEstoqueNegativo;
+  final String moduloFiscalPrincipal;
+  final String moduloFiscalContingencia;
   PdvConfiguracao(
       {@required this.id,
       this.idEcfImpressora,
       this.idPdvCaixa,
+      this.idTributOperacaoFiscalPadrao,
       this.mensagemCupom,
       this.portaEcf,
       this.ipServidor,
@@ -18699,7 +18703,9 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
       this.reciboLarguraPagina,
       this.reciboMargemPagina,
       this.encerraMovimentoAuto,
-      this.permiteEstoqueNegativo});
+      this.permiteEstoqueNegativo,
+      this.moduloFiscalPrincipal,
+      this.moduloFiscalContingencia});
   factory PdvConfiguracao.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
@@ -18714,6 +18720,8 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
           .mapFromDatabaseResponse(data['${effectivePrefix}ID_ECF_IMPRESSORA']),
       idPdvCaixa: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}ID_PDV_CAIXA']),
+      idTributOperacaoFiscalPadrao: intType.mapFromDatabaseResponse(
+          data['${effectivePrefix}ID_TRIBUT_OPERACAO_FISCAL_PADRAO']),
       mensagemCupom: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}MENSAGEM_CUPOM']),
       portaEcf: stringType
@@ -18796,6 +18804,10 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
           data['${effectivePrefix}ENCERRA_MOVIMENTO_AUTO']),
       permiteEstoqueNegativo: stringType.mapFromDatabaseResponse(
           data['${effectivePrefix}PERMITE_ESTOQUE_NEGATIVO']),
+      moduloFiscalPrincipal: stringType.mapFromDatabaseResponse(
+          data['${effectivePrefix}MODULO_FISCAL_PRINCIPAL']),
+      moduloFiscalContingencia: stringType.mapFromDatabaseResponse(
+          data['${effectivePrefix}MODULO_FISCAL_CONTINGENCIA']),
     );
   }
   @override
@@ -18809,6 +18821,10 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
     }
     if (!nullToAbsent || idPdvCaixa != null) {
       map['ID_PDV_CAIXA'] = Variable<int>(idPdvCaixa);
+    }
+    if (!nullToAbsent || idTributOperacaoFiscalPadrao != null) {
+      map['ID_TRIBUT_OPERACAO_FISCAL_PADRAO'] =
+          Variable<int>(idTributOperacaoFiscalPadrao);
     }
     if (!nullToAbsent || mensagemCupom != null) {
       map['MENSAGEM_CUPOM'] = Variable<String>(mensagemCupom);
@@ -18937,6 +18953,13 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
       map['PERMITE_ESTOQUE_NEGATIVO'] =
           Variable<String>(permiteEstoqueNegativo);
     }
+    if (!nullToAbsent || moduloFiscalPrincipal != null) {
+      map['MODULO_FISCAL_PRINCIPAL'] = Variable<String>(moduloFiscalPrincipal);
+    }
+    if (!nullToAbsent || moduloFiscalContingencia != null) {
+      map['MODULO_FISCAL_CONTINGENCIA'] =
+          Variable<String>(moduloFiscalContingencia);
+    }
     return map;
   }
 
@@ -18949,6 +18972,10 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
       idPdvCaixa: idPdvCaixa == null && nullToAbsent
           ? const Value.absent()
           : Value(idPdvCaixa),
+      idTributOperacaoFiscalPadrao:
+          idTributOperacaoFiscalPadrao == null && nullToAbsent
+              ? const Value.absent()
+              : Value(idTributOperacaoFiscalPadrao),
       mensagemCupom: mensagemCupom == null && nullToAbsent
           ? const Value.absent()
           : Value(mensagemCupom),
@@ -19069,6 +19096,12 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
       permiteEstoqueNegativo: permiteEstoqueNegativo == null && nullToAbsent
           ? const Value.absent()
           : Value(permiteEstoqueNegativo),
+      moduloFiscalPrincipal: moduloFiscalPrincipal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(moduloFiscalPrincipal),
+      moduloFiscalContingencia: moduloFiscalContingencia == null && nullToAbsent
+          ? const Value.absent()
+          : Value(moduloFiscalContingencia),
     );
   }
 
@@ -19079,6 +19112,8 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
       id: serializer.fromJson<int>(json['id']),
       idEcfImpressora: serializer.fromJson<int>(json['idEcfImpressora']),
       idPdvCaixa: serializer.fromJson<int>(json['idPdvCaixa']),
+      idTributOperacaoFiscalPadrao:
+          serializer.fromJson<int>(json['idTributOperacaoFiscalPadrao']),
       mensagemCupom: serializer.fromJson<String>(json['mensagemCupom']),
       portaEcf: serializer.fromJson<String>(json['portaEcf']),
       ipServidor: serializer.fromJson<String>(json['ipServidor']),
@@ -19133,6 +19168,10 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
           serializer.fromJson<String>(json['encerraMovimentoAuto']),
       permiteEstoqueNegativo:
           serializer.fromJson<String>(json['permiteEstoqueNegativo']),
+      moduloFiscalPrincipal:
+          serializer.fromJson<String>(json['moduloFiscalPrincipal']),
+      moduloFiscalContingencia:
+          serializer.fromJson<String>(json['moduloFiscalContingencia']),
     );
   }
   @override
@@ -19142,6 +19181,8 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
       'id': serializer.toJson<int>(id),
       'idEcfImpressora': serializer.toJson<int>(idEcfImpressora),
       'idPdvCaixa': serializer.toJson<int>(idPdvCaixa),
+      'idTributOperacaoFiscalPadrao':
+          serializer.toJson<int>(idTributOperacaoFiscalPadrao),
       'mensagemCupom': serializer.toJson<String>(mensagemCupom),
       'portaEcf': serializer.toJson<String>(portaEcf),
       'ipServidor': serializer.toJson<String>(ipServidor),
@@ -19188,6 +19229,9 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
       'encerraMovimentoAuto': serializer.toJson<String>(encerraMovimentoAuto),
       'permiteEstoqueNegativo':
           serializer.toJson<String>(permiteEstoqueNegativo),
+      'moduloFiscalPrincipal': serializer.toJson<String>(moduloFiscalPrincipal),
+      'moduloFiscalContingencia':
+          serializer.toJson<String>(moduloFiscalContingencia),
     };
   }
 
@@ -19195,6 +19239,7 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
           {int id,
           int idEcfImpressora,
           int idPdvCaixa,
+          int idTributOperacaoFiscalPadrao,
           String mensagemCupom,
           String portaEcf,
           String ipServidor,
@@ -19235,11 +19280,15 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
           double reciboLarguraPagina,
           double reciboMargemPagina,
           String encerraMovimentoAuto,
-          String permiteEstoqueNegativo}) =>
+          String permiteEstoqueNegativo,
+          String moduloFiscalPrincipal,
+          String moduloFiscalContingencia}) =>
       PdvConfiguracao(
         id: id ?? this.id,
         idEcfImpressora: idEcfImpressora ?? this.idEcfImpressora,
         idPdvCaixa: idPdvCaixa ?? this.idPdvCaixa,
+        idTributOperacaoFiscalPadrao:
+            idTributOperacaoFiscalPadrao ?? this.idTributOperacaoFiscalPadrao,
         mensagemCupom: mensagemCupom ?? this.mensagemCupom,
         portaEcf: portaEcf ?? this.portaEcf,
         ipServidor: ipServidor ?? this.ipServidor,
@@ -19286,6 +19335,10 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
         encerraMovimentoAuto: encerraMovimentoAuto ?? this.encerraMovimentoAuto,
         permiteEstoqueNegativo:
             permiteEstoqueNegativo ?? this.permiteEstoqueNegativo,
+        moduloFiscalPrincipal:
+            moduloFiscalPrincipal ?? this.moduloFiscalPrincipal,
+        moduloFiscalContingencia:
+            moduloFiscalContingencia ?? this.moduloFiscalContingencia,
       );
   @override
   String toString() {
@@ -19293,6 +19346,8 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
           ..write('id: $id, ')
           ..write('idEcfImpressora: $idEcfImpressora, ')
           ..write('idPdvCaixa: $idPdvCaixa, ')
+          ..write(
+              'idTributOperacaoFiscalPadrao: $idTributOperacaoFiscalPadrao, ')
           ..write('mensagemCupom: $mensagemCupom, ')
           ..write('portaEcf: $portaEcf, ')
           ..write('ipServidor: $ipServidor, ')
@@ -19333,7 +19388,9 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
           ..write('reciboLarguraPagina: $reciboLarguraPagina, ')
           ..write('reciboMargemPagina: $reciboMargemPagina, ')
           ..write('encerraMovimentoAuto: $encerraMovimentoAuto, ')
-          ..write('permiteEstoqueNegativo: $permiteEstoqueNegativo')
+          ..write('permiteEstoqueNegativo: $permiteEstoqueNegativo, ')
+          ..write('moduloFiscalPrincipal: $moduloFiscalPrincipal, ')
+          ..write('moduloFiscalContingencia: $moduloFiscalContingencia')
           ..write(')'))
         .toString();
   }
@@ -19346,42 +19403,44 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
           $mrjc(
               idPdvCaixa.hashCode,
               $mrjc(
-                  mensagemCupom.hashCode,
+                  idTributOperacaoFiscalPadrao.hashCode,
                   $mrjc(
-                      portaEcf.hashCode,
+                      mensagemCupom.hashCode,
                       $mrjc(
-                          ipServidor.hashCode,
+                          portaEcf.hashCode,
                           $mrjc(
-                              ipSitef.hashCode,
+                              ipServidor.hashCode,
                               $mrjc(
-                                  tipoTef.hashCode,
+                                  ipSitef.hashCode,
                                   $mrjc(
-                                      tituloTelaCaixa.hashCode,
+                                      tipoTef.hashCode,
                                       $mrjc(
-                                          caminhoImagensProdutos.hashCode,
+                                          tituloTelaCaixa.hashCode,
                                           $mrjc(
-                                              caminhoImagensMarketing.hashCode,
+                                              caminhoImagensProdutos.hashCode,
                                               $mrjc(
-                                                  corJanelasInternas.hashCode,
+                                                  caminhoImagensMarketing
+                                                      .hashCode,
                                                   $mrjc(
-                                                      marketingAtivo.hashCode,
+                                                      corJanelasInternas
+                                                          .hashCode,
                                                       $mrjc(
-                                                          cfopEcf.hashCode,
+                                                          marketingAtivo
+                                                              .hashCode,
                                                           $mrjc(
-                                                              timeoutEcf
-                                                                  .hashCode,
+                                                              cfopEcf.hashCode,
                                                               $mrjc(
-                                                                  intervaloEcf
+                                                                  timeoutEcf
                                                                       .hashCode,
                                                                   $mrjc(
-                                                                      descricaoSuprimento
+                                                                      intervaloEcf
                                                                           .hashCode,
                                                                       $mrjc(
-                                                                          descricaoSangria
+                                                                          descricaoSuprimento
                                                                               .hashCode,
                                                                           $mrjc(
-                                                                              tefTipoGp.hashCode,
-                                                                              $mrjc(tefTempoEspera.hashCode, $mrjc(tefEsperaSts.hashCode, $mrjc(tefNumeroVias.hashCode, $mrjc(decimaisQuantidade.hashCode, $mrjc(decimaisValor.hashCode, $mrjc(bitsPorSegundo.hashCode, $mrjc(quantidadeMaximaCartoes.hashCode, $mrjc(pesquisaParte.hashCode, $mrjc(laudo.hashCode, $mrjc(dataAtualizacaoEstoque.hashCode, $mrjc(pedeCpfCupom.hashCode, $mrjc(tipoIntegracao.hashCode, $mrjc(timerIntegracao.hashCode, $mrjc(gavetaSinalInvertido.hashCode, $mrjc(gavetaUtilizacao.hashCode, $mrjc(usaTecladoReduzido.hashCode, $mrjc(modulo.hashCode, $mrjc(plano.hashCode, $mrjc(planoValor.hashCode, $mrjc(planoSituacao.hashCode, $mrjc(reciboFormatoPagina.hashCode, $mrjc(reciboLarguraPagina.hashCode, $mrjc(reciboMargemPagina.hashCode, $mrjc(encerraMovimentoAuto.hashCode, permiteEstoqueNegativo.hashCode))))))))))))))))))))))))))))))))))))))))))));
+                                                                              descricaoSangria.hashCode,
+                                                                              $mrjc(tefTipoGp.hashCode, $mrjc(tefTempoEspera.hashCode, $mrjc(tefEsperaSts.hashCode, $mrjc(tefNumeroVias.hashCode, $mrjc(decimaisQuantidade.hashCode, $mrjc(decimaisValor.hashCode, $mrjc(bitsPorSegundo.hashCode, $mrjc(quantidadeMaximaCartoes.hashCode, $mrjc(pesquisaParte.hashCode, $mrjc(laudo.hashCode, $mrjc(dataAtualizacaoEstoque.hashCode, $mrjc(pedeCpfCupom.hashCode, $mrjc(tipoIntegracao.hashCode, $mrjc(timerIntegracao.hashCode, $mrjc(gavetaSinalInvertido.hashCode, $mrjc(gavetaUtilizacao.hashCode, $mrjc(usaTecladoReduzido.hashCode, $mrjc(modulo.hashCode, $mrjc(plano.hashCode, $mrjc(planoValor.hashCode, $mrjc(planoSituacao.hashCode, $mrjc(reciboFormatoPagina.hashCode, $mrjc(reciboLarguraPagina.hashCode, $mrjc(reciboMargemPagina.hashCode, $mrjc(encerraMovimentoAuto.hashCode, $mrjc(permiteEstoqueNegativo.hashCode, $mrjc(moduloFiscalPrincipal.hashCode, moduloFiscalContingencia.hashCode)))))))))))))))))))))))))))))))))))))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -19389,6 +19448,8 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
           other.id == this.id &&
           other.idEcfImpressora == this.idEcfImpressora &&
           other.idPdvCaixa == this.idPdvCaixa &&
+          other.idTributOperacaoFiscalPadrao ==
+              this.idTributOperacaoFiscalPadrao &&
           other.mensagemCupom == this.mensagemCupom &&
           other.portaEcf == this.portaEcf &&
           other.ipServidor == this.ipServidor &&
@@ -19429,13 +19490,16 @@ class PdvConfiguracao extends DataClass implements Insertable<PdvConfiguracao> {
           other.reciboLarguraPagina == this.reciboLarguraPagina &&
           other.reciboMargemPagina == this.reciboMargemPagina &&
           other.encerraMovimentoAuto == this.encerraMovimentoAuto &&
-          other.permiteEstoqueNegativo == this.permiteEstoqueNegativo);
+          other.permiteEstoqueNegativo == this.permiteEstoqueNegativo &&
+          other.moduloFiscalPrincipal == this.moduloFiscalPrincipal &&
+          other.moduloFiscalContingencia == this.moduloFiscalContingencia);
 }
 
 class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
   final Value<int> id;
   final Value<int> idEcfImpressora;
   final Value<int> idPdvCaixa;
+  final Value<int> idTributOperacaoFiscalPadrao;
   final Value<String> mensagemCupom;
   final Value<String> portaEcf;
   final Value<String> ipServidor;
@@ -19477,10 +19541,13 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
   final Value<double> reciboMargemPagina;
   final Value<String> encerraMovimentoAuto;
   final Value<String> permiteEstoqueNegativo;
+  final Value<String> moduloFiscalPrincipal;
+  final Value<String> moduloFiscalContingencia;
   const PdvConfiguracaosCompanion({
     this.id = const Value.absent(),
     this.idEcfImpressora = const Value.absent(),
     this.idPdvCaixa = const Value.absent(),
+    this.idTributOperacaoFiscalPadrao = const Value.absent(),
     this.mensagemCupom = const Value.absent(),
     this.portaEcf = const Value.absent(),
     this.ipServidor = const Value.absent(),
@@ -19522,11 +19589,14 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
     this.reciboMargemPagina = const Value.absent(),
     this.encerraMovimentoAuto = const Value.absent(),
     this.permiteEstoqueNegativo = const Value.absent(),
+    this.moduloFiscalPrincipal = const Value.absent(),
+    this.moduloFiscalContingencia = const Value.absent(),
   });
   PdvConfiguracaosCompanion.insert({
     this.id = const Value.absent(),
     this.idEcfImpressora = const Value.absent(),
     this.idPdvCaixa = const Value.absent(),
+    this.idTributOperacaoFiscalPadrao = const Value.absent(),
     this.mensagemCupom = const Value.absent(),
     this.portaEcf = const Value.absent(),
     this.ipServidor = const Value.absent(),
@@ -19568,11 +19638,14 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
     this.reciboMargemPagina = const Value.absent(),
     this.encerraMovimentoAuto = const Value.absent(),
     this.permiteEstoqueNegativo = const Value.absent(),
+    this.moduloFiscalPrincipal = const Value.absent(),
+    this.moduloFiscalContingencia = const Value.absent(),
   });
   static Insertable<PdvConfiguracao> custom({
     Expression<int> id,
     Expression<int> idEcfImpressora,
     Expression<int> idPdvCaixa,
+    Expression<int> idTributOperacaoFiscalPadrao,
     Expression<String> mensagemCupom,
     Expression<String> portaEcf,
     Expression<String> ipServidor,
@@ -19614,11 +19687,15 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
     Expression<double> reciboMargemPagina,
     Expression<String> encerraMovimentoAuto,
     Expression<String> permiteEstoqueNegativo,
+    Expression<String> moduloFiscalPrincipal,
+    Expression<String> moduloFiscalContingencia,
   }) {
     return RawValuesInsertable({
       if (id != null) 'ID': id,
       if (idEcfImpressora != null) 'ID_ECF_IMPRESSORA': idEcfImpressora,
       if (idPdvCaixa != null) 'ID_PDV_CAIXA': idPdvCaixa,
+      if (idTributOperacaoFiscalPadrao != null)
+        'ID_TRIBUT_OPERACAO_FISCAL_PADRAO': idTributOperacaoFiscalPadrao,
       if (mensagemCupom != null) 'MENSAGEM_CUPOM': mensagemCupom,
       if (portaEcf != null) 'PORTA_ECF': portaEcf,
       if (ipServidor != null) 'IP_SERVIDOR': ipServidor,
@@ -19673,6 +19750,10 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
         'ENCERRA_MOVIMENTO_AUTO': encerraMovimentoAuto,
       if (permiteEstoqueNegativo != null)
         'PERMITE_ESTOQUE_NEGATIVO': permiteEstoqueNegativo,
+      if (moduloFiscalPrincipal != null)
+        'MODULO_FISCAL_PRINCIPAL': moduloFiscalPrincipal,
+      if (moduloFiscalContingencia != null)
+        'MODULO_FISCAL_CONTINGENCIA': moduloFiscalContingencia,
     });
   }
 
@@ -19680,6 +19761,7 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
       {Value<int> id,
       Value<int> idEcfImpressora,
       Value<int> idPdvCaixa,
+      Value<int> idTributOperacaoFiscalPadrao,
       Value<String> mensagemCupom,
       Value<String> portaEcf,
       Value<String> ipServidor,
@@ -19720,11 +19802,15 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
       Value<double> reciboLarguraPagina,
       Value<double> reciboMargemPagina,
       Value<String> encerraMovimentoAuto,
-      Value<String> permiteEstoqueNegativo}) {
+      Value<String> permiteEstoqueNegativo,
+      Value<String> moduloFiscalPrincipal,
+      Value<String> moduloFiscalContingencia}) {
     return PdvConfiguracaosCompanion(
       id: id ?? this.id,
       idEcfImpressora: idEcfImpressora ?? this.idEcfImpressora,
       idPdvCaixa: idPdvCaixa ?? this.idPdvCaixa,
+      idTributOperacaoFiscalPadrao:
+          idTributOperacaoFiscalPadrao ?? this.idTributOperacaoFiscalPadrao,
       mensagemCupom: mensagemCupom ?? this.mensagemCupom,
       portaEcf: portaEcf ?? this.portaEcf,
       ipServidor: ipServidor ?? this.ipServidor,
@@ -19771,6 +19857,10 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
       encerraMovimentoAuto: encerraMovimentoAuto ?? this.encerraMovimentoAuto,
       permiteEstoqueNegativo:
           permiteEstoqueNegativo ?? this.permiteEstoqueNegativo,
+      moduloFiscalPrincipal:
+          moduloFiscalPrincipal ?? this.moduloFiscalPrincipal,
+      moduloFiscalContingencia:
+          moduloFiscalContingencia ?? this.moduloFiscalContingencia,
     );
   }
 
@@ -19785,6 +19875,10 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
     }
     if (idPdvCaixa.present) {
       map['ID_PDV_CAIXA'] = Variable<int>(idPdvCaixa.value);
+    }
+    if (idTributOperacaoFiscalPadrao.present) {
+      map['ID_TRIBUT_OPERACAO_FISCAL_PADRAO'] =
+          Variable<int>(idTributOperacaoFiscalPadrao.value);
     }
     if (mensagemCupom.present) {
       map['MENSAGEM_CUPOM'] = Variable<String>(mensagemCupom.value);
@@ -19918,6 +20012,14 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
       map['PERMITE_ESTOQUE_NEGATIVO'] =
           Variable<String>(permiteEstoqueNegativo.value);
     }
+    if (moduloFiscalPrincipal.present) {
+      map['MODULO_FISCAL_PRINCIPAL'] =
+          Variable<String>(moduloFiscalPrincipal.value);
+    }
+    if (moduloFiscalContingencia.present) {
+      map['MODULO_FISCAL_CONTINGENCIA'] =
+          Variable<String>(moduloFiscalContingencia.value);
+    }
     return map;
   }
 
@@ -19927,6 +20029,8 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
           ..write('id: $id, ')
           ..write('idEcfImpressora: $idEcfImpressora, ')
           ..write('idPdvCaixa: $idPdvCaixa, ')
+          ..write(
+              'idTributOperacaoFiscalPadrao: $idTributOperacaoFiscalPadrao, ')
           ..write('mensagemCupom: $mensagemCupom, ')
           ..write('portaEcf: $portaEcf, ')
           ..write('ipServidor: $ipServidor, ')
@@ -19967,7 +20071,9 @@ class PdvConfiguracaosCompanion extends UpdateCompanion<PdvConfiguracao> {
           ..write('reciboLarguraPagina: $reciboLarguraPagina, ')
           ..write('reciboMargemPagina: $reciboMargemPagina, ')
           ..write('encerraMovimentoAuto: $encerraMovimentoAuto, ')
-          ..write('permiteEstoqueNegativo: $permiteEstoqueNegativo')
+          ..write('permiteEstoqueNegativo: $permiteEstoqueNegativo, ')
+          ..write('moduloFiscalPrincipal: $moduloFiscalPrincipal, ')
+          ..write('moduloFiscalContingencia: $moduloFiscalContingencia')
           ..write(')'))
         .toString();
   }
@@ -20005,6 +20111,19 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
   GeneratedIntColumn _constructIdPdvCaixa() {
     return GeneratedIntColumn('ID_PDV_CAIXA', $tableName, true,
         $customConstraints: 'NULLABLE REFERENCES PDV_CAIXA(ID)');
+  }
+
+  final VerificationMeta _idTributOperacaoFiscalPadraoMeta =
+      const VerificationMeta('idTributOperacaoFiscalPadrao');
+  GeneratedIntColumn _idTributOperacaoFiscalPadrao;
+  @override
+  GeneratedIntColumn get idTributOperacaoFiscalPadrao =>
+      _idTributOperacaoFiscalPadrao ??=
+          _constructIdTributOperacaoFiscalPadrao();
+  GeneratedIntColumn _constructIdTributOperacaoFiscalPadrao() {
+    return GeneratedIntColumn(
+        'ID_TRIBUT_OPERACAO_FISCAL_PADRAO', $tableName, true,
+        $customConstraints: 'NULLABLE REFERENCES TRIBUT_OPERACAO_FISCAL(ID)');
   }
 
   final VerificationMeta _mensagemCupomMeta =
@@ -20490,11 +20609,34 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
         minTextLength: 0, maxTextLength: 1);
   }
 
+  final VerificationMeta _moduloFiscalPrincipalMeta =
+      const VerificationMeta('moduloFiscalPrincipal');
+  GeneratedTextColumn _moduloFiscalPrincipal;
+  @override
+  GeneratedTextColumn get moduloFiscalPrincipal =>
+      _moduloFiscalPrincipal ??= _constructModuloFiscalPrincipal();
+  GeneratedTextColumn _constructModuloFiscalPrincipal() {
+    return GeneratedTextColumn('MODULO_FISCAL_PRINCIPAL', $tableName, true,
+        minTextLength: 0, maxTextLength: 5);
+  }
+
+  final VerificationMeta _moduloFiscalContingenciaMeta =
+      const VerificationMeta('moduloFiscalContingencia');
+  GeneratedTextColumn _moduloFiscalContingencia;
+  @override
+  GeneratedTextColumn get moduloFiscalContingencia =>
+      _moduloFiscalContingencia ??= _constructModuloFiscalContingencia();
+  GeneratedTextColumn _constructModuloFiscalContingencia() {
+    return GeneratedTextColumn('MODULO_FISCAL_CONTINGENCIA', $tableName, true,
+        minTextLength: 0, maxTextLength: 5);
+  }
+
   @override
   List<GeneratedColumn> get $columns => [
         id,
         idEcfImpressora,
         idPdvCaixa,
+        idTributOperacaoFiscalPadrao,
         mensagemCupom,
         portaEcf,
         ipServidor,
@@ -20535,7 +20677,9 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
         reciboLarguraPagina,
         reciboMargemPagina,
         encerraMovimentoAuto,
-        permiteEstoqueNegativo
+        permiteEstoqueNegativo,
+        moduloFiscalPrincipal,
+        moduloFiscalContingencia
       ];
   @override
   $PdvConfiguracaosTable get asDslTable => this;
@@ -20562,6 +20706,13 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
           _idPdvCaixaMeta,
           idPdvCaixa.isAcceptableOrUnknown(
               data['ID_PDV_CAIXA'], _idPdvCaixaMeta));
+    }
+    if (data.containsKey('ID_TRIBUT_OPERACAO_FISCAL_PADRAO')) {
+      context.handle(
+          _idTributOperacaoFiscalPadraoMeta,
+          idTributOperacaoFiscalPadrao.isAcceptableOrUnknown(
+              data['ID_TRIBUT_OPERACAO_FISCAL_PADRAO'],
+              _idTributOperacaoFiscalPadraoMeta));
     }
     if (data.containsKey('MENSAGEM_CUPOM')) {
       context.handle(
@@ -20792,6 +20943,19 @@ class $PdvConfiguracaosTable extends PdvConfiguracaos
           _permiteEstoqueNegativoMeta,
           permiteEstoqueNegativo.isAcceptableOrUnknown(
               data['PERMITE_ESTOQUE_NEGATIVO'], _permiteEstoqueNegativoMeta));
+    }
+    if (data.containsKey('MODULO_FISCAL_PRINCIPAL')) {
+      context.handle(
+          _moduloFiscalPrincipalMeta,
+          moduloFiscalPrincipal.isAcceptableOrUnknown(
+              data['MODULO_FISCAL_PRINCIPAL'], _moduloFiscalPrincipalMeta));
+    }
+    if (data.containsKey('MODULO_FISCAL_CONTINGENCIA')) {
+      context.handle(
+          _moduloFiscalContingenciaMeta,
+          moduloFiscalContingencia.isAcceptableOrUnknown(
+              data['MODULO_FISCAL_CONTINGENCIA'],
+              _moduloFiscalContingenciaMeta));
     }
     return context;
   }
@@ -24668,6 +24832,7 @@ class PdvTipoPagamento extends DataClass
   final String permiteTroco;
   final String tefTipoGp;
   final String geraParcelas;
+  final String codigoPagamentoNfce;
   PdvTipoPagamento(
       {@required this.id,
       this.codigo,
@@ -24676,7 +24841,8 @@ class PdvTipoPagamento extends DataClass
       this.imprimeVinculado,
       this.permiteTroco,
       this.tefTipoGp,
-      this.geraParcelas});
+      this.geraParcelas,
+      this.codigoPagamentoNfce});
   factory PdvTipoPagamento.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
@@ -24698,6 +24864,8 @@ class PdvTipoPagamento extends DataClass
           .mapFromDatabaseResponse(data['${effectivePrefix}TEF_TIPO_GP']),
       geraParcelas: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}GERA_PARCELAS']),
+      codigoPagamentoNfce: stringType.mapFromDatabaseResponse(
+          data['${effectivePrefix}CODIGO_PAGAMENTO_NFCE']),
     );
   }
   @override
@@ -24727,6 +24895,9 @@ class PdvTipoPagamento extends DataClass
     if (!nullToAbsent || geraParcelas != null) {
       map['GERA_PARCELAS'] = Variable<String>(geraParcelas);
     }
+    if (!nullToAbsent || codigoPagamentoNfce != null) {
+      map['CODIGO_PAGAMENTO_NFCE'] = Variable<String>(codigoPagamentoNfce);
+    }
     return map;
   }
 
@@ -24751,6 +24922,9 @@ class PdvTipoPagamento extends DataClass
       geraParcelas: geraParcelas == null && nullToAbsent
           ? const Value.absent()
           : Value(geraParcelas),
+      codigoPagamentoNfce: codigoPagamentoNfce == null && nullToAbsent
+          ? const Value.absent()
+          : Value(codigoPagamentoNfce),
     );
   }
 
@@ -24766,6 +24940,8 @@ class PdvTipoPagamento extends DataClass
       permiteTroco: serializer.fromJson<String>(json['permiteTroco']),
       tefTipoGp: serializer.fromJson<String>(json['tefTipoGp']),
       geraParcelas: serializer.fromJson<String>(json['geraParcelas']),
+      codigoPagamentoNfce:
+          serializer.fromJson<String>(json['codigoPagamentoNfce']),
     );
   }
   @override
@@ -24780,6 +24956,7 @@ class PdvTipoPagamento extends DataClass
       'permiteTroco': serializer.toJson<String>(permiteTroco),
       'tefTipoGp': serializer.toJson<String>(tefTipoGp),
       'geraParcelas': serializer.toJson<String>(geraParcelas),
+      'codigoPagamentoNfce': serializer.toJson<String>(codigoPagamentoNfce),
     };
   }
 
@@ -24791,7 +24968,8 @@ class PdvTipoPagamento extends DataClass
           String imprimeVinculado,
           String permiteTroco,
           String tefTipoGp,
-          String geraParcelas}) =>
+          String geraParcelas,
+          String codigoPagamentoNfce}) =>
       PdvTipoPagamento(
         id: id ?? this.id,
         codigo: codigo ?? this.codigo,
@@ -24801,6 +24979,7 @@ class PdvTipoPagamento extends DataClass
         permiteTroco: permiteTroco ?? this.permiteTroco,
         tefTipoGp: tefTipoGp ?? this.tefTipoGp,
         geraParcelas: geraParcelas ?? this.geraParcelas,
+        codigoPagamentoNfce: codigoPagamentoNfce ?? this.codigoPagamentoNfce,
       );
   @override
   String toString() {
@@ -24812,7 +24991,8 @@ class PdvTipoPagamento extends DataClass
           ..write('imprimeVinculado: $imprimeVinculado, ')
           ..write('permiteTroco: $permiteTroco, ')
           ..write('tefTipoGp: $tefTipoGp, ')
-          ..write('geraParcelas: $geraParcelas')
+          ..write('geraParcelas: $geraParcelas, ')
+          ..write('codigoPagamentoNfce: $codigoPagamentoNfce')
           ..write(')'))
         .toString();
   }
@@ -24831,7 +25011,9 @@ class PdvTipoPagamento extends DataClass
                       $mrjc(
                           permiteTroco.hashCode,
                           $mrjc(
-                              tefTipoGp.hashCode, geraParcelas.hashCode))))))));
+                              tefTipoGp.hashCode,
+                              $mrjc(geraParcelas.hashCode,
+                                  codigoPagamentoNfce.hashCode)))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -24843,7 +25025,8 @@ class PdvTipoPagamento extends DataClass
           other.imprimeVinculado == this.imprimeVinculado &&
           other.permiteTroco == this.permiteTroco &&
           other.tefTipoGp == this.tefTipoGp &&
-          other.geraParcelas == this.geraParcelas);
+          other.geraParcelas == this.geraParcelas &&
+          other.codigoPagamentoNfce == this.codigoPagamentoNfce);
 }
 
 class PdvTipoPagamentosCompanion extends UpdateCompanion<PdvTipoPagamento> {
@@ -24855,6 +25038,7 @@ class PdvTipoPagamentosCompanion extends UpdateCompanion<PdvTipoPagamento> {
   final Value<String> permiteTroco;
   final Value<String> tefTipoGp;
   final Value<String> geraParcelas;
+  final Value<String> codigoPagamentoNfce;
   const PdvTipoPagamentosCompanion({
     this.id = const Value.absent(),
     this.codigo = const Value.absent(),
@@ -24864,6 +25048,7 @@ class PdvTipoPagamentosCompanion extends UpdateCompanion<PdvTipoPagamento> {
     this.permiteTroco = const Value.absent(),
     this.tefTipoGp = const Value.absent(),
     this.geraParcelas = const Value.absent(),
+    this.codigoPagamentoNfce = const Value.absent(),
   });
   PdvTipoPagamentosCompanion.insert({
     this.id = const Value.absent(),
@@ -24874,6 +25059,7 @@ class PdvTipoPagamentosCompanion extends UpdateCompanion<PdvTipoPagamento> {
     this.permiteTroco = const Value.absent(),
     this.tefTipoGp = const Value.absent(),
     this.geraParcelas = const Value.absent(),
+    this.codigoPagamentoNfce = const Value.absent(),
   });
   static Insertable<PdvTipoPagamento> custom({
     Expression<int> id,
@@ -24884,6 +25070,7 @@ class PdvTipoPagamentosCompanion extends UpdateCompanion<PdvTipoPagamento> {
     Expression<String> permiteTroco,
     Expression<String> tefTipoGp,
     Expression<String> geraParcelas,
+    Expression<String> codigoPagamentoNfce,
   }) {
     return RawValuesInsertable({
       if (id != null) 'ID': id,
@@ -24894,6 +25081,8 @@ class PdvTipoPagamentosCompanion extends UpdateCompanion<PdvTipoPagamento> {
       if (permiteTroco != null) 'PERMITE_TROCO': permiteTroco,
       if (tefTipoGp != null) 'TEF_TIPO_GP': tefTipoGp,
       if (geraParcelas != null) 'GERA_PARCELAS': geraParcelas,
+      if (codigoPagamentoNfce != null)
+        'CODIGO_PAGAMENTO_NFCE': codigoPagamentoNfce,
     });
   }
 
@@ -24905,7 +25094,8 @@ class PdvTipoPagamentosCompanion extends UpdateCompanion<PdvTipoPagamento> {
       Value<String> imprimeVinculado,
       Value<String> permiteTroco,
       Value<String> tefTipoGp,
-      Value<String> geraParcelas}) {
+      Value<String> geraParcelas,
+      Value<String> codigoPagamentoNfce}) {
     return PdvTipoPagamentosCompanion(
       id: id ?? this.id,
       codigo: codigo ?? this.codigo,
@@ -24915,6 +25105,7 @@ class PdvTipoPagamentosCompanion extends UpdateCompanion<PdvTipoPagamento> {
       permiteTroco: permiteTroco ?? this.permiteTroco,
       tefTipoGp: tefTipoGp ?? this.tefTipoGp,
       geraParcelas: geraParcelas ?? this.geraParcelas,
+      codigoPagamentoNfce: codigoPagamentoNfce ?? this.codigoPagamentoNfce,
     );
   }
 
@@ -24945,6 +25136,10 @@ class PdvTipoPagamentosCompanion extends UpdateCompanion<PdvTipoPagamento> {
     if (geraParcelas.present) {
       map['GERA_PARCELAS'] = Variable<String>(geraParcelas.value);
     }
+    if (codigoPagamentoNfce.present) {
+      map['CODIGO_PAGAMENTO_NFCE'] =
+          Variable<String>(codigoPagamentoNfce.value);
+    }
     return map;
   }
 
@@ -24958,7 +25153,8 @@ class PdvTipoPagamentosCompanion extends UpdateCompanion<PdvTipoPagamento> {
           ..write('imprimeVinculado: $imprimeVinculado, ')
           ..write('permiteTroco: $permiteTroco, ')
           ..write('tefTipoGp: $tefTipoGp, ')
-          ..write('geraParcelas: $geraParcelas')
+          ..write('geraParcelas: $geraParcelas, ')
+          ..write('codigoPagamentoNfce: $codigoPagamentoNfce')
           ..write(')'))
         .toString();
   }
@@ -25047,6 +25243,17 @@ class $PdvTipoPagamentosTable extends PdvTipoPagamentos
         minTextLength: 0, maxTextLength: 1);
   }
 
+  final VerificationMeta _codigoPagamentoNfceMeta =
+      const VerificationMeta('codigoPagamentoNfce');
+  GeneratedTextColumn _codigoPagamentoNfce;
+  @override
+  GeneratedTextColumn get codigoPagamentoNfce =>
+      _codigoPagamentoNfce ??= _constructCodigoPagamentoNfce();
+  GeneratedTextColumn _constructCodigoPagamentoNfce() {
+    return GeneratedTextColumn('CODIGO_PAGAMENTO_NFCE', $tableName, true,
+        minTextLength: 0, maxTextLength: 2);
+  }
+
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -25056,7 +25263,8 @@ class $PdvTipoPagamentosTable extends PdvTipoPagamentos
         imprimeVinculado,
         permiteTroco,
         tefTipoGp,
-        geraParcelas
+        geraParcelas,
+        codigoPagamentoNfce
       ];
   @override
   $PdvTipoPagamentosTable get asDslTable => this;
@@ -25105,6 +25313,12 @@ class $PdvTipoPagamentosTable extends PdvTipoPagamentos
           _geraParcelasMeta,
           geraParcelas.isAcceptableOrUnknown(
               data['GERA_PARCELAS'], _geraParcelasMeta));
+    }
+    if (data.containsKey('CODIGO_PAGAMENTO_NFCE')) {
+      context.handle(
+          _codigoPagamentoNfceMeta,
+          codigoPagamentoNfce.isAcceptableOrUnknown(
+              data['CODIGO_PAGAMENTO_NFCE'], _codigoPagamentoNfceMeta));
     }
     return context;
   }
@@ -29481,6 +29695,7 @@ class $PdvVendaDetalhesTable extends PdvVendaDetalhes
 class Produto extends DataClass implements Insertable<Produto> {
   final int id;
   final int idProdutoUnidade;
+  final int idTributGrupoTributario;
   final String gtin;
   final String codigoInterno;
   final String nome;
@@ -29510,6 +29725,7 @@ class Produto extends DataClass implements Insertable<Produto> {
   Produto(
       {@required this.id,
       this.idProdutoUnidade,
+      this.idTributGrupoTributario,
       this.gtin,
       this.codigoInterno,
       this.nome,
@@ -29546,6 +29762,8 @@ class Produto extends DataClass implements Insertable<Produto> {
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}ID']),
       idProdutoUnidade: intType.mapFromDatabaseResponse(
           data['${effectivePrefix}ID_PRODUTO_UNIDADE']),
+      idTributGrupoTributario: intType.mapFromDatabaseResponse(
+          data['${effectivePrefix}ID_TRIBUT_GRUPO_TRIBUTARIO']),
       gtin: stringType.mapFromDatabaseResponse(data['${effectivePrefix}GTIN']),
       codigoInterno: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}CODIGO_INTERNO']),
@@ -29603,6 +29821,10 @@ class Produto extends DataClass implements Insertable<Produto> {
     }
     if (!nullToAbsent || idProdutoUnidade != null) {
       map['ID_PRODUTO_UNIDADE'] = Variable<int>(idProdutoUnidade);
+    }
+    if (!nullToAbsent || idTributGrupoTributario != null) {
+      map['ID_TRIBUT_GRUPO_TRIBUTARIO'] =
+          Variable<int>(idTributGrupoTributario);
     }
     if (!nullToAbsent || gtin != null) {
       map['GTIN'] = Variable<String>(gtin);
@@ -29691,6 +29913,9 @@ class Produto extends DataClass implements Insertable<Produto> {
       idProdutoUnidade: idProdutoUnidade == null && nullToAbsent
           ? const Value.absent()
           : Value(idProdutoUnidade),
+      idTributGrupoTributario: idTributGrupoTributario == null && nullToAbsent
+          ? const Value.absent()
+          : Value(idTributGrupoTributario),
       gtin: gtin == null && nullToAbsent ? const Value.absent() : Value(gtin),
       codigoInterno: codigoInterno == null && nullToAbsent
           ? const Value.absent()
@@ -29766,6 +29991,8 @@ class Produto extends DataClass implements Insertable<Produto> {
     return Produto(
       id: serializer.fromJson<int>(json['id']),
       idProdutoUnidade: serializer.fromJson<int>(json['idProdutoUnidade']),
+      idTributGrupoTributario:
+          serializer.fromJson<int>(json['idTributGrupoTributario']),
       gtin: serializer.fromJson<String>(json['gtin']),
       codigoInterno: serializer.fromJson<String>(json['codigoInterno']),
       nome: serializer.fromJson<String>(json['nome']),
@@ -29801,6 +30028,8 @@ class Produto extends DataClass implements Insertable<Produto> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'idProdutoUnidade': serializer.toJson<int>(idProdutoUnidade),
+      'idTributGrupoTributario':
+          serializer.toJson<int>(idTributGrupoTributario),
       'gtin': serializer.toJson<String>(gtin),
       'codigoInterno': serializer.toJson<String>(codigoInterno),
       'nome': serializer.toJson<String>(nome),
@@ -29833,6 +30062,7 @@ class Produto extends DataClass implements Insertable<Produto> {
   Produto copyWith(
           {int id,
           int idProdutoUnidade,
+          int idTributGrupoTributario,
           String gtin,
           String codigoInterno,
           String nome,
@@ -29862,6 +30092,8 @@ class Produto extends DataClass implements Insertable<Produto> {
       Produto(
         id: id ?? this.id,
         idProdutoUnidade: idProdutoUnidade ?? this.idProdutoUnidade,
+        idTributGrupoTributario:
+            idTributGrupoTributario ?? this.idTributGrupoTributario,
         gtin: gtin ?? this.gtin,
         codigoInterno: codigoInterno ?? this.codigoInterno,
         nome: nome ?? this.nome,
@@ -29894,6 +30126,7 @@ class Produto extends DataClass implements Insertable<Produto> {
     return (StringBuffer('Produto(')
           ..write('id: $id, ')
           ..write('idProdutoUnidade: $idProdutoUnidade, ')
+          ..write('idTributGrupoTributario: $idTributGrupoTributario, ')
           ..write('gtin: $gtin, ')
           ..write('codigoInterno: $codigoInterno, ')
           ..write('nome: $nome, ')
@@ -29930,49 +30163,49 @@ class Produto extends DataClass implements Insertable<Produto> {
       $mrjc(
           idProdutoUnidade.hashCode,
           $mrjc(
-              gtin.hashCode,
+              idTributGrupoTributario.hashCode,
               $mrjc(
-                  codigoInterno.hashCode,
+                  gtin.hashCode,
                   $mrjc(
-                      nome.hashCode,
+                      codigoInterno.hashCode,
                       $mrjc(
-                          descricao.hashCode,
+                          nome.hashCode,
                           $mrjc(
-                              descricaoPdv.hashCode,
+                              descricao.hashCode,
                               $mrjc(
-                                  valorCompra.hashCode,
+                                  descricaoPdv.hashCode,
                                   $mrjc(
-                                      valorVenda.hashCode,
+                                      valorCompra.hashCode,
                                       $mrjc(
-                                          quantidadeEstoque.hashCode,
+                                          valorVenda.hashCode,
                                           $mrjc(
-                                              estoqueMinimo.hashCode,
+                                              quantidadeEstoque.hashCode,
                                               $mrjc(
-                                                  estoqueMaximo.hashCode,
+                                                  estoqueMinimo.hashCode,
                                                   $mrjc(
-                                                      codigoNcm.hashCode,
+                                                      estoqueMaximo.hashCode,
                                                       $mrjc(
-                                                          iat.hashCode,
+                                                          codigoNcm.hashCode,
                                                           $mrjc(
-                                                              ippt.hashCode,
+                                                              iat.hashCode,
                                                               $mrjc(
-                                                                  tipoItemSped
-                                                                      .hashCode,
+                                                                  ippt.hashCode,
                                                                   $mrjc(
-                                                                      taxaIpi
+                                                                      tipoItemSped
                                                                           .hashCode,
                                                                       $mrjc(
-                                                                          taxaIssqn
+                                                                          taxaIpi
                                                                               .hashCode,
                                                                           $mrjc(
-                                                                              taxaPis.hashCode,
-                                                                              $mrjc(taxaCofins.hashCode, $mrjc(taxaIcms.hashCode, $mrjc(cst.hashCode, $mrjc(csosn.hashCode, $mrjc(totalizadorParcial.hashCode, $mrjc(ecfIcmsSt.hashCode, $mrjc(codigoBalanca.hashCode, $mrjc(pafPSt.hashCode, hashRegistro.hashCode))))))))))))))))))))))))))));
+                                                                              taxaIssqn.hashCode,
+                                                                              $mrjc(taxaPis.hashCode, $mrjc(taxaCofins.hashCode, $mrjc(taxaIcms.hashCode, $mrjc(cst.hashCode, $mrjc(csosn.hashCode, $mrjc(totalizadorParcial.hashCode, $mrjc(ecfIcmsSt.hashCode, $mrjc(codigoBalanca.hashCode, $mrjc(pafPSt.hashCode, hashRegistro.hashCode)))))))))))))))))))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is Produto &&
           other.id == this.id &&
           other.idProdutoUnidade == this.idProdutoUnidade &&
+          other.idTributGrupoTributario == this.idTributGrupoTributario &&
           other.gtin == this.gtin &&
           other.codigoInterno == this.codigoInterno &&
           other.nome == this.nome &&
@@ -30004,6 +30237,7 @@ class Produto extends DataClass implements Insertable<Produto> {
 class ProdutosCompanion extends UpdateCompanion<Produto> {
   final Value<int> id;
   final Value<int> idProdutoUnidade;
+  final Value<int> idTributGrupoTributario;
   final Value<String> gtin;
   final Value<String> codigoInterno;
   final Value<String> nome;
@@ -30033,6 +30267,7 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
   const ProdutosCompanion({
     this.id = const Value.absent(),
     this.idProdutoUnidade = const Value.absent(),
+    this.idTributGrupoTributario = const Value.absent(),
     this.gtin = const Value.absent(),
     this.codigoInterno = const Value.absent(),
     this.nome = const Value.absent(),
@@ -30063,6 +30298,7 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
   ProdutosCompanion.insert({
     this.id = const Value.absent(),
     this.idProdutoUnidade = const Value.absent(),
+    this.idTributGrupoTributario = const Value.absent(),
     this.gtin = const Value.absent(),
     this.codigoInterno = const Value.absent(),
     this.nome = const Value.absent(),
@@ -30093,6 +30329,7 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
   static Insertable<Produto> custom({
     Expression<int> id,
     Expression<int> idProdutoUnidade,
+    Expression<int> idTributGrupoTributario,
     Expression<String> gtin,
     Expression<String> codigoInterno,
     Expression<String> nome,
@@ -30123,6 +30360,8 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
     return RawValuesInsertable({
       if (id != null) 'ID': id,
       if (idProdutoUnidade != null) 'ID_PRODUTO_UNIDADE': idProdutoUnidade,
+      if (idTributGrupoTributario != null)
+        'ID_TRIBUT_GRUPO_TRIBUTARIO': idTributGrupoTributario,
       if (gtin != null) 'GTIN': gtin,
       if (codigoInterno != null) 'CODIGO_INTERNO': codigoInterno,
       if (nome != null) 'NOME': nome,
@@ -30155,6 +30394,7 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
   ProdutosCompanion copyWith(
       {Value<int> id,
       Value<int> idProdutoUnidade,
+      Value<int> idTributGrupoTributario,
       Value<String> gtin,
       Value<String> codigoInterno,
       Value<String> nome,
@@ -30184,6 +30424,8 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
     return ProdutosCompanion(
       id: id ?? this.id,
       idProdutoUnidade: idProdutoUnidade ?? this.idProdutoUnidade,
+      idTributGrupoTributario:
+          idTributGrupoTributario ?? this.idTributGrupoTributario,
       gtin: gtin ?? this.gtin,
       codigoInterno: codigoInterno ?? this.codigoInterno,
       nome: nome ?? this.nome,
@@ -30221,6 +30463,10 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
     }
     if (idProdutoUnidade.present) {
       map['ID_PRODUTO_UNIDADE'] = Variable<int>(idProdutoUnidade.value);
+    }
+    if (idTributGrupoTributario.present) {
+      map['ID_TRIBUT_GRUPO_TRIBUTARIO'] =
+          Variable<int>(idTributGrupoTributario.value);
     }
     if (gtin.present) {
       map['GTIN'] = Variable<String>(gtin.value);
@@ -30308,6 +30554,7 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
     return (StringBuffer('ProdutosCompanion(')
           ..write('id: $id, ')
           ..write('idProdutoUnidade: $idProdutoUnidade, ')
+          ..write('idTributGrupoTributario: $idTributGrupoTributario, ')
           ..write('gtin: $gtin, ')
           ..write('codigoInterno: $codigoInterno, ')
           ..write('nome: $nome, ')
@@ -30361,6 +30608,17 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
   GeneratedIntColumn _constructIdProdutoUnidade() {
     return GeneratedIntColumn('ID_PRODUTO_UNIDADE', $tableName, true,
         $customConstraints: 'NULLABLE REFERENCES PRODUTO_UNIDADE(ID)');
+  }
+
+  final VerificationMeta _idTributGrupoTributarioMeta =
+      const VerificationMeta('idTributGrupoTributario');
+  GeneratedIntColumn _idTributGrupoTributario;
+  @override
+  GeneratedIntColumn get idTributGrupoTributario =>
+      _idTributGrupoTributario ??= _constructIdTributGrupoTributario();
+  GeneratedIntColumn _constructIdTributGrupoTributario() {
+    return GeneratedIntColumn('ID_TRIBUT_GRUPO_TRIBUTARIO', $tableName, true,
+        $customConstraints: 'NULLABLE REFERENCES TRIBUT_GRUPO_TRIBUTARIO(ID)');
   }
 
   final VerificationMeta _gtinMeta = const VerificationMeta('gtin');
@@ -30654,6 +30912,7 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
   List<GeneratedColumn> get $columns => [
         id,
         idProdutoUnidade,
+        idTributGrupoTributario,
         gtin,
         codigoInterno,
         nome,
@@ -30700,6 +30959,13 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
           _idProdutoUnidadeMeta,
           idProdutoUnidade.isAcceptableOrUnknown(
               data['ID_PRODUTO_UNIDADE'], _idProdutoUnidadeMeta));
+    }
+    if (data.containsKey('ID_TRIBUT_GRUPO_TRIBUTARIO')) {
+      context.handle(
+          _idTributGrupoTributarioMeta,
+          idTributGrupoTributario.isAcceptableOrUnknown(
+              data['ID_TRIBUT_GRUPO_TRIBUTARIO'],
+              _idTributGrupoTributarioMeta));
     }
     if (data.containsKey('GTIN')) {
       context.handle(
@@ -37319,6 +37585,12 @@ class NfeConfiguracao extends DataClass implements Insertable<NfeConfiguracao> {
   final double nfceMargemInferior;
   final double nfceMargemDireita;
   final double nfceMargemEsquerda;
+  final String respTecCnpj;
+  final String respTecContato;
+  final String respTecEmail;
+  final String respTecFone;
+  final String respTecIdCsrt;
+  final String respTecHashCsrt;
   NfeConfiguracao(
       {@required this.id,
       this.certificadoDigitalSerie,
@@ -37360,7 +37632,13 @@ class NfeConfiguracao extends DataClass implements Insertable<NfeConfiguracao> {
       this.nfceMargemSuperior,
       this.nfceMargemInferior,
       this.nfceMargemDireita,
-      this.nfceMargemEsquerda});
+      this.nfceMargemEsquerda,
+      this.respTecCnpj,
+      this.respTecContato,
+      this.respTecEmail,
+      this.respTecFone,
+      this.respTecIdCsrt,
+      this.respTecHashCsrt});
   factory NfeConfiguracao.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
@@ -37450,6 +37728,18 @@ class NfeConfiguracao extends DataClass implements Insertable<NfeConfiguracao> {
           data['${effectivePrefix}NFCE_MARGEM_DIREITA']),
       nfceMargemEsquerda: doubleType.mapFromDatabaseResponse(
           data['${effectivePrefix}NFCE_MARGEM_ESQUERDA']),
+      respTecCnpj: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}RESP_TEC_CNPJ']),
+      respTecContato: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}RESP_TEC_CONTATO']),
+      respTecEmail: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}RESP_TEC_EMAIL']),
+      respTecFone: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}RESP_TEC_FONE']),
+      respTecIdCsrt: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}RESP_TEC_ID_CSRT']),
+      respTecHashCsrt: stringType.mapFromDatabaseResponse(
+          data['${effectivePrefix}RESP_TEC_HASH_CSRT']),
     );
   }
   @override
@@ -37586,6 +37876,24 @@ class NfeConfiguracao extends DataClass implements Insertable<NfeConfiguracao> {
     if (!nullToAbsent || nfceMargemEsquerda != null) {
       map['NFCE_MARGEM_ESQUERDA'] = Variable<double>(nfceMargemEsquerda);
     }
+    if (!nullToAbsent || respTecCnpj != null) {
+      map['RESP_TEC_CNPJ'] = Variable<String>(respTecCnpj);
+    }
+    if (!nullToAbsent || respTecContato != null) {
+      map['RESP_TEC_CONTATO'] = Variable<String>(respTecContato);
+    }
+    if (!nullToAbsent || respTecEmail != null) {
+      map['RESP_TEC_EMAIL'] = Variable<String>(respTecEmail);
+    }
+    if (!nullToAbsent || respTecFone != null) {
+      map['RESP_TEC_FONE'] = Variable<String>(respTecFone);
+    }
+    if (!nullToAbsent || respTecIdCsrt != null) {
+      map['RESP_TEC_ID_CSRT'] = Variable<String>(respTecIdCsrt);
+    }
+    if (!nullToAbsent || respTecHashCsrt != null) {
+      map['RESP_TEC_HASH_CSRT'] = Variable<String>(respTecHashCsrt);
+    }
     return map;
   }
 
@@ -37716,6 +38024,24 @@ class NfeConfiguracao extends DataClass implements Insertable<NfeConfiguracao> {
       nfceMargemEsquerda: nfceMargemEsquerda == null && nullToAbsent
           ? const Value.absent()
           : Value(nfceMargemEsquerda),
+      respTecCnpj: respTecCnpj == null && nullToAbsent
+          ? const Value.absent()
+          : Value(respTecCnpj),
+      respTecContato: respTecContato == null && nullToAbsent
+          ? const Value.absent()
+          : Value(respTecContato),
+      respTecEmail: respTecEmail == null && nullToAbsent
+          ? const Value.absent()
+          : Value(respTecEmail),
+      respTecFone: respTecFone == null && nullToAbsent
+          ? const Value.absent()
+          : Value(respTecFone),
+      respTecIdCsrt: respTecIdCsrt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(respTecIdCsrt),
+      respTecHashCsrt: respTecHashCsrt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(respTecHashCsrt),
     );
   }
 
@@ -37784,6 +38110,12 @@ class NfeConfiguracao extends DataClass implements Insertable<NfeConfiguracao> {
       nfceMargemDireita: serializer.fromJson<double>(json['nfceMargemDireita']),
       nfceMargemEsquerda:
           serializer.fromJson<double>(json['nfceMargemEsquerda']),
+      respTecCnpj: serializer.fromJson<String>(json['respTecCnpj']),
+      respTecContato: serializer.fromJson<String>(json['respTecContato']),
+      respTecEmail: serializer.fromJson<String>(json['respTecEmail']),
+      respTecFone: serializer.fromJson<String>(json['respTecFone']),
+      respTecIdCsrt: serializer.fromJson<String>(json['respTecIdCsrt']),
+      respTecHashCsrt: serializer.fromJson<String>(json['respTecHashCsrt']),
     );
   }
   @override
@@ -37839,6 +38171,12 @@ class NfeConfiguracao extends DataClass implements Insertable<NfeConfiguracao> {
       'nfceMargemInferior': serializer.toJson<double>(nfceMargemInferior),
       'nfceMargemDireita': serializer.toJson<double>(nfceMargemDireita),
       'nfceMargemEsquerda': serializer.toJson<double>(nfceMargemEsquerda),
+      'respTecCnpj': serializer.toJson<String>(respTecCnpj),
+      'respTecContato': serializer.toJson<String>(respTecContato),
+      'respTecEmail': serializer.toJson<String>(respTecEmail),
+      'respTecFone': serializer.toJson<String>(respTecFone),
+      'respTecIdCsrt': serializer.toJson<String>(respTecIdCsrt),
+      'respTecHashCsrt': serializer.toJson<String>(respTecHashCsrt),
     };
   }
 
@@ -37883,7 +38221,13 @@ class NfeConfiguracao extends DataClass implements Insertable<NfeConfiguracao> {
           double nfceMargemSuperior,
           double nfceMargemInferior,
           double nfceMargemDireita,
-          double nfceMargemEsquerda}) =>
+          double nfceMargemEsquerda,
+          String respTecCnpj,
+          String respTecContato,
+          String respTecEmail,
+          String respTecFone,
+          String respTecIdCsrt,
+          String respTecHashCsrt}) =>
       NfeConfiguracao(
         id: id ?? this.id,
         certificadoDigitalSerie:
@@ -37937,6 +38281,12 @@ class NfeConfiguracao extends DataClass implements Insertable<NfeConfiguracao> {
         nfceMargemInferior: nfceMargemInferior ?? this.nfceMargemInferior,
         nfceMargemDireita: nfceMargemDireita ?? this.nfceMargemDireita,
         nfceMargemEsquerda: nfceMargemEsquerda ?? this.nfceMargemEsquerda,
+        respTecCnpj: respTecCnpj ?? this.respTecCnpj,
+        respTecContato: respTecContato ?? this.respTecContato,
+        respTecEmail: respTecEmail ?? this.respTecEmail,
+        respTecFone: respTecFone ?? this.respTecFone,
+        respTecIdCsrt: respTecIdCsrt ?? this.respTecIdCsrt,
+        respTecHashCsrt: respTecHashCsrt ?? this.respTecHashCsrt,
       );
   @override
   String toString() {
@@ -37981,7 +38331,13 @@ class NfeConfiguracao extends DataClass implements Insertable<NfeConfiguracao> {
           ..write('nfceMargemSuperior: $nfceMargemSuperior, ')
           ..write('nfceMargemInferior: $nfceMargemInferior, ')
           ..write('nfceMargemDireita: $nfceMargemDireita, ')
-          ..write('nfceMargemEsquerda: $nfceMargemEsquerda')
+          ..write('nfceMargemEsquerda: $nfceMargemEsquerda, ')
+          ..write('respTecCnpj: $respTecCnpj, ')
+          ..write('respTecContato: $respTecContato, ')
+          ..write('respTecEmail: $respTecEmail, ')
+          ..write('respTecFone: $respTecFone, ')
+          ..write('respTecIdCsrt: $respTecIdCsrt, ')
+          ..write('respTecHashCsrt: $respTecHashCsrt')
           ..write(')'))
         .toString();
   }
@@ -38031,7 +38387,7 @@ class NfeConfiguracao extends DataClass implements Insertable<NfeConfiguracao> {
                                                                               .hashCode,
                                                                           $mrjc(
                                                                               webserviceProxyUsuario.hashCode,
-                                                                              $mrjc(webserviceProxySenha.hashCode, $mrjc(webserviceVisualizar.hashCode, $mrjc(emailServidorSmtp.hashCode, $mrjc(emailPorta.hashCode, $mrjc(emailUsuario.hashCode, $mrjc(emailSenha.hashCode, $mrjc(emailAssunto.hashCode, $mrjc(emailAutenticaSsl.hashCode, $mrjc(emailTexto.hashCode, $mrjc(nfceIdCsc.hashCode, $mrjc(nfceCsc.hashCode, $mrjc(nfceModeloImpressao.hashCode, $mrjc(nfceImprimirItensUmaLinha.hashCode, $mrjc(nfceImprimirDescontoPorItem.hashCode, $mrjc(nfceImprimirQrcodeLateral.hashCode, $mrjc(nfceImprimirGtin.hashCode, $mrjc(nfceImprimirNomeFantasia.hashCode, $mrjc(nfceImpressaoTributos.hashCode, $mrjc(nfceMargemSuperior.hashCode, $mrjc(nfceMargemInferior.hashCode, $mrjc(nfceMargemDireita.hashCode, nfceMargemEsquerda.hashCode)))))))))))))))))))))))))))))))))))))))));
+                                                                              $mrjc(webserviceProxySenha.hashCode, $mrjc(webserviceVisualizar.hashCode, $mrjc(emailServidorSmtp.hashCode, $mrjc(emailPorta.hashCode, $mrjc(emailUsuario.hashCode, $mrjc(emailSenha.hashCode, $mrjc(emailAssunto.hashCode, $mrjc(emailAutenticaSsl.hashCode, $mrjc(emailTexto.hashCode, $mrjc(nfceIdCsc.hashCode, $mrjc(nfceCsc.hashCode, $mrjc(nfceModeloImpressao.hashCode, $mrjc(nfceImprimirItensUmaLinha.hashCode, $mrjc(nfceImprimirDescontoPorItem.hashCode, $mrjc(nfceImprimirQrcodeLateral.hashCode, $mrjc(nfceImprimirGtin.hashCode, $mrjc(nfceImprimirNomeFantasia.hashCode, $mrjc(nfceImpressaoTributos.hashCode, $mrjc(nfceMargemSuperior.hashCode, $mrjc(nfceMargemInferior.hashCode, $mrjc(nfceMargemDireita.hashCode, $mrjc(nfceMargemEsquerda.hashCode, $mrjc(respTecCnpj.hashCode, $mrjc(respTecContato.hashCode, $mrjc(respTecEmail.hashCode, $mrjc(respTecFone.hashCode, $mrjc(respTecIdCsrt.hashCode, respTecHashCsrt.hashCode)))))))))))))))))))))))))))))))))))))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -38077,7 +38433,13 @@ class NfeConfiguracao extends DataClass implements Insertable<NfeConfiguracao> {
           other.nfceMargemSuperior == this.nfceMargemSuperior &&
           other.nfceMargemInferior == this.nfceMargemInferior &&
           other.nfceMargemDireita == this.nfceMargemDireita &&
-          other.nfceMargemEsquerda == this.nfceMargemEsquerda);
+          other.nfceMargemEsquerda == this.nfceMargemEsquerda &&
+          other.respTecCnpj == this.respTecCnpj &&
+          other.respTecContato == this.respTecContato &&
+          other.respTecEmail == this.respTecEmail &&
+          other.respTecFone == this.respTecFone &&
+          other.respTecIdCsrt == this.respTecIdCsrt &&
+          other.respTecHashCsrt == this.respTecHashCsrt);
 }
 
 class NfeConfiguracaosCompanion extends UpdateCompanion<NfeConfiguracao> {
@@ -38122,6 +38484,12 @@ class NfeConfiguracaosCompanion extends UpdateCompanion<NfeConfiguracao> {
   final Value<double> nfceMargemInferior;
   final Value<double> nfceMargemDireita;
   final Value<double> nfceMargemEsquerda;
+  final Value<String> respTecCnpj;
+  final Value<String> respTecContato;
+  final Value<String> respTecEmail;
+  final Value<String> respTecFone;
+  final Value<String> respTecIdCsrt;
+  final Value<String> respTecHashCsrt;
   const NfeConfiguracaosCompanion({
     this.id = const Value.absent(),
     this.certificadoDigitalSerie = const Value.absent(),
@@ -38164,6 +38532,12 @@ class NfeConfiguracaosCompanion extends UpdateCompanion<NfeConfiguracao> {
     this.nfceMargemInferior = const Value.absent(),
     this.nfceMargemDireita = const Value.absent(),
     this.nfceMargemEsquerda = const Value.absent(),
+    this.respTecCnpj = const Value.absent(),
+    this.respTecContato = const Value.absent(),
+    this.respTecEmail = const Value.absent(),
+    this.respTecFone = const Value.absent(),
+    this.respTecIdCsrt = const Value.absent(),
+    this.respTecHashCsrt = const Value.absent(),
   });
   NfeConfiguracaosCompanion.insert({
     this.id = const Value.absent(),
@@ -38207,6 +38581,12 @@ class NfeConfiguracaosCompanion extends UpdateCompanion<NfeConfiguracao> {
     this.nfceMargemInferior = const Value.absent(),
     this.nfceMargemDireita = const Value.absent(),
     this.nfceMargemEsquerda = const Value.absent(),
+    this.respTecCnpj = const Value.absent(),
+    this.respTecContato = const Value.absent(),
+    this.respTecEmail = const Value.absent(),
+    this.respTecFone = const Value.absent(),
+    this.respTecIdCsrt = const Value.absent(),
+    this.respTecHashCsrt = const Value.absent(),
   });
   static Insertable<NfeConfiguracao> custom({
     Expression<int> id,
@@ -38250,6 +38630,12 @@ class NfeConfiguracaosCompanion extends UpdateCompanion<NfeConfiguracao> {
     Expression<double> nfceMargemInferior,
     Expression<double> nfceMargemDireita,
     Expression<double> nfceMargemEsquerda,
+    Expression<String> respTecCnpj,
+    Expression<String> respTecContato,
+    Expression<String> respTecEmail,
+    Expression<String> respTecFone,
+    Expression<String> respTecIdCsrt,
+    Expression<String> respTecHashCsrt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'ID': id,
@@ -38313,6 +38699,12 @@ class NfeConfiguracaosCompanion extends UpdateCompanion<NfeConfiguracao> {
       if (nfceMargemDireita != null) 'NFCE_MARGEM_DIREITA': nfceMargemDireita,
       if (nfceMargemEsquerda != null)
         'NFCE_MARGEM_ESQUERDA': nfceMargemEsquerda,
+      if (respTecCnpj != null) 'RESP_TEC_CNPJ': respTecCnpj,
+      if (respTecContato != null) 'RESP_TEC_CONTATO': respTecContato,
+      if (respTecEmail != null) 'RESP_TEC_EMAIL': respTecEmail,
+      if (respTecFone != null) 'RESP_TEC_FONE': respTecFone,
+      if (respTecIdCsrt != null) 'RESP_TEC_ID_CSRT': respTecIdCsrt,
+      if (respTecHashCsrt != null) 'RESP_TEC_HASH_CSRT': respTecHashCsrt,
     });
   }
 
@@ -38357,7 +38749,13 @@ class NfeConfiguracaosCompanion extends UpdateCompanion<NfeConfiguracao> {
       Value<double> nfceMargemSuperior,
       Value<double> nfceMargemInferior,
       Value<double> nfceMargemDireita,
-      Value<double> nfceMargemEsquerda}) {
+      Value<double> nfceMargemEsquerda,
+      Value<String> respTecCnpj,
+      Value<String> respTecContato,
+      Value<String> respTecEmail,
+      Value<String> respTecFone,
+      Value<String> respTecIdCsrt,
+      Value<String> respTecHashCsrt}) {
     return NfeConfiguracaosCompanion(
       id: id ?? this.id,
       certificadoDigitalSerie:
@@ -38411,6 +38809,12 @@ class NfeConfiguracaosCompanion extends UpdateCompanion<NfeConfiguracao> {
       nfceMargemInferior: nfceMargemInferior ?? this.nfceMargemInferior,
       nfceMargemDireita: nfceMargemDireita ?? this.nfceMargemDireita,
       nfceMargemEsquerda: nfceMargemEsquerda ?? this.nfceMargemEsquerda,
+      respTecCnpj: respTecCnpj ?? this.respTecCnpj,
+      respTecContato: respTecContato ?? this.respTecContato,
+      respTecEmail: respTecEmail ?? this.respTecEmail,
+      respTecFone: respTecFone ?? this.respTecFone,
+      respTecIdCsrt: respTecIdCsrt ?? this.respTecIdCsrt,
+      respTecHashCsrt: respTecHashCsrt ?? this.respTecHashCsrt,
     );
   }
 
@@ -38556,6 +38960,24 @@ class NfeConfiguracaosCompanion extends UpdateCompanion<NfeConfiguracao> {
     if (nfceMargemEsquerda.present) {
       map['NFCE_MARGEM_ESQUERDA'] = Variable<double>(nfceMargemEsquerda.value);
     }
+    if (respTecCnpj.present) {
+      map['RESP_TEC_CNPJ'] = Variable<String>(respTecCnpj.value);
+    }
+    if (respTecContato.present) {
+      map['RESP_TEC_CONTATO'] = Variable<String>(respTecContato.value);
+    }
+    if (respTecEmail.present) {
+      map['RESP_TEC_EMAIL'] = Variable<String>(respTecEmail.value);
+    }
+    if (respTecFone.present) {
+      map['RESP_TEC_FONE'] = Variable<String>(respTecFone.value);
+    }
+    if (respTecIdCsrt.present) {
+      map['RESP_TEC_ID_CSRT'] = Variable<String>(respTecIdCsrt.value);
+    }
+    if (respTecHashCsrt.present) {
+      map['RESP_TEC_HASH_CSRT'] = Variable<String>(respTecHashCsrt.value);
+    }
     return map;
   }
 
@@ -38602,7 +39024,13 @@ class NfeConfiguracaosCompanion extends UpdateCompanion<NfeConfiguracao> {
           ..write('nfceMargemSuperior: $nfceMargemSuperior, ')
           ..write('nfceMargemInferior: $nfceMargemInferior, ')
           ..write('nfceMargemDireita: $nfceMargemDireita, ')
-          ..write('nfceMargemEsquerda: $nfceMargemEsquerda')
+          ..write('nfceMargemEsquerda: $nfceMargemEsquerda, ')
+          ..write('respTecCnpj: $respTecCnpj, ')
+          ..write('respTecContato: $respTecContato, ')
+          ..write('respTecEmail: $respTecEmail, ')
+          ..write('respTecFone: $respTecFone, ')
+          ..write('respTecIdCsrt: $respTecIdCsrt, ')
+          ..write('respTecHashCsrt: $respTecHashCsrt')
           ..write(')'))
         .toString();
   }
@@ -39082,6 +39510,72 @@ class $NfeConfiguracaosTable extends NfeConfiguracaos
     );
   }
 
+  final VerificationMeta _respTecCnpjMeta =
+      const VerificationMeta('respTecCnpj');
+  GeneratedTextColumn _respTecCnpj;
+  @override
+  GeneratedTextColumn get respTecCnpj =>
+      _respTecCnpj ??= _constructRespTecCnpj();
+  GeneratedTextColumn _constructRespTecCnpj() {
+    return GeneratedTextColumn('RESP_TEC_CNPJ', $tableName, true,
+        minTextLength: 0, maxTextLength: 14);
+  }
+
+  final VerificationMeta _respTecContatoMeta =
+      const VerificationMeta('respTecContato');
+  GeneratedTextColumn _respTecContato;
+  @override
+  GeneratedTextColumn get respTecContato =>
+      _respTecContato ??= _constructRespTecContato();
+  GeneratedTextColumn _constructRespTecContato() {
+    return GeneratedTextColumn('RESP_TEC_CONTATO', $tableName, true,
+        minTextLength: 0, maxTextLength: 60);
+  }
+
+  final VerificationMeta _respTecEmailMeta =
+      const VerificationMeta('respTecEmail');
+  GeneratedTextColumn _respTecEmail;
+  @override
+  GeneratedTextColumn get respTecEmail =>
+      _respTecEmail ??= _constructRespTecEmail();
+  GeneratedTextColumn _constructRespTecEmail() {
+    return GeneratedTextColumn('RESP_TEC_EMAIL', $tableName, true,
+        minTextLength: 0, maxTextLength: 60);
+  }
+
+  final VerificationMeta _respTecFoneMeta =
+      const VerificationMeta('respTecFone');
+  GeneratedTextColumn _respTecFone;
+  @override
+  GeneratedTextColumn get respTecFone =>
+      _respTecFone ??= _constructRespTecFone();
+  GeneratedTextColumn _constructRespTecFone() {
+    return GeneratedTextColumn('RESP_TEC_FONE', $tableName, true,
+        minTextLength: 0, maxTextLength: 15);
+  }
+
+  final VerificationMeta _respTecIdCsrtMeta =
+      const VerificationMeta('respTecIdCsrt');
+  GeneratedTextColumn _respTecIdCsrt;
+  @override
+  GeneratedTextColumn get respTecIdCsrt =>
+      _respTecIdCsrt ??= _constructRespTecIdCsrt();
+  GeneratedTextColumn _constructRespTecIdCsrt() {
+    return GeneratedTextColumn('RESP_TEC_ID_CSRT', $tableName, true,
+        minTextLength: 0, maxTextLength: 2);
+  }
+
+  final VerificationMeta _respTecHashCsrtMeta =
+      const VerificationMeta('respTecHashCsrt');
+  GeneratedTextColumn _respTecHashCsrt;
+  @override
+  GeneratedTextColumn get respTecHashCsrt =>
+      _respTecHashCsrt ??= _constructRespTecHashCsrt();
+  GeneratedTextColumn _constructRespTecHashCsrt() {
+    return GeneratedTextColumn('RESP_TEC_HASH_CSRT', $tableName, true,
+        minTextLength: 0, maxTextLength: 28);
+  }
+
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -39124,7 +39618,13 @@ class $NfeConfiguracaosTable extends NfeConfiguracaos
         nfceMargemSuperior,
         nfceMargemInferior,
         nfceMargemDireita,
-        nfceMargemEsquerda
+        nfceMargemEsquerda,
+        respTecCnpj,
+        respTecContato,
+        respTecEmail,
+        respTecFone,
+        respTecIdCsrt,
+        respTecHashCsrt
       ];
   @override
   $NfeConfiguracaosTable get asDslTable => this;
@@ -39378,6 +39878,42 @@ class $NfeConfiguracaosTable extends NfeConfiguracaos
           _nfceMargemEsquerdaMeta,
           nfceMargemEsquerda.isAcceptableOrUnknown(
               data['NFCE_MARGEM_ESQUERDA'], _nfceMargemEsquerdaMeta));
+    }
+    if (data.containsKey('RESP_TEC_CNPJ')) {
+      context.handle(
+          _respTecCnpjMeta,
+          respTecCnpj.isAcceptableOrUnknown(
+              data['RESP_TEC_CNPJ'], _respTecCnpjMeta));
+    }
+    if (data.containsKey('RESP_TEC_CONTATO')) {
+      context.handle(
+          _respTecContatoMeta,
+          respTecContato.isAcceptableOrUnknown(
+              data['RESP_TEC_CONTATO'], _respTecContatoMeta));
+    }
+    if (data.containsKey('RESP_TEC_EMAIL')) {
+      context.handle(
+          _respTecEmailMeta,
+          respTecEmail.isAcceptableOrUnknown(
+              data['RESP_TEC_EMAIL'], _respTecEmailMeta));
+    }
+    if (data.containsKey('RESP_TEC_FONE')) {
+      context.handle(
+          _respTecFoneMeta,
+          respTecFone.isAcceptableOrUnknown(
+              data['RESP_TEC_FONE'], _respTecFoneMeta));
+    }
+    if (data.containsKey('RESP_TEC_ID_CSRT')) {
+      context.handle(
+          _respTecIdCsrtMeta,
+          respTecIdCsrt.isAcceptableOrUnknown(
+              data['RESP_TEC_ID_CSRT'], _respTecIdCsrtMeta));
+    }
+    if (data.containsKey('RESP_TEC_HASH_CSRT')) {
+      context.handle(
+          _respTecHashCsrtMeta,
+          respTecHashCsrt.isAcceptableOrUnknown(
+              data['RESP_TEC_HASH_CSRT'], _respTecHashCsrtMeta));
     }
     return context;
   }
@@ -70261,6 +70797,18 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   TributOperacaoFiscalDao _tributOperacaoFiscalDao;
   TributOperacaoFiscalDao get tributOperacaoFiscalDao =>
       _tributOperacaoFiscalDao ??= TributOperacaoFiscalDao(this as AppDatabase);
+  TributIcmsUfDao _tributIcmsUfDao;
+  TributIcmsUfDao get tributIcmsUfDao =>
+      _tributIcmsUfDao ??= TributIcmsUfDao(this as AppDatabase);
+  TributIpiDao _tributIpiDao;
+  TributIpiDao get tributIpiDao =>
+      _tributIpiDao ??= TributIpiDao(this as AppDatabase);
+  TributIssDao _tributIssDao;
+  TributIssDao get tributIssDao =>
+      _tributIssDao ??= TributIssDao(this as AppDatabase);
+  TributPisDao _tributPisDao;
+  TributPisDao get tributPisDao =>
+      _tributPisDao ??= TributPisDao(this as AppDatabase);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override

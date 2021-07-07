@@ -200,7 +200,7 @@ class _ProdutoUnidadeListaPageState extends State<ProdutoUnidadeListaPage> {
     Navigator.of(context)
       .push(MaterialPageRoute(
         builder: (BuildContext context) => 
-            ProdutoUnidadePersistePage(produtoUnidade: ProdutoUnidade(id: null,), title: 'ProdutoUnidade - Inserindo', operacao: 'I')))
+            ProdutoUnidadePersistePage(produtoUnidade: ProdutoUnidade(id: null,), title: 'Produto Unidade - Inserindo', operacao: 'I')))
       .then((_) async {
         await _refrescarTela();
     });
@@ -211,7 +211,7 @@ class _ProdutoUnidadeListaPageState extends State<ProdutoUnidadeListaPage> {
         context,
         MaterialPageRoute(
           builder: (BuildContext context) => FiltroPage(
-            title: 'ProdutoUnidade - Filtro',
+            title: 'Produto Unidade - Filtro',
             colunas: _colunas,
             campoPesquisaPadrao: 'Sigla',
             filtroPadrao: true,
@@ -229,8 +229,7 @@ class _ProdutoUnidadeListaPageState extends State<ProdutoUnidadeListaPage> {
   }
 
   Future _gerarRelatorio() async {
-    gerarDialogBoxInformacao(
-      context, 'Recurso implementado na versão completa do sistema.');
+    gerarDialogBoxInformacao(context, 'Essa janela não possui relatório implementado');
   }
 
   Future _refrescarTela() async {
@@ -239,7 +238,6 @@ class _ProdutoUnidadeListaPageState extends State<ProdutoUnidadeListaPage> {
     });
   }
 }
-
 
 /// codigo referente a fonte de dados
 class _ProdutoUnidadeDataSource extends DataTableSource {

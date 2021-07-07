@@ -128,7 +128,7 @@ class Recibo57 {
       Sessao.empresa.logotipo,
     );
 
-    final _fontNormal = await rootBundle.load('assets/fonts/roboto-normal.ttf');
+    final _fontNormal = await rootBundle.load('assets/fonts/lucida-console.ttf');
     final _fontBold = await rootBundle.load('assets/fonts/roboto-bold.ttf');
     final _fontItalic = await rootBundle.load('assets/fonts/roboto-italic.ttf');
 
@@ -307,7 +307,7 @@ class Recibo57 {
   }
   
   pw.Widget _conteudoItens(pw.Context context) {
-    const tableHeaders = ['Item', 'Descrição', 'Uni', 'Qtd', 'Tot'];
+    const tableHeaders = ['It', 'Desc', 'Uni', 'Qtd', 'Tot'];
 
     return pw.Table.fromTextArray(
       border: null,
@@ -318,11 +318,11 @@ class Recibo57 {
       ),
       cellHeight: 20,
       columnWidths: {
-        0: pw.FlexColumnWidth(20),
-        1: pw.FlexColumnWidth(60),
+        0: pw.FlexColumnWidth(10),
+        1: pw.FlexColumnWidth(25),
         2: pw.FlexColumnWidth(20),
         3: pw.FlexColumnWidth(20),
-        4: pw.FlexColumnWidth(20),
+        4: pw.FlexColumnWidth(25),
       },
       cellAlignments: {
         0: pw.Alignment.centerLeft,
@@ -454,14 +454,14 @@ class Recibo57 {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         pw.Expanded(
-          flex: 25,
+          flex: 10,
           child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [],
           ),
         ),
         pw.Expanded(
-          flex: 75,
+          flex: 90,
           child: pw.DefaultTextStyle(
             style: pw.TextStyle(
               fontSize: 8,
@@ -490,7 +490,7 @@ class Recibo57 {
         pw.Text(
           'Dados de Pagamento',
           style: pw.TextStyle(
-            fontSize: 10,
+            fontSize: 8,
             color: _baseColor,
             fontWeight: pw.FontWeight.bold,
           ),
@@ -527,7 +527,7 @@ class Recibo57 {
           child: pw.Divider(color: _accentColor),
         ),
         pw.Text(
-          'Informação de Parcelamento',
+          'Parcelas',
           style: pw.TextStyle(
             fontSize: 9,
             color: _baseColor,
@@ -556,11 +556,11 @@ class Recibo57 {
           color: _baseColor,
         ),
         headerHeight: 20,
-      columnWidths: {
-        0: pw.FlexColumnWidth(25),
-        1: pw.FlexColumnWidth(50),
-        2: pw.FlexColumnWidth(25),
-      },
+        columnWidths: {
+          0: pw.FlexColumnWidth(35),
+          1: pw.FlexColumnWidth(40),
+          2: pw.FlexColumnWidth(25),
+        },
         cellAlignments: {
           0: pw.Alignment.centerLeft,
           1: pw.Alignment.center,
@@ -617,7 +617,7 @@ class Recibo57 {
                 style: pw.TextStyle(
                   color: _darkColor,
                   fontWeight: pw.FontWeight.bold,
-                  fontSize: 10,
+                  fontSize: 8,
                 ),
               ),
               pw.Text(

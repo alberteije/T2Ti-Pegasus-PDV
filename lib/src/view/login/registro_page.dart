@@ -38,9 +38,11 @@ Based on: Flutter UI Challenges by Many - https://github.com/lohanidamodar/flutt
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 
+
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/model/model.dart';
 import 'package:pegasus_pdv/src/service/service.dart';
+
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
@@ -64,75 +66,51 @@ class _RegistroPageState extends State<RegistroPage> {
 
   String _textoInformativo = 'Informe seus dados abaixo para continuar usando a aplicação. Nenhum valor será cobrado, apenas '
                              'armazenaremos seus dados para lhe enviar informações valiosas sobre as novidades da T2Ti.';
+  bool __pendenteDeConfirmacao = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _valorFoco.requestFocus();        
+  }
 
   @override
   Widget build(BuildContext context) {
-    return  WillPopScope(
+    return WillPopScope(
       onWillPop: () async => false,
-      child: Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),        
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        child: contentBox(context),
+      child: Scaffold(
+        body: Stack(
+          children: <Widget>[
+            Container(
+              height: 200.0,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(colors: [Colors.blue.shade200, Colors.blue.shade600]),
+              ),
+            ),
+            ListView.builder(
+              itemCount: 3,
+              itemBuilder: _mainListBuilder,
+            ),
+          ],
+        ),
       ),
     );
   }
-  
-  contentBox(context) {
-    return ListView(
-      padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
-      children: <Widget>[
-        Form(
-          key: _formKey,
-          autovalidateMode: _autoValidate,
-          child: Stack(
-            children: <Widget>[
-              Container(
-                width: 500,
-                padding: EdgeInsets.only(left: 20, top: 55, right: 20, bottom: 10),
-                margin: EdgeInsets.only(top: 45),
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  color: Colors.blueGrey,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(color: Colors.black,offset: Offset(0, 10), blurRadius: 10),
-                  ]
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    cabecalhoTela(context),
-                    conteudoTela(context),
-                  ],
-                ),
-              ),
-              Positioned(
-                left: 20,
-                right: 20,
-                child: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  radius: 45,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(45)),
-                      child: Image.asset(Constantes.profileImage)
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ]
-    );
-  }
 
+  Widget _mainListBuilder(BuildContext context, int index) {
+    if (index == 0) return cabecalhoTela(context);
+    // if (index == 1) return dadosFechamento(context);
+    if (index == 1) return conteudoTela(context);
+    return null;
+  }
+  
   Container cabecalhoTela(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(top: 20.0),
       child: Stack(
         children: <Widget>[
           Container(
+            padding: EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
@@ -140,7 +118,7 @@ class _RegistroPageState extends State<RegistroPage> {
               child: Column(
                 children: <Widget>[
                   SizedBox(
-                    height: 10.0,
+                    height: 50.0,
                   ),
                   Text(
                     widget.title,
@@ -150,8 +128,14 @@ class _RegistroPageState extends State<RegistroPage> {
                     height: 5.0,
                   ),
                   Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Text(_textoInformativo),                
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      _textoInformativo, textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: __pendenteDeConfirmacao ? FontWeight.bold : FontWeight.normal, 
+                        color: __pendenteDeConfirmacao ? Colors.red : Colors.black,
+                      ),
+                    ),                
                   ),
                   Divider(
                     indent: 10,
@@ -165,65 +149,85 @@ class _RegistroPageState extends State<RegistroPage> {
               ),
             ),
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Material(
+                elevation: 5.0,
+                shape: CircleBorder(),
+                child: CircleAvatar(
+                  radius: 40.0,
+                  backgroundImage: AssetImage(Constantes.opcoesGerenteIcon),
+                ),
+              ),
+            ],
+          ),
+
         ],
       ),
     );
   }
 
+
   Container conteudoTela(BuildContext context) {
     return Container(
-      child: Stack(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(top: 10.0, left: 0.0, right: 0.0, bottom: 10.0),
-            child: Material(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-              elevation: 5.0,
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: <Widget>[
-                    const SizedBox(height: 10.0),
-                    TextFormField(
-                      validator: ValidaCampoFormulario.validarObrigatorioEmail,
-                      keyboardType: TextInputType.emailAddress,
-                      maxLength: 250,
-                      focusNode: _valorFoco,
-                      controller: _emailController,
-                      decoration: getInputDecoration(
-                        'Informe o EMail',
-                        'EMail *',
-                        false),
-                      onSaved: (String value) {
-                      },
-                      onChanged: (text) {
-                      },
-                    ),                    
-                    const SizedBox(height: 10.0),
-                    TextFormField(
-                      controller: _whatsappController,
-                      maxLength: 15,
-                      decoration: getInputDecoration(
-                        'Conteúdo para o campo WhatsApp',
-                        'WhatsApp',
-                        false),
-                      onSaved: (String value) {
-                      },
-                      onChanged: (text) {
-                      },
-                    ),
-                    const SizedBox(height: 10.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: _getBotoesRodape(context: context),
-                    )
-                  ],
+      margin: EdgeInsets.only(top: 0.0),
+      child: Form(
+        key: _formKey,
+        autovalidateMode: _autoValidate,
+        child: Stack(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
+              child: Material(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                elevation: 5.0,
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: <Widget>[
+                      const SizedBox(height: 10.0),
+                      TextFormField(
+                        validator: ValidaCampoFormulario.validarObrigatorioEmail,
+                        keyboardType: TextInputType.emailAddress,
+                        maxLength: 250,
+                        focusNode: _valorFoco,
+                        controller: _emailController,
+                        decoration: getInputDecoration(
+                          'Informe o EMail',
+                          'EMail *',
+                          false),
+                        onSaved: (String value) {
+                        },
+                        onChanged: (text) {
+                        },
+                      ),                    
+                      const SizedBox(height: 10.0),
+                      TextFormField(
+                        controller: _whatsappController,
+                        maxLength: 15,
+                        decoration: getInputDecoration(
+                          'Conteúdo para o campo WhatsApp',
+                          'WhatsApp',
+                          false),
+                        onSaved: (String value) {
+                        },
+                        onChanged: (text) {
+                        },
+                      ),
+                      const SizedBox(height: 10.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: _getBotoesRodape(context: context),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -265,7 +269,8 @@ class _RegistroPageState extends State<RegistroPage> {
       if (usuario != null) {
         if (usuario.pendente == 'S') {
           setState(() {
-            _textoInformativo = 'Confirme seus dados no e-mail que foi enviado para sua conta. Dessa forma, seu cadastro será concluído.';
+            __pendenteDeConfirmacao = true;
+            _textoInformativo = 'Confirme seus dados no e-mail que foi enviado para sua conta [verifique a caixa de SPAM / Lixo Eletrônico]. Dessa forma, seu cadastro será concluído.';
           });
         } else {
           // senão, altera a empresa local informando que o usuário foi registrado e fecha a janela

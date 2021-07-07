@@ -43,6 +43,7 @@ part 'produto_dao.g.dart';
 @UseDao(tables: [
           Produtos,
           ProdutoUnidades,
+          TributGrupoTributarios,
 		])
 class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
   final AppDatabase db;
@@ -71,10 +72,38 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
                                 }).getSingleOrNull());
   }
 
+  Future<ProdutoMontado> consultarObjetoMontado(int pId) async {
+    final consulta = select(produtos)
+      .join([
+        leftOuterJoin(produtoUnidades, produtoUnidades.id.equalsExp(produtos.idProdutoUnidade)),
+      ])
+      .join([
+        leftOuterJoin(tributGrupoTributarios, tributGrupoTributarios.id.equalsExp(produtos.idTributGrupoTributario)),
+      ]);
+
+    consulta.where(produtos.id.equals(pId));
+
+    final retorno = await consulta.map((row) {
+        final produtoUnidade = row.readTableOrNull(produtoUnidades);
+        final produto = row.readTableOrNull(produtos);
+        final tributGrupoTributario = row.readTableOrNull(tributGrupoTributarios);
+
+        return ProdutoMontado(
+          produtoUnidade: produtoUnidade, 
+          produto: produto,
+          tributGrupoTributario: tributGrupoTributario,
+        );
+      }).getSingleOrNull();
+    return retorno;
+  }
+
   Future<List<ProdutoMontado>> consultarListaMontado({String campo, dynamic valor, String status}) async {
     final consulta = select(produtos)
       .join([
         leftOuterJoin(produtoUnidades, produtoUnidades.id.equalsExp(produtos.idProdutoUnidade)),
+      ])
+      .join([
+        leftOuterJoin(tributGrupoTributarios, tributGrupoTributarios.id.equalsExp(produtos.idTributGrupoTributario)),
       ]);
 
     if (campo != null && campo != '') {      
@@ -98,16 +127,21 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
     }
 
     listaProdutoMontado = await consulta.map((row) {
-        final produtoUnidade = row.readTable(produtoUnidades);
-        final produto = row.readTable(produtos);
+        final produtoUnidade = row.readTableOrNull(produtoUnidades);
+        final produto = row.readTableOrNull(produtos);
+        final tributGrupoTributario = row.readTableOrNull(tributGrupoTributarios);
 
-        return ProdutoMontado(produtoUnidade: produtoUnidade, produto: produto);
+        return ProdutoMontado(
+          produtoUnidade: produtoUnidade, 
+          produto: produto,
+          tributGrupoTributario: tributGrupoTributario,
+        );
       }).get();
     return listaProdutoMontado;
   }
 
   Future<int> consultarEstoqueCritico() async {
-    final resultado = await customSelect('select count(*) as QUANTIDADE from produto where QUANTIDADE_ESTOQUE<ESTOQUE_MINIMO').getSingleOrNull();
+    final resultado = await customSelect("select count(*) as QUANTIDADE from produto where QUANTIDADE_ESTOQUE<ESTOQUE_MINIMO").getSingleOrNull();
     return resultado.data["QUANTIDADE"] ?? 0;
   }
 
@@ -145,6 +179,10 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
       return true;
     });    
   } 
+
+  Future<int> atualizarGrupoTributario(int idGrupoTributario) async {
+    return customUpdate("update PRODUTO set ID_TRIBUT_GRUPO_TRIBUTARIO = '" + idGrupoTributario.toString() + "'");
+  }
 
   Stream<List<Produto>> observarLista() => select(produtos).watch();
 

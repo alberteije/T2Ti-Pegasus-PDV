@@ -68,6 +68,7 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
 
   Map<LogicalKeySet, Intent> _shortcutMap; 
   Map<Type, Action<Intent>> _actionMap;
+  final _foco = FocusNode();
 
   ProdutoUnidade produtoUnidade;
 
@@ -86,6 +87,7 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
       ),
     };
     produtoUnidade = widget.produtoUnidade;
+    _foco.requestFocus();
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -138,6 +140,7 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
                           BootstrapCol(
                             sizes: 'col-12',
                             child: TextFormField(
+                              focusNode: _foco,
                               validator: ValidaCampoFormulario.validarObrigatorio,
                               maxLength: 10,
                               maxLines: 1,

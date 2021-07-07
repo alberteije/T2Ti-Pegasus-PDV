@@ -158,33 +158,7 @@ class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
                     },
                     sortColumnIndex: _sortColumnIndex,
                     sortAscending: _sortAscending,
-                    columns: <DataColumn>[
-                      DataColumn(
-                        numeric: true,
-                        label: const Text('Id'),
-                        tooltip: 'Id',
-                        onSort: (int columnIndex, bool ascending) =>
-                          _sort<num>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.id, columnIndex, ascending),
-                      ),
-                      DataColumn(
-                        label: const Text('Codigo'),
-                        tooltip: 'Conteúdo para o campo Codigo',
-                        onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.codigo, columnIndex, ascending),
-                      ),
-                      DataColumn(
-                        label: const Text('Descricao'),
-                        tooltip: 'Conteúdo para o campo Descricao',
-                        onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.descricao, columnIndex, ascending),
-                      ),
-                      DataColumn(
-                        label: const Text('Gera Parcelas'),
-                        tooltip: 'Conteúdo para o campo Gera Parcelas',
-                        onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.geraParcelas, columnIndex, ascending),
-                      ),
-                    ],
+                    columns: _pegarColunas(_sort),                    
                     source: _pdvTipoPagamentoDataSource,
                   ),
                 ],
@@ -196,6 +170,53 @@ class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
     );
   }
 
+  List<DataColumn> _pegarColunas(Function _sort) {
+    final List<DataColumn> _colunas = [];
+    _colunas.add(
+      DataColumn(
+        numeric: true,
+        label: const Text('Id'),
+        tooltip: 'Id',
+        onSort: (int columnIndex, bool ascending) =>
+          _sort<num>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.id, columnIndex, ascending),
+      ),
+    );
+    _colunas.add(
+      DataColumn(
+        label: const Text('Codigo'),
+        tooltip: 'Conteúdo para o campo Codigo',
+        onSort: (int columnIndex, bool ascending) =>
+          _sort<String>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.codigo, columnIndex, ascending),
+      ),
+    );
+    if (Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC') {
+      _colunas.add(   
+        DataColumn(
+          label: const Text('Código NFC-e'),
+          tooltip: 'Conteúdo para o campo Código da NFC-e',
+          onSort: (int columnIndex, bool ascending) =>
+            _sort<String>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.codigoPagamentoNfce, columnIndex, ascending),
+        ),
+      );
+    }
+    _colunas.add(
+      DataColumn(
+        label: const Text('Descricao'),
+        tooltip: 'Conteúdo para o campo Descricao',
+        onSort: (int columnIndex, bool ascending) =>
+          _sort<String>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.descricao, columnIndex, ascending),
+      ),
+    );
+    _colunas.add(
+      DataColumn(
+        label: const Text('Gera Parcelas'),
+        tooltip: 'Conteúdo para o campo Gera Parcelas',
+        onSort: (int columnIndex, bool ascending) =>
+          _sort<String>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.geraParcelas, columnIndex, ascending),
+      ),
+    );
+    return _colunas;
+  }
   void _inserir() {
     Navigator.of(context)
       .push(MaterialPageRoute(
@@ -230,7 +251,7 @@ class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
 
   Future _gerarRelatorio() async {
     gerarDialogBoxInformacao(
-      context, 'Recurso implementado na versão completa do sistema.');
+      context, 'Essa janela não possui relatório implementado');
   }
 
   Future _refrescarTela() async {
@@ -272,24 +293,44 @@ class _PdvTipoPagamentoDataSource extends DataTableSource {
   DataRow getRow(int index) {
     assert(index >= 0);
     if (index >= listaPdvTipoPagamento.length) return null;
-    final PdvTipoPagamento pdvTipoPagamento = listaPdvTipoPagamento[index];
     return DataRow.byIndex(
       index: index,
-      cells: <DataCell>[
+      cells: _pegarCelulas(index),
+    );
+  }
+
+  List<DataCell> _pegarCelulas(int index) {
+    final PdvTipoPagamento pdvTipoPagamento = listaPdvTipoPagamento[index];
+    List<DataCell> _celulas = [];
+    _celulas.add(
         DataCell(Text('${pdvTipoPagamento.id ?? ''}'), onTap: () {
           _detalharPdvTipoPagamento(pdvTipoPagamento, context, refrescarTela);
         }),
+    );
+    _celulas.add(
         DataCell(Text('${pdvTipoPagamento.codigo ?? ''}'), onTap: () {
           _detalharPdvTipoPagamento(pdvTipoPagamento, context, refrescarTela);
         }),
+    );
+    if (Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC') {
+      _celulas.add(
+        DataCell(Text('${pdvTipoPagamento.codigoPagamentoNfce ?? ''}'), onTap: () {
+          _detalharPdvTipoPagamento(pdvTipoPagamento, context, refrescarTela);
+        }),
+      );
+    }
+    _celulas.add(
         DataCell(Text('${pdvTipoPagamento.descricao ?? ''}'), onTap: () {
           _detalharPdvTipoPagamento(pdvTipoPagamento, context, refrescarTela);
         }),
+    );
+    _celulas.add(
         DataCell(Text('${pdvTipoPagamento.geraParcelas ?? ''}'), onTap: () {
           _detalharPdvTipoPagamento(pdvTipoPagamento, context, refrescarTela);
         }),
-      ],
     );
+  
+    return _celulas;
   }
 
   @override

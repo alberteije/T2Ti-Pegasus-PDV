@@ -99,3 +99,12 @@ export 'package:pegasus_pdv/src/view/page/vendas/vendas_lista_page.dart';
 // configurações
 export 'package:pegasus_pdv/src/view/page/configuracoes/configuracao_page.dart';
 
+// tributação
+export 'package:pegasus_pdv/src/view/page/tributacao/tribut_configura_of_gt/tribut_configura_of_gt_lista_page.dart';
+export 'package:pegasus_pdv/src/view/page/tributacao/tribut_configura_of_gt/tribut_configura_of_gt_persiste_page.dart';
+
+export 'package:pegasus_pdv/src/view/page/tributacao/tribut_grupo_tributario/tribut_grupo_tributario_lista_page.dart';
+export 'package:pegasus_pdv/src/view/page/tributacao/tribut_grupo_tributario/tribut_grupo_tributario_persiste_page.dart';
+
+export 'package:pegasus_pdv/src/view/page/tributacao/tribut_operacao_fiscal/tribut_operacao_fiscal_lista_page.dart';
+export 'package:pegasus_pdv/src/view/page/tributacao/tribut_operacao_fiscal/tribut_operacao_fiscal_persiste_page.dart';

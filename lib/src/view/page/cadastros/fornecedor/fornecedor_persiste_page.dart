@@ -70,6 +70,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
 
   Map<LogicalKeySet, Intent> _shortcutMap; 
   Map<Type, Action<Intent>> _actionMap;
+  final _foco = FocusNode();
 
   Fornecedor fornecedor;
 
@@ -88,6 +89,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
       ),
     };
     fornecedor = widget.fornecedor;
+    _foco.requestFocus();
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -189,6 +191,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                             child: Padding(
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
                               child: TextFormField(
+                                focusNode: _foco,
                                 validator: ValidaCampoFormulario.validarObrigatorio,
                                 maxLength: 150,
                                 maxLines: 1,

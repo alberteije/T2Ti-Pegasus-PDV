@@ -1,9 +1,49 @@
+/*
+Title: T2Ti ERP 3.0                                                                
+Description: Página de configuração - Aba Geral
+                                                                                
+The MIT License                                                                 
+                                                                                
+Copyright: Copyright (C) 2021 T2Ti.COM                                          
+                                                                                
+Permission is hereby granted, free of charge, to any person                     
+obtaining a copy of this software and associated documentation                  
+files (the "Software"), to deal in the Software without                         
+restriction, including without limitation the rights to use,                    
+copy, modify, merge, publish, distribute, sublicense, and/or sell               
+copies of the Software, and to permit persons to whom the                       
+Software is furnished to do so, subject to the following                        
+conditions:                                                                     
+                                                                                
+The above copyright notice and this permission notice shall be                  
+included in all copies or substantial portions of the Software.                 
+                                                                                
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,                 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES                 
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND                        
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT                     
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,                    
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING                    
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR                   
+OTHER DEALINGS IN THE SOFTWARE.                                                 
+                                                                                
+       The author may be contacted at:                                          
+           t2ti.com@gmail.com                                                   
+                                                                                
+@author Albert Eije (alberteije@gmail.com)                    
+@version 1.0.0
+*******************************************************************************/
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pegasus_pdv/src/infra/constantes.dart';
+import 'package:pegasus_pdv/src/database/database_classes.dart';
+
 import 'package:pegasus_pdv/src/infra/infra.dart';
+import 'package:pegasus_pdv/src/controller/controller.dart';
+
+import 'package:pegasus_pdv/src/view/shared/page/lookup_local_page.dart';
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
+import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 class ConfiguracaoAbaGeral extends StatefulWidget {
   
@@ -15,8 +55,15 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
   bool _permiteEstoqueNegativo = Sessao.configuracaoPdv.permiteEstoqueNegativo == 'S' ? true : false;
   String _formatoPagina = Sessao.configuracaoPdv.reciboFormatoPagina;
   double _larguraPagina = Sessao.configuracaoPdv.reciboLarguraPagina ?? 57;
-  double _margensPagina = 5;
+  double _margensPagina = Sessao.configuracaoPdv.reciboMargemPagina ?? 5;
   double _larguraPaginaSlider = 100;
+  final _importaTributOperacaoFiscalController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -238,6 +285,68 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
                     },
                   )
                 ),
+                Visibility(
+                  visible: Sessao.configuracaoPdv.modulo != 'G',
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            child: TextFormField(
+                              controller: _importaTributOperacaoFiscalController,
+                              readOnly: true,
+                              decoration: getInputDecoration(
+                                'Importe a Operação Fiscal Padrão',
+                                'Operação Fiscal Padrão',
+                                false),
+                              onSaved: (String value) {
+                              },
+                              validator: ValidaCampoFormulario.validarObrigatorioAlfanumerico,
+                              onChanged: (text) {
+                              },
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 0,
+                          child: IconButton(
+                            tooltip: 'Importar Operação Fiscal',
+                            icon: ViewUtilLib.getIconBotaoLookup(),
+                            onPressed: () async {
+                              ///chamando o lookup
+                              Map<String, dynamic> _objetoJsonRetorno =
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                      LookupLocalPage(
+                                        title: 'Importar Operação Fiscal',
+                                        colunas: TributOperacaoFiscalDao.colunas,
+                                        campos: TributOperacaoFiscalDao.campos,
+                                        campoPesquisaPadrao: 'descricao',
+                                        valorPesquisaPadrao: '%',
+                                        metodoConsultaCallBack: TributOperacaoFiscalController.filtrarOperacaoFiscalLookup,
+                                      ),
+                                      fullscreenDialog: true,
+                                    ));
+                              if (_objetoJsonRetorno != null) {
+                                if (_objetoJsonRetorno['descricao'] != null) {
+                                  Sessao.configuracaoPdv = 
+                                  Sessao.configuracaoPdv.copyWith(
+                                    idTributOperacaoFiscalPadrao: _objetoJsonRetorno['id'],
+                                  );                                
+                                  await _refrescarTela();
+                                }
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),							
+                  ),
+                ),
               ],
             ),
           ),
@@ -270,4 +379,13 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
     await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv);
     return true;
   }
+
+  Future _refrescarTela() async {
+    if (Sessao.configuracaoPdv.idTributOperacaoFiscalPadrao != null) {
+      final operacaoFiscal = await Sessao.db.tributOperacaoFiscalDao.consultarObjeto(Sessao.configuracaoPdv.idTributOperacaoFiscalPadrao);
+      _importaTributOperacaoFiscalController.text = operacaoFiscal.descricao;
+      setState(() {
+      });
+    }
+  }  
 }

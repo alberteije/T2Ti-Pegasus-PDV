@@ -43,6 +43,7 @@ class Produtos extends Table {
 
   IntColumn get id => integer().named('ID').autoIncrement()();
   IntColumn get idProdutoUnidade => integer().named('ID_PRODUTO_UNIDADE').nullable().customConstraint('NULLABLE REFERENCES PRODUTO_UNIDADE(ID)')();
+  IntColumn get idTributGrupoTributario => integer().named('ID_TRIBUT_GRUPO_TRIBUTARIO').nullable().customConstraint('NULLABLE REFERENCES TRIBUT_GRUPO_TRIBUTARIO(ID)')();
   TextColumn get gtin => text().named('GTIN').withLength(min: 0, max: 14).nullable()();
   TextColumn get codigoInterno => text().named('CODIGO_INTERNO').withLength(min: 0, max: 50).nullable()();
   TextColumn get nome => text().named('NOME').withLength(min: 0, max: 100).nullable()();
@@ -74,9 +75,11 @@ class Produtos extends Table {
 class ProdutoMontado {
   ProdutoUnidade produtoUnidade;
   Produto produto;
+  TributGrupoTributario tributGrupoTributario;
 
   ProdutoMontado({
     this.produtoUnidade,
     this.produto,
+    this.tributGrupoTributario,
   });
 }

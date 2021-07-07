@@ -89,8 +89,8 @@ class ContasPagarDao extends DatabaseAccessor<AppDatabase> with _$ContasPagarDao
     }
 
     listaContasPagarMontado = await consulta.map((row) {
-        final contasPagar = row.readTable(contasPagars);
-        final fornecedor = row.readTable(fornecedors);
+        final contasPagar = row.readTableOrNull(contasPagars);
+        final fornecedor = row.readTableOrNull(fornecedors);
 
         return ContasPagarMontado(
           contasPagar: contasPagar,

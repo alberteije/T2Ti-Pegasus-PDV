@@ -42,14 +42,12 @@ part 'nfe_cabecalho_dao.g.dart';
 
 @UseDao(tables: [
           NfeCabecalhos,
-          NfeAcessoXmls,
-          NfeCteReferenciados,
-          NfeCupomFiscalReferenciados,
+          NfeDestinatarios,
           NfeDetalhes,
-          NfeNfReferenciadas,
-          NfeProcessoReferenciados,
-          NfeProdRuralReferenciadas,
-          NfeReferenciadas,
+          NfeDetalheImpostoIcmss,
+          NfeDetalheImpostoPiss,
+          NfeDetalheImpostoCofinss,
+          NfeInformacaoPagamentos,
 		])
 class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoDaoMixin {
   final AppDatabase db;
@@ -71,116 +69,40 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
     return (select(nfeCabecalhos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<NfeCabecalho> pObjeto, List<NfeAcessoXml> listaNfeAcessoXml, List<NfeCteReferenciado> listaNfeCteReferenciado, List<NfeCupomFiscalReferenciado> listaNfeCupomFiscalReferenciado, List<NfeDetalhe> listaNfeDetalhe, List<NfeNfReferenciada> listaNfeNfReferenciada, List<NfeProcessoReferenciado> listaNfeProcessoReferenciado, List<NfeProdRuralReferenciada> listaNfeProdRuralReferenciada, List<NfeReferenciada> listaNfeReferenciada) {
+  Future<int> inserir(NfeCabecalhoMontado nfeCabecalhoMontado) {
     return transaction(() async {
-      final idInserido = await into(nfeCabecalhos).insert(pObjeto);
-      // inserirFilhos(pObjeto as NfeCabecalho, listaNfeAcessoXml);
-      // inserirFilhos(pObjeto as NfeCabecalho, listaNfeCteReferenciado);
-      // inserirFilhos(pObjeto as NfeCabecalho, listaNfeCupomFiscalReferenciado);
-      // inserirFilhos(pObjeto as NfeCabecalho, listaNfeDetalhe);
-      // inserirFilhos(pObjeto as NfeCabecalho, listaNfeNfReferenciada);
-      // inserirFilhos(pObjeto as NfeCabecalho, listaNfeProcessoReferenciado);
-      // inserirFilhos(pObjeto as NfeCabecalho, listaNfeProdRuralReferenciada);
-      // inserirFilhos(pObjeto as NfeCabecalho, listaNfeReferenciada);
+      final idInserido = await into(nfeCabecalhos).insert(nfeCabecalhoMontado.nfeCabecalho);
+      await inserirFilhos(nfeCabecalhoMontado, idInserido);
+      await db.nfeNumeroDao.atualizarNumero();
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<NfeCabecalho> pObjeto, List<NfeAcessoXml> listaNfeAcessoXml, List<NfeCteReferenciado> listaNfeCteReferenciado, List<NfeCupomFiscalReferenciado> listaNfeCupomFiscalReferenciado, List<NfeDetalhe> listaNfeDetalhe, List<NfeNfReferenciada> listaNfeNfReferenciada, List<NfeProcessoReferenciado> listaNfeProcessoReferenciado, List<NfeProdRuralReferenciada> listaNfeProdRuralReferenciada, List<NfeReferenciada> listaNfeReferenciada) {
+  Future<bool> alterar(NfeCabecalhoMontado nfeCabecalhoMontado) {
     return transaction(() async {
-      // excluirFilhos(pObjeto as NfeCabecalho);
-      // excluirFilhos(pObjeto as NfeCabecalho);
-      // excluirFilhos(pObjeto as NfeCabecalho);
-      // excluirFilhos(pObjeto as NfeCabecalho);
-      // excluirFilhos(pObjeto as NfeCabecalho);
-      // excluirFilhos(pObjeto as NfeCabecalho);
-      // excluirFilhos(pObjeto as NfeCabecalho);
-      // excluirFilhos(pObjeto as NfeCabecalho);
-      // inserirFilhos(pObjeto as NfeCabecalho, listaNfeAcessoXml);
-      // inserirFilhos(pObjeto as NfeCabecalho, listaNfeCteReferenciado);
-      // inserirFilhos(pObjeto as NfeCabecalho, listaNfeCupomFiscalReferenciado);
-      // inserirFilhos(pObjeto as NfeCabecalho, listaNfeDetalhe);
-      // inserirFilhos(pObjeto as NfeCabecalho, listaNfeNfReferenciada);
-      // inserirFilhos(pObjeto as NfeCabecalho, listaNfeProcessoReferenciado);
-      // inserirFilhos(pObjeto as NfeCabecalho, listaNfeProdRuralReferenciada);
-      // inserirFilhos(pObjeto as NfeCabecalho, listaNfeReferenciada);
-      return update(nfeCabecalhos).replace(pObjeto);
+      return update(nfeCabecalhos).replace(nfeCabecalhoMontado.nfeCabecalho);
     });    
   } 
 
-  Future<int> excluir(Insertable<NfeCabecalho> pObjeto) {
-    return transaction(() async {
-      excluirFilhos(pObjeto as NfeCabecalho);
-      excluirFilhos(pObjeto as NfeCabecalho);
-      excluirFilhos(pObjeto as NfeCabecalho);
-      excluirFilhos(pObjeto as NfeCabecalho);
-      excluirFilhos(pObjeto as NfeCabecalho);
-      excluirFilhos(pObjeto as NfeCabecalho);
-      excluirFilhos(pObjeto as NfeCabecalho);
-      excluirFilhos(pObjeto as NfeCabecalho);
-      return delete(nfeCabecalhos).delete(pObjeto);
-    });    
-  }
+  Future<void> inserirFilhos(NfeCabecalhoMontado nfeCabecalhoMontado, int idMestre) async {
+    nfeCabecalhoMontado.nfeDestinatario = nfeCabecalhoMontado.nfeDestinatario.copyWith(idNfeCabecalho: idMestre);
+    await into(nfeDestinatarios).insert(nfeCabecalhoMontado.nfeDestinatario);  
 
-  void inserirFilhos(NfeCabecalho nfeCabecalho, List<NfeAcessoXml> listaNfeAcessoXml, List<NfeCteReferenciado> listaNfeCteReferenciado, List<NfeCupomFiscalReferenciado> listaNfeCupomFiscalReferenciado, List<NfeDetalhe> listaNfeDetalhe, List<NfeNfReferenciada> listaNfeNfReferenciada, List<NfeProcessoReferenciado> listaNfeProcessoReferenciado, List<NfeProdRuralReferenciada> listaNfeProdRuralReferenciada, List<NfeReferenciada> listaNfeReferenciada) {
-    for (var objeto in listaNfeAcessoXml) {
-      if (objeto.id == null) {
-        objeto = objeto.copyWith(idNfeCabecalho: nfeCabecalho.id);
-      }
-      into(nfeAcessoXmls).insert(objeto);  
+    for (var pagamento in nfeCabecalhoMontado.listaNfeInformacaoPagamento) {
+      pagamento = pagamento.copyWith(idNfeCabecalho: idMestre);
+      await into(nfeInformacaoPagamentos).insert(pagamento);  
     }
-    for (var objeto in listaNfeCteReferenciado) {
-      if (objeto.id == null) {
-        objeto = objeto.copyWith(idNfeCabecalho: nfeCabecalho.id);
-      }
-      into(nfeCteReferenciados).insert(objeto);  
-    }
-    for (var objeto in listaNfeCupomFiscalReferenciado) {
-      if (objeto.id == null) {
-        objeto = objeto.copyWith(idNfeCabecalho: nfeCabecalho.id);
-      }
-      into(nfeCupomFiscalReferenciados).insert(objeto);  
-    }
-    for (var objeto in listaNfeDetalhe) {
-      if (objeto.id == null) {
-        objeto = objeto.copyWith(idNfeCabecalho: nfeCabecalho.id);
-      }
-      into(nfeDetalhes).insert(objeto);  
-    }
-    for (var objeto in listaNfeNfReferenciada) {
-      if (objeto.id == null) {
-        objeto = objeto.copyWith(idNfeCabecalho: nfeCabecalho.id);
-      }
-      into(nfeNfReferenciadas).insert(objeto);  
-    }
-    for (var objeto in listaNfeProcessoReferenciado) {
-      if (objeto.id == null) {
-        objeto = objeto.copyWith(idNfeCabecalho: nfeCabecalho.id);
-      }
-      into(nfeProcessoReferenciados).insert(objeto);  
-    }
-    for (var objeto in listaNfeProdRuralReferenciada) {
-      if (objeto.id == null) {
-        objeto = objeto.copyWith(idNfeCabecalho: nfeCabecalho.id);
-      }
-      into(nfeProdRuralReferenciadas).insert(objeto);  
-    }
-    for (var objeto in listaNfeReferenciada) {
-      if (objeto.id == null) {
-        objeto = objeto.copyWith(idNfeCabecalho: nfeCabecalho.id);
-      }
-      into(nfeReferenciadas).insert(objeto);  
+
+    for (var detalhe in nfeCabecalhoMontado.listaNfeDetalheMontado) {
+      detalhe.nfeDetalhe = detalhe.nfeDetalhe.copyWith(idNfeCabecalho: idMestre);
+      final idDetalhe = await into(nfeDetalhes).insert(detalhe.nfeDetalhe);  
+      detalhe.nfeDetalheImpostoIcms = detalhe.nfeDetalheImpostoIcms.copyWith(idNfeDetalhe: idDetalhe);
+      await into(nfeDetalheImpostoIcmss).insert(detalhe.nfeDetalheImpostoIcms);  
+      detalhe.nfeDetalheImpostoPis = detalhe.nfeDetalheImpostoPis.copyWith(idNfeDetalhe: idDetalhe);
+      await into(nfeDetalheImpostoPiss).insert(detalhe.nfeDetalheImpostoPis);  
+      detalhe.nfeDetalheImpostoCofins = detalhe.nfeDetalheImpostoCofins.copyWith(idNfeDetalhe: idDetalhe);
+      await into(nfeDetalheImpostoCofinss).insert(detalhe.nfeDetalheImpostoCofins);  
     }
   }
   
-  void excluirFilhos(NfeCabecalho nfeCabecalho) {
-    (delete(nfeAcessoXmls)..where((t) => t.idNfeCabecalho.equals(nfeCabecalho.id))).go();
-    (delete(nfeCteReferenciados)..where((t) => t.idNfeCabecalho.equals(nfeCabecalho.id))).go();
-    (delete(nfeCupomFiscalReferenciados)..where((t) => t.idNfeCabecalho.equals(nfeCabecalho.id))).go();
-    (delete(nfeDetalhes)..where((t) => t.idNfeCabecalho.equals(nfeCabecalho.id))).go();
-    (delete(nfeNfReferenciadas)..where((t) => t.idNfeCabecalho.equals(nfeCabecalho.id))).go();
-    (delete(nfeProcessoReferenciados)..where((t) => t.idNfeCabecalho.equals(nfeCabecalho.id))).go();
-    (delete(nfeProdRuralReferenciadas)..where((t) => t.idNfeCabecalho.equals(nfeCabecalho.id))).go();
-    (delete(nfeReferenciadas)..where((t) => t.idNfeCabecalho.equals(nfeCabecalho.id))).go();
-  }
 }

@@ -72,12 +72,14 @@ class Sessao {
   static PdvMovimento movimento;
   static Empresa empresa;
   static PdvConfiguracao configuracaoPdv;
+  static NfeConfiguracao configuracaoNfce;
   static PdvVendaCabecalho vendaAtual = PdvVendaCabecalho(id: null);
   static List<VendaDetalhe> listaVendaAtualDetalhe = [];
   static List<PdvTipoPagamento> listaTipoPagamento = [];
   static List<PdvTotalTipoPagamento> listaDadosPagamento = [];
   static List<ContasReceberMontado> listaParcelamento = []; // guarda o parcelamento atual da venda para ser impresso no recibo
   static String retornoJsonLookup; // será usado para popular a grid da janela de lookup
+  static String retornoJsonNfce; //objeto retornado pelo ACBrMonitor
   static RetornoJsonErro objetoJsonErro; // objeto de erro estático que armazena o último erro ocorrido na aplicação
   static String caminhoBancoDados; // guarda o caminho para o banco de dados
 
@@ -99,9 +101,7 @@ class Sessao {
       await db.empresaDao.alterar(Sessao.empresa);
     }
     configuracaoPdv = await db.pdvConfiguracaoDao.consultarObjeto(1); // pega a configuracao - deve ter apenas um registro no banco de dados
-    // if (configuracaoPdv == null) {
-
-    // }
+    configuracaoNfce = await db.nfeConfiguracaoDao.consultarObjeto(1); // pega a configuracao da NFC-e - deve ter apenas um registro no banco de dados
     listaTipoPagamento = await db.pdvTipoPagamentoDao.consultarLista(); // pega os tipos de pagamento e poe numa lista
 
     if (kDebugMode && Biblioteca.isDesktop()) {

@@ -38,6 +38,8 @@ Based on: Flutter UIKit by Pawan Kumar - https://github.com/iampawan/Flutter-UI-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:pegasus_pdv/src/infra/infra.dart';
+
 import 'package:pegasus_pdv/src/view/shared/custom_background.dart';
 import 'package:pegasus_pdv/src/view/shared/profile_tile.dart';
 
@@ -73,6 +75,10 @@ class MenuCadastros extends StatelessWidget {
             actionMenuGrupoPessoa(),
             SizedBox(height: 10,),
             actionMenuGrupoGeral(),
+            SizedBox(height: 10,),
+            // só apresenta o cadastro da tributação se não for o módulo gratuito
+            Sessao.configuracaoPdv.modulo == 'G' ? SizedBox(height: 1,) : actionMenuGrupoTributacao(), 
+            Sessao.configuracaoPdv.modulo == 'G' ? SizedBox(height: 1,) : SizedBox(height: 20,),
           ],
         ),
       );
@@ -183,5 +189,40 @@ class MenuCadastros extends StatelessWidget {
       );
 
 
-
+  Widget actionMenuGrupoTributacao() => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Card(
+          elevation: 2.0,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  MenuTituloGrupoMenuInterno(titulo: "Cadastros - Tributação"),
+                  MenuInternoBotoes(
+                    primeiroBotao: BotaoMenu(
+                        icon: FontAwesomeIcons.solidUser,
+                        label: "Operação Fiscal",
+                        circleColor: Colors.blue,
+                        rota: "/tributOperacaoFiscalLista"),
+                    segundoBotao: BotaoMenu(
+                        icon: FontAwesomeIcons.addressCard,
+                        label: "Grupo Tributário",
+                        circleColor: Colors.orange,
+                        rota: "/tributGrupoTributarioLista"),
+                    terceiroBotao: BotaoMenu(
+                        icon: FontAwesomeIcons.truckLoading,
+                        label: "Configura Tributação",
+                        circleColor: Colors.purple,
+                        rota: "/tributConfiguraOfGtLista"),
+                    quartoBotao: null,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
 }

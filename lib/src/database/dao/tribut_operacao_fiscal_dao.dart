@@ -46,15 +46,21 @@ part 'tribut_operacao_fiscal_dao.g.dart';
 class TributOperacaoFiscalDao extends DatabaseAccessor<AppDatabase> with _$TributOperacaoFiscalDaoMixin {
   final AppDatabase db;
 
+  List<TributOperacaoFiscal> listaTributOperacaoFiscal; // será usada para popular a grid na janela da operação fiscal
+
   TributOperacaoFiscalDao(this.db) : super(db);
 
-  Future<List<TributOperacaoFiscal>> consultarLista() => select(tributOperacaoFiscals).get();
+  Future<List<TributOperacaoFiscal>> consultarLista() async {
+    listaTributOperacaoFiscal = await select(tributOperacaoFiscals).get();
+    return listaTributOperacaoFiscal;
+  }
 
   Future<List<TributOperacaoFiscal>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM TRIBUT_OPERACAO_FISCAL WHERE " + campo + " like '%" + valor + "%'", 
+    listaTributOperacaoFiscal = await (customSelect("SELECT * FROM TRIBUT_OPERACAO_FISCAL WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { tributOperacaoFiscals }).map((row) {
                                   return TributOperacaoFiscal.fromData(row.data, db);  
                                 }).get());
+    return listaTributOperacaoFiscal;
   }
 
   Stream<List<TributOperacaoFiscal>> observarLista() => select(tributOperacaoFiscals).watch();
@@ -82,5 +88,16 @@ class TributOperacaoFiscalDao extends DatabaseAccessor<AppDatabase> with _$Tribu
     });    
   }
 
+	static List<String> campos = <String>[
+		'ID', 
+		'DESCRICAO', 
+		'OBSERVACAO', 
+	];
+	
+	static List<String> colunas = <String>[
+		'Id', 
+		'Descrição', 
+		'Observação', 
+	];
   
 }

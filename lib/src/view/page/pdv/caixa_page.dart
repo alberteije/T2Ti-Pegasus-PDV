@@ -40,17 +40,20 @@ import 'package:flutter/material.dart';
 import 'package:bottomreveal/bottomreveal.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:pegasus_pdv/src/controller/pdv/nfce_controller.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_pdv.dart';
+import 'package:pegasus_pdv/src/service/service.dart';
 
 import 'package:pegasus_pdv/src/view/menu/menu_lateral_pdv.dart';
 import 'package:pegasus_pdv/src/view/login/registro_page.dart';
 import 'package:pegasus_pdv/src/view/page/page.dart';
 import 'package:pegasus_pdv/src/view/shared/page/lookup_local_page.dart';
+import 'package:pegasus_pdv/src/view/shared/page/pdf_page.dart';
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_caixa.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
@@ -584,7 +587,31 @@ class _CaixaPageState extends State<CaixaPage> {
               statusVenda: 'F'
             );
             await Sessao.db.pdvVendaCabecalhoDao.alterar(Sessao.vendaAtual, Sessao.listaVendaAtualDetalhe, listaDadosPagamento: Sessao.listaDadosPagamento);
-            _imprimirRecibo();
+            if (Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC') {
+              await NfceController.gerarDadosNfce();
+              final nfceFormatoIni = NfceController.montarNfce();
+              NfceService servicoNfce = NfceService();
+              await servicoNfce.conectar().then((socket) {
+                socket.write('NFe.CriarEnviarNFe("' + nfceFormatoIni + '", "001", , , , , , "1")\r\n.\r\n');
+                socket.listen((data) {
+                  final _respostaServidor = String.fromCharCodes(data).trim();
+                  print('TAMANHO DA RESPOSTA DO SERVIDOR = ' + _respostaServidor.length.toString());
+                  print('RESPOSTA DO SERVIDOR = ' + _respostaServidor);
+                  if (_respostaServidor.contains('ChaveDFe')) {
+                    socket.write('ACBr.EncodeBase64("C:\\ACBrMonitor\\PDF\\10793118000178\\NFCe\\202107\\NFCe\\53210710793118000178650050000002231900002238-nfe.pdf")\r\n.\r\n');
+                  } else if (_respostaServidor.contains('ERRO')) {
+                    showInSnackBar('Ocorreu um problema ao tentar emitir a NFC-e.', context);
+                    Navigator.of(context).pop();
+                  } else if (_respostaServidor.length > 5000) { // é o arquivo PDF
+                    _imprimirDanfe(_respostaServidor);
+                  } else {
+                    gerarDialogBoxEspera(context);
+                  }
+                });
+              }); 
+            } else {
+              _imprimirRecibo();
+            }
           }
       }  else {
         _exibirMensagemExisteVendaSemItens();
@@ -609,6 +636,21 @@ class _CaixaPageState extends State<CaixaPage> {
       .then((_) {
         _configurarDadosTelaPadrao();
       });
+  }
+
+  void _imprimirDanfe(String danfeBase64) {
+    var decodeB64 = base64.decode(danfeBase64.substring(4, danfeBase64.length - 1)); 
+    Navigator.of(context)
+      .push(MaterialPageRoute(
+        builder: (BuildContext context) => PdfPage(
+          arquivoPdf: decodeB64, title: 'NFC-e')
+        )
+      ).then(
+        (value) {
+          Navigator.of(context).pop(); // fecha a tela gerarDialogBoxEspera
+          _configurarDadosTelaPadrao();
+        }
+      );          
   }
 
   void _reimprimirRecibo() async {
@@ -819,7 +861,10 @@ class _CaixaPageState extends State<CaixaPage> {
 
   void _comporItemParaVenda() {
     final _quantidadeFutura = (_produto.quantidadeEstoque ?? 0) - _quantidadeInformada;
-    if ((Sessao.configuracaoPdv.permiteEstoqueNegativo ?? 'S') == 'N' && _quantidadeFutura < 0) {
+
+    if(Sessao.configuracaoPdv.modulo != 'G' && _produto.idTributGrupoTributario == null) {
+      _exibirMensagemGrupoTributario();
+    } else if ((Sessao.configuracaoPdv.permiteEstoqueNegativo ?? 'S') == 'N' && _quantidadeFutura < 0) {
       _exibirMensagemEstoqueNegativo();
     } else {
       PdvVendaDetalhe pdvVendaDetalhe = 
@@ -871,6 +916,7 @@ class _CaixaPageState extends State<CaixaPage> {
       taxaDesconto: taxaDesconto,
       valorDesconto: valorDesconto,
       valorFinal: totalGeral - valorDesconto,
+      valorBaseIcms: totalGeral - valorDesconto,
     );
   }
 
@@ -888,6 +934,10 @@ class _CaixaPageState extends State<CaixaPage> {
 
   void _exibirMensagemEstoqueNegativo() {
     gerarDialogBoxInformacao(context, 'Não é permitido vender um item com estoque negativo.');
+  }
+
+  void _exibirMensagemGrupoTributario() {
+    gerarDialogBoxInformacao(context, 'Produto sem Grupo Tributário vinculado.');
   }
 
   void _fecharMenus() {

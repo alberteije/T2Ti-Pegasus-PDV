@@ -7,7 +7,10 @@ part of 'tribut_configura_of_gt_dao.dart';
 // **************************************************************************
 
 mixin _$TributConfiguraOfGtDaoMixin on DatabaseAccessor<AppDatabase> {
-  $TributConfiguraOfGtsTable get tributConfiguraOfGts =>
-      attachedDatabase.tributConfiguraOfGts;
-  $TributIcmsUfsTable get tributIcmsUfs => attachedDatabase.tributIcmsUfs;
+  $TributConfiguraOfGtsTable get tributConfiguraOfGts => attachedDatabase.tributConfiguraOfGts;
+  $TributGrupoTributariosTable get tributGrupoTributarios => attachedDatabase.tributGrupoTributarios;
+  $TributOperacaoFiscalsTable get tributOperacaoFiscals => attachedDatabase.tributOperacaoFiscals;        
+  $TributIcmsUfsTable get tributIcmsUfs => attachedDatabase.tributIcmsUfs;        
+  $TributCofinssTable get tributCofinss => attachedDatabase.tributCofinss;        
+  $TributPissTable get tributPiss => attachedDatabase.tributPiss;        
 }

@@ -39,6 +39,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:pegasus_pdv/src/controller/controller.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
@@ -52,8 +53,6 @@ import 'package:pegasus_pdv/src/view/shared/botoes.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_abas.dart';
 import 'package:pegasus_pdv/src/view/shared/page/lookup_local_page.dart';
-
-import 'compra_pedido_cabecalho_page.dart';
 
 class CompraPedidoDetalhePersistePage extends StatefulWidget {
   final CompraPedidoCabecalho compraPedidoCabecalho;
@@ -457,7 +456,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
 
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-      CompraPedidoCabecalhoPage.listaCompraDetalhe.remove(widget.compraDetalhe);
+      CompraPedidoCabecalhoController.listaCompraDetalhe.remove(widget.compraDetalhe);
       Navigator.of(context).pop();
     });
   }  

@@ -197,8 +197,8 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
   Future<bool> alterar(Insertable<PdvVendaCabecalho> pObjeto, List<VendaDetalhe> listaVendaDetalhe, 
   {List<PdvTotalTipoPagamento> listaDadosPagamento}) {
     return transaction(() async {
-      excluirFilhos(pObjeto as PdvVendaCabecalho);
-      inserirFilhos(pObjeto as PdvVendaCabecalho, listaVendaDetalhe, listaDadosPagamento);
+      await excluirFilhos(pObjeto as PdvVendaCabecalho);
+      await inserirFilhos(pObjeto as PdvVendaCabecalho, listaVendaDetalhe, listaDadosPagamento);
       if ((pObjeto as PdvVendaCabecalho).statusVenda == 'F') {
         await db.produtoDao.decrementarEstoque(listaVendaDetalhe: listaVendaDetalhe);
       }
@@ -208,6 +208,8 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
 
   Future<bool> cancelarVenda(PdvVendaCabecalho pdvVendaCabecalho) {
     return transaction(() async {
+      final listaVendaDetalhe = await db.pdvVendaDetalheDao.consultarListaComProduto(pdvVendaCabecalho.id);
+      await db.produtoDao.decrementarEstoque(listaVendaDetalhe: listaVendaDetalhe);
       await db.contasReceberDao.excluirReceitasDeUmaVenda(pdvVendaCabecalho.id);
       return update(pdvVendaCabecalhos).replace(pdvVendaCabecalho);
     });    
@@ -215,29 +217,29 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
 
   Future<int> excluir(Insertable<PdvVendaCabecalho> pObjeto) {
     return transaction(() async {
-      excluirFilhos(pObjeto as PdvVendaCabecalho);
+      await excluirFilhos(pObjeto as PdvVendaCabecalho);
       return delete(pdvVendaCabecalhos).delete(pObjeto);
     });    
   }
 
-  void inserirFilhos(PdvVendaCabecalho pdvVendaCabecalho, List<VendaDetalhe> listaVendaDetalhe, List<PdvTotalTipoPagamento> listaDadosPagamento) {
+  Future<void> inserirFilhos(PdvVendaCabecalho pdvVendaCabecalho, List<VendaDetalhe> listaVendaDetalhe, List<PdvTotalTipoPagamento> listaDadosPagamento) async {
     // items da venda
     for (var objeto in listaVendaDetalhe) {
       objeto.pdvVendaDetalhe = objeto.pdvVendaDetalhe.copyWith(idPdvVendaCabecalho: pdvVendaCabecalho.id);
-      into(pdvVendaDetalhes).insert(objeto.pdvVendaDetalhe);  
+      await into(pdvVendaDetalhes).insert(objeto.pdvVendaDetalhe);  
     }
     // pagamentos
     if (listaDadosPagamento != null) {
       for (var objeto in listaDadosPagamento) {
         objeto = objeto.copyWith(idPdvVendaCabecalho: pdvVendaCabecalho.id);
-        into(pdvTotalTipoPagamentos).insert(objeto);  
+        await into(pdvTotalTipoPagamentos).insert(objeto);  
       }
     }
   }
   
-  void excluirFilhos(PdvVendaCabecalho pdvVendaCabecalho) {
-    (delete(pdvVendaDetalhes)..where((t) => t.idPdvVendaCabecalho.equals(pdvVendaCabecalho.id))).go();
-    (delete(pdvTotalTipoPagamentos)..where((t) => t.idPdvVendaCabecalho.equals(pdvVendaCabecalho.id))).go();
+  Future<void> excluirFilhos(PdvVendaCabecalho pdvVendaCabecalho) async {
+    await (delete(pdvVendaDetalhes)..where((t) => t.idPdvVendaCabecalho.equals(pdvVendaCabecalho.id))).go();
+    await (delete(pdvTotalTipoPagamentos)..where((t) => t.idPdvVendaCabecalho.equals(pdvVendaCabecalho.id))).go();
   }
 
 	static List<String> campos = <String>[

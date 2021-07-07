@@ -76,6 +76,10 @@ class NfeNumeroDao extends DatabaseAccessor<AppDatabase> with _$NfeNumeroDaoMixi
     });    
   } 
 
+  Future<int> atualizarNumero() async {
+    return customUpdate("update NFE_NUMERO set NUMERO = NUMERO + 1");
+  } 
+
   Future<int> excluir(Insertable<NfeNumero> pObjeto) {
     return transaction(() async {
       return delete(nfeNumeros).delete(pObjeto);

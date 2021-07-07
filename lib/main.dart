@@ -2,6 +2,7 @@ import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+// import 'package:yaml/yaml.dart';
 import 'package:provider/provider.dart';
 import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -22,6 +23,11 @@ import 'package:pegasus_pdv/src/view/page/page.dart';
 
 void main() async {  
   await DotEnv.load(fileName: ".env");
+
+  // não funciona no Android  
+  // final arquivoYaml = File("../pubspec.yaml");
+  // final stringYaml = await arquivoYaml.readAsString();
+  // Map dadosYaml = loadYaml(stringYaml);
 
   if (Platform.isWindows) {
     open.overrideFor(OperatingSystem.windows, _openOnWindows);
@@ -45,6 +51,7 @@ void main() async {
     localizationOptions: [
       LocalizationOptions.buildDefaultPortugueseOptions(),
     ],
+    customParameters: {"versao-atual": Constantes.versaoAtual}, 
   );
 
   ///configuração para tratar erros em modo de release (produção)
@@ -63,6 +70,7 @@ void main() async {
     localizationOptions: [
       LocalizationOptions.buildDefaultPortugueseOptions(),
     ],
+    customParameters: {"versao-atual": Constantes.versaoAtual}, 
   );
 
   ///Inicia o Catcher e então inicia a aplicação. 

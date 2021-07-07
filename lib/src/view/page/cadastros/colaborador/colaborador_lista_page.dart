@@ -256,7 +256,7 @@ class _ColaboradorListaPageState extends State<ColaboradorListaPage> {
 
   Future _gerarRelatorio() async {
     gerarDialogBoxInformacao(
-      context, 'Recurso implementado na versão completa do sistema.');
+      context, 'Essa janela não possui relatório implementado');
   }
 
   Future _refrescarTela() async {

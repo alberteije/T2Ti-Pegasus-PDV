@@ -42,6 +42,7 @@ class PdvConfiguracaos extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
   IntColumn get idEcfImpressora => integer().named('ID_ECF_IMPRESSORA').nullable().customConstraint('NULLABLE REFERENCES ECF_IMPRESSORA(ID)')();
   IntColumn get idPdvCaixa => integer().named('ID_PDV_CAIXA').nullable().customConstraint('NULLABLE REFERENCES PDV_CAIXA(ID)')();
+  IntColumn get idTributOperacaoFiscalPadrao => integer().named('ID_TRIBUT_OPERACAO_FISCAL_PADRAO').nullable().customConstraint('NULLABLE REFERENCES TRIBUT_OPERACAO_FISCAL(ID)')();
   TextColumn get mensagemCupom => text().named('MENSAGEM_CUPOM').withLength(min: 0, max: 250).nullable()();
   TextColumn get portaEcf => text().named('PORTA_ECF').withLength(min: 0, max: 10).nullable()();
   TextColumn get ipServidor => text().named('IP_SERVIDOR').withLength(min: 0, max: 15).nullable()();
@@ -74,13 +75,15 @@ class PdvConfiguracaos extends Table {
   TextColumn get gavetaSinalInvertido => text().named('GAVETA_SINAL_INVERTIDO').withLength(min: 0, max: 1).nullable()();
   IntColumn get gavetaUtilizacao => integer().named('GAVETA_UTILIZACAO').nullable()();
   TextColumn get usaTecladoReduzido => text().named('USA_TECLADO_REDUZIDO').withLength(min: 0, max: 1).nullable()();
-  TextColumn get modulo => text().named('MODULO').withLength(min: 0, max: 1).nullable()();
-  TextColumn get plano => text().named('PLANO').withLength(min: 0, max: 1).nullable()();
+  TextColumn get modulo => text().named('MODULO').withLength(min: 0, max: 1).nullable()(); //G=GRATIS F=FISCAL P=PREMIUM
+  TextColumn get plano => text().named('PLANO').withLength(min: 0, max: 1).nullable()(); //M=MENSAL S=SEMESTRAL A=ANUAL
   RealColumn get planoValor => real().named('PLANO_VALOR').nullable()();
-  TextColumn get planoSituacao => text().named('PLANO_SITUACAO').withLength(min: 0, max: 1).nullable()();
-  TextColumn get reciboFormatoPagina => text().named('RECIBO_FORMATO_PAGINA').withLength(min: 0, max: 2).nullable()();
+  TextColumn get planoSituacao => text().named('PLANO_SITUACAO').withLength(min: 0, max: 1).nullable()(); //A=ATIVO I=INADIMPLENTE B=BLOQUEADO
+  TextColumn get reciboFormatoPagina => text().named('RECIBO_FORMATO_PAGINA').withLength(min: 0, max: 2).nullable()(); // A4 57 80
   RealColumn get reciboLarguraPagina => real().named('RECIBO_LARGURA_PAGINA').nullable()();
   RealColumn get reciboMargemPagina => real().named('RECIBO_MARGEM_PAGINA').nullable()();
-  TextColumn get encerraMovimentoAuto => text().named('ENCERRA_MOVIMENTO_AUTO').withLength(min: 0, max: 1).nullable()();
-  TextColumn get permiteEstoqueNegativo => text().named('PERMITE_ESTOQUE_NEGATIVO').withLength(min: 0, max: 1).nullable()();
+  TextColumn get encerraMovimentoAuto => text().named('ENCERRA_MOVIMENTO_AUTO').withLength(min: 0, max: 1).nullable()(); //S N
+  TextColumn get permiteEstoqueNegativo => text().named('PERMITE_ESTOQUE_NEGATIVO').withLength(min: 0, max: 1).nullable()(); //S N
+  TextColumn get moduloFiscalPrincipal => text().named('MODULO_FISCAL_PRINCIPAL').withLength(min: 0, max: 5).nullable()(); //NFC-E SAT MFE
+  TextColumn get moduloFiscalContingencia => text().named('MODULO_FISCAL_CONTINGENCIA').withLength(min: 0, max: 5).nullable()(); //NFC-E SAT MFE
 }

@@ -82,9 +82,9 @@ class CompraPedidoCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$Comp
     }
 
     listaCompraPedidoCabecalhoMontado = await consulta.map((row) {
-        final compraPedidoCabecalho = row.readTable(compraPedidoCabecalhos);
-        final fornecedor = row.readTable(fornecedors);
-        final colaborador = row.readTable(colaboradors);
+        final compraPedidoCabecalho = row.readTableOrNull(compraPedidoCabecalhos);
+        final fornecedor = row.readTableOrNull(fornecedors);
+        final colaborador = row.readTableOrNull(colaboradors);
 
         return CompraPedidoCabecalhoMontado(
           compraPedidoCabecalho: compraPedidoCabecalho,
@@ -104,15 +104,15 @@ class CompraPedidoCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$Comp
   Future<int> inserir(Insertable<CompraPedidoCabecalho> pObjeto, List<CompraDetalhe> listaCompraDetalhe) {
     return transaction(() async {
       final idInserido = await into(compraPedidoCabecalhos).insert(pObjeto);
-      inserirFilhos(idInserido, listaCompraDetalhe);
+      await inserirFilhos(idInserido, listaCompraDetalhe);
       return idInserido;
     });    
   } 
 
   Future<bool> alterar(Insertable<CompraPedidoCabecalho> pObjeto, List<CompraDetalhe> listaCompraDetalhe, {bool atualizaEstoque}) {
     return transaction(() async {
-      excluirFilhos((pObjeto as CompraPedidoCabecalho).id);
-      inserirFilhos((pObjeto as CompraPedidoCabecalho).id, listaCompraDetalhe);
+      await excluirFilhos((pObjeto as CompraPedidoCabecalho).id);
+      await inserirFilhos((pObjeto as CompraPedidoCabecalho).id, listaCompraDetalhe);
       if (atualizaEstoque ?? false) {
         await db.produtoDao.incrementarEstoque(listaCompraDetalhe);  
       }
@@ -134,22 +134,22 @@ class CompraPedidoCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$Comp
       if (((pObjeto as CompraPedidoCabecalho).geraFinanceiro ?? '') == 'S') {
         await db.contasPagarDao.excluirContasDePedidoVinculado((pObjeto as CompraPedidoCabecalho).id);  
       }
-      excluirFilhos((pObjeto as CompraPedidoCabecalho).id);
+      await excluirFilhos((pObjeto as CompraPedidoCabecalho).id);
       return delete(compraPedidoCabecalhos).delete(pObjeto);
     });    
   }
 
-  void inserirFilhos(int idMestre, List<CompraDetalhe> listaCompraDetalhe) {
+  Future<void> inserirFilhos(int idMestre, List<CompraDetalhe> listaCompraDetalhe) async {
     if (listaCompraDetalhe != null) {
       for (var objeto in listaCompraDetalhe) {
         objeto.compraPedidoDetalhe = objeto.compraPedidoDetalhe.copyWith(idCompraPedidoCabecalho: idMestre);
-        into(compraPedidoDetalhes).insert(objeto.compraPedidoDetalhe);  
+        await into(compraPedidoDetalhes).insert(objeto.compraPedidoDetalhe);  
       }
     }
   }
   
-  void excluirFilhos(int idMestre) {
-    (delete(compraPedidoDetalhes)..where((t) => t.idCompraPedidoCabecalho.equals(idMestre))).go();
+  Future<void> excluirFilhos(int idMestre) async {
+    await (delete(compraPedidoDetalhes)..where((t) => t.idCompraPedidoCabecalho.equals(idMestre))).go();
   }
 
 	static List<String> campos = <String>[

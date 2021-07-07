@@ -47,4 +47,5 @@ class PdvTipoPagamentos extends Table {
   TextColumn get permiteTroco => text().named('PERMITE_TROCO').withLength(min: 0, max: 1).nullable()();
   TextColumn get tefTipoGp => text().named('TEF_TIPO_GP').withLength(min: 0, max: 1).nullable()();
   TextColumn get geraParcelas => text().named('GERA_PARCELAS').withLength(min: 0, max: 1).nullable()();
+  TextColumn get codigoPagamentoNfce => text().named('CODIGO_PAGAMENTO_NFCE').withLength(min: 0, max: 2).nullable()(); // conforme tag tPag da NFe
 }

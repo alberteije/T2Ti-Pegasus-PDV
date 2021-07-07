@@ -67,8 +67,8 @@ class CompraPedidoDetalheDao extends DatabaseAccessor<AppDatabase> with _$Compra
     consulta.where(compraPedidoDetalhes.idCompraPedidoCabecalho.equals(pId));
 
     return consulta.map((row) {
-        final compraDetalhe = row.readTable(compraPedidoDetalhes);
-        final produto = row.readTable(produtos);
+        final compraDetalhe = row.readTableOrNull(compraPedidoDetalhes);
+        final produto = row.readTableOrNull(produtos);
 
         return CompraDetalhe(compraPedidoDetalhe: compraDetalhe, produto: produto);
       }).get();

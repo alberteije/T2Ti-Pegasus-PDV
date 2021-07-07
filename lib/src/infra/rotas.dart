@@ -107,6 +107,29 @@ class Rotas {
 			  return MaterialPageRoute(builder: (_) => EstoqueListaPage());
 
 
+      ////////////////////////////////////////////////////////// 
+      /// TRIBUTAÇÃO
+      //////////////////////////////////////////////////////////
+
+			// TributConfiguraOfGt
+			case '/tributConfiguraOfGtLista':
+			  return MaterialPageRoute(builder: (_) => TributConfiguraOfGtListaPage());
+			case '/tributConfiguraOfGtPersiste':
+			  return MaterialPageRoute(builder: (_) => TributConfiguraOfGtPersistePage());
+			
+			// TributGrupoTributario
+			case '/tributGrupoTributarioLista':
+			  return MaterialPageRoute(builder: (_) => TributGrupoTributarioListaPage());
+			case '/tributGrupoTributarioPersiste':
+			  return MaterialPageRoute(builder: (_) => TributGrupoTributarioPersistePage());
+			
+			// TributOperacaoFiscal
+			case '/tributOperacaoFiscalLista':
+			  return MaterialPageRoute(builder: (_) => TributOperacaoFiscalListaPage());
+			case '/tributOperacaoFiscalPersiste':
+			  return MaterialPageRoute(builder: (_) => TributOperacaoFiscalPersistePage());
+
+
       // Home
 //      case '/home':
 //        return MaterialPageRoute(builder: (_) => HomePage());

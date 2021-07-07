@@ -319,6 +319,7 @@ class _VendasListaPageState extends State<VendasListaPage> {
   }
 
   Widget getResumoTotais(BuildContext context) {
+    _refrescarTela();
     return Scrollbar(
     child: SingleChildScrollView(
       dragStartBehavior: DragStartBehavior.down,

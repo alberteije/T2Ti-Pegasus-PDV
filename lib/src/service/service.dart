@@ -35,3 +35,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 export 'package:pegasus_pdv/src/service/cadastros/usuario_service.dart';
+export 'package:pegasus_pdv/src/service/pdv/nfce_service.dart';

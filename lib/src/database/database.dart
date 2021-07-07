@@ -7,9 +7,9 @@ import 'package:path_provider/path_provider.dart' as paths;
 import 'package:path/path.dart' as p;
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
+import 'package:pegasus_pdv/src/database/migracao.dart';
 
 import 'database_classes.dart';
-import 'migracao_para_schema_2.dart';
 
 part 'database.g.dart';
 
@@ -189,6 +189,10 @@ LazyDatabase _openConnection() {
     TributGrupoTributarioDao,
     TributIcmsCustomCabDao,
     TributOperacaoFiscalDao,
+    TributIcmsUfDao,
+    TributIpiDao,
+    TributIssDao,
+    TributPisDao,
   ],
     )
 class AppDatabase extends _$AppDatabase {
@@ -197,7 +201,7 @@ class AppDatabase extends _$AppDatabase {
 
   // you should bump this number whenever you change or add a table definition.
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -205,16 +209,62 @@ class AppDatabase extends _$AppDatabase {
       await m.createAll();
       await _popularBanco(this);
       await _popularBancoSchema02(this);
+      await _popularBancoSchema03(this);
+      await _popularBancoSchema04(this);
     },
     onUpgrade: (Migrator m, int from, int to) async {
       if (from == 1) {
         await MigracaoParaSchema2(this).migrarParaSchema2(m, from, to);
         await _popularBancoSchema02(this);
+        await MigracaoParaSchema3(this).migrarParaSchema3(m, from, to);
+        await _popularBancoSchema03(this);
+        await MigracaoParaSchema4(this).migrarParaSchema4(m, from, to);
+        await _popularBancoSchema04(this);
+      } 
+      if (from == 2) {
+        await MigracaoParaSchema3(this).migrarParaSchema3(m, from, to);
+        await _popularBancoSchema03(this);
+        await MigracaoParaSchema4(this).migrarParaSchema4(m, from, to);
+        await _popularBancoSchema04(this);
+      }
+      if (from == 3) {
+        await MigracaoParaSchema4(this).migrarParaSchema4(m, from, to);
+        await _popularBancoSchema04(this);
       }
     },    
   );
 
 }
+
+Future<void> _popularBancoSchema04(AppDatabase db) async {
+  // ---> TIPO PAGAMENTO
+  db.customStatement("UPDATE PDV_TIPO_PAGAMENTO SET CODIGO_PAGAMENTO_NFCE = '01' WHERE CODIGO = '01'");
+  db.customStatement("UPDATE PDV_TIPO_PAGAMENTO SET CODIGO = '02', CODIGO_PAGAMENTO_NFCE = '02' WHERE CODIGO = '04'");
+  db.customStatement("UPDATE PDV_TIPO_PAGAMENTO SET CODIGO_PAGAMENTO_NFCE = '03' WHERE CODIGO = '03'");
+}
+
+Future<void> _popularBancoSchema03(AppDatabase db) async {
+  // ---> TRIBUT_GRUPO_TRIBUTARIO
+  await db.customStatement("INSERT INTO TRIBUT_GRUPO_TRIBUTARIO (ID, DESCRICAO, ORIGEM_MERCADORIA) VALUES (1, 'PRODUTO DE FABRICACAO PROPRIA', '0')");
+  await db.customStatement("INSERT INTO TRIBUT_GRUPO_TRIBUTARIO (ID, DESCRICAO, ORIGEM_MERCADORIA) VALUES (2, 'PRODUTO ADQUIRIDO OU RECEBIDO DE TERCEIROS', '0')");
+  // ---> TRIBUT_OPERACAO_FISCAL
+  await db.customStatement("INSERT INTO TRIBUT_OPERACAO_FISCAL (ID, DESCRICAO, OBSERVACAO) VALUES (1, 'VENDA DE PRODUCAO DO ESTABELECIMENTO', 'NORMALMENTE ESTA OPERACAO FISCAL SERA VINCULADA AO CFOP 5.101 E PODERA SER VINCULADA A UM OU MAIS CST OU CSOSN')");
+  await db.customStatement("INSERT INTO TRIBUT_OPERACAO_FISCAL (ID, DESCRICAO, OBSERVACAO) VALUES (2, 'VENDA DE MERCADORIA ADQUIRIDA OU RECEBIDA DE TERCEIROS', 'NORMALMENTE UTILIZADO COM O CFOP 5.102 EM COMBINACAO COM CST OU CSOSN.')");
+  // ---> TRIBUT_CONFIGURA_OF_GT
+  await db.customStatement("INSERT INTO TRIBUT_CONFIGURA_OF_GT (ID, ID_TRIBUT_GRUPO_TRIBUTARIO, ID_TRIBUT_OPERACAO_FISCAL) VALUES (1, 1, 1)");
+  await db.customStatement("INSERT INTO TRIBUT_CONFIGURA_OF_GT (ID, ID_TRIBUT_GRUPO_TRIBUTARIO, ID_TRIBUT_OPERACAO_FISCAL) VALUES (2, 2, 2)");
+  // ---> TRIBUT_ICMS_UF
+  await db.customStatement("INSERT INTO TRIBUT_ICMS_UF (ID, ID_TRIBUT_CONFIGURA_OF_GT, CFOP, CSOSN, CST) VALUES (1, 1, 5101, '102', '00')");
+  await db.customStatement("INSERT INTO TRIBUT_ICMS_UF (ID, ID_TRIBUT_CONFIGURA_OF_GT, CFOP, CSOSN, CST) VALUES (2, 2, 5102, '102', '00')");
+  // ---> TRIBUT_PIS
+  await db.customStatement("INSERT INTO TRIBUT_PIS (ID, ID_TRIBUT_CONFIGURA_OF_GT, CST_PIS, MODALIDADE_BASE_CALCULO, ALIQUOTA_PORCENTO) VALUES (1, 1, '99', '0', 0)");
+  await db.customStatement("INSERT INTO TRIBUT_PIS (ID, ID_TRIBUT_CONFIGURA_OF_GT, CST_PIS, MODALIDADE_BASE_CALCULO, ALIQUOTA_PORCENTO) VALUES (2, 2, '99', '0', 0)");
+
+  // ---> TRIBUT_COFINS
+  await db.customStatement("INSERT INTO TRIBUT_COFINS (ID, ID_TRIBUT_CONFIGURA_OF_GT, CST_COFINS, MODALIDADE_BASE_CALCULO, ALIQUOTA_PORCENTO) VALUES (1, 1, '99', '0', 0)");
+  await db.customStatement("INSERT INTO TRIBUT_COFINS (ID, ID_TRIBUT_CONFIGURA_OF_GT, CST_COFINS, MODALIDADE_BASE_CALCULO, ALIQUOTA_PORCENTO) VALUES (2, 2, '99', '0', 0)");
+}
+
 
 Future<void> _popularBancoSchema02(AppDatabase db) async {
   // ---> CONFIGURACAO

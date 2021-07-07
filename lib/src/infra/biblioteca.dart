@@ -202,7 +202,7 @@ class Biblioteca {
   }
 
   static String formatarDataHora(DateTime data) {
-    var formatter = DateFormat('dd/MM/yyyy hh:mm:ss');
+    var formatter = DateFormat('dd/MM/yyyy HH:mm:ss');
     String dataHoraFormatada = formatter.format(data);
     return dataHoraFormatada;
   }

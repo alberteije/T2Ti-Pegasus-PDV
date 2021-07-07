@@ -70,6 +70,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
 
   Map<LogicalKeySet, Intent> _shortcutMap; 
   Map<Type, Action<Intent>> _actionMap;
+  final _foco = FocusNode();
 
   Cliente cliente;
 
@@ -88,6 +89,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
       ),
     };
     cliente = widget.cliente;
+    _foco.requestFocus();
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -187,6 +189,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                             child: Padding(
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
                               child: TextFormField(
+                                focusNode: _foco,
                                 validator: ValidaCampoFormulario.validarObrigatorioAlfanumerico,
                                 maxLength: 150,
                                 maxLines: 1,

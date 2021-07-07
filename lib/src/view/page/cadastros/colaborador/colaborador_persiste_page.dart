@@ -69,6 +69,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
 
   Map<LogicalKeySet, Intent> _shortcutMap; 
   Map<Type, Action<Intent>> _actionMap;
+  final _foco = FocusNode();
 
   Colaborador colaborador;
 
@@ -87,6 +88,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
       ),
     };
     colaborador = widget.colaborador;
+    _foco.requestFocus();
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -156,6 +158,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                             child: Padding(
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
                               child: TextFormField(
+                                focusNode: _foco,
                                 validator: ValidaCampoFormulario.validarObrigatorio,
                                 maxLength: 150,
                                 maxLines: 1,

@@ -35,6 +35,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'package:moor/moor.dart';
 
+import '../database.dart';
+
 @DataClassName("NfeDetalhe")
 class NfeDetalhes extends Table {
   String get tableName => 'NFE_DETALHE';
@@ -76,4 +78,18 @@ class NfeDetalhes extends Table {
   TextColumn get informacoesAdicionais => text().named('INFORMACOES_ADICIONAIS').withLength(min: 0, max: 250).nullable()();
   RealColumn get valorSubtotal => real().named('VALOR_SUBTOTAL').nullable()();
   RealColumn get valorTotal => real().named('VALOR_TOTAL').nullable()();
+}
+
+class NfeDetalheMontado {
+  NfeDetalhe nfeDetalhe;
+  NfeDetalheImpostoIcms nfeDetalheImpostoIcms;
+  NfeDetalheImpostoPis nfeDetalheImpostoPis;
+  NfeDetalheImpostoCofins nfeDetalheImpostoCofins;
+
+  NfeDetalheMontado({
+    this.nfeDetalhe,
+    this.nfeDetalheImpostoIcms,
+    this.nfeDetalheImpostoPis,
+    this.nfeDetalheImpostoCofins,
+  });
 }

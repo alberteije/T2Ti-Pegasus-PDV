@@ -69,8 +69,8 @@ class PdvVendaDetalheDao extends DatabaseAccessor<AppDatabase> with _$PdvVendaDe
     consulta.where(pdvVendaDetalhes.idPdvVendaCabecalho.equals(pId));
 
     return consulta.map((row) {
-        final vendaDetalhe = row.readTable(pdvVendaDetalhes);
-        final produto = row.readTable(produtos);
+        final vendaDetalhe = row.readTableOrNull(pdvVendaDetalhes);
+        final produto = row.readTableOrNull(produtos);
 
         return VendaDetalhe(pdvVendaDetalhe: vendaDetalhe, produto: produto);
       }).get();

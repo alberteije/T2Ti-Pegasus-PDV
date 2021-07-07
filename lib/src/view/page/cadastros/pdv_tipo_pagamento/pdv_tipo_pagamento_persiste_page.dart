@@ -67,6 +67,7 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
 
   Map<LogicalKeySet, Intent> _shortcutMap; 
   Map<Type, Action<Intent>> _actionMap;
+  final _foco = FocusNode();
 
   PdvTipoPagamento pdvTipoPagamento;
 
@@ -85,6 +86,7 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
       ),
     };
     pdvTipoPagamento = widget.pdvTipoPagamento;
+    _foco.requestFocus();
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -137,6 +139,7 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
                           BootstrapCol(
                             sizes: 'col-12',
                             child: TextFormField(
+                              focusNode: _foco,
                               validator: ValidaCampoFormulario.validarObrigatorio,
                               maxLength: 3,
                               maxLines: 1,
@@ -154,6 +157,38 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
                             ),
                           ),
                         ],
+                      ),
+                      Visibility(
+                        visible: Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC',
+                        child: Divider(color: Colors.white,),
+                      ),
+                      Visibility(
+                        visible: Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC',
+                        child: BootstrapRow(
+                          height: 60,
+                          children: <BootstrapCol>[
+                            BootstrapCol(
+                              sizes: 'col-12',
+                              child: TextFormField(
+                                focusNode: _foco,
+                                validator: ValidaCampoFormulario.validarObrigatorio,
+                                maxLength: 3,
+                                maxLines: 1,
+                                initialValue: pdvTipoPagamento?.codigoPagamentoNfce ?? '',
+                                decoration: getInputDecoration(
+                                  'Conteúdo para o campo Codigo da NFC-e',
+                                  'Codigo NFC-e',
+                                  false),
+                                onSaved: (String value) {
+                                },
+                                onChanged: (text) {
+                                  pdvTipoPagamento = pdvTipoPagamento.copyWith(codigoPagamentoNfce: text);
+                                  _formFoiAlterado = true;
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Divider(color: Colors.white,),
                       BootstrapRow(

@@ -39,6 +39,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:pegasus_pdv/src/controller/compras/compra_pedido_cabecalho_controller.dart';
 import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
@@ -100,22 +101,22 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
   
   @override
   Widget build(BuildContext context) {
-    final _valorSubtotalController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: CompraPedidoCabecalhoPage.compraPedidoCabecalho?.valorSubtotal ?? 0);
+    final _valorSubtotalController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.valorSubtotal ?? 0);
     final _importaColaboradorController = TextEditingController();
     _importaColaboradorController.text = widget.compraPedidoCabecalhoMontado.colaborador?.nome ?? '';
-    final _taxaDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: CompraPedidoCabecalhoPage.compraPedidoCabecalho?.taxaDesconto ?? 0);
-    final _valorDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: CompraPedidoCabecalhoPage.compraPedidoCabecalho?.valorDesconto ?? 0);
-    final _valorTotalController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: CompraPedidoCabecalhoPage.compraPedidoCabecalho?.valorTotal ?? 0);
+    final _taxaDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.taxaDesconto ?? 0);
+    final _valorDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.valorDesconto ?? 0);
+    final _valorTotalController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.valorTotal ?? 0);
     final _importaFornecedorController = TextEditingController();
     _importaFornecedorController.text = widget.compraPedidoCabecalhoMontado.fornecedor?.nome ?? '';
     final _diaFixoParcelaController = MaskedTextController(
       mask: Constantes.mascaraDIA,
-      text: CompraPedidoCabecalhoPage.compraPedidoCabecalho?.diaFixoParcela ?? '',
+      text: CompraPedidoCabecalhoController.compraPedidoCabecalho?.diaFixoParcela ?? '',
     );
     final _intervaloEntreParcelasController = TextEditingController();
     _intervaloEntreParcelasController.text = 
-      CompraPedidoCabecalhoPage.compraPedidoCabecalho?.intervaloEntreParcelas == null ? '' : 
-      CompraPedidoCabecalhoPage.compraPedidoCabecalho?.intervaloEntreParcelas.toString();
+      CompraPedidoCabecalhoController.compraPedidoCabecalho?.intervaloEntreParcelas == null ? '' : 
+      CompraPedidoCabecalhoController.compraPedidoCabecalho?.intervaloEntreParcelas.toString();
 
     return FocusableActionDetector(
       actions: _actionMap,
@@ -224,8 +225,8 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                               id: _objetoJsonRetorno['id'],
                                               nome: _objetoJsonRetorno['nome']
                                             );                                
-                                          CompraPedidoCabecalhoPage.compraPedidoCabecalho = 
-                                            CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(
+                                          CompraPedidoCabecalhoController.compraPedidoCabecalho = 
+                                            CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(
                                               idColaborador: _objetoJsonRetorno['id']
                                             );
                                         }
@@ -297,8 +298,8 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                               id: _objetoJsonRetorno['id'],
                                               nome: _objetoJsonRetorno['nome']
                                             );                                
-                                          CompraPedidoCabecalhoPage.compraPedidoCabecalho = 
-                                            CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(
+                                          CompraPedidoCabecalhoController.compraPedidoCabecalho = 
+                                            CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(
                                               idFornecedor: _objetoJsonRetorno['id']
                                             );
                                         }
@@ -324,16 +325,16 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                   '',
                                   'Data do Pedido',
                                   true),
-                                isEmpty: CompraPedidoCabecalhoPage.compraPedidoCabecalho.dataPedido == null,
+                                isEmpty: CompraPedidoCabecalhoController.compraPedidoCabecalho.dataPedido == null,
                                 child: DatePickerItem(                            
                                   mascara: 'dd/MM/yyyy',
-                                  dateTime: CompraPedidoCabecalhoPage.compraPedidoCabecalho.dataPedido,
+                                  dateTime: CompraPedidoCabecalhoController.compraPedidoCabecalho.dataPedido,
                                   firstDate: DateTime.parse('1900-01-01'),
                                   lastDate: DateTime.now(),
                                   onChanged: (DateTime value) {
                                     paginaMestreDetalheFoiAlterada = true;
                                     setState(() {
-                                      CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(dataPedido: value);
+                                      CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(dataPedido: value);
                                       paginaMestreDetalheFoiAlterada = true;
                                     });
                                   },
@@ -350,12 +351,12 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                   'Forma de Pagamento',
                                   'Forma de Pagamento',
                                   true, paddingVertical: 1),
-                                isEmpty: CompraPedidoCabecalhoPage.compraPedidoCabecalho.formaPagamento == null,
-                                child: getDropDownButton(CompraPedidoCabecalhoPage.compraPedidoCabecalho.formaPagamento,
+                                isEmpty: CompraPedidoCabecalhoController.compraPedidoCabecalho.formaPagamento == null,
+                                child: getDropDownButton(CompraPedidoCabecalhoController.compraPedidoCabecalho.formaPagamento,
                                   (String newValue) {
                                     paginaMestreDetalheFoiAlterada = true;
                                     setState(() {
-                                      CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(formaPagamento: newValue);
+                                      CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(formaPagamento: newValue);
                                       paginaMestreDetalheFoiAlterada = true;
                                     });
                                 }, <String>[
@@ -381,16 +382,16 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                   '',
                                   'Data Prevista para Entrega',
                                   true),
-                                isEmpty: CompraPedidoCabecalhoPage.compraPedidoCabecalho.dataPrevisaoEntrega == null,
+                                isEmpty: CompraPedidoCabecalhoController.compraPedidoCabecalho.dataPrevisaoEntrega == null,
                                 child: DatePickerItem(
                                   mascara: 'dd/MM/yyyy',
-                                  dateTime: CompraPedidoCabecalhoPage.compraPedidoCabecalho.dataPrevisaoEntrega,
+                                  dateTime: CompraPedidoCabecalhoController.compraPedidoCabecalho.dataPrevisaoEntrega,
                                   firstDate: DateTime.now(),
                                   lastDate: DateTime.parse('2050-01-01'),
                                   onChanged: (DateTime value) {
                                     paginaMestreDetalheFoiAlterada = true;
                                     setState(() {
-                                      CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(dataPrevisaoEntrega: value);
+                                      CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(dataPrevisaoEntrega: value);
                                       paginaMestreDetalheFoiAlterada = true;
                                     });
                                   },
@@ -407,16 +408,16 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                   '',
                                   'Data Previsão Pagamento',
                                   true),
-                                isEmpty: CompraPedidoCabecalhoPage.compraPedidoCabecalho.dataPrevisaoPagamento == null,
+                                isEmpty: CompraPedidoCabecalhoController.compraPedidoCabecalho.dataPrevisaoPagamento == null,
                                 child: DatePickerItem(
                                   mascara: 'dd/MM/yyyy',
-                                  dateTime: CompraPedidoCabecalhoPage.compraPedidoCabecalho.dataPrevisaoPagamento,
+                                  dateTime: CompraPedidoCabecalhoController.compraPedidoCabecalho.dataPrevisaoPagamento,
                                   firstDate: DateTime.now(),
                                   lastDate: DateTime.parse('2050-01-01'),
                                   onChanged: (DateTime value) {
                                     paginaMestreDetalheFoiAlterada = true;
                                     setState(() {
-                                      CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(dataPrevisaoPagamento: value);
+                                      CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(dataPrevisaoPagamento: value);
                                       paginaMestreDetalheFoiAlterada = true;
                                     });
                                   },
@@ -439,16 +440,16 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                   'Conteúdo para o campo Data Recebimento Itens',
                                   'Data Recebimento Itens',
                                   true),
-                                isEmpty: CompraPedidoCabecalhoPage.compraPedidoCabecalho.dataRecebimentoItens == null,
+                                isEmpty: CompraPedidoCabecalhoController.compraPedidoCabecalho.dataRecebimentoItens == null,
                                 child: DatePickerItem(
                                   mascara: 'dd/MM/yyyy',
-                                  dateTime: CompraPedidoCabecalhoPage.compraPedidoCabecalho.dataRecebimentoItens,
+                                  dateTime: CompraPedidoCabecalhoController.compraPedidoCabecalho.dataRecebimentoItens,
                                   firstDate: DateTime.parse('1900-01-01'),
                                   lastDate: DateTime.now(),
                                   onChanged: (DateTime value) {
                                     paginaMestreDetalheFoiAlterada = true;
                                     setState(() {
-                                      CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(dataRecebimentoItens: value);
+                                      CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(dataRecebimentoItens: value);
                                       paginaMestreDetalheFoiAlterada = true;
                                     });
                                   },
@@ -463,7 +464,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                               child: TextFormField(
                                 maxLength: 8,
                                 maxLines: 1,
-                                initialValue: CompraPedidoCabecalhoPage.compraPedidoCabecalho?.horaRecebimentoItens ?? '',
+                                initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.horaRecebimentoItens ?? '',
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Hora Recebimento Itens',
                                   'Hora Recebimento Itens',
@@ -471,7 +472,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 onSaved: (String value) {
                                 },
                                 onChanged: (text) {
-                                  CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(horaRecebimentoItens: text);
+                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(horaRecebimentoItens: text);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -490,7 +491,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                               child: TextFormField(
                                 maxLength: 100,
                                 maxLines: 1,
-                                initialValue: CompraPedidoCabecalhoPage.compraPedidoCabecalho?.localEntrega ?? '',
+                                initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.localEntrega ?? '',
                                 decoration: getInputDecoration(
                                   '',
                                   'Local de Entrega',
@@ -498,7 +499,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 onSaved: (String value) {
                                 },
                                 onChanged: (text) {
-                                  CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(localEntrega: text);
+                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(localEntrega: text);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -511,7 +512,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                               child: TextFormField(
                                 maxLength: 100,
                                 maxLines: 1,
-                                initialValue: CompraPedidoCabecalhoPage.compraPedidoCabecalho?.localCobranca ?? '',
+                                initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.localCobranca ?? '',
                                 decoration: getInputDecoration(
                                   '',
                                   'Local de Cobrança',
@@ -519,7 +520,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 onSaved: (String value) {
                                 },
                                 onChanged: (text) {
-                                  CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(localCobranca: text);
+                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(localCobranca: text);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -549,7 +550,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 onSaved: (String value) {
                                 },
                                 onChanged: (text) {
-                                  CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(valorSubtotal: _valorSubtotalController.numberValue);
+                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(valorSubtotal: _valorSubtotalController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -577,7 +578,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                   if (_taxaDescontoController.numberValue >= 100) {
                                     _taxaDescontoController.updateValue(99.9);
                                   }
-                                  CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(taxaDesconto: _taxaDescontoController.numberValue);
+                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(taxaDesconto: _taxaDescontoController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                   _atualizarTotais();
                                 },
@@ -602,7 +603,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 onSaved: (String value) {
                                 },
                                 onChanged: (text) {
-                                  CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(valorDesconto: _valorDescontoController.numberValue);
+                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(valorDesconto: _valorDescontoController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -626,7 +627,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 onSaved: (String value) {
                                 },
                                 onChanged: (text) {
-                                  CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(valorTotal: _valorTotalController.numberValue);
+                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(valorTotal: _valorTotalController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -645,7 +646,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                               child: TextFormField(
                                 maxLength: 50,
                                 maxLines: 1,
-                                initialValue: CompraPedidoCabecalhoPage.compraPedidoCabecalho?.numeroDocumentoEntrada ?? '',
+                                initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.numeroDocumentoEntrada ?? '',
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Numero Documento Entrada',
                                   'Numero Documento Entrada',
@@ -653,7 +654,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 onSaved: (String value) {
                                 },
                                 onChanged: (text) {
-                                  CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(numeroDocumentoEntrada: text);
+                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(numeroDocumentoEntrada: text);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -666,7 +667,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                               child: TextFormField(
                                 maxLength: 50,
                                 maxLines: 1,
-                                initialValue: CompraPedidoCabecalhoPage.compraPedidoCabecalho?.contato ?? '',
+                                initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.contato ?? '',
                                 decoration: getInputDecoration(
                                   '',
                                   'Nome do Contato',
@@ -674,7 +675,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 onSaved: (String value) {
                                 },
                                 onChanged: (text) {
-                                  CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(contato: text);
+                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(contato: text);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -710,7 +711,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 keyboardType: TextInputType.number,
                                 maxLength: 10,
                                 maxLines: 1,
-                                initialValue: CompraPedidoCabecalhoPage.compraPedidoCabecalho?.quantidadeParcelas?.toString() ?? '',
+                                initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.quantidadeParcelas?.toString() ?? '',
                                 decoration: getInputDecoration(
                                   '',
                                   'Quantidade de Parcelas',
@@ -718,7 +719,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 onSaved: (String value) {
                                 },
                                 onChanged: (text) {
-                                  CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(quantidadeParcelas: int.tryParse(text));
+                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(quantidadeParcelas: int.tryParse(text));
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -740,7 +741,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 onSaved: (String value) {
                                 },
                                 onChanged: (text) {
-                                  CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(intervaloEntreParcelas: int.tryParse(text));
+                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(intervaloEntreParcelas: int.tryParse(text));
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -761,16 +762,16 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                   'Conteúdo para o campo Dia Primeiro Vencimento',
                                   'Dia Primeiro Vencimento',
                                   true),
-                                isEmpty: CompraPedidoCabecalhoPage.compraPedidoCabecalho.diaPrimeiroVencimento == null,
+                                isEmpty: CompraPedidoCabecalhoController.compraPedidoCabecalho.diaPrimeiroVencimento == null,
                                 child: DatePickerItem(
                                   mascara: 'dd/MM/yyyy',
-                                  dateTime: CompraPedidoCabecalhoPage.compraPedidoCabecalho.diaPrimeiroVencimento,
+                                  dateTime: CompraPedidoCabecalhoController.compraPedidoCabecalho.diaPrimeiroVencimento,
                                   firstDate: DateTime.parse('1900-01-01'),
                                   lastDate: DateTime.parse('2050-01-01'),
                                   onChanged: (DateTime value) {
                                     paginaMestreDetalheFoiAlterada = true;
                                     setState(() {
-                                      CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(diaPrimeiroVencimento: value);
+                                      CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(diaPrimeiroVencimento: value);
                                       paginaMestreDetalheFoiAlterada = true;
                                     });
                                   },
@@ -796,7 +797,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 },
                                 // validator: ValidaCampoFormulario.validarDIA,
                                 onChanged: (text) {
-                                  CompraPedidoCabecalhoPage.compraPedidoCabecalho = CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(diaFixoParcela: text);
+                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(diaFixoParcela: text);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -842,21 +843,21 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
 
    _atualizarTotais() {
     double desconto = Biblioteca.calcularDesconto(
-      CompraPedidoCabecalhoPage.compraPedidoCabecalho.valorSubtotal, 
-      CompraPedidoCabecalhoPage.compraPedidoCabecalho.taxaDesconto
+      CompraPedidoCabecalhoController.compraPedidoCabecalho.valorSubtotal, 
+      CompraPedidoCabecalhoController.compraPedidoCabecalho.taxaDesconto
       );
      setState(() {
-      CompraPedidoCabecalhoPage.compraPedidoCabecalho = 
-        CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(
+      CompraPedidoCabecalhoController.compraPedidoCabecalho = 
+        CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(
           valorDesconto: desconto,
-          valorTotal: CompraPedidoCabecalhoPage.compraPedidoCabecalho.valorSubtotal - desconto,
+          valorTotal: CompraPedidoCabecalhoController.compraPedidoCabecalho.valorSubtotal - desconto,
         );
      });
   }
 
   void _verificarDescontoNosItens() {
     double totalDescontosItens = 0;
-    for (CompraDetalhe compraDetalhe in CompraPedidoCabecalhoPage.listaCompraDetalhe) {
+    for (CompraDetalhe compraDetalhe in CompraPedidoCabecalhoController.listaCompraDetalhe) {
       totalDescontosItens = totalDescontosItens + (compraDetalhe.compraPedidoDetalhe.valorDesconto ?? 0);
     } 
     setState(() {
@@ -867,73 +868,29 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
   Future _gerarFinanceiro() async {
     if (_podeRealizarIntegracao()) {
       bool podeGerar = true;
-      if (CompraPedidoCabecalhoPage.compraPedidoCabecalho.geraFinanceiro == 'S') {
+      if (CompraPedidoCabecalhoController.compraPedidoCabecalho.geraFinanceiro == 'S') {
         gerarDialogBoxInformacao(context, 'Os dados para o sistema financeiro já foram gerados.');
       } else {
         gerarDialogBoxConfirmacao(context, 'Deseja gerar os dados para o Sistema Financeiro - Contas a Pagar?', () async {
-          // Navigator.of(context).pop();
-          if (CompraPedidoCabecalhoPage.compraPedidoCabecalho.quantidadeParcelas == null || CompraPedidoCabecalhoPage.compraPedidoCabecalho.quantidadeParcelas <= 0) {
+          if (CompraPedidoCabecalhoController.compraPedidoCabecalho.quantidadeParcelas == null || CompraPedidoCabecalhoController.compraPedidoCabecalho.quantidadeParcelas <= 0) {
             showInSnackBar("Por favor, informe a quantidade de parcelas.", context);          
             podeGerar = false;
           }
-          if (CompraPedidoCabecalhoPage.compraPedidoCabecalho.diaPrimeiroVencimento == null) {
+          if (CompraPedidoCabecalhoController.compraPedidoCabecalho.diaPrimeiroVencimento == null) {
             showInSnackBar("Por favor, informe o primeiro dia do vencimento.", context);          
             podeGerar = false;
           }
-          if (CompraPedidoCabecalhoPage.compraPedidoCabecalho.intervaloEntreParcelas == null && CompraPedidoCabecalhoPage.compraPedidoCabecalho.diaFixoParcela == null) {
+          if (CompraPedidoCabecalhoController.compraPedidoCabecalho.intervaloEntreParcelas == null && CompraPedidoCabecalhoController.compraPedidoCabecalho.diaFixoParcela == null) {
             showInSnackBar("Por favor, informe o intervalo entre as pacelas OU o dia fixo.", context);          
             podeGerar = false;
           }
           // gera as parcelas
           if (podeGerar) {
-            // define o primeiroVencimento
-            DateTime primeiroVencimento = CompraPedidoCabecalhoPage.compraPedidoCabecalho.diaPrimeiroVencimento;
-            final diaFixoParcela = CompraPedidoCabecalhoPage.compraPedidoCabecalho.diaFixoParcela;
-            final quantidadeParcelas = CompraPedidoCabecalhoPage.compraPedidoCabecalho.quantidadeParcelas;
-            final intervaloEntreParcelas = CompraPedidoCabecalhoPage.compraPedidoCabecalho.intervaloEntreParcelas;
-            // se tiver dia fixo, calcula as parcelas levando em conta apenas o mes
-            if (diaFixoParcela != null && diaFixoParcela != '') {
-              primeiroVencimento = DateTime.utc(primeiroVencimento.year, primeiroVencimento.month, int.parse(diaFixoParcela));        
-            } 
-
-            // gera as parcelas de acordo com critérios informados
-            num somaParcelas = 0;
-            num residuo = 0;
-            List<ContasPagar> listaContasPagar = [];
-            for (var i = 0; i < quantidadeParcelas; i++) {
-              final parcelaPagar = 
-                ContasPagar(
-                  id: null,
-                  idCompraPedidoCabecalho: CompraPedidoCabecalhoPage.compraPedidoCabecalho.id,
-                  idFornecedor: CompraPedidoCabecalhoPage.compraPedidoCabecalho.idFornecedor,
-                  dataLancamento: DateTime.now(),
-                  dataVencimento: (diaFixoParcela != null && diaFixoParcela != '') 
-                                  ? DateTime.utc(primeiroVencimento.year, primeiroVencimento.month + i, primeiroVencimento.day)
-                                  : primeiroVencimento.add(Duration(days: intervaloEntreParcelas * i)),
-                  valorAPagar: num.parse((CompraPedidoCabecalhoPage.compraPedidoCabecalho.valorTotal / quantidadeParcelas).toStringAsFixed(Constantes.decimaisValor)),
-                  statusPagamento: 'A',
-                  historico: 'Gerado pelo módulo compras. Parcela ' + (i+1).toString() + ' de ' + quantidadeParcelas.toString(),
-                );
-              listaContasPagar.add(parcelaPagar);
-              somaParcelas = somaParcelas + parcelaPagar.valorAPagar;
-            }
-            // verifica se sobraram centavos no cálculo e lança na primeira parcela
-            residuo = CompraPedidoCabecalhoPage.compraPedidoCabecalho.valorTotal - somaParcelas;
-            if (residuo != 0) {
-              var primeiraParcela = listaContasPagar[0];
-              primeiraParcela = primeiraParcela.copyWith(
-                valorAPagar: primeiraParcela.valorAPagar + residuo,
-              );
-            } 
-
-            final inseriuParcelas = await Sessao.db.contasPagarDao.inserirParcelas(listaContasPagar);
-            if (inseriuParcelas) {
-              CompraPedidoCabecalhoPage.compraPedidoCabecalho = 
-                CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(
-                  geraFinanceiro: 'S'
-                );
-              await Sessao.db.compraPedidoCabecalhoDao.atualizarCabecalho(CompraPedidoCabecalhoPage.compraPedidoCabecalho);
-              showInSnackBar("Dados financeiros gerados com sucesso no Contas a Pagar.", context, corFundo: Colors.blue.shade900);
+            final resultado = await CompraPedidoCabecalhoController.gerarFinanceiro();
+            if (resultado) {
+              showInSnackBar("Dados financeiros gerados com sucesso no Contas a Pagar.", context, corFundo: ViewUtilLib.getBackgroundColorSnackBarAzul());
+            } else {
+              showInSnackBar("Ocorreu um problema ao gerar os dados financeiros para o Contas a Pagar.", context, corFundo: ViewUtilLib.getBackgroundColorSnackBarVermelho());
             }
           }
         });
@@ -943,21 +900,16 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
 
   Future _atualizarEstoque() async {
     if (_podeRealizarIntegracao()) {
-      if (CompraPedidoCabecalhoPage.compraPedidoCabecalho.atualizouEstoque == 'S') {
+      if (CompraPedidoCabecalhoController.compraPedidoCabecalho.atualizouEstoque == 'S') {
         gerarDialogBoxInformacao(context, 'O estoque já foi atualizado com os dados desse pedido.');
       } else {
         gerarDialogBoxConfirmacao(context, 'Deseja atualizar o estoque? O pedido não poderá mais ser alterado após essa ação.', () async {
-          // Navigator.of(context).pop();
-            CompraPedidoCabecalhoPage.compraPedidoCabecalho = 
-              CompraPedidoCabecalhoPage.compraPedidoCabecalho.copyWith(
-                atualizouEstoque: 'S'
-              );
-            await Sessao.db.compraPedidoCabecalhoDao.alterar(
-              CompraPedidoCabecalhoPage.compraPedidoCabecalho, 
-              CompraPedidoCabecalhoPage.listaCompraDetalhe,
-              atualizaEstoque: true,
-            );
-            showInSnackBar("Estoque atualizado com sucesso.", context, corFundo: Colors.blue.shade900);          
+          final resultado = await CompraPedidoCabecalhoController.atualizarEstoque();
+          if (resultado) {
+            showInSnackBar("Estoque atualizado com sucesso.", context, corFundo: ViewUtilLib.getBackgroundColorSnackBarAzul());
+          } else {
+            showInSnackBar("Ocorreu um problema ao tentar atualizar o estoque.", context, corFundo: ViewUtilLib.getBackgroundColorSnackBarVermelho());
+          }
         });
       }
     }
@@ -965,10 +917,10 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
 
   bool _podeRealizarIntegracao() {
     bool retorno = true;
-    if (CompraPedidoCabecalhoPage.compraPedidoCabecalho.id == null) {
+    if (CompraPedidoCabecalhoController.compraPedidoCabecalho.id == null) {
       retorno = false;
       gerarDialogBoxInformacao(context, 'É necessário salvar o pedido antes de realizar essa operação.');
-    } else if (CompraPedidoCabecalhoPage.listaCompraDetalhe.length == 0) {
+    } else if (CompraPedidoCabecalhoController.listaCompraDetalhe.length == 0) {
       retorno = false;
       gerarDialogBoxInformacao(context, 'Não existem itens no pedido.');
     } 

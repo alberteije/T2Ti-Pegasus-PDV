@@ -39,7 +39,7 @@ import 'package:pegasus_pdv/src/infra/infra.dart';
 
 
 /// Retorna a dialog box informando que o form foi alterado
-Future gerarDialogBoxFormAlterado(BuildContext context) async {
+Future gerarDialogBoxFormAlterado(BuildContext context, {Function onOkPressed}) async {
   if (Biblioteca.isMobile()) {
     AwesomeDialog(
       context: context,
@@ -53,7 +53,7 @@ Future gerarDialogBoxFormAlterado(BuildContext context) async {
       desc: 'Deseja fechar o formulário e perder as alterações?',
       showCloseIcon: true,
       btnCancelOnPress: ()  {},
-      btnOkOnPress: () async { Navigator.of(context).pop(); },
+      btnOkOnPress: () async { onOkPressed(); Navigator.of(context).pop(); },
       btnOkText: 'Sim',
       btnCancelText: 'Não',
     )..show();
@@ -63,7 +63,7 @@ Future gerarDialogBoxFormAlterado(BuildContext context) async {
       titulo: 'Alterações não Concluídas', 
       mensagem: 'Deseja fechar o formulário e perder as alterações?', 
       tipo: DialogType.QUESTION, 
-      onOkPressed: () async { Navigator.of(context).pop(); });
+      onOkPressed: () async { onOkPressed(); Navigator.of(context).pop(); });
   }
 }
 
@@ -292,4 +292,16 @@ showInSnackBar(String value, BuildContext context, {Color corFundo}) {
     content: Text(value),
     backgroundColor: corFundo == null ? Colors.red : corFundo,
   ));
+}
+
+gerarDialogBoxEspera(BuildContext context) {
+  return showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+  );
 }

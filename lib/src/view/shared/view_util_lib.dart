@@ -106,6 +106,14 @@ class ViewUtilLib {
     return Colors.amber.shade100;
   }
 
+  static Color getBackgroundColorSnackBarVermelho() {
+    return Colors.red.shade900;
+  }
+
+  static Color getBackgroundColorSnackBarAzul() {
+    return Colors.blue.shade900;
+  }
+
   static Color getBackgroundColorCardValor(num valor) {
     if (valor == null || valor == 0) {
       return Colors.blue.shade100;
