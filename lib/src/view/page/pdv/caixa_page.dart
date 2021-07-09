@@ -797,8 +797,9 @@ class _CaixaPageState extends State<CaixaPage> {
 
   void _configurarDadosTelaPadrao() {
     _fecharMenus();
+    final tipoOperacao = Sessao.configuracaoPdv.moduloFiscalPrincipal == null ? 'REC' : Sessao.configuracaoPdv.moduloFiscalPrincipal;
     setState(() {
-      Sessao.vendaAtual = PdvVendaCabecalho(id: null, idPdvMovimento: Sessao.movimento.id, tipoOperacao: 'REC');
+      Sessao.vendaAtual = PdvVendaCabecalho(id: null, idPdvMovimento: Sessao.movimento.id, tipoOperacao: tipoOperacao);
       Sessao.listaVendaAtualDetalhe = [];
       Sessao.listaDadosPagamento = [];
       Sessao.listaParcelamento = [];
@@ -830,31 +831,45 @@ class _CaixaPageState extends State<CaixaPage> {
   }
 
   void _localizarProduto(String dadoInformado) async {
-    await _instanciarVendaAtual();
-    _quantidadeInformada = 1;
-    final digitouQuantidade = dadoInformado.split('*');
-    if (digitouQuantidade.length > 1) {
-      _quantidadeInformada = double.tryParse(digitouQuantidade[0]);
-      dadoInformado = digitouQuantidade[1];
-    }
-
-    var campoParaConsulta = '';
-    int dadoNumerico = int.tryParse(dadoInformado);
-    if (dadoNumerico != null) {
-      if (dadoInformado.length == 13 || dadoInformado.length == 14) {
-        campoParaConsulta = 'GTIN';
-      } else {
-        campoParaConsulta = 'CODIGO_INTERNO';
+    bool podeRealizarVenda = false;
+    if (Sessao.configuracaoPdv.modulo != 'G') {
+      if (Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC') {
+        String mensagemRetorno = await NfceController.verificarSeAptoParaEmitirNfce();
+        if (mensagemRetorno.isNotEmpty) {
+          gerarDialogBoxInformacao(context, mensagemRetorno);
+        } else {
+          podeRealizarVenda = true;
+        }
       }
-    } else {
-      campoParaConsulta = 'DESCRICAO_PDV';
     }
-    _produto = await Sessao.db.produtoDao.consultarObjetoFiltro(campoParaConsulta, dadoInformado);   
 
-    if (_produto != null) {
-      _comporItemParaVenda();
-    } else {
-      _importarProduto(criterioPesquisa: dadoInformado);
+    if (podeRealizarVenda) {
+      await _instanciarVendaAtual();
+      _quantidadeInformada = 1;
+      final digitouQuantidade = dadoInformado.split('*');
+      if (digitouQuantidade.length > 1) {
+        _quantidadeInformada = double.tryParse(digitouQuantidade[0]);
+        dadoInformado = digitouQuantidade[1];
+      }
+
+      var campoParaConsulta = '';
+      int dadoNumerico = int.tryParse(dadoInformado);
+      if (dadoNumerico != null) {
+        if (dadoInformado.length == 13 || dadoInformado.length == 14) {
+          campoParaConsulta = 'GTIN';
+        } else {
+          campoParaConsulta = 'CODIGO_INTERNO';
+        }
+      } else {
+        campoParaConsulta = 'DESCRICAO_PDV';
+      }
+      _produto = await Sessao.db.produtoDao.consultarObjetoFiltro(campoParaConsulta, dadoInformado);   
+
+      if (_produto != null) {
+        _comporItemParaVenda();
+      } else {
+        _importarProduto(criterioPesquisa: dadoInformado);
+      }
     }
     _focusNode.requestFocus();
   }

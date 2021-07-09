@@ -55,7 +55,7 @@ class Empresas extends Table {
   TextColumn get logradouro => text().named('LOGRADOURO').withLength(min: 0, max: 250).nullable()();
   TextColumn get numero => text().named('NUMERO').withLength(min: 0, max: 10).nullable()();
   TextColumn get complemento => text().named('COMPLEMENTO').withLength(min: 0, max: 100).nullable()();
-  TextColumn get cep => text().named('CEP').withLength(min: 0, max: 8).nullable()();
+  TextColumn get cep => text().named('CEP').withLength(min: 0, max: 9).nullable()();
   TextColumn get bairro => text().named('BAIRRO').withLength(min: 0, max: 100).nullable()();
   TextColumn get cidade => text().named('CIDADE').withLength(min: 0, max: 100).nullable()();
   TextColumn get uf => text().named('UF').withLength(min: 0, max: 2).nullable()();

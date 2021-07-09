@@ -170,7 +170,6 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
                             BootstrapCol(
                               sizes: 'col-12',
                               child: TextFormField(
-                                focusNode: _foco,
                                 validator: ValidaCampoFormulario.validarObrigatorio,
                                 maxLength: 3,
                                 maxLines: 1,

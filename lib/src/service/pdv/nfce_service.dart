@@ -34,22 +34,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:pegasus_pdv/src/infra/infra.dart';
-
-import 'package:pegasus_pdv/src/service/service_base.dart';
-import 'package:pegasus_pdv/src/view/shared/page/pdf_page.dart';
-
 /// classe responsável por requisições ao servidor REST
-class NfceService extends ServiceBase {
+class NfceService {
   Socket _socket;
-
-  // TODO: Assista aos seguintes vídeos para melhor compreensão:
-  // http://t2ti.com/erp3/videos/flutter-pdv.php#44
-  // http://t2ti.com/erp3/videos/flutter-pdv.php#45
 
   void dispose() {
     _socket.destroy();

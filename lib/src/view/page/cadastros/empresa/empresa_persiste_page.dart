@@ -263,7 +263,9 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
                               child: TextFormField(
                                 maxLength: 18,
-                                validator: ValidaCampoFormulario.validarCNPJ,
+                                validator: Sessao.configuracaoPdv.modulo != 'G' 
+                                  ? ValidaCampoFormulario.validarObrigatorioCNPJ 
+                                  : ValidaCampoFormulario.validarCNPJ,
                                 keyboardType: TextInputType.number,
                                 controller: _cnpjController,
                                 decoration: getInputDecoration(
@@ -316,6 +318,9 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             child: Padding(
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
                               child: TextFormField(
+                                validator: Sessao.configuracaoPdv.modulo != 'G' 
+                                  ? ValidaCampoFormulario.validarObrigatorio 
+                                  : null,
                                 maxLength: 30,
                                 maxLines: 1,
                                 initialValue: Sessao.empresa?.inscricaoEstadual ?? '',
@@ -386,31 +391,10 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12',
-                              child: TextFormField(
-                                maxLength: 14,
-                                keyboardType: TextInputType.number,
-                                controller: _telefoneController,
-                                decoration: getInputDecoration(
-                                  'Conteúdo para o campo Telefone',
-                                  'Telefone',
-                                  false),
-                                onSaved: (String value) {
-                                },
-                                onChanged: (text) {
-                                  Sessao.empresa = Sessao.empresa.copyWith(fone: Biblioteca.removerMascara(text));
-                                  _formFoiAlterado = true;
-                                },
-                              ),
-                          ),
-                        ],
-                      ),
-                      Divider(color: Colors.white,),
-                      BootstrapRow(
-                        height: 60,
-                        children: <BootstrapCol>[
-                          BootstrapCol(
-                            sizes: 'col-12',
                             child: TextFormField(
+                              validator: Sessao.configuracaoPdv.modulo != 'G' 
+                                ? ValidaCampoFormulario.validarObrigatorio 
+                                : null,
                               maxLength: 250,
                               maxLines: 3,
                               initialValue: Sessao.empresa?.logradouro ?? '',
@@ -433,50 +417,13 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
-                            sizes: 'col-12 col-md-4',
-                            child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
-                              child: InputDecorator(
-                                decoration: getInputDecoration(
-                                  'Conteúdo para o campo Uf',
-                                  'Uf',
-                                  true),
-                                isEmpty: Sessao.empresa?.uf == null,
-                                child: getDropDownButton(Sessao.empresa.uf,
-                                  (String newValue) {
-                                    _formFoiAlterado = true;
-                                    setState(() {
-                                      Sessao.empresa = Sessao.empresa.copyWith(uf: newValue);
-                                    });
-                                }, DropdownLista.listaUF)),                                                      
-                            ),
-                          ),
-                          BootstrapCol(
-                            sizes: 'col-12 col-md-4',
+                            sizes: 'col-12 col-md-6',
                             child: Padding(
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
                               child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                controller: _cepController,
-                                decoration: getInputDecoration(
-                                  'Conteúdo para o campo Cep',
-                                  'Cep',
-                                  true,
-                                  paddingVertical: 18),
-                                onSaved: (String value) {
-                                },
-                                onChanged: (text) {
-                                  Sessao.empresa = Sessao.empresa.copyWith(cep: Biblioteca.removerMascara(text));
-                                  _formFoiAlterado = true;
-                                },
-                              ),
-                            ),
-                          ),
-                          BootstrapCol(
-                            sizes: 'col-12 col-md-4',
-                            child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
-                              child: TextFormField(
+                                validator: Sessao.configuracaoPdv.modulo != 'G' 
+                                  ? ValidaCampoFormulario.validarObrigatorio 
+                                  : null,
                                 maxLength: 10,
                                 maxLines: 1,
                                 initialValue: Sessao.empresa?.numero ?? '',
@@ -492,6 +439,30 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                   _formFoiAlterado = true;
                                 },
                               ),
+                            ),
+                          ),
+                          BootstrapCol(
+                            sizes: 'col-12 col-md-6',
+                            child: Padding(
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              child: InputDecorator(
+                                decoration: getInputDecoration(
+                                  'Conteúdo para o campo Uf',
+                                  'Uf',
+                                  true),
+                                isEmpty: Sessao.empresa?.uf == null,
+                                child: getDropDownButton(Sessao.empresa.uf,
+                                  (String newValue) {
+                                    _formFoiAlterado = true;
+                                    setState(() {
+                                      Sessao.empresa = Sessao.empresa.copyWith(uf: newValue);
+                                    });
+                                }, 
+                                DropdownLista.listaUF,
+                                validator: Sessao.configuracaoPdv.modulo != 'G' 
+                                  ? ValidaCampoFormulario.validarObrigatorio 
+                                  : null,
+                                )),                                                      
                             ),
                           ),
                         ],
@@ -529,6 +500,9 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             child: Padding(
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
                               child: TextFormField(
+                                validator: Sessao.configuracaoPdv.modulo != 'G' 
+                                  ? ValidaCampoFormulario.validarObrigatorio 
+                                  : null,
                                 maxLength: 100,
                                 maxLines: 1,
                                 initialValue: Sessao.empresa?.bairro ?? '',
@@ -550,6 +524,9 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             child: Padding(
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
                               child: TextFormField(
+                                validator: Sessao.configuracaoPdv.modulo != 'G' 
+                                  ? ValidaCampoFormulario.validarObrigatorio 
+                                  : null,
                                 maxLength: 100,
                                 maxLines: 1,
                                 initialValue: Sessao.empresa?.cidade ?? '',
@@ -561,6 +538,59 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                 },
                                 onChanged: (text) {
                                   Sessao.empresa = Sessao.empresa.copyWith(cidade: text);
+                                  _formFoiAlterado = true;
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Divider(color: Colors.white,),
+                      BootstrapRow(
+                        height: 60,
+                        children: <BootstrapCol>[
+                          BootstrapCol(
+                            sizes: 'col-12 col-md-6',
+                            child: Padding(
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              child: TextFormField(
+                                validator: Sessao.configuracaoPdv.modulo != 'G' 
+                                  ? ValidaCampoFormulario.validarObrigatorio 
+                                  : null,
+                                keyboardType: TextInputType.number,
+                                controller: _cepController,
+                                decoration: getInputDecoration(
+                                  'Conteúdo para o campo Cep',
+                                  'Cep',
+                                  false,  ),
+                                onSaved: (String value) {
+                                },
+                                onChanged: (text) {
+                                  Sessao.empresa = Sessao.empresa.copyWith(cep: Biblioteca.removerMascara(text));
+                                  _formFoiAlterado = true;
+                                },
+                              ),
+                            ),
+                          ),
+                          BootstrapCol(
+                            sizes: 'col-12 col-md-6',
+                            child: Padding(
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              child: TextFormField(
+                                validator: Sessao.configuracaoPdv.modulo != 'G' 
+                                  ? ValidaCampoFormulario.validarObrigatorioNumerico 
+                                  : null,
+                                maxLength: 7,
+                                maxLines: 1,
+                                initialValue: Sessao.empresa?.codigoIbgeCidade?.toString() ?? '',
+                                decoration: getInputDecoration(
+                                  'Conteúdo para o campo IBGE Município',
+                                  'Código Município IBGE',
+                                  false),
+                                onSaved: (String value) {
+                                },
+                                onChanged: (text) {
+                                  Sessao.empresa = Sessao.empresa.copyWith(codigoIbgeCidade: int.tryParse(text));
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -687,6 +717,9 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
     } else {
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
+        Sessao.empresa = Sessao.empresa.copyWith(
+          codigoIbgeUf: Biblioteca.retornarCodigoIbgeUf(Sessao.empresa.uf),
+        ); 
         form.save();
         await Sessao.db.empresaDao.alterar(Sessao.empresa);
         Sessao.empresa = await Sessao.db.empresaDao.consultarObjeto(1);

@@ -39,10 +39,6 @@ import 'package:pegasus_pdv/src/infra/infra.dart';
 
 class NfceController {
 
-  // TODO: Assista aos seguintes vídeos para melhor compreensão:
-  // http://t2ti.com/erp3/videos/flutter-pdv.php#44
-  // http://t2ti.com/erp3/videos/flutter-pdv.php#45
-
   static NfeCabecalhoMontado nfeCabecalhoMontado;
 
   static String montarNfce() {
@@ -82,7 +78,7 @@ class NfceController {
       dataHoraEmissao: DateTime.now(),                                                  // dhEmi
       tipoOperacao: '1',                                                                // tpNF - 1=saída
       consumidorOperacao: '1',                                                          // indFinal - 1=consumidor final
-      consumidorPresenca: '1',                                                          // indPres - 1=operação presencial TODO: pode haver fora do estabelecimento?
+      consumidorPresenca: '1',                                                          // indPres - 1=operação presencial 
       localDestino: '1',                                                                // idDest - 1=operação interna
       formatoImpressaoDanfe: Sessao.configuracaoNfce.formatoImpressaoDanfe.toString(),  // tpimp - 4=DANCE NFC-e 5=DANFE NFC-e em mensagem eletrônica TODO: colocar nas configurações
       ambiente: Sessao.configuracaoNfce.webserviceAmbiente.toString(),                  // tpAmb - 1=produção 2=homologação TODO: colocar nas configurações
@@ -92,9 +88,9 @@ class NfceController {
       valorDesconto: Sessao.vendaAtual.valorDesconto,                                   // vDesc
       valorPis: 0,                                                                      // vPIS 
       valorCofins: 0,                                                                   // vCOFINS  
-      ufEmitente: Sessao.empresa.codigoIbgeUf,                                          // cUF TODO: obrigar o cadastro na empresa
-      codigoMunicipio: Sessao.empresa.codigoIbgeCidade,                                 // cMunFG TODO: obrigar o cadastro na empresa
-      statusNota: '0',                                                                  // TODO: comentar com os possíveis status
+      ufEmitente: Sessao.empresa.codigoIbgeUf,                                          // cUF 
+      codigoMunicipio: Sessao.empresa.codigoIbgeCidade,                                 // cMunFG 
+      statusNota: '0',                                                                  // "0-Em Edição"-"1-Salva"-"2-Validada"-"3-Assinada"-"4-Autorizada"-"5-Inutilizada"
     );
 
     // EMITENTE - Não precisa preencher a tabela, pegamos tudo da EMPRESA
@@ -125,7 +121,9 @@ class NfceController {
     // PRODUTO
     for (var vendaDetalhe in Sessao.listaVendaAtualDetalhe) {
       final produtoMontado = await Sessao.db.produtoDao.consultarObjetoMontado(vendaDetalhe.produto.id);
-      final tributacao = await Sessao.db.tributConfiguraOfGtDao.consultarObjetoMontado(2, 2); //TODO: pegar o grupo tributario do produto e a operacao fiscal padrão da configuração
+      final tributacao = await Sessao.db.tributConfiguraOfGtDao.consultarObjetoMontado(
+        Sessao.configuracaoPdv.idTributOperacaoFiscalPadrao, produtoMontado.tributGrupoTributario.id
+      ); 
 
       // DETALHE
       NfeDetalheMontado nfceDetalheMontado = NfeDetalheMontado();
@@ -133,8 +131,8 @@ class NfceController {
         id: null,
         cfop: tributacao.tributIcmsUf.cfop,                                                                   // cfop
         codigoProduto: produtoMontado.produto.id.toString(),                                                  // cProd
-        nomeProduto: produtoMontado.produto.descricao,                                                        // xProd
-        ncm: produtoMontado.produto.codigoNcm,                                                                // NCM
+        nomeProduto: produtoMontado.produto.nome,                                                             // xProd
+        ncm: (produtoMontado.produto.codigoNcm ?? '00000000'),                                                // NCM
         gtin: produtoMontado.produto.gtin == null ? 'SEM GTIN' : produtoMontado.produto.gtin,                 // cEAN
         gtinUnidadeTributavel: produtoMontado.produto.gtin == null ? 'SEM GTIN' : produtoMontado.produto.gtin,// cEANTrib
         unidadeComercial: produtoMontado.produtoUnidade.sigla,                                                // uCom
@@ -203,15 +201,26 @@ class NfceController {
       NfeInformacaoPagamento nfceInformacaoPagamento = NfeInformacaoPagamento(
         id: null,
         indicadorPagamento: Sessao.listaParcelamento.length > 0 ? '1' : '0',      // indPag - 0= Pagamento à Vista 1= Pagamento à Prazo      
-        meioPagamento: codigoPagamentoNfce,                                       // tPag - TODO: obrigar o cadastro do tipo de pagamento da NFC-e
+        meioPagamento: codigoPagamentoNfce,                                       // tPag
         valor: pagamento.valor,                                                   // vPag
         troco: codigoPagamentoNfce == '01' ? Sessao.vendaAtual.valorTroco : 0,    // vTroco
       );
       nfeCabecalhoMontado.listaNfeInformacaoPagamento.add(nfceInformacaoPagamento);
     }
 
-    final retorno = await Sessao.db.nfeCabecalhoDao.inserir(nfeCabecalhoMontado);
-    return retorno > 1; // TODO: analisar como melhorar esse retorno
+    var retornoInsercao;
+    if (nfeCabecalhoMontado.nfeCabecalho.statusNota == '0') {
+      retornoInsercao = await Sessao.db.nfeCabecalhoDao.inserir(nfeCabecalhoMontado); // só insere a nota se o seu status for '0'
+    }
+    if (retornoInsercao != null) {
+      nfeCabecalhoMontado.nfeCabecalho = nfeCabecalhoMontado.nfeCabecalho.copyWith(
+        statusNota: '1', // nota salva
+      );
+      await Sessao.db.nfeCabecalhoDao.alterar(nfeCabecalhoMontado);
+      return true;
+    } else {
+      return false;
+    }
   }
 
   static String montarTagInfNFe() {
@@ -242,27 +251,23 @@ class NfceController {
   static String montarTagEmitente() {
     return 
       ' [Emitente]\n'
-      ' CNPJCPF=' + Sessao.empresa.cnpj + '\n'                                      //TODO: obrigar o cadastramento do CNPJ
-      ' xNome='+ Sessao.empresa.razaoSocial +'\n'                                   //TODO: obrigar o cadastramento da razão social  
+      ' CNPJCPF=' + Sessao.empresa.cnpj + '\n'                                      
+      ' xNome='+ Sessao.empresa.razaoSocial +'\n'                                   
       ' xFant='+ (Sessao.empresa.nomeFantasia ?? '') +'\n'
-      ' IE='+ Sessao.empresa.inscricaoEstadual +'\n'                                //TODO: obrigar o cadastramento da inscriçãoe estadual
-      // ' IEST=\n'
-      // ' IM=\n'
-      // ' CNAE=8599604\n'
-      ' CRT='+ Sessao.empresa.crt.substring(0, 1) +'\n'                                             //TODO: obrigar o cadastramento do CRT
-      ' xLgr='+ Sessao.empresa.logradouro +'\n'                                     //TODO: obrigar o cadastramento do logradouro
-      ' nro='+ Sessao.empresa.numero +'\n'                                          //TODO: obrigar o cadastramento do número
+      ' IE='+ Sessao.empresa.inscricaoEstadual +'\n'                                
+      ' CRT='+ Sessao.empresa.crt.substring(0, 1) +'\n'                             
+      ' xLgr='+ Sessao.empresa.logradouro +'\n'                                     
+      ' nro='+ Sessao.empresa.numero +'\n'                                          
       ' xCpl='+ (Sessao.empresa.complemento ?? '') +'\n'
-      ' xBairro='+ Sessao.empresa.bairro +'\n'                                      //TODO: obrigar o cadastramento do bairro
-      ' cMun='+ Sessao.empresa.codigoIbgeCidade.toString() +'\n'                    //TODO: obrigar o cadastramento do código do município
-      ' xMun='+ Sessao.empresa.cidade +'\n'                                         //TODO: obrigar o cadastramento do nome do município
-      ' UF='+ Sessao.empresa.uf +'\n'                                               //TODO: obrigar o cadastramento da UF
-      ' CEP='+ Sessao.empresa.cep +'\n'                                             //TODO: obrigar o cadastramento do CEP
-      ' cUF='+ Sessao.empresa.codigoIbgeUf.toString() +'\n'                         //TODO: obrigar o cadastramento do código da UF
+      ' xBairro='+ Sessao.empresa.bairro +'\n'                                      
+      ' cMun='+ Sessao.empresa.codigoIbgeCidade.toString() +'\n'                    
+      ' xMun='+ Sessao.empresa.cidade +'\n'                                         
+      ' UF='+ Sessao.empresa.uf +'\n'                                               
+      ' CEP='+ Sessao.empresa.cep +'\n'                                             
+      ' cUF='+ Sessao.empresa.codigoIbgeUf.toString() +'\n'                         
       ' cMunFG=\n'
       ' cPais=1058\n'
       ' xPais=BRASIL\n'
-      // ' Fone=\n'
       ' \n';
   }
 
@@ -302,7 +307,7 @@ class NfceController {
         ' cEAN=' + detalhe.nfeDetalhe.gtin + '\n'
         ' cEANTrib=' + detalhe.nfeDetalhe.gtinUnidadeTributavel + '\n'
         ' xProd=' + detalhe.nfeDetalhe.nomeProduto + '\n'
-        ' ncm=' + detalhe.nfeDetalhe.ncm + '\n'                                             //TODO: obrigar o cadastro do NCM - analisar se existe a possibilidade de cadastrar o ncm de forma automática para todos os produtos
+        ' ncm=' + detalhe.nfeDetalhe.ncm + '\n'                                             
         ' uCom=' + detalhe.nfeDetalhe.unidadeComercial + '\n'
         ' uTrib=' + detalhe.nfeDetalhe.unidadeTributavel + '\n'
         ' qCom=' + detalhe.nfeDetalhe.quantidadeComercial.toString() + '\n'
@@ -310,10 +315,7 @@ class NfceController {
         ' vUnCom=' + detalhe.nfeDetalhe.valorUnitarioComercial.toString() + '\n'
         ' vUnTrib=' + detalhe.nfeDetalhe.valorUnitarioTributavel.toString() + '\n'
         ' vProd=' + detalhe.nfeDetalhe.valorTotal.toString() + '\n'
-        // ' vFrete=' + detalhe.nfeDetalhe.ncm + '\n'
-        // ' vSeg=' + detalhe.nfeDetalhe.ncm + '\n'
         ' vDesc=' + (detalhe.nfeDetalhe.valorDesconto?.toString() ?? '0') + '\n'
-        // ' vOutro=' + detalhe.nfeDetalhe.ncm + '\n'
         ' indTot=' + detalhe.nfeDetalhe.entraTotal + '\n'
         ' \n'
         ' [ICMS' + (contador).toString().padLeft(3, '0') + ']\n' + 
@@ -324,12 +326,6 @@ class NfceController {
         ' pICMS=' + (detalhe.nfeDetalheImpostoIcms.aliquotaIcms?.toString() ?? '0') + '\n'
         ' vICMS=' + (detalhe.nfeDetalheImpostoIcms.valorIcms?.toString() ?? '0') + '\n'
         ' \n'
-        // ' [IPI001]\n'
-        // ' CST=99\n'
-        // ' vBC=0\n'
-        // ' pIPI=0\n'
-        // ' vIPI=0\n'
-        // ' \n'
         ' [PIS' + (contador).toString().padLeft(3, '0') + ']\n'
         ' CST=' + detalhe.nfeDetalheImpostoPis.cstPis + '\n'
         ' vBC=' + detalhe.nfeDetalheImpostoPis.valorBaseCalculoPis.toString() + '\n'
@@ -353,17 +349,10 @@ class NfceController {
       ' vNF=' + nfeCabecalhoMontado.nfeCabecalho.valorTotal.toString() + '\n'
       ' vBC=' + nfeCabecalhoMontado.nfeCabecalho.baseCalculoIcms.toString() + '\n'
       ' vICMS=' + nfeCabecalhoMontado.nfeCabecalho.valorIcms.toString() + '\n'
-      // ' vBCST=0\n'
-      // ' vST=0\n'
       ' vProd=' + nfeCabecalhoMontado.nfeCabecalho.valorTotalProdutos.toString() + '\n'
-      // ' vFrete=0\n'
-      // ' vSeg=0\n'
       ' vDesc=' + nfeCabecalhoMontado.nfeCabecalho.valorDesconto.toString() + '\n'
-      // ' vII=0\n'
-      // ' vIPI=0\n'
       ' vPIS=' + nfeCabecalhoMontado.nfeCabecalho.valorPis.toString() + '\n'
       ' vCOFINS=' + nfeCabecalhoMontado.nfeCabecalho.valorCofins.toString() + '\n'
-      // ' vOutro=0\n'
       ' \n';
   }
 
@@ -391,7 +380,7 @@ class NfceController {
 
   static String montarTagResponsavelTecnico() {
     return 
-      ' [INFRESPTEC]\n'                                                   // TODO: obrigar o cadastro do responsável técnico nas configurações?
+      ' [INFRESPTEC]\n'                                                   
       ' CNPJ='+ (Sessao.configuracaoNfce.respTecCnpj ?? '') + '\n'
       ' xContato='+ (Sessao.configuracaoNfce.respTecContato ?? '') + '\n'
       ' email='+ (Sessao.configuracaoNfce.respTecEmail ?? '') + '\n'
@@ -399,6 +388,42 @@ class NfceController {
       ' idcsrt='+ (Sessao.configuracaoNfce.respTecIdCsrt ?? '') + '\n'
       ' csrt='+ (Sessao.configuracaoNfce.respTecHashCsrt ?? '') + '\n'
       '\n';
+  }
+
+  static Future<String> verificarSeAptoParaEmitirNfce() async {
+    String retorno = '';
+    NfeNumero nfeNumero = await Sessao.db.nfeNumeroDao.consultarObjeto(1);
+
+    // verificar se o tipo de impressão do danfe foi cadastrado nas configurações
+    if (Sessao.configuracaoNfce == null 
+    || Sessao.configuracaoNfce.formatoImpressaoDanfe == null 
+    || Sessao.configuracaoNfce.webserviceAmbiente == null) {
+      retorno = 'Por favor, cadastre os dados necessários na tela de Configurações da NFC-e.';
+    }
+    // veririca se a numeração e série foram cadastradas pelo usuário
+    else if (nfeNumero == null 
+    || nfeNumero.numero == null 
+    || nfeNumero.serie == null) {
+      retorno = 'Por favor, informe os dados de numeração e série da NFC-e na tela de Configurações da NFC-e.';
+    }
+    // conferir todos os campos obrigatórios cadastrados para a empresa
+    else if (Sessao.empresa.codigoIbgeCidade == null 
+    || Sessao.empresa.codigoIbgeUf == null 
+    || (Sessao.empresa.razaoSocial == null || Sessao.empresa.razaoSocial == '')
+    || (Sessao.empresa.inscricaoEstadual == null || Sessao.empresa.inscricaoEstadual == '')
+    || (Sessao.empresa.crt == null || Sessao.empresa.crt == '')
+    || (Sessao.empresa.logradouro == null || Sessao.empresa.logradouro == '')
+    || (Sessao.empresa.numero == null || Sessao.empresa.numero == '')
+    || (Sessao.empresa.bairro == null || Sessao.empresa.bairro == '')
+    || (Sessao.empresa.cidade == null || Sessao.empresa.cidade == '')
+    || (Sessao.empresa.uf == null || Sessao.empresa.uf == '')
+    || (Sessao.empresa.cep == null || Sessao.empresa.cep == '')
+    || (Sessao.empresa.cnpj == null || Sessao.empresa.cnpj == '')
+    ) {
+      retorno = 'Por favor, informe todos os dados obrigatórios no cadastro da Empresa para a emissão da NFC-e.';
+    }
+
+    return retorno;
   }
 
 }

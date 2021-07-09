@@ -124,6 +124,11 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
     final _estoqueMinimoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _produto?.estoqueMinimo ?? 0);
     final _estoqueMaximoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _produto?.estoqueMaximo ?? 0);
 
+    final _ncmController = MaskedTextController(
+      mask: '00000000',
+      text: _produto.codigoNcm ?? '',
+    );
+
     return FocusableActionDetector(
       actions: _actionMap,
       shortcuts: _shortcutMap,
@@ -397,7 +402,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
-                            sizes: 'col-12 col-md-6',
+                            sizes: 'col-12 col-md-4',
                             child: Padding(
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
                               child: TextFormField(
@@ -418,7 +423,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                             ),
                           ),
                           BootstrapCol(
-                            sizes: 'col-12 col-md-6',
+                            sizes: 'col-12 col-md-4',
                             child: Padding(
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
                               child: TextFormField(
@@ -434,6 +439,25 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 },
                                 onChanged: (text) {
                                   _produto = _produto.copyWith(valorVenda: _valorVendaController.numberValue);
+                                  _formFoiAlterado = true;
+                                },
+                              ),
+                            ),
+                          ),
+                          BootstrapCol(
+                            sizes: 'col-12 col-md-4',
+                            child: Padding(
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              child: TextFormField(
+                                controller: _ncmController,
+                                decoration: getInputDecoration(
+                                  'Conteúdo para o campo NCM',
+                                  'Código NCM',
+                                  false),
+                                onSaved: (String value) {
+                                },
+                                onChanged: (text) {
+                                  _produto = _produto.copyWith(codigoNcm: text);
                                   _formFoiAlterado = true;
                                 },
                               ),

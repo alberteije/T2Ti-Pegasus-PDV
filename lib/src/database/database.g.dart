@@ -17053,7 +17053,7 @@ class $FornecedorsTable extends Fornecedors
   GeneratedTextColumn get cep => _cep ??= _constructCep();
   GeneratedTextColumn _constructCep() {
     return GeneratedTextColumn('CEP', $tableName, true,
-        minTextLength: 0, maxTextLength: 8);
+        minTextLength: 0, maxTextLength: 9);
   }
 
   final VerificationMeta _bairroMeta = const VerificationMeta('bairro');

@@ -53,7 +53,12 @@ Future gerarDialogBoxFormAlterado(BuildContext context, {Function onOkPressed}) 
       desc: 'Deseja fechar o formulário e perder as alterações?',
       showCloseIcon: true,
       btnCancelOnPress: ()  {},
-      btnOkOnPress: () async { onOkPressed(); Navigator.of(context).pop(); },
+      btnOkOnPress: () async { 
+        if (onOkPressed != null) {
+          onOkPressed(); 
+        }
+        Navigator.of(context).pop();
+      },
       btnOkText: 'Sim',
       btnCancelText: 'Não',
     )..show();
@@ -63,7 +68,12 @@ Future gerarDialogBoxFormAlterado(BuildContext context, {Function onOkPressed}) 
       titulo: 'Alterações não Concluídas', 
       mensagem: 'Deseja fechar o formulário e perder as alterações?', 
       tipo: DialogType.QUESTION, 
-      onOkPressed: () async { onOkPressed(); Navigator.of(context).pop(); });
+      onOkPressed: () async { 
+        if (onOkPressed != null) {
+          onOkPressed(); 
+        }
+        Navigator.of(context).pop();
+      });
   }
 }
 

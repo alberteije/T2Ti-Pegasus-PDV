@@ -259,5 +259,94 @@ class Biblioteca {
     );
   }
 
+  static int retornarCodigoIbgeUf(String uf) {
+    int codigoUf = 0;
+    switch (uf) {
+      case 'AC' :
+        codigoUf = 12;
+        break;
+      case 'AL' :
+        codigoUf = 27;
+        break;
+      case 'AP' :
+        codigoUf = 16;
+        break;
+      case 'AM' :
+        codigoUf = 13;
+        break;
+      case 'BA' :
+        codigoUf = 29;
+        break;
+      case 'CE' :
+        codigoUf = 23;
+        break;
+      case 'DF' :
+        codigoUf = 53;
+        break;
+      case 'ES' :
+        codigoUf = 32;
+        break;
+      case 'GO' :
+        codigoUf = 52;
+        break;
+      case 'MA' :
+        codigoUf = 21;
+        break;
+      case 'MT' :
+        codigoUf = 51;
+        break;
+      case 'MS' :
+        codigoUf = 50;
+        break;
+      case 'MG' :
+        codigoUf = 31;
+        break;
+      case 'PA' :
+        codigoUf = 15;
+        break;
+      case 'PB' :
+        codigoUf = 25;
+        break;
+      case 'PR' :
+        codigoUf = 41;
+        break;
+      case 'PE' :
+        codigoUf = 26;
+        break;
+      case 'PI' :
+        codigoUf = 22;
+        break;
+      case 'RJ' :
+        codigoUf = 33;
+        break;
+      case 'RN' :
+        codigoUf = 24;
+        break;
+      case 'RS' :
+        codigoUf = 43;
+        break;
+      case 'RO' :
+        codigoUf = 11;
+        break;
+      case 'RR' :
+        codigoUf = 14;
+        break;
+      case 'SC' :
+        codigoUf = 42;
+        break;
+      case 'SP' :
+        codigoUf = 35;
+        break;
+      case 'SE' :
+        codigoUf = 28;
+        break;
+      case 'TO' :       
+        codigoUf = 17;
+        break;
+      default:
+    }
+    return codigoUf;
+  }
+
 
 }

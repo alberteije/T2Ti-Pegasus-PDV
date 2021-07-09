@@ -83,9 +83,11 @@ class ValidaCampoFormulario {
  
   /// validar se os caracteres são numericos
   static String validarNumerico(String value) {
-    final RegExp nameExp = RegExp(r'^[0-9]+$');
-    if (!nameExp.hasMatch(value))
-      return 'Por favor, informe apenas caracteres numéricos.';
+    if (value != null) {
+      final RegExp nameExp = RegExp(r'^[0-9]+$');
+      if (!nameExp.hasMatch(value))
+        return 'Por favor, informe apenas caracteres numéricos.';
+    }
     return null;
   }
 
