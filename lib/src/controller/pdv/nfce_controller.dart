@@ -214,6 +214,7 @@ class NfceController {
     }
     if (retornoInsercao != null) {
       nfeCabecalhoMontado.nfeCabecalho = nfeCabecalhoMontado.nfeCabecalho.copyWith(
+        id: retornoInsercao,
         statusNota: '1', // nota salva
       );
       await Sessao.db.nfeCabecalhoDao.alterar(nfeCabecalhoMontado);

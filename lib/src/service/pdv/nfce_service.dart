@@ -48,7 +48,11 @@ class NfceService {
     //TODO: obrigar o cadastro dos dados do servidor: endereço e porta
     final enderecoServidor = InternetAddress('127.0.0.1');
     final portaServidor = 3434;
-    return Socket.connect(enderecoServidor, portaServidor);
+    if (_socket == null) {
+      return Socket.connect(enderecoServidor, portaServidor);
+    } else {
+      return _socket;
+    }
   }
 
 }

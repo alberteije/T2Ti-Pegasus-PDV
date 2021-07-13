@@ -230,6 +230,7 @@ class Constantes {
   static const String parcelamentoIcon = '$imageDir/parcelas-icon.png';
   static const String dialogQuestionIcon = '$imageDir/dialog-question-icon.png';
   static const String dialogInfoIcon = '$imageDir/dialog-info-icon.png';
+  static const String dialogErrorIcon = '$imageDir/dialog-error-icon.png';
   
 // #endregion Imagens
 

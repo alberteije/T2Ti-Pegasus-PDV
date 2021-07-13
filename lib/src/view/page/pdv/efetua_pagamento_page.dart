@@ -86,6 +86,7 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
     bootstrapGridParameters(
       gutterSize: Constantes.flutterBootstrapGutterSize,
     );
+    Sessao.listaDadosPagamento.clear();
     _valorFoco.requestFocus();        
   }
 

@@ -41,6 +41,7 @@ import 'package:bottomreveal/bottomreveal.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:pegasus_pdv/src/controller/pdv/nfce_controller.dart';
+import 'package:charcode/ascii.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 import 'package:pegasus_pdv/src/database/database.dart';
@@ -75,6 +76,7 @@ class _CaixaPageState extends State<CaixaPage> {
   double _quantidadeInformada = 1;
   bool _fornecidoDescontoNoItem = false;
   String _tituloJanela = Constantes.tituloCaixaAberto;
+  bool _abriuDialogBoxEspera = false;
 
   Produto _produto = Produto(id: null);
 
@@ -588,27 +590,7 @@ class _CaixaPageState extends State<CaixaPage> {
             );
             await Sessao.db.pdvVendaCabecalhoDao.alterar(Sessao.vendaAtual, Sessao.listaVendaAtualDetalhe, listaDadosPagamento: Sessao.listaDadosPagamento);
             if (Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC') {
-              await NfceController.gerarDadosNfce();
-              final nfceFormatoIni = NfceController.montarNfce();
-              NfceService servicoNfce = NfceService();
-              await servicoNfce.conectar().then((socket) {
-                socket.write('NFe.CriarEnviarNFe("' + nfceFormatoIni + '", "001", , , , , , "1")\r\n.\r\n');
-                socket.listen((data) {
-                  final _respostaServidor = String.fromCharCodes(data).trim();
-                  print('TAMANHO DA RESPOSTA DO SERVIDOR = ' + _respostaServidor.length.toString());
-                  print('RESPOSTA DO SERVIDOR = ' + _respostaServidor);
-                  if (_respostaServidor.contains('ChaveDFe')) {
-                    socket.write('ACBr.EncodeBase64("C:\\ACBrMonitor\\PDF\\10793118000178\\NFCe\\202107\\NFCe\\53210710793118000178650050000002231900002238-nfe.pdf")\r\n.\r\n');
-                  } else if (_respostaServidor.contains('ERRO')) {
-                    showInSnackBar('Ocorreu um problema ao tentar emitir a NFC-e.', context);
-                    Navigator.of(context).pop();
-                  } else if (_respostaServidor.length > 5000) { // é o arquivo PDF
-                    _imprimirDanfe(_respostaServidor);
-                  } else {
-                    gerarDialogBoxEspera(context);
-                  }
-                });
-              }); 
+              await _encerrarVendaComNfce();
             } else {
               _imprimirRecibo();
             }
@@ -618,6 +600,72 @@ class _CaixaPageState extends State<CaixaPage> {
       }
     } else {
       _exibirMensagemNaoExisteVendaEmAndamento();
+    }
+  }
+
+  Future<void> _encerrarVendaComNfce() async {
+    NfceService servicoNfce = NfceService();
+    try {
+      await servicoNfce.conectar().then((socket) async {
+        if (NfceController.nfeCabecalhoMontado == null) {
+          await NfceController.gerarDadosNfce();
+        }
+        final nfceFormatoIni = NfceController.montarNfce();
+        socket.write('NFe.CriarEnviarNFe("' + nfceFormatoIni + '", "001", , , , , , "1")\r\n.\r\n');
+        socket.listen((data) async {
+          final respostaServidor = String.fromCharCodes(data).trim();                  
+          final caractereFinal = respostaServidor.substring(respostaServidor.length - 1, respostaServidor.length);
+          final contemEndOfText = (caractereFinal.codeUnitAt(0) == $etx);
+
+          if (respostaServidor.contains('Rejeicao')) {
+            _abriuDialogBoxEspera = false;
+            var respostaJson;
+            if (contemEndOfText) {
+              respostaJson = json.decode(respostaServidor.substring(4, respostaServidor.length - 1));
+            } else {
+              respostaJson = json.decode(respostaServidor.substring(4, respostaServidor.length));
+            }
+            final motivo = respostaJson.values.toList()[0]['Retorno'].values.toList()[4]['xMotivo'];
+            Navigator.of(context).pop();
+            gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar emitir a NFC-e: ' + motivo);
+          } else if (respostaServidor.contains('ChaveDFe')) {
+            var respostaJson;
+            if (contemEndOfText) {
+              respostaJson = json.decode(respostaServidor.substring(4, respostaServidor.length - 1));
+            } else {
+              respostaJson = json.decode(respostaServidor.substring(4, respostaServidor.length));
+            }
+            final chave = respostaJson.values.toList()[0]['Retorno']['ChaveDFe'];
+            NfceController.nfeCabecalhoMontado.nfeCabecalho = 
+              NfceController.nfeCabecalhoMontado.nfeCabecalho.copyWith(
+                chaveAcesso: chave,
+                statusNota: '4',
+              );
+            await Sessao.db.nfeCabecalhoDao.alterar(NfceController.nfeCabecalhoMontado);
+            socket.write('ACBr.EncodeBase64("C:\\ACBrMonitor\\PDF\\'+Sessao.empresa.cnpj+'\\NFCe\\'+chave+'-nfe.pdf")\r\n.\r\n');
+          } else if (respostaServidor.contains('ERRO')) {
+            gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar emitir a NFC-e: ' + respostaServidor);
+            Navigator.of(context).pop();
+            _abriuDialogBoxEspera = false;
+          } else if (respostaServidor.length > 5000) { // é o arquivo PDF
+            _abriuDialogBoxEspera = false;
+            if (contemEndOfText) {
+              _imprimirDanfe(respostaServidor.substring(4, respostaServidor.length - 1));
+            } else {
+              _imprimirDanfe(respostaServidor.substring(4, respostaServidor.length));
+            }
+          } else if (respostaServidor.codeUnitAt(0) == $etx) { // se voltar apenas o ETX do ACBrMonitor, não faz nada
+            print('RESPOSTA SERVIDOR = ' + respostaServidor);
+          } else {
+            if (!_abriuDialogBoxEspera) {
+              _abriuDialogBoxEspera = true;
+              gerarDialogBoxEspera(context);
+            }
+          }
+        });
+      });                 
+    } catch (e) {
+      gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar emitir a NFC-e: ' + e.toString());
     }
   }
 
@@ -639,7 +687,7 @@ class _CaixaPageState extends State<CaixaPage> {
   }
 
   void _imprimirDanfe(String danfeBase64) {
-    var decodeB64 = base64.decode(danfeBase64.substring(4, danfeBase64.length - 1)); 
+    var decodeB64 = base64.decode(danfeBase64); 
     Navigator.of(context)
       .push(MaterialPageRoute(
         builder: (BuildContext context) => PdfPage(
@@ -805,6 +853,7 @@ class _CaixaPageState extends State<CaixaPage> {
       Sessao.listaParcelamento = [];
       Sessao.statusCaixa = StatusCaixa.aberto;
       Sessao.objetoJsonErro = null;
+      NfceController.nfeCabecalhoMontado = null;
       _tituloJanela = Constantes.tituloCaixaAberto;
       _fornecidoDescontoNoItem = false;
       _focusNode.requestFocus();
@@ -841,6 +890,8 @@ class _CaixaPageState extends State<CaixaPage> {
           podeRealizarVenda = true;
         }
       }
+    } else {
+      podeRealizarVenda = true;
     }
 
     if (podeRealizarVenda) {
@@ -935,26 +986,6 @@ class _CaixaPageState extends State<CaixaPage> {
     );
   }
 
-  void _exibirMensagemNaoExisteVendaEmAndamento() {
-    gerarDialogBoxInformacao(context, 'Não existe uma venda em andamento.');
-  }
-
-  void _exibirMensagemExisteVendaEmAndamento() {
-    gerarDialogBoxInformacao(context, 'Existe uma venda em andamento.');
-  }
-
-  void _exibirMensagemExisteVendaSemItens() {
-    gerarDialogBoxInformacao(context, 'Não existem itens na venda.');
-  }
-
-  void _exibirMensagemEstoqueNegativo() {
-    gerarDialogBoxInformacao(context, 'Não é permitido vender um item com estoque negativo.');
-  }
-
-  void _exibirMensagemGrupoTributario() {
-    gerarDialogBoxInformacao(context, 'Produto sem Grupo Tributário vinculado.');
-  }
-
   void _fecharMenus() {
     _menuController.close();
     if (_keyScaffold.currentState.isEndDrawerOpen) {
@@ -1037,6 +1068,25 @@ class _CaixaPageState extends State<CaixaPage> {
     Sessao.retornoJsonLookup = jsonEncode(listaFiltrada);
   }
 
+  void _exibirMensagemNaoExisteVendaEmAndamento() {
+    gerarDialogBoxInformacao(context, 'Não existe uma venda em andamento.');
+  }
+
+  void _exibirMensagemExisteVendaEmAndamento() {
+    gerarDialogBoxInformacao(context, 'Existe uma venda em andamento.');
+  }
+
+  void _exibirMensagemExisteVendaSemItens() {
+    gerarDialogBoxInformacao(context, 'Não existem itens na venda.');
+  }
+
+  void _exibirMensagemEstoqueNegativo() {
+    gerarDialogBoxInformacao(context, 'Não é permitido vender um item com estoque negativo.');
+  }
+
+  void _exibirMensagemGrupoTributario() {
+    gerarDialogBoxInformacao(context, 'Produto sem Grupo Tributário vinculado.');
+  }
 // #endregion métodos Caixa
 
 }

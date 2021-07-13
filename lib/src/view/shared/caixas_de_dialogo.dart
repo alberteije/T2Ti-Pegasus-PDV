@@ -161,6 +161,32 @@ gerarDialogBoxConfirmacao(BuildContext context, String mensagem, Function onOkPr
   }
 }
 
+/// Retorna um diálogo de informação
+gerarDialogBoxErro(BuildContext context, String mensagem, {Function onOkPressed}) {
+  if (Biblioteca.isMobile()) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.ERROR,
+      borderSide: BorderSide(color: Colors.red, width: 2),
+      width: 400,
+      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+      headerAnimationLoop: false,
+      animType: AnimType.BOTTOMSLIDE,
+      title: 'Erro no Sistema',
+      desc: mensagem,
+      showCloseIcon: true,
+      btnOkOnPress: onOkPressed == null ? () {} : onOkPressed,
+    )..show();
+  } else {
+    showDialogDesktop(
+      context: context, 
+      titulo: 'Erro no Sistema', 
+      mensagem: mensagem, 
+      tipo: DialogType.ERROR, 
+      onOkPressed: onOkPressed);
+  }
+}
+
 /// exibe uma caixa de diálogo no desktop com possibilidade de focar os botões
 showDialogDesktop({BuildContext context, String titulo, String mensagem, DialogType tipo, Function onOkPressed}) {
   return showDialog<void>(
@@ -227,9 +253,7 @@ _corpoDialogoDesktop({BuildContext context, String titulo, String mensagem, Dial
             radius: 45,
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(45)),
-                child: Image.asset(
-                  tipo == DialogType.QUESTION ? Constantes.dialogQuestionIcon : Constantes.dialogInfoIcon,
-                ),
+                child: _definirImagemDialogo(tipo),
             ),
           ),
       ),
@@ -237,10 +261,27 @@ _corpoDialogoDesktop({BuildContext context, String titulo, String mensagem, Dial
   );
 }
 
+Widget _definirImagemDialogo(DialogType tipo) {
+  switch (tipo) {
+    case DialogType.QUESTION :
+      return Image.asset(Constantes.dialogQuestionIcon);
+      break;
+    case DialogType.INFO :
+      return Image.asset(Constantes.dialogInfoIcon);
+      break;
+    case DialogType.ERROR :
+      return Image.asset(Constantes.dialogErrorIcon);
+      break;
+    default:
+      return Image.asset(Constantes.dialogInfoIcon);
+      break;
+  }
+}
+
 List<Widget> _getBotoesRodapeDialogoDesktop({BuildContext context, DialogType tipo, Function onOkPressed}) {
   List<Widget> listaBotoes = [];
 
-  if (tipo == DialogType.INFO) {
+  if (tipo == DialogType.INFO || tipo == DialogType.ERROR) {
     listaBotoes.add(
       Container(
         width: Biblioteca.isTelaPequena(context) ? 130 : 150,
