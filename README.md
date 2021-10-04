@@ -3,8 +3,7 @@
                     <div class="titulo_bloco">
                         <h1>T2Ti Pegasus PDV</h1>
                     </div>
-  Este repositório mantém o código do sistema T2Ti Pegasus PDV. Este sistema faz parte de um projeto maior chamado T2Ti ERP 3.0. 
-		
+  Este repositório mantém o código do sistema T2Ti Pegasus PDV. Este sistema faz parte de um projeto maior chamado T2Ti ERP 3.0. 		
                     <hr />
                     <h3>Curso T2Ti Pegasus PDV</h3>
 			<a href="https://t2tisistemas.com/produtos/multi/pegasus-pdv/">
