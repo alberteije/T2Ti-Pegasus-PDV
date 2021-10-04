@@ -4,23 +4,14 @@
                         <h1>T2Ti Pegasus PDV</h1>
                     </div>
   Este repositório mantém o código do sistema T2Ti Pegasus PDV. Este sistema faz parte de um projeto maior chamado T2Ti ERP 3.0. 
-	<br /><br />
-	O Projeto T2Ti ERP 3.0 é um Treinamento! No entanto, não se trata de um treinamento usual como se encontra por aí. Durante o treinamento nós simulamos um ambiente real de desenvolvimento e vamos aprontando as aplicações enquanto gravamos as vídeo aulas e fornecemos suporte para os alunos. O T2Ti Pegasus PDV é a primeira aplicação que faz parte do T2Ti ERP 3.0 e é lançada em produção. Veja mais detalhes sobre o Projeto T2Ti ERP 3.0 no seguinte link: http://t2ti.com/erp3/
-  <br/><br/>
+		
                     <hr />
-                    <h3>T2Ti ERP 3.0</h3>
-			<a href="http://t2ti.com/erp3/">
-			<img src="http://t2ti.com/images/news/erp3-linguagens-flutter.png" />
-			</a>
-                    <br />              
-O T2Ti ERP 3.0 é feito com várias tecnologias de ponta. O cliente (frontend) é desenvolvido em Flutter e são construídos cinco servidores (backend) nas linguagens: C#, Delphi, Java, Node e PHP. 	
-                    <hr />
-                    <h3>T2Ti Pegasus PDV</h3>
+                    <h3>Curso T2Ti Pegasus PDV</h3>
 			<a href="https://t2tisistemas.com/produtos/multi/pegasus-pdv/">
 			<img src="http://t2ti.com/images/erp3/mobile-screen-topo.png" />
 			</a>
                     <br /> <br /> 
-Como mencionado anteriormente, o T2Ti Pegasus PDV é a primeiríssima parte do T2Ti ERP 3.0 que está indo para produção. Neste momento ele se encontra em fase beta. Você pode baixar os fontes e alterar de acordo com sua vontade e pode também acompanhar o andamento do projeto no <a href="https://trello.com/b/xnlmJ1wc/t2ti-pegasus-pdv">Quadro Trello Público</a> criado para este fim. O objetivo aqui é que os participantes do Projeto T2Ti ERP 3.0 vejam como um projeto pode ser mantido no formato Open Source com a participação da comunidade de desenvolvedores.	
+Para compreender como implementar o Pegasus PDV com emissão de recibo para MEI e com emissão de documentos fiscais (NFC-e, SAT e MFE), faça o Curso T2Ti Pegasus PDV disponível no seguinte link <a href="http://t2ti.com/curso/video/pegasus-pdv-5000/">http://t2ti.com/curso/video/pegasus-pdv-5000/</a>. O Pegasus PDV já está em produção em fase beta. Você pode baixar os fontes e alterar de acordo com sua vontade e pode também acompanhar o andamento do projeto no <a href="https://trello.com/b/xnlmJ1wc/t2ti-pegasus-pdv">Quadro Trello Público</a> criado para este fim. 	
                     <br /> <br /> 
 Clique na imagem acima para acessar a página comercial da aplicação e analisar algumas características do mesmo.
 <hr />
