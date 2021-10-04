@@ -3,7 +3,7 @@
                     <div class="titulo_bloco">
                         <h1>T2Ti Pegasus PDV</h1>
                     </div>
-  Este repositório mantém o código do sistema T2Ti Pegasus PDV. Este sistema faz parte de um projeto maior chamado T2Ti ERP 3.0. 		
+  Este repositório mantém o código do sistema T2Ti Pegasus PDV. Na versão Lite é possível emitir Recibo (desenvolvido para MEI) e na versão fiscal é possível emitir documentos fiscais: NFC-e, SAT e MFE (SAT e MFE em desenvolvimento).
                     <hr />
                     <h3>Curso T2Ti Pegasus PDV</h3>
 			<a href="http://t2ti.com/curso/video/pegasus-pdv-5000/">
