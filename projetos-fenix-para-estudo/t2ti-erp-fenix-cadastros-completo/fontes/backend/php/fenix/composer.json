@@ -1,0 +1,7 @@
+{
+    "require": {
+        "slim/slim": "4.*",
+        "slim/psr7": "^0.6.0",
+        "doctrine/orm": "2.7"
+    }
+}

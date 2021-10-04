@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping assembly="T2TiRetaguardaSH" namespace="T2TiRetaguardaSH.Models" default-lazy="false" xmlns="urn:nhibernate-mapping-2.2">
+  <class name="NfeConfiguracao" table="NFE_CONFIGURACAO" >
+    <id name="Id" column="ID">
+      <generator class="identity" />
+    </id>
+
+	<property name="CertificadoDigitalSerie" column="CERTIFICADO_DIGITAL_SERIE" />
+	<property name="CertificadoDigitalCaminho" column="CERTIFICADO_DIGITAL_CAMINHO" />
+	<property name="CertificadoDigitalSenha" column="CERTIFICADO_DIGITAL_SENHA" />
+	<property name="TipoEmissao" column="TIPO_EMISSAO" />
+	<property name="FormatoImpressaoDanfe" column="FORMATO_IMPRESSAO_DANFE" />
+	<property name="ProcessoEmissao" column="PROCESSO_EMISSAO" />
+	<property name="VersaoProcessoEmissao" column="VERSAO_PROCESSO_EMISSAO" />
+	<property name="CaminhoLogomarca" column="CAMINHO_LOGOMARCA" />
+	<property name="SalvarXml" column="SALVAR_XML" />
+	<property name="CaminhoSalvarXml" column="CAMINHO_SALVAR_XML" />
+	<property name="CaminhoSchemas" column="CAMINHO_SCHEMAS" />
+	<property name="CaminhoArquivoDanfe" column="CAMINHO_ARQUIVO_DANFE" />
+	<property name="CaminhoSalvarPdf" column="CAMINHO_SALVAR_PDF" />
+	<property name="WebserviceUf" column="WEBSERVICE_UF" />
+	<property name="WebserviceAmbiente" column="WEBSERVICE_AMBIENTE" />
+	<property name="WebserviceProxyHost" column="WEBSERVICE_PROXY_HOST" />
+	<property name="WebserviceProxyPorta" column="WEBSERVICE_PROXY_PORTA" />
+	<property name="WebserviceProxyUsuario" column="WEBSERVICE_PROXY_USUARIO" />
+	<property name="WebserviceProxySenha" column="WEBSERVICE_PROXY_SENHA" />
+	<property name="WebserviceVisualizar" column="WEBSERVICE_VISUALIZAR" />
+	<property name="EmailServidorSmtp" column="EMAIL_SERVIDOR_SMTP" />
+	<property name="EmailPorta" column="EMAIL_PORTA" />
+	<property name="EmailUsuario" column="EMAIL_USUARIO" />
+	<property name="EmailSenha" column="EMAIL_SENHA" />
+	<property name="EmailAssunto" column="EMAIL_ASSUNTO" />
+	<property name="EmailAutenticaSsl" column="EMAIL_AUTENTICA_SSL" />
+	<property name="EmailTexto" column="EMAIL_TEXTO" />
+	<property name="NfceIdCsc" column="NFCE_ID_CSC" />
+	<property name="NfceCsc" column="NFCE_CSC" />
+	<property name="NfceModeloImpressao" column="NFCE_MODELO_IMPRESSAO" />
+	<property name="NfceImprimirItensUmaLinha" column="NFCE_IMPRIMIR_ITENS_UMA_LINHA" />
+	<property name="NfceImprimirDescontoPorItem" column="NFCE_IMPRIMIR_DESCONTO_POR_ITEM" />
+	<property name="NfceImprimirQrcodeLateral" column="NFCE_IMPRIMIR_QRCODE_LATERAL" />
+	<property name="NfceImprimirGtin" column="NFCE_IMPRIMIR_GTIN" />
+	<property name="NfceImprimirNomeFantasia" column="NFCE_IMPRIMIR_NOME_FANTASIA" />
+	<property name="NfceImpressaoTributos" column="NFCE_IMPRESSAO_TRIBUTOS" />
+	<property name="NfceMargemSuperior" column="NFCE_MARGEM_SUPERIOR" />
+	<property name="NfceMargemInferior" column="NFCE_MARGEM_INFERIOR" />
+	<property name="NfceMargemDireita" column="NFCE_MARGEM_DIREITA" />
+	<property name="NfceMargemEsquerda" column="NFCE_MARGEM_ESQUERDA" />
+	<property name="NfceResolucaoImpressao" column="NFCE_RESOLUCAO_IMPRESSAO" />
+	<property name="NfceTamanhoFonteItem" column="NFCE_TAMANHO_FONTE_ITEM" />
+	<property name="RespTecCnpj" column="RESP_TEC_CNPJ" />
+	<property name="RespTecContato" column="RESP_TEC_CONTATO" />
+	<property name="RespTecEmail" column="RESP_TEC_EMAIL" />
+	<property name="RespTecFone" column="RESP_TEC_FONE" />
+	<property name="RespTecIdCsrt" column="RESP_TEC_ID_CSRT" />
+	<property name="RespTecHashCsrt" column="RESP_TEC_HASH_CSRT" />
+
+
+	<many-to-one name="Empresa" class="Empresa" column="ID_EMPRESA" />
+	    
+  </class>
+</hibernate-mapping>

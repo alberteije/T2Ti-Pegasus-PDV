@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping assembly="T2TiERPFenix" namespace="T2TiERPFenix.Models" default-lazy="false" xmlns="urn:nhibernate-mapping-2.2">
+  <class name="PessoaEndereco" table="pessoa_endereco" >
+    <id name="Id" column="ID">
+      <generator class="identity" />
+    </id>
+    <property name="Logradouro" column="LOGRADOURO" />
+    <property name="Numero" column="NUMERO" />
+    <property name="Bairro" column="BAIRRO" />
+    <property name="MunicipioIbge" column="MUNICIPIO_IBGE" />
+    <property name="Uf" column="UF" />
+    <property name="Cep" column="CEP" />
+    <property name="Cidade" column="CIDADE" />
+    <property name="Complemento" column="COMPLEMENTO" />
+    <property name="Principal" column="PRINCIPAL" />
+    <property name="Entrega" column="ENTREGA" />
+    <property name="Cobranca" column="COBRANCA" />
+    <property name="Correspondencia" column="CORRESPONDENCIA" />
+
+    <many-to-one name="Pessoa" class="Pessoa" column="ID_PESSOA" />
+  
+  </class>
+</hibernate-mapping>

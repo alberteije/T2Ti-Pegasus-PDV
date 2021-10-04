@@ -1,0 +1,181 @@
+unit BancoController;
+
+interface
+
+uses mvcframework, mvcframework.Commons,
+  System.SysUtils,
+  MVCFramework.SystemJSONUtils;
+
+type
+
+  [MVCDoc('CRUD Banco')]
+  [MVCPath('/banco')]
+  TBancoController = class(TMVCController)
+  public
+    [MVCDoc('Retorna uma lista de objetos')]
+    [MVCPath]
+    [MVCHTTPMethod([httpGET])]
+    procedure ConsultarLista;
+
+    [MVCDoc('Retorna uma lista de objetos com base no Filtro')]
+    [MVCPath('/($campo)/($valor)')]
+    [MVCHTTPMethod([httpGET])]
+    procedure ConsultarListaFiltroValor(campo: string; valor: string);
+
+    [MVCDoc('Retorna um objeto com base no ID')]
+    [MVCPath('/($id)')]
+    [MVCHTTPMethod([httpGET])]
+    procedure ConsultarObjeto(id: Integer);
+
+    [MVCDoc('Insere um novo objeto')]
+    [MVCPath]
+    [MVCHTTPMethod([httpPOST])]
+    procedure Inserir(Context: TWebContext);
+
+    [MVCDoc('Altera um objeto com base no ID')]
+    [MVCPath]
+    [MVCHTTPMethod([httpPUT])]
+    procedure Alterar(Context: TWebContext);
+
+    [MVCDoc('Exclui um objeto com base no ID')]
+    [MVCPath('/($id)')]
+    [MVCHTTPMethod([httpDelete])]
+    procedure Excluir(id: Integer);
+  end;
+
+implementation
+
+{ TBancoController }
+
+uses BancoService, Banco, Commons;
+
+procedure TBancoController.ConsultarLista;
+begin
+  try
+    Render<TBanco>(TBancoService.ConsultarLista);
+  except
+    on E: EServiceException do
+    begin
+      raise EMVCException.Create
+        ('Erro no Servidor [Consultar Lista Banco] - Exceção: ' + E.Message,
+        E.StackTrace, 0, 500);
+    end
+    else
+      raise;
+  end;
+end;
+
+procedure TBancoController.ConsultarListaFiltroValor(campo, valor: string);
+begin
+  try
+    Render<TBanco>(TBancoService.ConsultarListaFiltroValor(campo, valor));
+  except
+    on E: EServiceException do
+    begin
+      raise EMVCException.Create
+        ('Erro no Servidor [Consultar Lista Filtro Valor Banco] - Exceção: ' + E.Message,
+        E.StackTrace, 0, 500);
+    end
+    else
+      raise;
+  end;
+end;
+
+procedure TBancoController.ConsultarObjeto(id: Integer);
+var
+  Banco: TBanco;
+begin
+  try
+    Banco := TBancoService.ConsultarObjeto(id);
+
+    if Assigned(Banco) then
+      Render(Banco)
+    else
+      raise EMVCException.Create
+        ('Registro não localizado [Consultar Objeto Banco]', '', 0, 404);
+  except
+    on E: EServiceException do
+    begin
+      raise EMVCException.Create
+        ('Erro no Servidor [Consultar Objeto Banco] - Exceção: ' + E.Message,
+        E.StackTrace, 0, 500);
+    end
+    else
+      raise;
+  end;
+end;
+
+procedure TBancoController.Inserir(Context: TWebContext);
+var
+  Banco: TBanco;
+begin
+  try
+    Banco := Context.Request.BodyAs<TBanco>;
+  except
+    on E: EServiceException do
+    begin
+      raise EMVCException.Create('Objeto inválido [Inserir Banco] - Exceção: ' +
+        E.Message, E.StackTrace, 0, 400);
+    end
+    else
+      raise;
+  end;
+
+  try
+    TBancoService.Inserir(Banco);
+    Render(200, 'Objeto inserido com sucesso.');
+  finally
+    FreeAndNil(Banco);
+  end;
+end;
+
+procedure TBancoController.Alterar(Context: TWebContext);
+var
+  Banco, BancoDB: TBanco;
+begin
+  try
+    Banco := Context.Request.BodyAs<TBanco>;
+  except
+    on E: EServiceException do
+    begin
+      raise EMVCException.Create('Objeto inválido [Alterar Banco] - Exceção: ' +
+        E.Message, E.StackTrace, 0, 400);
+    end
+    else
+      raise;
+  end;
+
+  BancoDB := TBancoService.ConsultarObjeto(Banco.id);
+
+  if not Assigned(BancoDB) then
+    raise EMVCException.Create('Objeto com ID inválido [Alterar Banco]',
+      '', 0, 400);
+
+  try
+    TBancoService.Alterar(Banco);
+    Render(200, 'Objeto alterado com sucesso.');
+  finally
+    FreeAndNil(Banco);
+    FreeAndNil(BancoDB);
+  end;
+end;
+
+procedure TBancoController.Excluir(id: Integer);
+var
+  Banco: TBanco;
+begin
+  Banco := TBancoService.ConsultarObjeto(id);
+
+  if not Assigned(Banco) then
+    raise EMVCException.Create('Objeto com ID inválido [Excluir Banco]',
+      '', 0, 400);
+
+  try
+    TBancoService.Excluir(Banco);
+    Render(200, 'Objeto excluído com sucesso.');
+  finally
+    FreeAndNil(Banco)
+  end;
+end;
+
+end.

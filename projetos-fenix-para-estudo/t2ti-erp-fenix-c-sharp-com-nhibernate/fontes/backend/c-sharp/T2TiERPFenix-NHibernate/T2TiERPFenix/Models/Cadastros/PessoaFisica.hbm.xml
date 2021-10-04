@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping assembly="T2TiERPFenix" namespace="T2TiERPFenix.Models" default-lazy="false" xmlns="urn:nhibernate-mapping-2.2">
+  <class name="PessoaFisica" table="pessoa_fisica" >
+    <id name="Id" column="ID">
+      <generator class="identity" />
+    </id>
+    <property name="Cpf" column="CPF" />
+    <property name="Rg" column="RG" />
+    <property name="OrgaoRg" column="ORGAO_RG" />
+    <property name="DataEmissaoRg" column="DATA_EMISSAO_RG" />
+    <property name="DataNascimento" column="DATA_NASCIMENTO" />
+    <property name="Sexo" column="SEXO" />
+    <property name="Raca" column="RACA" />
+    <property name="Naturalidade" column="NATURALIDADE" />
+    <property name="Nacionalidade" column="NACIONALIDADE" />
+    <property name="NomeMae" column="NOME_MAE" />
+    <property name="NomePai" column="NOME_PAI" />
+
+    <many-to-one name="Pessoa" class="Pessoa" column="ID_PESSOA" unique="true" />
+    <many-to-one name="EstadoCivil" column="ID_ESTADO_CIVIL" />
+    <many-to-one name="NivelFormacao" column="ID_NIVEL_FORMACAO" />
+
+  </class>
+</hibernate-mapping>

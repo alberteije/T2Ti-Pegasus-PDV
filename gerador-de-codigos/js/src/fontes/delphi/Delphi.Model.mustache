@@ -1,0 +1,50 @@
+unit {{class}};
+
+interface
+
+uses
+  MVCFramework.Serializer.Commons, ModelBase;
+
+type
+
+  [MVCNameCase(ncLowerCase)]
+  T{{class}} = class(TModelBase)
+  private
+    {{#fields}}
+    {{{.}}}
+    {{/fields}}
+    {{^fields}}Existe um problema. Campos não enviados.{{/fields}}  
+  public
+    procedure ValidarInsercao; override;
+    procedure ValidarAlteracao; override;
+    procedure ValidarExclusao; override;
+
+    {{#properties}}
+    {{{.}}}
+    {{/properties}}
+    {{^properties}}Existe um problema. Propriedades não enviados.{{/properties}}  
+  end;
+
+implementation
+
+{ T{{class}} }
+
+procedure T{{class}}.ValidarInsercao;
+begin
+  inherited;
+
+end;
+
+procedure T{{class}}.ValidarAlteracao;
+begin
+  inherited;
+
+end;
+
+procedure T{{class}}.ValidarExclusao;
+begin
+  inherited;
+
+end;
+
+end.

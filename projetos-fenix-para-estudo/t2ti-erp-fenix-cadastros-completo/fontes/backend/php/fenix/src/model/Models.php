@@ -1,0 +1,63 @@
+<?php
+
+include 'ModelBase.php';
+
+// Cadastros
+include 'cadastros/Banco.php';
+include 'cadastros/BancoAgencia.php';
+include 'cadastros/Pessoa.php';
+include 'cadastros/PessoaFisica.php';
+include 'cadastros/PessoaJuridica.php';
+include 'cadastros/PessoaContato.php';
+include 'cadastros/PessoaTelefone.php';
+include 'cadastros/PessoaEndereco.php';
+include 'cadastros/Produto.php';
+include 'cadastros/ProdutoGrupo.php';
+include 'cadastros/ProdutoSubgrupo.php';
+include 'cadastros/ProdutoUnidade.php';
+include 'cadastros/ProdutoMarca.php';
+include 'cadastros/NivelFormacao.php';
+include 'cadastros/EstadoCivil.php';
+include 'cadastros/BancoContaCaixa.php';
+include 'cadastros/Cargo.php';
+include 'cadastros/Cep.php';
+include 'cadastros/Cfop.php';
+include 'cadastros/Cliente.php';
+include 'cadastros/Cnae.php';
+include 'cadastros/Colaborador.php';
+include 'cadastros/Contador.php';
+include 'cadastros/Csosn.php';
+include 'cadastros/CstCofins.php';
+include 'cadastros/CstIcms.php';
+include 'cadastros/CstIpi.php';
+include 'cadastros/CstPis.php';
+include 'cadastros/Fornecedor.php';
+include 'cadastros/Municipio.php';
+include 'cadastros/Ncm.php';
+include 'cadastros/Papel.php';
+include 'cadastros/Setor.php';
+include 'cadastros/Transportadora.php';
+include 'cadastros/Uf.php';
+include 'cadastros/Usuario.php';
+include 'cadastros/Vendedor.php';
+
+// Financeiro
+include 'financeiro/Cheque.php';
+include 'financeiro/FinChequeEmitido.php';
+include 'financeiro/FinChequeRecebido.php';
+include 'financeiro/FinConfiguracaoBoleto.php';
+include 'financeiro/FinDocumentoOrigem.php';
+include 'financeiro/FinExtratoContaBanco.php';
+include 'financeiro/FinFechamentoCaixaBanco.php';
+include 'financeiro/FinLancamentoPagar.php';
+include 'financeiro/FinLancamentoReceber.php';
+include 'financeiro/FinNaturezaFinanceira.php';
+include 'financeiro/FinParcelaPagar.php';
+include 'financeiro/FinParcelaReceber.php';
+include 'financeiro/FinStatusParcela.php';
+include 'financeiro/FinTipoPagamento.php';
+include 'financeiro/FinTipoRecebimento.php';
+include 'financeiro/TalonarioCheque.php';
+
+// Views
+include 'viewsDB/ViewPessoaColaborador.php';

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping assembly="T2TiERPFenix" namespace="T2TiERPFenix.Models" default-lazy="false" xmlns="urn:nhibernate-mapping-2.2">
+  <class name="Banco" table="banco" >
+    <id name="Id" column="ID">
+      <generator class="identity" />
+    </id>
+    <property name="Codigo" column="CODIGO" />
+    <property name="Nome" column="NOME" />
+    <property name="Url" column="URL" />
+  </class>
+</hibernate-mapping>

@@ -1,0 +1,23 @@
+{
+    "codigoTransacao":"53B6D699ABC74D4DA233C845E6591W99",
+    "statusTransacao":"IN_ANALYSIS",
+    "codigoStatusTransacao":"3",
+    "tipoPagamento":"Pagseguro",
+    "codigoCliente":null,
+    "nomeCliente":"Comprador de Testes",
+    "emailCliente":"php@gmail.com",
+    "endereco":"RUA DAS CARNAUBAS",
+    "numero":"SN",
+    "complemento":"",
+    "bairro":"Norte Águas Claras",
+    "cidade":"BRASILIA",
+    "uf":"DF",
+    "cep":"71904540",
+    "telefone":"61 981632792",
+    "incluiLogistica":false,
+    "metodoPagamento":"1",
+    "codigoTipoPagamento":"101",
+    "codigoProduto":"999999",
+    "descricaoProduto":"T2Ti Pegasus PDV NFC-e - Assinatura Mensal",
+    "valorUnitario":15.00
+}

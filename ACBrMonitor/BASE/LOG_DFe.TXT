@@ -1,0 +1,12 @@
+Inicio TNFeStatusServico
+Versão Layout: 4.00 
+Ambiente: 2
+Versão Aplicativo: SVRS201805211008 
+Status Código: 107
+Status Descrição: Servico em Operacao
+UF: DF
+Recebimento: 10/09/2021 03:10:09
+Tempo Médio: 1
+Retorno: 
+Observação: 
+

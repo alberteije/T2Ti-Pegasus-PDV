@@ -1,0 +1,15 @@
+/**  
+ * Código para ser copiado para a classe que exporta os módulos
+ */
+
+{{#imports}}
+{{{.}}}
+{{/imports}}
+
+@Module({
+    imports: [
+		{{#modules}}
+		{{{.}}}
+		{{/modules}}
+    ],
+})

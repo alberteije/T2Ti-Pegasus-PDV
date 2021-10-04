@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="Controller"/>
+    <File Path="Controller\Cadastros"/>
+    <File Path="Controller\Cadastros\EmpresaController.pas"/>
+    <File Path="Controller\Cadastros\AcbrMonitorPortaController.pas"/>
+    <File Path="Controller\NFe"/>
+    <File Path="Controller\NFe\NfeConfiguracaoController.pas"/>
+    <File Path="Controller\PDV"/>
+    <File Path="Controller\PDV\PdvPlanoPagamentoController.pas"/>
+    <File Path="Controller\PDV\PdvTipoPlanoController.pas"/>
+    <File Path="Model"/>
+    <File Path="Model\Cadastros"/>
+    <File Path="Model\Cadastros\Empresa.pas"/>
+    <File Path="Model\Cadastros\AcbrMonitorPorta.pas"/>
+    <File Path="Model\NFe"/>
+    <File Path="Model\NFe\NfeConfiguracao.pas"/>
+    <File Path="Model\PDV"/>
+    <File Path="Model\PDV\PdvPlanoPagamento.pas"/>
+    <File Path="Model\PDV\PdvTipoPlano.pas"/>
+    <File Path="Model\Transiente"/>
+    <File Path="Model\Transiente\Filtro.pas"/>
+    <File Path="Model\Transiente\ObjetoPagSeguro.pas"/>
+    <File Path="Model\ModelBase.pas"/>
+    <File Path="Service"/>
+    <File Path="Service\Cadastros"/>
+    <File Path="Service\Cadastros\EmpresaService.pas"/>
+    <File Path="Service\Cadastros\AcbrMonitorPortaService.pas"/>
+    <File Path="Service\NFe"/>
+    <File Path="Service\NFe\NfeConfiguracaoService.pas"/>
+    <File Path="Service\PDV"/>
+    <File Path="Service\PDV\PdvPlanoPagamentoService.pas"/>
+    <File Path="Service\PDV\PdvTipoPlanoService.pas"/>
+    <File Path="Service\ServiceBase.pas"/>
+    <File Path="Util"/>
+    <File Path="Util\Biblioteca.pas"/>
+    <File Path="Util\Constantes.pas"/>
+    <File Path="Commons.pas"/>
+    <File Path="UAuthCriteria.pas"/>
+    <File Path="UDataModuleConexao.pas"/>
+    <File Path="UDataModuleConexao.dfm"/>
+    <File Path="UWebModule.pas"/>
+    <File Path="UWebModule.dfm"/>
+  </ProjectSortOrder>
+</BorlandProject>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping assembly="T2TiERPFenix" namespace="T2TiERPFenix.Models" default-lazy="false" xmlns="urn:nhibernate-mapping-2.2">
+  <class name="FinParcelaPagar" table="fin_parcela_pagar" >
+    <id name="Id" column="ID">
+      <generator class="identity" />
+    </id>
+    <property name="NumeroParcela" column="NUMERO_PARCELA" />
+    <property name="DataEmissao" column="DATA_EMISSAO" />
+    <property name="DataVencimento" column="DATA_VENCIMENTO" />
+    <property name="DataPagamento" column="DATA_PAGAMENTO" />
+    <property name="DescontoAte" column="DESCONTO_ATE" />
+    <property name="Valor" column="VALOR" />
+    <property name="TaxaJuro" column="TAXA_JURO" />
+    <property name="TaxaMulta" column="TAXA_MULTA" />
+    <property name="TaxaDesconto" column="TAXA_DESCONTO" />
+    <property name="ValorJuro" column="VALOR_JURO" />
+    <property name="ValorMulta" column="VALOR_MULTA" />
+    <property name="ValorDesconto" column="VALOR_DESCONTO" />
+    <property name="ValorPago" column="VALOR_PAGO" />
+    <property name="Historico" column="HISTORICO" />
+
+    <many-to-one name="FinLancamentoPagar" class="FinLancamentoPagar" column="ID_FIN_LANCAMENTO_PAGAR" />
+    <!--many-to-one name="FinStatusParcela" column="ID_FIN_STATUS_PARCELA" />
+    <many-to-one name="FinTipoPagamento" column="ID_FIN_TIPO_PAGAMENTO" />
+    <many-to-one name="FinChequeEmitido" column="ID_FIN_CHEQUE_EMITIDO" /-->
+
+  </class>
+</hibernate-mapping>

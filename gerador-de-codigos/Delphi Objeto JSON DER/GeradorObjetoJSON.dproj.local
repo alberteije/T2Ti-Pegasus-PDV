@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2020/03/19 12:53:03.000.095,=C:\Users\alber\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>2020/03/19 12:55:44.000.875,C:\T2Ti ERP\ERP 3.0\Material T2Ti\Projetos\Delphi Objeto JSON DER\Unit2.pas=C:\Users\alber\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>2020/03/19 12:55:44.000.875,C:\T2Ti ERP\ERP 3.0\Material T2Ti\Projetos\Delphi Objeto JSON DER\Unit2.dfm=C:\Users\alber\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit2.dfm</Transaction>
+    <Transaction>2020/03/19 12:55:48.000.025,C:\T2Ti ERP\ERP 3.0\Material T2Ti\Projetos\Delphi Objeto JSON DER\Project4.dproj=C:\Users\alber\OneDrive\Documentos\Embarcadero\Studio\Projects\Project4.dproj</Transaction>
+    <Transaction>2020/06/12 13:18:00.000.924,C:\T2Ti ERP\ERP 3.0\Material T2Ti\Projetos\Delphi Objeto JSON DER\GeradorObjetoJSON.dproj=C:\T2Ti ERP\ERP 3.0\Material T2Ti\Projetos\Delphi Objeto JSON DER\Project4.dproj</Transaction>
+    <Transaction>2020/06/12 13:18:20.000.764,C:\T2Ti ERP\ERP 3.0\Material T2Ti\Projetos\Delphi Objeto JSON DER\UPrincipal.dfm=C:\T2Ti ERP\ERP 3.0\Material T2Ti\Projetos\Delphi Objeto JSON DER\Unit2.dfm</Transaction>
+    <Transaction>2020/06/12 13:18:20.000.764,C:\T2Ti ERP\ERP 3.0\Material T2Ti\Projetos\Delphi Objeto JSON DER\UPrincipal.pas=C:\T2Ti ERP\ERP 3.0\Material T2Ti\Projetos\Delphi Objeto JSON DER\Unit2.pas</Transaction>
+  </Transactions>
+</BorlandProject>

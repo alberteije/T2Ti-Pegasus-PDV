@@ -1,0 +1,170 @@
+/*******************************************************************************
+Title: T2Ti ERP 3.0                                                                
+Description: Controller relacionado à tabela [{{table}}] 
+                                                                                
+The MIT License                                                                 
+                                                                                
+Copyright: Copyright (C) 2021 T2Ti.COM                                          
+                                                                                
+Permission is hereby granted, free of charge, to any person                     
+obtaining a copy of this software and associated documentation                  
+files (the "Software"), to deal in the Software without                         
+restriction, including without limitation the rights to use,                    
+copy, modify, merge, publish, distribute, sublicense, and/or sell               
+copies of the Software, and to permit persons to whom the                       
+Software is furnished to do so, subject to the following                        
+conditions:                                                                     
+                                                                                
+The above copyright notice and this permission notice shall be                  
+included in all copies or substantial portions of the Software.                 
+                                                                                
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,                 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES                 
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND                        
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT                     
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,                    
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING                    
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR                   
+OTHER DEALINGS IN THE SOFTWARE.                                                 
+                                                                                
+       The author may be contacted at:                                          
+           t2ti.com@gmail.com                                                   
+                                                                                
+@author Albert Eije (alberteije@gmail.com)                    
+@version 1.0.0
+*******************************************************************************/
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using T2TiERPFenix.Models;
+using T2TiERPFenix.Repository;
+
+namespace T2TiERPFenix.Controllers
+{
+    [Route("{{path}}")]
+    [Produces("application/json")]
+    public class {{class}}Controller : Controller
+    {
+        private IRepositoryWrapper _repository;
+
+        public {{class}}Controller(IRepositoryWrapper repository)
+        {
+            _repository = repository;
+        }
+
+        [HttpGet]
+        public IActionResult ConsultarLista{{class}}([FromQuery]string filter)
+        {
+            try
+            {
+                IEnumerable<{{class}}> lista;
+                if (filter == null)
+                {
+                    lista = _repository.{{class}}.ConsultarLista();
+                }
+                else
+                {
+                    // define o filtro
+                    Filtro filtro = new Filtro(filter);
+                    lista = _repository.{{class}}.ConsultarListaFiltro(filtro);
+                }
+                return Ok(lista);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Consultar Lista {{class}}]", ex));
+            }
+        }
+
+        [HttpGet("{id}", Name = "ConsultarObjeto{{class}}")]
+        public IActionResult ConsultarObjeto{{class}}(int id)
+        {
+            try
+            {
+                var objeto = _repository.{{class}}.ConsultarObjeto(id);
+
+                if (objeto == null)
+                {
+                    return StatusCode(404, new RetornoJsonErro(404, "Registro não localizado [Consultar Objeto {{class}}]", null));
+                }
+                else
+                {
+                    return Ok(objeto);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Consultar Objeto {{class}}]", ex));
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Inserir{{class}}([FromBody]{{class}} objJson)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return StatusCode(400, new RetornoJsonErro(400, "Objeto inválido [Inserir {{class}}]", null));
+                }
+                _repository.{{class}}.Inserir(objJson);
+
+                return CreatedAtRoute("ConsultarObjeto{{class}}", new { id = objJson.Id }, objJson);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Inserir {{class}}]", ex));
+            }
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Alterar{{class}}([FromBody]{{class}} objJson, int id)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return StatusCode(400, new RetornoJsonErro(400, "Objeto inválido [Alterar {{class}}]", null));
+                }
+
+                if (objJson.Id != id)
+                {
+                    return StatusCode(400, new RetornoJsonErro(400, "Objeto inválido [Alterar {{class}}] - ID do objeto difere do ID da URL.", null));
+                }
+
+                var objBanco = _repository.{{class}}.ConsultarObjeto(objJson.Id);
+
+                if (objBanco == null)
+                {
+                    return StatusCode(400, new RetornoJsonErro(400, "Objeto com ID inválido [Alterar {{class}}]", null));
+                }
+
+                _repository.{{class}}.Alterar(objBanco, objJson);
+
+                return ConsultarObjeto{{class}}(id);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Alterar {{class}}]", ex));
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Excluir{{class}}(int id)
+        {
+            try
+            {
+                var objeto = _repository.{{class}}.ConsultarObjeto(id);
+
+                _repository.{{class}}.Excluir(objeto);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Excluir {{class}}]", ex));
+            }
+        }
+
+    }
+}

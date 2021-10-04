@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping assembly="T2TiRetaguardaSH" namespace="T2TiRetaguardaSH.Models" default-lazy="false" xmlns="urn:nhibernate-mapping-2.2">
+  <class name="PdvPlanoPagamento" table="PDV_PLANO_PAGAMENTO" >
+    <id name="Id" column="ID">
+      <generator class="identity" />
+    </id>
+
+	<property name="DataSolicitacao" column="DATA_SOLICITACAO" />
+	<property name="DataPagamento" column="DATA_PAGAMENTO" />
+	<property name="Plano" column="PLANO" />
+	<property name="Valor" column="VALOR" />
+	<property name="StatusPagamento" column="STATUS_PAGAMENTO" />
+	<property name="CodigoTransacao" column="CODIGO_TRANSACAO" />
+	<property name="MetodoPagamento" column="METODO_PAGAMENTO" />
+	<property name="CodigoTipoPagamento" column="CODIGO_TIPO_PAGAMENTO" />
+	<property name="DataPlanoExpira" column="DATA_PLANO_EXPIRA" />
+	<property name="EmailPagamento" column="EMAIL_PAGAMENTO" />
+
+
+	<many-to-one name="Empresa" class="Empresa" column="ID_EMPRESA" />
+	<many-to-one name="PdvTipoPlano" class="PdvTipoPlano" column="ID_PDV_TIPO_PLANO" />
+	    
+  </class>
+</hibernate-mapping>

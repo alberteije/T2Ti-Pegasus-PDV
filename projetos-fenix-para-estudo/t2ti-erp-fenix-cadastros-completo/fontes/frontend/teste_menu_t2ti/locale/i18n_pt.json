@@ -1,0 +1,12 @@
+{
+"app_name":"T2Ti ERP ",
+"enter_code_label":"Telefone",
+"enter_code_hint":"Telefone: 10 dígitos",
+"enter_otp_label":"OTP",
+"enter_otp_hint":"OTP: 4 dígitos",
+"get_otp":"Receber OTP",
+"resend_otp":"Reenviar OTP",
+"login":"Login",
+"enter_valid_number":"Informe 10 dígitos para o telefone",
+"enter_valid_otp":"Informe 4 dígitos para o OTP"
+}

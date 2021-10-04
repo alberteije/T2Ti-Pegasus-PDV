@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping assembly="T2TiERPFenix" namespace="T2TiERPFenix.Models" default-lazy="false" xmlns="urn:nhibernate-mapping-2.2">
+  <class name="FinLancamentoPagar" table="fin_lancamento_pagar" >
+    <id name="Id" column="ID">
+      <generator class="identity" />
+    </id>
+    <property name="QuantidadeParcela" column="QUANTIDADE_PARCELA" />
+    <property name="ValorAPagar" column="VALOR_A_PAGAR" />
+    <property name="DataLancamento" column="DATA_LANCAMENTO" />
+    <property name="NumeroDocumento" column="NUMERO_DOCUMENTO" />
+    <property name="ImagemDocumento" column="IMAGEM_DOCUMENTO" />
+    <property name="PrimeiroVencimento" column="PRIMEIRO_VENCIMENTO" />
+    <property name="IntervaloEntreParcelas" column="INTERVALO_ENTRE_PARCELAS" />
+    <property name="DiaFixo" column="DIA_FIXO" />
+
+    <!--many-to-one name="FinDocumentoOrigem" column="ID_FIN_DOCUMENTO_ORIGEM" />
+    <many-to-one name="FinNaturezaFinanceiro" column="ID_FIN_NATUREZA_FINANCEIRA" />
+    <many-to-one name="Fornecedor" column="ID_FORNECEDOR" />
+    <many-to-one name="BancoContaCaixa" column="ID_BANCO_CONTA_CAIXA" />
+
+    <bag name="ListaFinParcelaPagar" table="fin_parcela_pagar" cascade="all-delete-orphan" inverse="true">
+      <key column="ID_FIN_LANCAMENTO_PAGAR"/>
+      <one-to-many class="FinParcelaPagar"/>
+    </bag-->
+
+  </class>
+</hibernate-mapping>

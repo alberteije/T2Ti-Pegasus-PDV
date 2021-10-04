@@ -1,0 +1,86 @@
+10/09/2021 03:07:24 - ATENÇÃO: Arquivo C:\ACBrMonitor\ACBrCTeServicos.ini não encontrado!!!
+10/09/2021 03:07:24 - ATENÇÃO: Arquivo C:\ACBrMonitor\ACBrMDFeServicos.ini não encontrado!!!
+10/09/2021 03:07:25 - ATENÇÃO: Arquivo C:\ACBrMonitor\ACBrBPeServicos.ini não encontrado!!!
+10/09/2021 03:07:25 - ATENÇÃO: Arquivo C:\ACBrMonitor\ACBrGNREServicos.ini não encontrado!!!
+10/09/2021 03:07:25 - ATENÇÃO: Arquivo C:\ACBrMonitor\ACBreSocialServicos.ini não encontrado!!!
+10/09/2021 03:07:25 - ATENÇÃO: Arquivo C:\ACBrMonitor\ACBrReinfServicos.ini não encontrado!!!
+10/09/2021 03:07:25 - ACBr MonitorPLUS Ver.1.4.0.37 - x86
+10/09/2021 03:07:25 - Aguardando comandos ACBr
+10/09/2021 03:07:25 - Endereço Local: [DESKTOP-DPG9V0U],   IP:    169.254.245.105   192.168.18.2
+10/09/2021 03:07:25 - Porta: [3434]
+10/09/2021 03:07:25 - Log de comandos será gravado em: C:\ACBrMonitor\10793118000178\LOG.TXT
+10/09/2021 03:07:25 - Log de mensagens da NFe/NFCe será gravado em: C:\ACBrMonitor\10793118000178\LOG_DFe.TXT
+10/09/2021 03:08:14 - ATENÇÃO: Arquivo C:\ACBrMonitor\ACBrCTeServicos.ini não encontrado!!!
+10/09/2021 03:08:14 - ATENÇÃO: Arquivo C:\ACBrMonitor\ACBrMDFeServicos.ini não encontrado!!!
+10/09/2021 03:08:14 - ATENÇÃO: Arquivo C:\ACBrMonitor\ACBrBPeServicos.ini não encontrado!!!
+10/09/2021 03:08:14 - ATENÇÃO: Arquivo C:\ACBrMonitor\ACBrGNREServicos.ini não encontrado!!!
+10/09/2021 03:08:14 - ATENÇÃO: Arquivo C:\ACBrMonitor\ACBreSocialServicos.ini não encontrado!!!
+10/09/2021 03:08:14 - ATENÇÃO: Arquivo C:\ACBrMonitor\ACBrReinfServicos.ini não encontrado!!!
+10/09/2021 03:08:15 - ACBr MonitorPLUS Ver.1.4.0.37 - x86
+10/09/2021 03:08:15 - Aguardando comandos ACBr
+10/09/2021 03:08:15 - Endereço Local: [DESKTOP-DPG9V0U],   IP:    169.254.245.105   192.168.18.2
+10/09/2021 03:08:15 - Porta: [3434]
+10/09/2021 03:08:15 - Log de comandos será gravado em: C:\ACBrMonitor\10793118000178\LOG.TXT
+10/09/2021 03:08:15 - Log de mensagens da NFe/NFCe será gravado em: C:\ACBrMonitor\10793118000178\LOG_DFe.TXT
+10/09/2021 03:09:54 - Dados da Sw.House gravados com sucesso
+10/09/2021 03:09:54 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrCTeServicos.ini não encontrado!!!
+10/09/2021 03:09:54 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrMDFeServicos.ini não encontrado!!!
+10/09/2021 03:09:54 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrBPeServicos.ini não encontrado!!!
+10/09/2021 03:09:54 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrGNREServicos.ini não encontrado!!!
+10/09/2021 03:09:54 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBreSocialServicos.ini não encontrado!!!
+10/09/2021 03:09:54 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrReinfServicos.ini não encontrado!!!
+10/09/2021 03:09:54 - Configuração geral gravada com sucesso
+10/09/2021 03:09:55 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrCTeServicos.ini não encontrado!!!
+10/09/2021 03:09:55 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrMDFeServicos.ini não encontrado!!!
+10/09/2021 03:09:55 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrBPeServicos.ini não encontrado!!!
+10/09/2021 03:09:55 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrGNREServicos.ini não encontrado!!!
+10/09/2021 03:09:55 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBreSocialServicos.ini não encontrado!!!
+10/09/2021 03:09:55 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrReinfServicos.ini não encontrado!!!
+10/09/2021 03:09:55 - ACBr MonitorPLUS Ver.1.4.0.37 - x86
+10/09/2021 03:09:55 - Aguardando comandos ACBr
+10/09/2021 03:09:55 - Endereço Local: [DESKTOP-DPG9V0U],   IP:    169.254.245.105   192.168.18.2
+10/09/2021 03:09:55 - Porta: [3434]
+10/09/2021 03:09:55 - Log de comandos será gravado em: C:\ACBrMonitor\10793118000178\LOG.TXT
+10/09/2021 03:09:55 - Log de mensagens da NFe/NFCe será gravado em: C:\ACBrMonitor\10793118000178\LOG_DFe.TXT
+10/09/2021 03:10:07 - ACBrMonitorPLUS Ver. 1.4.0.37 - x86
+Conectado em: 10/09/21 03:10:07
+Maquina: 127.0.0.1
+Esperando por comandos.
+10/09/2021 03:10:09 - NFE.StatusServico
+10/09/2021 03:10:09 - OK: Servico em Operacao
+
+[Status]
+CStat=107
+CUF=53
+DhRecbto=10/09/2021 03:10:09
+DhRetorno=
+Msg=Servico em Operacao
+TMed=1
+VerAplic=SVRS201805211008
+Versao=4.00
+XMotivo=Servico em Operacao
+XObs=
+tpAmb=2
+
+10/09/2021 03:11:20 - Dados da Sw.House gravados com sucesso
+10/09/2021 03:11:20 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrCTeServicos.ini não encontrado!!!
+10/09/2021 03:11:20 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrMDFeServicos.ini não encontrado!!!
+10/09/2021 03:11:20 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrBPeServicos.ini não encontrado!!!
+10/09/2021 03:11:20 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrGNREServicos.ini não encontrado!!!
+10/09/2021 03:11:20 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBreSocialServicos.ini não encontrado!!!
+10/09/2021 03:11:20 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrReinfServicos.ini não encontrado!!!
+10/09/2021 03:11:20 - Configuração geral gravada com sucesso
+10/09/2021 03:11:20 - ALERTA: Fim da Conexão com: 127.0.0.1 em: 10/09/21 03:11:20
+10/09/2021 03:11:20 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrCTeServicos.ini não encontrado!!!
+10/09/2021 03:11:20 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrMDFeServicos.ini não encontrado!!!
+10/09/2021 03:11:20 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrBPeServicos.ini não encontrado!!!
+10/09/2021 03:11:20 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrGNREServicos.ini não encontrado!!!
+10/09/2021 03:11:20 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBreSocialServicos.ini não encontrado!!!
+10/09/2021 03:11:20 - ATENÇÃO: Arquivo C:\ACBrMonitor\10793118000178\ACBrReinfServicos.ini não encontrado!!!
+10/09/2021 03:11:20 - ALERTA: Fim da Conexão com: 127.0.0.1 em: 10/09/21 03:11:20
+10/09/2021 03:11:20 - ACBr MonitorPLUS Ver.1.4.0.37 - x86
+10/09/2021 03:11:20 - Aguardando comandos ACBr
+10/09/2021 03:11:20 - Endereço Local: [DESKTOP-DPG9V0U],   IP:    169.254.245.105   192.168.18.2
+10/09/2021 03:11:20 - Porta: [3434]
+10/09/2021 03:11:20 - Log de comandos será gravado em: C:\ACBrMonitor\10793118000178\LOG.TXT
+10/09/2021 03:11:20 - Log de mensagens da NFe/NFCe será gravado em: C:\ACBrMonitor\10793118000178\LOG_DFe.TXT

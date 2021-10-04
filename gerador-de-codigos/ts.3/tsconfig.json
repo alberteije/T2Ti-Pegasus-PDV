@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "module": "commonjs", //The output module type (in your .js files). Node uses commonjs
+        "moduleResolution": "node", //TypeScript attempts to mimic Node's module resolution strategy
+        "pretty": true,
+        "sourceMap": true, //We want source maps to be output along side our JavaScript
+        "outDir": "./dist", //Location to output .js files after compilation
+        "baseUrl": "./src",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "target": "es6", //The output language level. Node supports ES6
+        "typeRoots": [
+            "node_modules/@types"
+        ]
+    },
+    "include": [
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

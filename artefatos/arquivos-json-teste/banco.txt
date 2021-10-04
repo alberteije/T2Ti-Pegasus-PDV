@@ -1,0 +1,6 @@
+{
+"ID": "999",
+"CODIGO": "999",
+"NOME": "BANCO TESTANDO",
+"URL": "WWW.TESTANDO.COM"
+}

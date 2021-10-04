@@ -1,0 +1,25 @@
+// conteúdo do IRepositoryWrapper
+
+	I{{class}}Repository {{class}} { get; }
+
+
+// conteúdo do RepositoryWrapper
+
+    private I{{class}}Repository _{{objetoPrincipal}};
+	public I{{class}}Repository {{class}}
+	{
+		get
+		{
+			if (_{{objetoPrincipal}} == null)
+			{
+				_{{objetoPrincipal}} = new {{class}}Repository(_repoContext);
+			}
+
+			return _{{objetoPrincipal}};
+		}
+	}
+	
+
+// conteúdo do RepositoryContext
+
+	public DbSet<{{class}}> {{class}}s { get; set; }

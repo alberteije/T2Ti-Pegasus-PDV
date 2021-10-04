@@ -1,0 +1,19 @@
+{
+  "name": "t2ti_erp_fenix",
+  "version": "1.0.0",
+  "description": "T2Ti ERP FEnix",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "T2Ti",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "capitalize": "^2.0.1",
+    "express": "^4.17.1",
+    "mustache": "^4.0.0",
+    "mysql": "^2.17.1"
+  }
+}

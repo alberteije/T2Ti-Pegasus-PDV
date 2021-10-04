@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping assembly="T2TiERPFenix" namespace="T2TiERPFenix.Models" default-lazy="false" xmlns="urn:nhibernate-mapping-2.2">
+  <class name="Pessoa" table="pessoa" >
+    <id name="Id" column="ID">
+      <generator class="identity" />
+    </id>
+
+    <property name="Nome" column="NOME" />
+    <property name="Tipo" column="TIPO" />
+    <property name="Email" column="EMAIL" />
+    <property name="Site" column="SITE" />
+    <property name="Cliente" column="CLIENTE" />
+    <property name="Fornecedor" column="FORNECEDOR" />
+    <property name="Colaborador" column="COLABORADOR" />
+    <property name="Transportadora" column="TRANSPORTADORA" />
+    <property name="Contador" column="CONTADOR" />
+
+    <one-to-one name="PessoaFisica" class="PessoaFisica" property-ref="Pessoa" cascade="all"/>
+    <one-to-one name="PessoaJuridica" class="PessoaJuridica" property-ref="Pessoa" cascade="all"/>
+
+    <bag name="ListaPessoaEndereco" table="pessoa_endereco" cascade="all-delete-orphan" inverse="true">
+      <key column="ID_PESSOA"/>
+      <one-to-many class="PessoaEndereco"/>
+    </bag>
+
+    <bag name="ListaPessoaContato" table="pessoa_contato" cascade="all-delete-orphan" inverse="true">
+      <key column="ID_PESSOA"/>
+      <one-to-many class="PessoaContato"/>
+    </bag>
+
+    <bag name="ListaPessoaTelefone" table="pessoa_telefone" cascade="all-delete-orphan" inverse="true">
+      <key column="ID_PESSOA"/>
+      <one-to-many class="PessoaTelefone"/>
+    </bag>
+    
+  </class>
+</hibernate-mapping>

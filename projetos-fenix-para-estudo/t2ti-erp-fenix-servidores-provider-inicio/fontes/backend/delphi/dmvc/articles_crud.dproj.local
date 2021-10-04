@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2020/01/22 05:25:22.000.483,=C:\T2Ti ERP\ERP 3.0 Programas e Fontes\Delphi\articles_crud_server\Unit1.pas</Transaction>
+    <Transaction>2020/01/22 05:25:40.000.435,C:\T2Ti ERP\ERP 3.0 Programas e Fontes\Delphi\articles_crud_server\UDataModuleConexao.dfm=C:\T2Ti ERP\ERP 3.0 Programas e Fontes\Delphi\articles_crud_server\Unit1.dfm</Transaction>
+    <Transaction>2020/01/22 05:25:40.000.435,C:\T2Ti ERP\ERP 3.0 Programas e Fontes\Delphi\articles_crud_server\UDataModuleConexao.pas=C:\T2Ti ERP\ERP 3.0 Programas e Fontes\Delphi\articles_crud_server\Unit1.pas</Transaction>
+    <Transaction>2020/01/22 05:40:58.000.513,=C:\T2Ti ERP\ERP 3.0 Programas e Fontes\Delphi\articles_crud_server\Model\ModelBase.pas</Transaction>
+    <Transaction>2020/01/22 05:40:58.000.441,=C:\T2Ti ERP\ERP 3.0 Programas e Fontes\Delphi\articles_crud_server\Model\Banco.pas</Transaction>
+    <Transaction>2020/01/22 05:49:36.000.813,=C:\T2Ti ERP\ERP 3.0 Programas e Fontes\Delphi\articles_crud_server\Controller\BancoController.pas</Transaction>
+    <Transaction>2020/01/22 06:04:32.000.588,=C:\T2Ti ERP\ERP 3.0 Programas e Fontes\Delphi\articles_crud_server\Service\ServiceBase.pas</Transaction>
+    <Transaction>2020/01/22 06:04:32.000.514,=C:\T2Ti ERP\ERP 3.0 Programas e Fontes\Delphi\articles_crud_server\Service\BancoService.pas</Transaction>
+    <Transaction>2020/02/03 21:51:57.000.608,=C:\T2Ti ERP\ERP 3.0 Programas e Fontes\Delphi\dmvc\Model\Transiente\Filtro.pas</Transaction>
+  </Transactions>
+</BorlandProject>

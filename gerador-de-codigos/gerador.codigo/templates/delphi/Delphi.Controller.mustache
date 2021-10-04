@@ -1,0 +1,229 @@
+{*******************************************************************************
+Title: T2Ti ERP 3.0                                                                
+Description: Controller relacionado à tabela [{{table}}] 
+                                                                                
+The MIT License                                                                 
+                                                                                
+Copyright: Copyright (C) 2021 T2Ti.COM                                          
+                                                                                
+Permission is hereby granted, free of charge, to any person                     
+obtaining a copy of this software and associated documentation                  
+files (the "Software"), to deal in the Software without                         
+restriction, including without limitation the rights to use,                    
+copy, modify, merge, publish, distribute, sublicense, and/or sell               
+copies of the Software, and to permit persons to whom the                       
+Software is furnished to do so, subject to the following                        
+conditions:                                                                     
+                                                                                
+The above copyright notice and this permission notice shall be                  
+included in all copies or substantial portions of the Software.                 
+                                                                                
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,                 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES                 
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND                        
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT                     
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,                    
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING                    
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR                   
+OTHER DEALINGS IN THE SOFTWARE.                                                 
+                                                                                
+       The author may be contacted at:                                          
+           t2ti.com@gmail.com                                                   
+                                                                                
+@author Albert Eije (alberteije@gmail.com)                    
+@version 1.0.0
+*******************************************************************************}
+unit {{class}}Controller;
+
+interface
+
+uses mvcframework, mvcframework.Commons,
+  System.SysUtils,
+  MVCFramework.SystemJSONUtils;
+
+type
+
+  [MVCDoc('CRUD {{class}}')]
+  [MVCPath('/{{path}}')]
+  T{{class}}Controller = class(TMVCController)
+  public
+    [MVCDoc('Retorna uma lista de objetos')]
+    [MVCPath('/($filtro)')]
+    [MVCHTTPMethod([httpGET])]
+    procedure ConsultarLista(Context: TWebContext);
+
+    [MVCDoc('Retorna um objeto com base no ID')]
+    [MVCPath('/($id)')]
+    [MVCHTTPMethod([httpGET])]
+    procedure ConsultarObjeto(id: Integer);
+
+    [MVCDoc('Insere um novo objeto')]
+    [MVCPath]
+    [MVCHTTPMethod([httpPOST])]
+    procedure Inserir(Context: TWebContext);
+
+    [MVCDoc('Altera um objeto com base no ID')]
+    [MVCPath('/($id)')]
+    [MVCHTTPMethod([httpPUT])]
+    procedure Alterar(id: Integer);
+
+    [MVCDoc('Exclui um objeto com base no ID')]
+    [MVCPath('/($id)')]
+    [MVCHTTPMethod([httpDelete])]
+    procedure Excluir(id: Integer);
+  end;
+
+implementation
+
+{ T{{class}}Controller }
+
+uses {{class}}Service, {{class}}, Commons, Filtro;
+
+procedure T{{class}}Controller.ConsultarLista(Context: TWebContext);
+var
+  FiltroUrl, FilterWhere: string;
+  FiltroObj: TFiltro;
+begin
+  FiltroUrl := Context.Request.Params['filtro'];
+  if FiltroUrl <> '' then
+  begin
+    ConsultarObjeto(StrToInt(FiltroUrl));
+    exit;
+  end;
+
+  FilterWhere := Context.Request.Params['filter'];
+  try
+    if FilterWhere = '' then
+    begin
+      Render<T{{class}}>(T{{class}}Service.ConsultarLista);
+    end
+    else begin
+      // define o objeto filtro
+      FiltroObj := TFiltro.Create(FilterWhere);
+      Render<T{{class}}>(T{{class}}Service.ConsultarListaFiltro(FiltroObj.Where));
+    end;
+  except
+    on E: EServiceException do
+    begin
+      raise EMVCException.Create
+        ('Erro no Servidor [Consultar Lista {{class}}] - Exceção: ' + E.Message,
+        E.StackTrace, 0, 500);
+    end
+    else
+      raise;
+  end;
+end;
+
+procedure T{{class}}Controller.ConsultarObjeto(id: Integer);
+var
+  {{class}}: T{{class}};
+begin
+  try
+    {{class}} := T{{class}}Service.ConsultarObjeto(id);
+
+    if Assigned({{class}}) then
+      Render({{class}})
+    else
+      raise EMVCException.Create
+        ('Registro não localizado [Consultar Objeto {{class}}]', '', 0, 404);
+  except
+    on E: EServiceException do
+    begin
+      raise EMVCException.Create
+        ('Erro no Servidor [Consultar Objeto {{class}}] - Exceção: ' + E.Message,
+        E.StackTrace, 0, 500);
+    end
+    else
+      raise;
+  end;
+end;
+
+procedure T{{class}}Controller.Inserir(Context: TWebContext);
+var
+  {{class}}: T{{class}};
+begin
+  try
+    {{class}} := Context.Request.BodyAs<T{{class}}>;
+  except
+    on E: EServiceException do
+    begin
+      raise EMVCException.Create('Objeto inválido [Inserir {{class}}] - Exceção: ' +
+        E.Message, E.StackTrace, 0, 400);
+    end
+    else
+      raise;
+  end;
+
+  try
+    T{{class}}Service.Inserir({{class}});
+    Render(T{{class}}Service.ConsultarObjeto({{class}}.Id));
+  except
+    on E: EServiceException do
+    begin
+      raise EMVCException.Create('Problemas na inserção [Inserir {{class}}] - Exceção: ' +
+        E.Message, E.StackTrace, 0, 400);
+    end
+    else
+      raise;
+  end;
+end;
+
+procedure T{{class}}Controller.Alterar(id: Integer);
+var
+  {{class}}, {{class}}DB: T{{class}};
+begin
+  try
+    {{class}} := Context.Request.BodyAs<T{{class}}>;
+  except
+    on E: EServiceException do
+    begin
+      raise EMVCException.Create('Objeto inválido [Alterar {{class}}] - Exceção: ' +
+        E.Message, E.StackTrace, 0, 400);
+    end
+    else
+      raise;
+  end;
+
+  if {{class}}.Id <> id then
+    raise EMVCException.Create('Objeto inválido [Alterar {{class}}] - ID do objeto difere do ID da URL.',
+      '', 0, 400);
+
+  {{class}}DB := T{{class}}Service.ConsultarObjeto({{class}}.id);
+
+  if not Assigned({{class}}DB) then
+    raise EMVCException.Create('Objeto com ID inválido [Alterar {{class}}]',
+      '', 0, 400);
+
+  try
+    if T{{class}}Service.Alterar({{class}}) > 0 then
+      Render(T{{class}}Service.ConsultarObjeto({{class}}.Id))
+    else
+      raise EMVCException.Create('Nenhum registro foi alterado [Alterar {{class}}]',
+        '', 0, 500);
+  finally
+    FreeAndNil({{class}}DB);
+  end;
+end;
+
+procedure T{{class}}Controller.Excluir(id: Integer);
+var
+  {{class}}: T{{class}};
+begin
+  {{class}} := T{{class}}Service.ConsultarObjeto(id);
+
+  if not Assigned({{class}}) then
+    raise EMVCException.Create('Objeto com ID inválido [Excluir {{class}}]',
+      '', 0, 400);
+
+  try
+    if T{{class}}Service.Excluir({{class}}) > 0 then
+      Render(200, 'Objeto excluído com sucesso.')
+    else
+      raise EMVCException.Create('Nenhum registro foi excluído [Excluir {{class}}]',
+        '', 0, 500);
+  finally
+    FreeAndNil({{class}});
+  end;
+end;
+
+end.

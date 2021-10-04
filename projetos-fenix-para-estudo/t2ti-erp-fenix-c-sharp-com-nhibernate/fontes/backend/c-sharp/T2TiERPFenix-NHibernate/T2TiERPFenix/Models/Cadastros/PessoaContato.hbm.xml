@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping assembly="T2TiERPFenix" namespace="T2TiERPFenix.Models" default-lazy="false" xmlns="urn:nhibernate-mapping-2.2">
+  <class name="PessoaContato" table="pessoa_contato" >
+    <id name="Id" column="ID">
+      <generator class="identity" />
+    </id>
+    <property name="Nome" column="NOME" />
+    <property name="Email" column="EMAIL" />
+    <property name="Observacao" column="OBSERVACAO" />
+
+    <many-to-one name="Pessoa" class="Pessoa" column="ID_PESSOA" />
+  
+  </class>
+</hibernate-mapping>

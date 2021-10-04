@@ -1,0 +1,2 @@
+53|DF|Distrito Federal|CO|Centro-Oeste|0|0
+5300108|Brasília|53|DF|0|0

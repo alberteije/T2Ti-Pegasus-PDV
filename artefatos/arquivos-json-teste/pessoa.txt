@@ -1,0 +1,82 @@
+{
+"ID":1,
+"NOME":"TESTE PESSOA FISICA",
+"TIPO":"F",
+"EMAIL":"pf@gmail.com",
+"SITE":"",
+"CLIENTE":"S",
+"FORNECEDOR":"S",
+"COLABORADOR":"S",
+"CONTADOR":"S",
+"TRANSPORTADORA":"S",
+"ListaContato":
+	[
+	{
+	"ID":1,
+	"ID_PESSOA":1,
+	"NOME":"contato",
+	"EMAIL":"",
+	"OBSERVACAO":"OBS 1"
+	},
+	{
+	"ID":2,
+	"ID_PESSOA":1,
+	"NOME":"outro contato",
+	"EMAIL":"conato@gmail.com",
+	"OBSERVACAO":"OBS 2"
+	}
+	],
+"ListaEndereco":
+	[
+	{
+	"ID":2,
+	"FID_PESSOA":1,
+	"LOGRADOURO":"LOGRADOURO PESSOA FISICA",
+	"NUMERO":"2",
+	"COMPLEMENTO":"COMPLEMENTO",
+	"BAIRRO":"BAIRRO",
+	"CIDADE":"CIDADE",
+	"CEP":"71000000",
+	"MUNICIPIO_IBGE":5300108,
+	"UF":"DF",
+	"PRINCIPAL":"S",
+	"ENTREGA":"",
+	"COBRANCA":"",
+	"CORRESPONDENCIA":""
+	},
+	{
+	"ID":4,
+	"FID_PESSOA":1,
+	"LOGRADOURO":"mais um endereco da pessoa fisica",
+	"NUMERO":"",
+	"COMPLEMENTO":"",
+	"BAIRRO":"",
+	"CIDADE":"",
+	"CEP":"",
+	"MUNICIPIO_IBGE":0,
+	"UF":"",
+	"PRINCIPAL":"N",
+	"ENTREGA":"N",
+	"COBRANCA":"N",
+	"CORRESPONDENCIA":"N"
+	}
+	],
+"PessoaFisica":
+	{
+	"ID":1,
+	"FID_PESSOA":1,
+	"ID_ESTADO_CIVIL":1,
+	"CPF":"11111111111",
+	"RG":"123456",
+	"ORGAO_RG":"SSP-SP",
+	"DATA_EMISSAO_RG":29221,
+	"DATA_NASCIMENTO":25569,
+	"SEXO":"M",
+	"NATURALIDADE":"BRASILIA",
+	"NACIONALIDADE":"BRASILEIRA",
+	"RACA":"B",	
+	"NOME_MAE":"MARIA JOSE",
+	"NOME_PAI":"JOSE MARIA"
+	},
+"PessoaJuridica":null
+}

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping assembly="T2TiRetaguardaSH" namespace="T2TiRetaguardaSH.Models" default-lazy="false" xmlns="urn:nhibernate-mapping-2.2">
+  <class name="Empresa" table="EMPRESA" >
+    <id name="Id" column="ID">
+      <generator class="identity" />
+    </id>
+
+	<property name="RazaoSocial" column="RAZAO_SOCIAL" />
+	<property name="NomeFantasia" column="NOME_FANTASIA" />
+	<property name="Cnpj" column="CNPJ" />
+	<property name="InscricaoEstadual" column="INSCRICAO_ESTADUAL" />
+	<property name="InscricaoMunicipal" column="INSCRICAO_MUNICIPAL" />
+	<property name="TipoRegime" column="TIPO_REGIME" />
+	<property name="Crt" column="CRT" />
+	<property name="DataConstituicao" column="DATA_CONSTITUICAO" />
+	<property name="Tipo" column="TIPO" />
+	<property name="Email" column="EMAIL" />
+	<property name="AliquotaPis" column="ALIQUOTA_PIS" />
+	<property name="AliquotaCofins" column="ALIQUOTA_COFINS" />
+	<property name="Logradouro" column="LOGRADOURO" />
+	<property name="Numero" column="NUMERO" />
+	<property name="Complemento" column="COMPLEMENTO" />
+	<property name="Cep" column="CEP" />
+	<property name="Bairro" column="BAIRRO" />
+	<property name="Cidade" column="CIDADE" />
+	<property name="Uf" column="UF" />
+	<property name="Fone" column="FONE" />
+	<property name="Contato" column="CONTATO" />
+	<property name="CodigoIbgeCidade" column="CODIGO_IBGE_CIDADE" />
+	<property name="CodigoIbgeUf" column="CODIGO_IBGE_UF" />
+	<property name="Logotipo" column="LOGOTIPO" />
+	<property name="Registrado" column="REGISTRADO" />
+	<property name="NaturezaJuridica" column="NATUREZA_JURIDICA" />
+	<property name="Simei" column="SIMEI" />
+	<property name="EmailPagamento" column="EMAIL_PAGAMENTO" />
+  <property name="DataRegistro" column="DATA_REGISTRO" />
+    <property name="HoraRegistro" column="HORA_REGISTRO" />
+
+
+    <bag name="ListaNfeConfiguracao" table="nfe_configuracao" cascade="all-delete-orphan" inverse="true">
+	  <key column="ID_EMPRESA"/>
+	  <one-to-many class="NfeConfiguracao"/>
+	</bag>
+	<bag name="ListaPdvPlanoPagamento" table="pdv_plano_pagamento" cascade="all-delete-orphan" inverse="true">
+	  <key column="ID_EMPRESA"/>
+	  <one-to-many class="PdvPlanoPagamento"/>
+	</bag>
+	    
+  </class>
+</hibernate-mapping>

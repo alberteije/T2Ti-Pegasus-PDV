@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="RestDWServerFormU.pas"/>
+    <File Path="RestDWServerFormU.dfm"/>
+    <File Path="ServerMethodsUnit1.pas"/>
+    <File Path="uDmService.pas"/>
+    <File Path="uDmService.dfm"/>
+    <File Path="EmployeeController.pas"/>
+    <File Path="BancoController.pas"/>
+    <File Path="PessoaController.pas"/>
+  </ProjectSortOrder>  <Transactions>
+    <Transaction>2019/12/06 15:21:49.189,=C:\Users\alber\Desktop\Demos\WebSamples\Artigo DW com AngularJs\Fontes\Server\Unit1.pas</Transaction>
+    <Transaction>2019/12/06 15:22:07.301,C:\Users\alber\Desktop\Demos\WebSamples\Artigo DW com AngularJs\Fontes\Server\EmployeeController.pas=C:\Users\alber\Desktop\Demos\WebSamples\Artigo DW com AngularJs\Fontes\Server\Unit1.pas</Transaction>
+    <Transaction>2019/12/06 15:49:26.853,=C:\Users\alber\Desktop\Demos\WebSamples\Artigo DW com AngularJs\Fontes\Server\Unit2.pas</Transaction>
+    <Transaction>2019/12/06 19:16:41.996,=C:\Users\alber\Desktop\Demos\WebSamples\Artigo DW com AngularJs\Fontes\Server\Unit1.pas</Transaction>
+    <Transaction>2019/12/06 19:17:01.839,C:\Users\alber\Desktop\Demos\WebSamples\Artigo DW com AngularJs\Fontes\Server\BancoController.pas=C:\Users\alber\Desktop\Demos\WebSamples\Artigo DW com AngularJs\Fontes\Server\Unit1.pas</Transaction>
+    <Transaction>2019/12/06 19:40:16.542,=C:\Users\alber\Desktop\Demos\WebSamples\Artigo DW com AngularJs\Fontes\Server\Unit1.pas</Transaction>
+    <Transaction>2019/12/06 19:40:27.602,C:\Users\alber\Desktop\Demos\WebSamples\Artigo DW com AngularJs\Fontes\Server\PessoaController.pas=C:\Users\alber\Desktop\Demos\WebSamples\Artigo DW com AngularJs\Fontes\Server\Unit1.pas</Transaction>
+  </Transactions>
+</BorlandProject>

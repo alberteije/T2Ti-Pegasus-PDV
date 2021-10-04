@@ -1,0 +1,186 @@
+/*
+Title: T2Ti ERP 3.0                                                                
+Description: AbaMestre DetalhePage relacionada à tabela [{{table}}] 
+                                                                                
+The MIT License                                                                 
+                                                                                
+Copyright: Copyright (C) 2021 T2Ti.COM                                          
+                                                                                
+Permission is hereby granted, free of charge, to any person                     
+obtaining a copy of this software and associated documentation                  
+files (the "Software"), to deal in the Software without                         
+restriction, including without limitation the rights to use,                    
+copy, modify, merge, publish, distribute, sublicense, and/or sell               
+copies of the Software, and to permit persons to whom the                       
+Software is furnished to do so, subject to the following                        
+conditions:                                                                     
+                                                                                
+The above copyright notice and this permission notice shall be                  
+included in all copies or substantial portions of the Software.                 
+                                                                                
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,                 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES                 
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND                        
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT                     
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,                    
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING                    
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR                   
+OTHER DEALINGS IN THE SOFTWARE.                                                 
+                                                                                
+       The author may be contacted at:                                          
+           t2ti.com@gmail.com                                                   
+                                                                                
+@author Albert Eije (alberteije@gmail.com)                    
+@version 1.0.0
+*******************************************************************************/
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_bootstrap/flutter_bootstrap.dart';
+
+import 'package:fenix/src/infra/infra.dart';
+
+import 'package:fenix/src/model/model.dart';
+import 'package:fenix/src/view_model/view_model.dart';
+
+import 'package:fenix/src/view/shared/view_util_lib.dart';
+import 'package:fenix/src/infra/atalhos_desktop_web.dart';
+import 'package:fenix/src/view/shared/widgets_pagina_detalhe.dart';
+import 'package:fenix/src/view/shared/botoes.dart';
+import 'package:fenix/src/view/shared/caixas_de_dialogo.dart';
+import 'package:fenix/src/view/shared/erro_page.dart';
+
+{{#imports}}
+{{{.}}}
+{{/imports}}
+
+import '{{nomeArquivo}}_page.dart';
+
+class {{class}}DetalhePage extends StatefulWidget {
+  final {{class}} {{objetoPrincipal}};
+
+  const {{class}}DetalhePage({Key key, this.{{objetoPrincipal}}}) : super(key: key);
+
+  @override
+  _{{class}}DetalhePageState createState() => _{{class}}DetalhePageState();
+}
+
+class _{{class}}DetalhePageState extends State<{{class}}DetalhePage> {  
+  var _{{objetoPrincipal}}Provider;
+
+  Map<LogicalKeySet, Intent> _shortcutMap; 
+  Map<Type, Action<Intent>> _actionMap;
+
+  @override
+  void initState() {
+    super.initState();
+    bootstrapGridParameters(
+      gutterSize: Constantes.flutterBootstrapGutterSize,
+    );
+
+    _shortcutMap = getAtalhosDetalhePage();
+
+    _actionMap = <Type, Action<Intent>>{
+      AtalhoTelaIntent: CallbackAction<AtalhoTelaIntent>(
+        onInvoke: _tratarAcoesAtalhos,
+      ),
+    };
+  }
+
+  void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
+    switch (intent.type) {
+      case AtalhoTelaType.excluir:
+        _excluir();
+        break;
+      case AtalhoTelaType.alterar:
+        _alterar();
+        break;
+      default:
+        break;
+    }
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    _{{objetoPrincipal}}Provider = Provider.of<{{class}}ViewModel>(context);
+
+    if (_{{objetoPrincipal}}Provider.objetoJsonErro != null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('{{tituloJanela}}'),
+          actions: <Widget>[],
+        ),
+        body: ErroPage(
+            objetoJsonErro:
+                Provider.of<{{class}}ViewModel>(context).objetoJsonErro),
+      );
+    } else {
+      return FocusableActionDetector(
+        actions: _actionMap,
+        shortcuts: _shortcutMap,
+        child: Focus(
+          autofocus: true,
+          child: Theme(
+            data: getThemeDataDetalhePage(context),
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text('{{tituloJanela}}'), 
+                actions: getBotoesAppBarDetalhePage(
+                  context: context, 
+                  excluir: _excluir, 
+                  alterar: _alterar,
+                ),
+              ),
+              body: SingleChildScrollView(
+                child: BootstrapContainer(
+                  fluid: true,
+                  decoration: BoxDecoration(color: Colors.blue),
+                  children: [
+                    BootstrapContainer(
+                      fluid: false,
+                      decoration: BoxDecoration(color: Colors.white),
+                      padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
+                      children: <Widget>[              
+                        BootstrapRow(
+                          height: 60,
+                          children: <BootstrapCol>[
+                            BootstrapCol(
+                              sizes: 'col-12',
+                              child: getListTileDataDetalhePageId(
+                                widget.{{objetoPrincipal}}.id?.toString() ?? '', 'Id'),
+                            ),
+                          ],
+                        ),
+                        {{#listTileData}}
+                        {{{.}}}
+                        {{/listTileData}}
+                        Divider(color: Colors.white,),          
+                      ],
+                    ),
+                  ],        
+                ),
+              ),
+            ),
+          ),
+        )
+      );
+    }
+  }
+
+  void _alterar() {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (BuildContext context) => {{class}}Page(
+          {{objetoPrincipal}}: widget.{{objetoPrincipal}},
+          title: '{{tituloJanela}} - Editando',
+          operacao: 'A')));
+  }
+
+  void _excluir() {
+    gerarDialogBoxExclusao(context, () async {
+      await _{{objetoPrincipal}}Provider.excluir(widget.{{objetoPrincipal}}.id);
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+    });
+  }
+
+}

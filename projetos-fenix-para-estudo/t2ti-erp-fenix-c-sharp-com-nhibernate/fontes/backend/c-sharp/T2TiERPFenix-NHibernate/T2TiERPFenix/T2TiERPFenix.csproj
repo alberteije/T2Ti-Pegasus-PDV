@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Models\Cadastros\Banco.hbm.xml" />
+    <None Remove="Models\Cadastros\BancoAgencia.hbm.xml" />
+    <None Remove="Models\Cadastros\EstadoCivil.hbm.xml" />
+    <None Remove="Models\Cadastros\NivelFormacao.hbm.xml" />
+    <None Remove="Models\Cadastros\Pessoa.hbm.xml" />
+    <None Remove="Models\Cadastros\PessoaContato.hbm.xml" />
+    <None Remove="Models\Cadastros\PessoaEndereco.hbm.xml" />
+    <None Remove="Models\Cadastros\PessoaFisica.hbm.xml" />
+    <None Remove="Models\Cadastros\PessoaJuridica.hbm.xml" />
+    <None Remove="Models\Cadastros\PessoaTelefone.hbm.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Models\Cadastros\Banco.hbm.xml" />
+    <EmbeddedResource Include="Models\Cadastros\BancoAgencia.hbm.xml" />
+    <EmbeddedResource Include="Models\Cadastros\EstadoCivil.hbm.xml" />
+    <EmbeddedResource Include="Models\Cadastros\NivelFormacao.hbm.xml" />
+    <EmbeddedResource Include="Models\Cadastros\PessoaContato.hbm.xml" />
+    <EmbeddedResource Include="Models\Cadastros\Pessoa.hbm.xml" />
+    <EmbeddedResource Include="Models\Cadastros\PessoaEndereco.hbm.xml" />
+    <EmbeddedResource Include="Models\Cadastros\PessoaFisica.hbm.xml" />
+    <EmbeddedResource Include="Models\Cadastros\PessoaJuridica.hbm.xml" />
+    <EmbeddedResource Include="Models\Cadastros\PessoaTelefone.hbm.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.2" />
+    <PackageReference Include="MySql.Data" Version="8.0.20" />
+    <PackageReference Include="NHibernate" Version="5.2.7" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.0.1" />
+    <PackageReference Include="PoweredSoft.DynamicLinq" Version="1.1.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="hibernate.cfg.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+
+</Project>
