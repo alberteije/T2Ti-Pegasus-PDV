@@ -6,7 +6,7 @@
   Este repositório mantém o código do sistema T2Ti Pegasus PDV. Este sistema faz parte de um projeto maior chamado T2Ti ERP 3.0. 		
                     <hr />
                     <h3>Curso T2Ti Pegasus PDV</h3>
-			<a href="https://t2tisistemas.com/produtos/multi/pegasus-pdv/">
+			<a href="http://t2ti.com/curso/video/pegasus-pdv-5000/">
 			<img src="http://t2ti.com/images/erp3/mobile-screen-topo.png" />
 			</a>
                     <br /> <br /> 
