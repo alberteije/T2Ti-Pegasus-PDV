@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.reinf.esocial.gov.br/schemas/evtTabProcesso/v1_05_01" targetNamespace="http://www.reinf.esocial.gov.br/schemas/evtTabProcesso/v1_05_01" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="./xmldsig-core-schema.xsd"/>
+  <xs:element name="Reinf">
+    <xs:annotation>
+      <xs:documentation>EFD-Reinf</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="evtTabProcesso" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEvento" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do evento</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="tpAmb" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Identificação do ambiente:
+                            1 - Produção;
+                            2 - Produção restrita;
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedInt">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="procEmi" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Processo de emissão do evento:
+                            1 - Aplicativo do contribuinte;
+                            2 - Aplicativo governamental.
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="verProc" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Versão do processo de emissão do evento. Informar a versão do aplicativo emissor do evento</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1"/>
+                          <xs:maxLength value="20"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="ideContri" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="tpInsc" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Código correspondente ao tipo de inscrição. Deve ser igual a [1](CNPJ) ou [2]CPF.
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="1|2"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="nrInsc" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>
+                          Informar o número de inscrição do contribuinte de acordo com o tipo de inscrição indicado no campo {tpInsc}.
+                          Se for um CNPJ deve ser informada apenas a Raiz/Base de oito posições, exceto se natureza jurídica de
+                          administração pública ([101-5], [104-0],  [107-4], [116-3]), situação em que o campo deve ser preenchido
+                          com o CNPJ completo com 14 posições.
+                        </xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:pattern value="[0-9]{11}|[0-9]{8}|[0-9]{14}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="infoProcesso" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:choice minOccurs="1" maxOccurs="1">
+                      <xs:element name="inclusao" minOccurs="1" maxOccurs="1">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="ideProcesso" minOccurs="1" maxOccurs="1">
+                              <xs:annotation>
+                                <xs:documentation>
+                                  Informações de identificação do Processo e validade das informações que estão sendo incluídas
+                                </xs:documentation>
+                              </xs:annotation>
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="tpProc" minOccurs="1" maxOccurs="1">
+                                    <xs:simpleType>
+                                      <xs:annotation>
+                                        <xs:documentation>
+                                          Código correspondente ao tipo de processo.
+                                          1 - Administrativo;
+                                          2 - Judicial.
+                                        </xs:documentation>
+                                      </xs:annotation>
+                                      <xs:restriction base="xs:unsignedByte">
+                                        <xs:pattern value="[1|2]"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="nrProc" minOccurs="1" maxOccurs="1">
+                                    <xs:simpleType>
+                                      <xs:annotation>
+                                        <xs:documentation>Informar o número do processo administrativo/judicial.</xs:documentation>
+                                      </xs:annotation>
+                                      <xs:restriction base="xs:string">
+                                        <xs:minLength value="1"/>
+                                        <xs:maxLength value="21"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="iniValid" minOccurs="1" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o mês e ano de início da validade das informações prestadas no evento. Formato AAAA-MM.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:gYearMonth">
+                                        <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="fimValid" minOccurs="0" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o mês e ano de término da validade das informações, se houver. Formato AAAA-MM.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:gYearMonth">
+                                        <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="indAutoria" minOccurs="1" maxOccurs="1">
+                                    <xs:simpleType>
+                                      <xs:annotation>
+                                        <xs:documentation>
+                                          Indicador da autoria do processo
+                                          1 - Próprio Contribuinte
+                                          2 - Outra Entidade ou Empresa
+                                        </xs:documentation>
+                                      </xs:annotation>
+                                      <xs:restriction base="xs:unsignedByte">
+                                        <xs:pattern value="[1|2]"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="infoSusp" minOccurs="1" maxOccurs="50">
+                                    <xs:annotation>
+                                      <xs:documentation>Informações de Suspensão de Exigibilidade de tributos</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element name="codSusp" minOccurs="0" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Código do Indicativo da Suspensão, atribuído pelo contribuinte.
+                                              Este campo deve ser utilizado se, num mesmo processo, houver mais de uma matéria
+                                              tributária objeto de contestação e as decisões forem diferentes para cada uma.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="[0-9]{0,14}"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="indSusp" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Indicativo de suspensão da exigibilidade:
+                                              01 - Liminar em Mandado de Segurança;
+                                              02 - Depósito Judicial do Montante Integral
+                                              03 - Depósito Administrativo do Montante Integral
+                                              04 - Antecipação de Tutela;
+                                              05 - Liminar em Medida Cautelar;
+                                              08 - Sentença em Mandado de Segurança Favorável ao Contribuinte;
+                                              09 - Sentença em Ação Ordinária Favorável ao Contribuinte e Confirmada pelo TRF;
+                                              10 - Acórdão do TRF Favorável ao Contribuinte;
+                                              11 - Acórdão do STJ em Recurso Especial Favorável ao Contribuinte;
+                                              12 - Acórdão do STF em Recurso Extraordinário Favorável ao Contribuinte;
+                                              13 - Sentença 1ª instância não transitada em julgado com efeito suspensivo;
+                                              90 - Decisão Definitiva a favor do contribuinte (Transitada em Julgado);
+                                              92 - Sem suspensão da exigibilidade
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="0[1-5]|0[8-9]|10|1[1-3]|9[0|2]"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="dtDecisao" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Data da decisão, sentença ou despacho administrativo.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:date"/>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="indDeposito" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Indicativo de Depósito do Montante Integral
+                                              S - Sim;
+                                              N - Não.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="[S|N]"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
+                                  <xs:element name="dadosProcJud" minOccurs="0" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Informações Complementares do Processo Judicial</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element name="ufVara" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Identificação da Unidade da Federação-UF da Seção Judiciária</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:length value="2"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="codMunic" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Código do município, conforme tabela do IBGE</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="[0-9]{7}"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="idVara" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Código de Identificação da Vara.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="[0-9]{1,4}"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
+                                </xs:sequence>
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                      <xs:element name="alteracao" minOccurs="1" maxOccurs="1">
+                        <xs:annotation>
+                          <xs:documentation>
+                            Alteração de informações já existentes
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="ideProcesso" minOccurs="1" maxOccurs="1">
+                              <xs:annotation>
+                                <xs:documentation>
+                                  Grupo de informações de identificação do processo, apresentando número e período de
+                                  validade do registro cujas informações serão alteradas pelos dados constantes neste evento.
+                                </xs:documentation>
+                              </xs:annotation>
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="tpProc" minOccurs="1" maxOccurs="1">
+                                    <xs:simpleType>
+                                      <xs:annotation>
+                                        <xs:documentation>
+                                          Código correspondente ao tipo de processo.
+                                          1 - Administrativo;
+                                          2 - Judicial.
+                                        </xs:documentation>
+                                      </xs:annotation>
+                                      <xs:restriction base="xs:unsignedByte">
+                                        <xs:pattern value="[1|2]"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="nrProc" minOccurs="1" maxOccurs="1">
+                                    <xs:simpleType>
+                                      <xs:annotation>
+                                        <xs:documentation>Informar o número do processo administrativo/judicial.</xs:documentation>
+                                      </xs:annotation>
+                                      <xs:restriction base="xs:string">
+                                        <xs:minLength value="1"/>
+                                        <xs:maxLength value="21"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="iniValid" minOccurs="1" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o mês e ano de início da validade das informações prestadas no evento. Formato AAAA-MM.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:gYearMonth">
+                                        <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="fimValid" minOccurs="0" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o mês e ano de término da validade das informações, se houver. Formato AAAA-MM.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:gYearMonth">
+                                        <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="indAutoria" minOccurs="1" maxOccurs="1">
+                                    <xs:simpleType>
+                                      <xs:annotation>
+                                        <xs:documentation>
+                                          Indicador da autoria do processo
+                                          1 - Próprio Contribuinte
+                                          2 - Outra Entidade ou Empresa
+                                        </xs:documentation>
+                                      </xs:annotation>
+                                      <xs:restriction base="xs:unsignedByte">
+                                        <xs:pattern value="[1|2]"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="infoSusp" minOccurs="1" maxOccurs="50">
+                                    <xs:annotation>
+                                      <xs:documentation>Informações de Suspensão de Exigibilidade de tributos</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element name="codSusp" minOccurs="0" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Código do Indicativo da Suspensão, atribuído pelo contribuinte.
+                                              Este campo deve ser utilizado se, num mesmo processo, houver mais de uma matéria
+                                              tributária objeto de contestação e as decisões forem diferentes para cada uma.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="[0-9]{0,14}"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="indSusp" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Indicativo de suspensão da exigibilidade:
+                                              01 - Liminar em Mandado de Segurança;
+                                              02 - Depósito Judicial do Montante Integral
+                                              03 - Depósito Administrativo do Montante Integral
+                                              04 - Antecipação de Tutela;
+                                              05 - Liminar em Medida Cautelar;
+                                              08 - Sentença em Mandado de Segurança Favorável ao Contribuinte;
+                                              09 - Sentença em Ação Ordinária Favorável ao Contribuinte e Confirmada pelo TRF;
+                                              10 - Acórdão do TRF Favorável ao Contribuinte;
+                                              11 - Acórdão do STJ em Recurso Especial Favorável ao Contribuinte;
+                                              12 - Acórdão do STF em Recurso Extraordinário Favorável ao Contribuinte;
+                                              13 - Sentença 1ª instância não transitada em julgado com efeito suspensivo;
+                                              90 - Decisão Definitiva a favor do contribuinte (Transitada em Julgado);
+                                              92 - Sem suspensão da exigibilidade
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="0[1-5]|0[8-9]|10|1[1-3]|9[0|2]"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="dtDecisao" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Data da decisão, sentença ou despacho administrativo.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:date"/>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="indDeposito" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Indicativo de Depósito do Montante Integral
+                                              S - Sim;
+                                              N - Não.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="[S|N]"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
+                                  <xs:element name="dadosProcJud" minOccurs="0" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Informações Complementares do Processo Judicial</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element name="ufVara" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Identificação da Unidade da Federação-UF da Seção Judiciária</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:length value="2"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="codMunic" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Código do município, conforme tabela do IBGE</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="[0-9]{7}"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="idVara" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Código de Identificação da Vara.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="[0-9]{1,4}"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
+                                </xs:sequence>
+                              </xs:complexType>
+                            </xs:element>
+                            <xs:element name="novaValidade" minOccurs="0" maxOccurs="1">
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="iniValid" minOccurs="1" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o mês e ano de início da validade das informações prestadas no evento. Formato AAAA-MM.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:gYearMonth">
+                                        <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="fimValid" minOccurs="0" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o mês e ano de início da validade das informações prestadas no evento. Formato AAAA-MM.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:gYearMonth">
+                                        <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                </xs:sequence>
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                      <xs:element name="exclusao" minOccurs="1" maxOccurs="1">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="ideProcesso" minOccurs="1" maxOccurs="1">
+                              <xs:annotation>
+                                <xs:documentation>
+                                  Grupo de informações que identifica o processo que será excluído.
+                                </xs:documentation>
+                              </xs:annotation>
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="tpProc" minOccurs="1" maxOccurs="1">
+                                    <xs:simpleType>
+                                      <xs:annotation>
+                                        <xs:documentation>
+                                          Código correspondente ao tipo de processo.
+                                          1 - Administrativo;
+                                          2 - Judicial.
+                                        </xs:documentation>
+                                      </xs:annotation>
+                                      <xs:restriction base="xs:unsignedByte">
+                                        <xs:pattern value="[1|2]"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="nrProc" minOccurs="1" maxOccurs="1">
+                                    <xs:simpleType>
+                                      <xs:annotation>
+                                        <xs:documentation>Informar o número do processo administrativo/judicial.</xs:documentation>
+                                      </xs:annotation>
+                                      <xs:restriction base="xs:string">
+                                        <xs:minLength value="1"/>
+                                        <xs:maxLength value="21"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="iniValid" minOccurs="1" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o mês e ano de início da validade das informações prestadas no evento. Formato AAAA-MM.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:gYearMonth">
+                                        <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="fimValid" minOccurs="0" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o mês e ano de término da validade das informações, se houver. Formato AAAA-MM.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:gYearMonth">
+                                        <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                </xs:sequence>
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:choice>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" use="required">
+              <xs:annotation>
+                <xs:documentation>Identificação única do evento.</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:ID">
+                  <xs:length value="36" />
+                  <xs:pattern value="I{1}D{1}[0-9]{34}" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

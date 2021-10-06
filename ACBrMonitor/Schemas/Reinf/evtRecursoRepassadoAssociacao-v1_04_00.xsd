@@ -1,0 +1,371 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.reinf.esocial.gov.br/schemas/evtRecursoRepassadoAssociacao/v1_04_00" targetNamespace="http://www.reinf.esocial.gov.br/schemas/evtRecursoRepassadoAssociacao/v1_04_00" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="./xmldsig-core-schema.xsd"/>
+  <xs:element name="Reinf">
+    <xs:annotation>
+      <xs:documentation>EFD-Reinf</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="evtAssocDespRep" minOccurs="1" maxOccurs="1">
+          <xs:annotation>
+            <xs:documentation>Evento Recursos Repassados para Associação Desportiva que mantenha equipe de futebol profissional.</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEvento" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do evento</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="indRetif" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Indicativo de Retificação:
+                            1 - Arquivo Original
+                            2 - Arquivo de Retificação
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="nrRecibo" minOccurs="0" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Número do recibo do arquivo a ser retificado.</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="16"/>
+                          <xs:maxLength value="52"/>
+                          <xs:pattern value="[0-9]{1,18}[-][0-9]{2}[-][0-9]{4}[-][0-9]{4}[-][0-9]{1,18}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="perApur" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Informar o ano/mês (formato AAAA-MM) de referência das informações</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:gYearMonth">
+                          <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="tpAmb" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Identificação do ambiente:
+                            1 - Produção;
+                            2 - Produção restrita;
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedInt">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="procEmi" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Processo de emissão do evento:
+                            1 - Emissão com aplicativo do contribuinte
+                            2 - Aplicativo governamental
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="verProc" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Versão do processo de emissão do evento. Informar a versão do aplicativo emissor do evento</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1"/>
+                          <xs:maxLength value="20"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="ideContri" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do contribuinte</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="tpInsc" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Código correspondente ao tipo de inscrição:
+                            1 - CNPJ
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="1"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="nrInsc" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Informar o CNPJ do contribuinte. </xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="8"/>
+                          <xs:maxLength value="14"/>
+                          <xs:pattern value="[0-9]{8}|[0-9]{14}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="ideEstab" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Identificação do estabelecimento que efetuou o repasse de recursos a Associação Desportiva que mantém equipe de futebol profissional</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="tpInscEstab" minOccurs="1" maxOccurs="1">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>
+                                  Código correspondente ao tipo de inscrição:
+                                  1 - CNPJ
+                                </xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:unsignedByte">
+                                <xs:pattern value="[1]"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="nrInscEstab" minOccurs="1" maxOccurs="1">
+                            <xs:annotation>
+                              <xs:documentation>Informar o CNPJ do contribuinte. </xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:pattern value="[0-9]{14}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="recursosRep" minOccurs="1" maxOccurs="unbounded">
+                            <xs:annotation>
+                              <xs:documentation>
+                                Detalhamento dos repasses efetuados pelo estabelecimento indicado em {ideEstab} à Associação Desportiva que mantenha equipe de futebol profissional
+                              </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="cnpjAssocDesp" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>
+                                        Preencher com o CNPJ da associação desportiva que mantém clube de futebol para a qual foi efetuado o repasse.
+                                      </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="[0-9]{14}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrTotalRep" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o valor bruto dos recursos repassados</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrTotalRet" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Soma do valor da retenção dos recursos repassados</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrTotalNRet" minOccurs="0" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>
+                                        Valor da retenção que deixou de ser feita pela entidade que efetuou o repasse ou que foi depositada em juízo em decorrência da decisão judicial/administrativa.
+                                      </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="infoRecurso" minOccurs="1" maxOccurs="unbounded">
+                                  <xs:annotation>
+                                    <xs:documentation>
+                                      Detalhamento dos recursos repassados à associação desportiva que mantém equipe de futebol profissional
+                                    </xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="tpRepasse" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Tipo de repasse, conforme tabela abaixo:
+                                              1 - Patrocínio;
+                                              2 - Licenciamento de marcas e símbolos;
+                                              3 - Publicidade;
+                                              4 - Propaganda;
+                                              5 - Transmissão de espetáculos.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:pattern value="[1-5]"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="descRecurso" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Descrição resumida do recurso repassado</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="1"/>
+                                            <xs:maxLength value="20"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vlrBruto" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Preencher com o valor bruto do repasse efetuado a título de patrocínio, publicidade, licenciamento, etc.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="4"/>
+                                            <xs:maxLength value="17" />
+                                            <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vlrRetApur" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Preencher com o valor da retenção de contribuição previdenciária efetuada pela empresa.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="4"/>
+                                            <xs:maxLength value="17" />
+                                            <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="infoProc" minOccurs="0" maxOccurs="50">
+                                  <xs:annotation>
+                                    <xs:documentation>Informações de processos relacionados a não retenção de contribuição previdenciária.</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="tpProc" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Preencher com o código correspondente ao tipo de processo:
+                                              1 - Administrativo;
+                                              2 - Judicial.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:unsignedByte">
+                                            <xs:pattern value="[1|2]"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="nrProc" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Informar o número do processo administrativo/judicial.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="1"/>
+                                            <xs:maxLength value="21"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="codSusp" minOccurs="0" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Código do Indicativo da Suspensão, atribuído pelo contribuinte. Este campo deve ser utilizado se, num mesmo processo,
+                                              houver mais de uma matéria tributária objeto de contestação e as decisões forem diferentes para cada uma.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:pattern value="[0-9]{0,14}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vlrNRet" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Valor da retenção de contribuição previdenciária principal que deixou de ser efetuada em função de processo administrativo ou judicial.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="4"/>
+                                            <xs:maxLength value="17" />
+                                            <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" use="required">
+              <xs:annotation>
+                <xs:documentation>Identificação Única do Evento</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:ID">
+                  <xs:length value="36" />
+                  <xs:pattern value="I{1}D{1}[0-9]{34}" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

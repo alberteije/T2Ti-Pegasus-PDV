@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema version="1.0.0"
+           xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:esocial="http://www.esocial.gov.br/schema/evt/retornoEvento/v1_2_0"
+           targetNamespace="http://www.esocial.gov.br/schema/evt/retornoEvento/v1_2_0"
+           elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="../xmldsig/xmldsig-core-schema.xsd" />
+  <xs:element name="eSocial">
+    <xs:annotation>
+      <xs:documentation>Elemento raiz do eSocial.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="retornoEvento">
+          <xs:annotation>
+            <xs:documentation>Define a estrutura do retorno do processamento do evento.</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEmpregador" type="esocial:TIdeEmpregador">
+                <xs:annotation>
+                  <xs:documentation>Identificação do empregador.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="recepcao" type="esocial:TDadosRecepcao">
+                <xs:annotation>
+                  <xs:documentation>Dados de recepção do evento.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="processamento" type="esocial:TDadosProcessamentoEvento">
+                <xs:annotation>
+                  <xs:documentation>Dados de processamento do evento.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="recibo" type="esocial:TDadosRecibo" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Dados do recibo do evento.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Id" use="required" type="xs:ID">
+              <xs:annotation>
+                <xs:documentation>Identificação única do evento. É mesma identificação do evento, gerada pelo empregador.</xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature" minOccurs="0" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="TIdeEmpregador">
+    <xs:annotation>
+      <xs:documentation>Define a identificação do empregador.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="tpInsc" type="xs:int" />
+      <xs:element name="nrInsc">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="15" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TDadosRecepcao">
+    <xs:annotation>
+      <xs:documentation>Define os dados de recepção do evento.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="tpAmb" type="xs:unsignedByte">
+        <xs:annotation>
+          <xs:documentation>
+            Identificação do ambiente que recebeu o arquivo.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="dhRecepcao" type="xs:dateTime">
+        <xs:annotation>
+          <xs:documentation>Data hora recepção.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="versaoAppRecepcao">
+        <xs:annotation>
+          <xs:documentation>Versão do aplicativo de recepção.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="30" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="protocoloEnvioLote" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            Código de retorno do lote.
+          </xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="30" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TDadosProcessamentoEvento">
+    <xs:annotation>
+      <xs:documentation>Define os dados de processamento dos eventos</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="cdResposta" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>
+            Código de resposta da recepção do evento.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="descResposta">
+        <xs:annotation>
+          <xs:documentation>Contém a descrição correspondente ao código de resposta.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="2048" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="versaoAppProcessamento">
+        <xs:annotation>
+          <xs:documentation>Contém a versão do aplicativo de processamento de eventos.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="30" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="dhProcessamento" type="xs:dateTime">
+        <xs:annotation>
+          <xs:documentation>Contém a data e horário do processamento do eventos</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ocorrencias" type="esocial:TOcorrencias" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Contém as ocorrências encontradas durante a validação do evento.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TOcorrencias">
+    <xs:annotation>
+      <xs:documentation>Define uma ocorrência encontrada no processamento do evento.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="ocorrencia" minOccurs="1" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="tipo" type="xs:unsignedByte">
+              <xs:annotation>
+                <xs:documentation>Contém o tipo da ocorrência.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="codigo" type="xs:int">
+              <xs:annotation>
+                <xs:documentation>Código da ocorrência</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="descricao">
+              <xs:annotation>
+                <xs:documentation>Descrição da ocorrência</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:maxLength value="2048" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="localizacao" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>Contém a localização do erro no evento.</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:maxLength value="2048" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TDadosRecibo">
+    <xs:annotation>
+      <xs:documentation>Define os dados do recibo do evento.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="nrRecibo">
+        <xs:annotation>
+          <xs:documentation>Número do recibo do evento</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="40" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="hash" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Hash do arquivo recebido.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="contrato" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Elemento raiz do retrato do contrato de trabalho.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="ideEmpregador">
+              <xs:annotation>
+                <xs:documentation>Informações de identificação do empregador.</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="tpInsc" type="xs:byte">
+                    <xs:annotation>
+                      <xs:documentation>Preencher com o código correspondente ao tipo de inscrição, conforme tabela 5Validação: Deve ser igual a [1] (CNPJ) ou [2] (CPF).</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="nrInsc" type="xs:long">
+                    <xs:annotation>
+                      <xs:documentation>Informar o número de inscrição do contribuinte de acordo com o tipo de inscrição indicado no campo {tpInsc}. Se for um CNPJ deve ser informada apenas a Raiz/Base de oito posições, exceto se natureza jurídica de administração pública direta federal ([101-5], [104-0], [107-4], [116-3], situação em que o campo deve ser preenchido com o CNPJ completo (14 posições).Validação: Se {tpInsc} for igual a [1], deve ser um número de CNPJ válido. Se {tpInsc} for igual a [2], deve ser um CPF válido.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="trabalhador">
+              <xs:annotation>
+                <xs:documentation>Identificação do Trabalhador.</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="cpfTrab" type="xs:long">
+                    <xs:annotation>
+                      <xs:documentation>Preencher com o número do CPF do trabalhador.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="nisTrab" type="xs:long">
+                    <xs:annotation>
+                      <xs:documentation>Preencher com o número de inscrição do segurado - NIS, o qual pode ser o PIS, PASEP ou NIT.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="nmTrab" type="xs:string">
+                    <xs:annotation>
+                      <xs:documentation>Nome do trabalhador.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="infoDeficiencia" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>Pessoa com Deficiência.</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="infoCota" type="xs:string">
+                    <xs:annotation>
+                      <xs:documentation>Informar se o trabalhador preenche cota de pessoas com deficiência habilitadas ou de beneficiários reabilitados.Valores Válidos: S, N.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="vinculo" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>Informações do Vínculo.</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="matricula" type="xs:string" />
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="infoCeletista" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>Informações de Trabalhador Celetista.</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="dtAdm" type="xs:date">
+                    <xs:annotation>
+                      <xs:documentation>Preencher com a data de admissão do trabalhador no respectivo vínculo.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="tpRegJor" type="xs:byte">
+                    <xs:annotation>
+                      <xs:documentation>Identifica o regime de jornada do empregado.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="dtBase" type="xs:date" minOccurs="0">
+                    <xs:annotation>
+                      <xs:documentation>Mês relativo à data base da categoria profissional do trabalhador.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="cnpjSindCategProf" type="xs:long">
+                    <xs:annotation>
+                      <xs:documentation>Preencher com o CNPJ do sindicato representativo da categoria (Preponderante ou Diferenciada).</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="infoEstatutario" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>Informações de Trabalhador Estatutário.</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="dtPosse" type="xs:date">
+                    <xs:annotation>
+                      <xs:documentation>Data da posse do servidor.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="dtExercicio" type="xs:date">
+                    <xs:annotation>
+                      <xs:documentation>Data da entrada em exercício pelo servidor.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="infoContrato">
+              <xs:annotation>
+                <xs:documentation>Informações do Contrato de Trabalho.</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="cargo" minOccurs="0">
+                    <xs:annotation>
+                      <xs:documentation>Informações do cargo.</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="codCargo" type="xs:string">
+                          <xs:annotation>
+                            <xs:documentation>Preencher com o código do cargo.</xs:documentation>
+                          </xs:annotation>
+                        </xs:element>
+                        <xs:element name="nmCargo" type="xs:string">
+                          <xs:annotation>
+                            <xs:documentation>Preencher com o nome do cargo</xs:documentation>
+                          </xs:annotation>
+                        </xs:element>
+                        <xs:element name="codCBO" type="xs:int">
+                          <xs:annotation>
+                            <xs:documentation>Classificação Brasileira de Ocupação - CBO.</xs:documentation>
+                          </xs:annotation>
+                        </xs:element>
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                  <xs:element name="funcao" minOccurs="0">
+                    <xs:annotation>
+                      <xs:documentation>Informações da função.</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="codFuncao" type="xs:string">
+                          <xs:annotation>
+                            <xs:documentation>Preencher com o código da função.</xs:documentation>
+                          </xs:annotation>
+                        </xs:element>
+                        <xs:element name="dscFuncao" type="xs:string">
+                          <xs:annotation>
+                            <xs:documentation>Descrição da Função de confiança/Cargo em Comissão.</xs:documentation>
+                          </xs:annotation>
+                        </xs:element>
+                        <xs:element name="codCBO" type="xs:int">
+                          <xs:annotation>
+                            <xs:documentation>Classificação Brasileira de Ocupação - CBO.</xs:documentation>
+                          </xs:annotation>
+                        </xs:element>
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                  <xs:element name="codCateg" type="xs:int">
+                    <xs:annotation>
+                      <xs:documentation>Preencher com o código da categoria do trabalhador.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="remuneracao">
+              <xs:annotation>
+                <xs:documentation>Informações da remuneração.</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="vrSalFx" type="xs:decimal">
+                    <xs:annotation>
+                      <xs:documentation>Salário base do trabalhador, correspondente à parte fixa da remuneração.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="undSalFixo" type="xs:byte">
+                    <xs:annotation>
+                      <xs:documentation>Unidade de pagamento da parte fixa da remuneração, conforme opções abaixo:1 - Por Hora;2 - Por Dia;3 - Por Semana;4 - Por Quinzena;5 - Por Mês;6 - Por Tarefa;7 - Não aplicável - salário exclusivamente variável.Valores Válidos: 1, 2, 3, 4, 5, 6, 7.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="dscSalVar" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                      <xs:documentation>Descrição do salário variável e como este é calculado. Ex.: Comissões pagas no percentual de 10% sobre as vendas.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="duracao">
+              <xs:annotation>
+                <xs:documentation>Duração do Contrato de Trabalho.</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="tpContr" type="xs:byte">
+                    <xs:annotation>
+                      <xs:documentation>Tipo de contrato de trabalho conforme opções abaixo:1 - Prazo indeterminado;2 - Prazo determinado.Valores Válidos: 1, 2..</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="dtTerm" type="xs:date" minOccurs="0">
+                    <xs:annotation>
+                      <xs:documentation>Data do Término do contrato.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="clauAsseg" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                      <xs:documentation>Indicacao de clausula asseguratoria.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="localTrabGeral" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>Estabelecimento onde o trabalhador exercerá suas atividades.</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="tpInsc" type="xs:byte">
+                    <xs:annotation>
+                      <xs:documentation>Preencher com o código correspondente ao tipo de inscrição, conforme tabela 5.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="nrInsc" type="xs:long">
+                    <xs:annotation>
+                      <xs:documentation>Número de inscrição do contribuinte.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="cnae" type="xs:long" />
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="horContratual" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>Informações do horário contratual.</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="qtdHrsSem" type="xs:decimal">
+                    <xs:annotation>
+                      <xs:documentation>Quantidade média de horas relativas à jornada semanal do trabalhador.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="tpJornada" type="xs:byte">
+                    <xs:annotation>
+                      <xs:documentation>Tipo da Jornada. Preencher com uma das opções:1 - Jornada Semanal (segunda a domingo) com apenas um horário padrão por dia da semana e folga fixa;2 - Jornada 12 x 36 (12 horas de trabalho seguidas de 36 horas ininterruptas de descanso);9 - Demais tipos de jornada (escala, turno de revezamento, permutas, horários rotativos, etc.).Valores Válidos: 1, 2, 9.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="dscTpJorn" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                      <xs:documentation>Descrição do tipo de jornada.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="tmpParc" type="xs:string">
+                    <xs:annotation>
+                      <xs:documentation>Contrato de trabalho em regime de tempo parcial, ou seja, aquele cuja jornada semanal não exceda 25 horas semanais.Valores Válidos: S, N.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="horario" minOccurs="0" maxOccurs="99">
+                    <xs:annotation>
+                      <xs:documentation>Informações diárias do horário contratual.</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="dia" type="xs:byte">
+                          <xs:annotation>
+                            <xs:documentation>Preencher com o código relativo ao dia do horário:1 - Segunda-Feira;2 - Terça-Feira;3 - Quarta-Feira;4 - Quinta-Feira;5 - Sexta-Feira;6 - Sábado;7 - Domingo;8 - Dia variável.Valores Válidos: 1, 2, 3, 4, 5, 6, 7, 8.</xs:documentation>
+                          </xs:annotation>
+                        </xs:element>
+                        <xs:element name="codHorContrat" type="xs:string">
+                          <xs:annotation>
+                            <xs:documentation>Preencher com o código atribuído pela empresa para o Horário Contratual.</xs:documentation>
+                          </xs:annotation>
+                        </xs:element>
+                        <xs:element name="hrEntr" type="xs:string">
+                          <xs:annotation>
+                            <xs:documentation>Informar hora da entrada, no formato HHMM.</xs:documentation>
+                          </xs:annotation>
+                        </xs:element>
+                        <xs:element name="hrSaida" type="xs:string">
+                          <xs:annotation>
+                            <xs:documentation>Informar hora da saída, no formato HHMM.</xs:documentation>
+                          </xs:annotation>
+                        </xs:element>
+                        <xs:element name="durJornada" type="xs:int">
+                          <xs:annotation>
+                            <xs:documentation>Preencher com o tempo de duração da jornada, em minutos.  Devem ser consideradas as horas reduzidas noturnas, se houver.</xs:documentation>
+                          </xs:annotation>
+                        </xs:element>
+                        <xs:element name="perHorFlexivel" type="xs:string">
+                          <xs:annotation>
+                            <xs:documentation>Indicar se é permitida a flexibilidade:S - Sim;N - Não.Valores Válidos: S, N.</xs:documentation>
+                          </xs:annotation>
+                        </xs:element>
+                        <xs:element name="horarioIntervalo" minOccurs="0" maxOccurs="99">
+                          <xs:annotation>
+                            <xs:documentation>Registro que detalha os intervalos para a jornada. O preenchimento do registro é obrigatório se existir ao menos um intervalo.</xs:documentation>
+                          </xs:annotation>
+                          <xs:complexType>
+                            <xs:sequence>
+                              <xs:element name="tpInterv" type="xs:byte">
+                                <xs:annotation>
+                                  <xs:documentation>Tipo de Intervalo da Jornada:1 - Intervalo em Horário Fixo;2 - Intervalo em Horário Variável.Valores Válidos: 1, 2.</xs:documentation>
+                                </xs:annotation>
+                              </xs:element>
+                              <xs:element name="durInterv" type="xs:int">
+                                <xs:annotation>
+                                  <xs:documentation>Preencher com o tempo de duração do intervalo, em minutos.</xs:documentation>
+                                </xs:annotation>
+                              </xs:element>
+                              <xs:element name="iniInterv" type="xs:string" minOccurs="0">
+                                <xs:annotation>
+                                  <xs:documentation>Informar a hora de início do intervalo, no formato HHMM.</xs:documentation>
+                                </xs:annotation>
+                              </xs:element>
+                              <xs:element name="termInterv" type="xs:string" minOccurs="0">
+                                <xs:annotation>
+                                  <xs:documentation>Informar a hora de termino do intervalo, no formato HHMM.</xs:documentation>
+                                </xs:annotation>
+                              </xs:element>
+                            </xs:sequence>
+                          </xs:complexType>
+                        </xs:element>
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

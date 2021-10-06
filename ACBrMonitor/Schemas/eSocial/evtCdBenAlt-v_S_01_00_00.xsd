@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtCdBenAlt/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtCdBenAlt/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-2416 - Cadastro de Benefício - Entes Públicos - Alteração</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtCdBenAlt">
+                    <xs:annotation>
+                        <xs:documentation>Evento Cadastro de Benefício - Alteração</xs:documentation>
+                        <xs:documentation>DESCRICAO_COMPLETA:Evento Cadastro de Benefício - Entes Públicos - Alteração.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ALTERA_TIPO_BENEFICIO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_BENEFICIO_ATIVO_NA_DTEVENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXTEMP_REATIVACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RETIFICA_MESMO_BENEFICIO</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_trab_PJ" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador_cnpj" />
+                            <xs:element name="ideBeneficio" type="T_ideBeneficio" />
+                            <xs:element name="infoBenAlteracao">
+                                <xs:annotation>
+                                    <xs:documentation>Informações do benefício - Alteração.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {dtAltBeneficio}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="dtAltBeneficio" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Data de alteração das informações relativas ao benefício.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser igual ou anterior à data atual.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="dadosBeneficio">
+                                            <xs:annotation>
+                                                <xs:documentation>Dados relativos ao benefício.</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="tpBeneficio" type="TS_tpBeneficio">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Tipo de benefício.</xs:documentation>
+                                                            <xs:documentation>Validação: Deve ser um código válido e existente na Tabela 25. Se {cadIni}(2410_infoBenInicio_cadIni) em S-2410 for igual a [N], não é permitido utilizar código do grupo [08] dessa tabela.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="tpPlanRP" type="TS_tpPlanRP" />
+                                                    <xs:element name="dsc" minOccurs="0" type="TS_texto_255">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Descrição do instrumento ou situação que originou o pagamento do benefício.</xs:documentation>
+                                                            <xs:documentation>Validação: Preenchimento obrigatório se {tpBeneficio}(./tpBeneficio) = [0909, 1001, 1009].</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="indSuspensao" type="TS_sim_nao">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Indicativo de suspensão do benefício.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="infoPenMorte" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações relativas à pensão por morte.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: O (se {tpBeneficio}(../tpBeneficio) pertencer ao grupo [06]); N (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="tpPenMorte" type="TS_tpPenMorte" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="suspensao" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações referentes à suspensão do benefício.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: O (se {indSuspensao}(../indSuspensao) = [S]; N (se {indSuspensao}(../indSuspensao) = [N]</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="mtvSuspensao">
+                                                                    <xs:simpleType>
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>Motivo da suspensão do benefício.</xs:documentation>
+                                                                        </xs:annotation>
+                                                                        <xs:restriction base="xs:string">
+                                                                            <xs:enumeration value="01">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Suspensão por não recadastramento</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:enumeration>
+                                                                            <xs:enumeration value="99">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Outros motivos de suspensão</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:enumeration>
+                                                                        </xs:restriction>
+                                                                    </xs:simpleType>
+                                                                </xs:element>
+                                                                <xs:element name="dscSuspensao" minOccurs="0" type="TS_texto_255">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Descrição do motivo da suspensão do benefício.</xs:documentation>
+                                                                        <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se {mtvSuspensao}(./mtvSuspensao) = [99].</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

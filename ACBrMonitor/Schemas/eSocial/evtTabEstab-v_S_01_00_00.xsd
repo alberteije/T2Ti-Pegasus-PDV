@@ -1,0 +1,292 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtTabEstab/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtTabEstab/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-1005 - Tabela de Estabelecimentos, Obras ou Unidades de Órgãos Públicos</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtTabEstab">
+                    <xs:annotation>
+                        <xs:documentation>Evento Tabela de Estabelecimentos</xs:documentation>
+                        <xs:documentation>DESCRICAO_COMPLETA:Evento Tabela de Estabelecimentos, Obras ou Unidades de Órgãos Públicos.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TABESTAB_VALIDA_ESTABELECIMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TABESTAB_VALIDA_INFO_CNO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TABGERAL_ALTERACAO_PERIODO_CONFLITANTE</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TABGERAL_EXISTE_REGISTRO_ALTERADO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TABGERAL_EXISTE_REGISTRO_EXCLUIDO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TABGERAL_INCLUSAO_PERIODO_CONFLITANTE</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TAB_PERMITE_EXCLUSAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_DT_FUTURA</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_evtTab_inicial" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="infoEstab">
+                                <xs:annotation>
+                                    <xs:documentation>Informações do estabelecimento.</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:choice>
+                                            <xs:element name="inclusao">
+                                                <xs:annotation>
+                                                    <xs:documentation>Inclusão de novas informações.</xs:documentation>
+                                                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="ideEstab" type="T_ideEstab" />
+                                                        <xs:element name="dadosEstab" type="T_dadosEstab" />
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="alteracao">
+                                                <xs:annotation>
+                                                    <xs:documentation>Alteração das informações.</xs:documentation>
+                                                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="ideEstab" type="T_ideEstab" />
+                                                        <xs:element name="dadosEstab" type="T_dadosEstab" />
+                                                        <xs:element name="novaValidade" minOccurs="0" type="T_novaValidade" />
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="exclusao">
+                                                <xs:annotation>
+                                                    <xs:documentation>Exclusão das informações.</xs:documentation>
+                                                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="ideEstab" type="T_ideEstab" />
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:choice>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="T_ideEstab">
+        <xs:annotation>
+            <xs:documentation>Identificação do estabelecimento e validade das informações</xs:documentation>
+            <xs:documentation>DESCRICAO_COMPLETA:Identificação do estabelecimento, obra de construção civil ou unidade de órgão público e período de validade das informações.</xs:documentation>
+            <xs:documentation>CHAVE_GRUPO: {tpInsc}, {nrInsc}, {iniValid}, {fimValid}</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="tpInsc" type="TS_tpInsc_1_3_4" />
+            <xs:element name="nrInsc" type="TS_nrInsc_12_14">
+                <xs:annotation>
+                    <xs:documentation>Informar o número de inscrição do estabelecimento, obra de construção civil ou órgão público de acordo com o tipo de inscrição indicado no campo {ideEstab/tpInsc}(./tpInsc).</xs:documentation>
+                    <xs:documentation>Validação: Deve ser compatível com o conteúdo do campo {ideEstab/tpInsc}(./tpInsc). Deve ser um identificador válido, constante das bases da RFB, vinculado ao empregador.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="iniValid" type="TS_iniValid" />
+            <xs:element name="fimValid" minOccurs="0" type="TS_fimValid" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="T_dadosEstab">
+        <xs:annotation>
+            <xs:documentation>Detalhamento das informações do estabelecimento</xs:documentation>
+            <xs:documentation>DESCRICAO_COMPLETA:Detalhamento das informações do estabelecimento, obra de construção civil ou unidade de órgão público.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="cnaePrep" type="TS_cnae" />
+            <xs:element name="aliqGilrat" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Informações de apuração da alíquota GILRAT do estabelecimento.</xs:documentation>
+                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="aliqRat" minOccurs="0" type="TS_aliqRat">
+                            <xs:annotation>
+                                <xs:documentation>Informar a alíquota RAT, quando divergente da legislação vigente para a atividade (CNAE) preponderante. A divergência só é permitida se existir o grupo com informações sobre o processo administrativo/judicial que permite a aplicação de alíquota diferente.</xs:documentation>
+                                <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se a alíquota informada for diferente da definida na legislação vigente para o código CNAE informado (neste caso, deverá haver informações de processo em {procAdmJudRat}(1005_infoEstab_inclusao_dadosEstab_aliqGilrat_procAdmJudRat)).</xs:documentation>
+                                <xs:documentation>Se informada, deve ser diferente da alíquota definida na legislação vigente para a atividade (CNAE) preponderante.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="fap" minOccurs="0" type="TS_fap">
+                            <xs:annotation>
+                                <xs:documentation>Fator Acidentário de Prevenção - FAP.</xs:documentation>
+                                <xs:documentation>Validação: Preenchimento obrigatório e exclusivo por Pessoa Jurídica e {ideEstab/tpInsc}(1005_infoEstab_inclusao_ideEstab_tpInsc) = [4], ou se {ideEstab/tpInsc}(1005_infoEstab_inclusao_ideEstab_tpInsc) = [1] e o fator informado for diferente do definido pelo órgão governamental competente para o estabelecimento (neste caso, deverá haver informações de processo em {procAdmJudFap}(1005_infoEstab_inclusao_dadosEstab_aliqGilrat_procAdmJudFap)).</xs:documentation>
+                                <xs:documentation>Se informado, deve ser um número maior ou igual a 0,5000 e menor ou igual a 2,0000 e, se {ideEstab/tpInsc}(1005_infoEstab_inclusao_ideEstab_tpInsc) = [1], deve ser diferente do valor definido pelo órgão governamental competente.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="procAdmJudRat" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>Processo administrativo/judicial relativo à alíquota RAT.</xs:documentation>
+                                <xs:documentation>DESCRICAO_COMPLETA:Grupo que identifica, em caso de existência, o processo administrativo ou judicial em que houve decisão/sentença favorável ao contribuinte modificando a alíquota RAT da empresa.</xs:documentation>
+                                <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="tpProc" type="TS_tpProc_1_2" />
+                                    <xs:element name="nrProc" type="TS_nrProc_17_20_21">
+                                        <xs:annotation>
+                                            <xs:documentation>Informar um número de processo cadastrado através do evento S-1070, cujo {indMatProc}(1070_infoProcesso_inclusao_dadosProc_indMatProc) seja igual a [1].</xs:documentation>
+                                            <xs:documentation>Validação: Deve ser um número de processo administrativo ou judicial válido e existente na Tabela de Processos (S-1070), com {indMatProc}(1070_infoProcesso_inclusao_dadosProc_indMatProc) = [1].</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="codSusp" type="TS_codSusp" />
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="procAdmJudFap" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>Processo administrativo/judicial relativo ao FAP.</xs:documentation>
+                                <xs:documentation>DESCRICAO_COMPLETA:Grupo que identifica, em caso de existência, o processo administrativo/judicial em que houve decisão ou sentença favorável ao contribuinte suspendendo ou alterando a alíquota FAP aplicável ao contribuinte.</xs:documentation>
+                                <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="tpProc" type="TS_tpProc_1_2_4" />
+                                    <xs:element name="nrProc" type="TS_nrProc_16_17_20_21">
+                                        <xs:annotation>
+                                            <xs:documentation>Informar um número de processo cadastrado através do evento S-1070, cujo {indMatProc}(1070_infoProcesso_inclusao_dadosProc_indMatProc) seja igual a [1].</xs:documentation>
+                                            <xs:documentation>Validação: Deve ser um número de processo administrativo ou judicial válido e existente na Tabela de Processos (S-1070), com {indMatProc}(1070_infoProcesso_inclusao_dadosProc_indMatProc) = [1].</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="codSusp" type="TS_codSusp" />
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="infoCaepf" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Informações relativas ao CAEPF</xs:documentation>
+                    <xs:documentation>DESCRICAO_COMPLETA:Informações relativas ao Cadastro de Atividade Econômica da Pessoa Física - CAEPF.</xs:documentation>
+                    <xs:documentation>CONDICAO_GRUPO: O (se {ideEstab/tpInsc}(1005_infoEstab_inclusao_ideEstab_tpInsc) = [3]); N (nos demais casos)</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="tpCaepf">
+                            <xs:simpleType>
+                                <xs:annotation>
+                                    <xs:documentation>Tipo de CAEPF.</xs:documentation>
+                                    <xs:documentation>Validação: Deve ser compatível com o cadastro da RFB.</xs:documentation>
+                                </xs:annotation>
+                                <xs:restriction base="xs:byte">
+                                    <xs:enumeration value="1">
+                                        <xs:annotation>
+                                            <xs:documentation>Contribuinte individual</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                    <xs:enumeration value="2">
+                                        <xs:annotation>
+                                            <xs:documentation>Produtor rural</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                    <xs:enumeration value="3">
+                                        <xs:annotation>
+                                            <xs:documentation>Segurado especial</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="infoObra" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Indicativo de substituição da contribuição patronal - Obra de construção civil</xs:documentation>
+                    <xs:documentation>DESCRICAO_COMPLETA:Grupo preenchido exclusivamente por empresa construtora, relacionando os estabelecimentos inscritos no Cadastro Nacional de Obras - CNO, para indicar a substituição ou não da contribuição patronal incidente sobre a remuneração dos trabalhadores de obra de construção civil.</xs:documentation>
+                    <xs:documentation>CONDICAO_GRUPO: O (se {indConstr}(1000_infoEmpregador_inclusao_infoCadastro_indConstr) em S-1000 = [1] e {ideEstab/tpInsc}(1005_infoEstab_inclusao_ideEstab_tpInsc) = [4]); N (nos demais casos)</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="indSubstPatrObra" type="TS_indSubstPatrObra">
+                            <xs:annotation>
+                                <xs:documentation>Indicativo de substituição da contribuição patronal de obra de construção civil.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="infoTrab" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Informações trabalhistas</xs:documentation>
+                    <xs:documentation>DESCRICAO_COMPLETA:Informações trabalhistas relativas ao estabelecimento.</xs:documentation>
+                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="infoApr" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>Informações relacionadas à contratação de aprendiz</xs:documentation>
+                                <xs:documentation>DESCRICAO_COMPLETA:Informações relacionadas à contratação de aprendiz.</xs:documentation>
+                                <xs:documentation>Preenchimento obrigatório somente no caso de dispensa, ainda que parcial, de contratação de aprendiz em virtude de processo judicial ou quando houver contratação de aprendiz por meio de entidade educativa ou de prática desportiva.</xs:documentation>
+                                <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="nrProcJud" minOccurs="0" type="TS_nrProcJud">
+                                        <xs:annotation>
+                                            <xs:documentation>Preencher com o número do processo judicial.</xs:documentation>
+                                            <xs:documentation>Validação: Se informado, deve ser um número de processo judicial válido.</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="infoEntEduc" minOccurs="0" maxOccurs="99">
+                                        <xs:annotation>
+                                            <xs:documentation>Identificação da(s) entidade(s) educativa(s) ou de prática desportiva.</xs:documentation>
+                                            <xs:documentation>CHAVE_GRUPO: {nrInsc}</xs:documentation>
+                                            <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element name="nrInsc" type="TS_cnpj">
+                                                    <xs:annotation>
+                                                        <xs:documentation>Informar o número de inscrição da entidade educativa ou de prática desportiva.</xs:documentation>
+                                                        <xs:documentation>Validação: Deve ser um número de CNPJ válido, com 14 (catorze) algarismos. Se o empregador for pessoa jurídica, a raiz do CNPJ informado deve ser diferente de {ideEmpregador/nrInsc}(1005_ideEmpregador_nrInsc).</xs:documentation>
+                                                    </xs:annotation>
+                                                </xs:element>
+                                            </xs:sequence>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="infoPCD" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>Informações sobre a contratação de PCD.</xs:documentation>
+                                <xs:documentation>DESCRICAO_COMPLETA:Informações sobre a contratação de pessoa com deficiência (PCD).</xs:documentation>
+                                <xs:documentation>Essa informação deve ser prestada apenas no estabelecimento matriz.</xs:documentation>
+                                <xs:documentation>Preenchimento obrigatório somente no caso de dispensa, ainda que parcial, de contratação de PCD em virtude de processo judicial.</xs:documentation>
+                                <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="nrProcJud" type="TS_nrProcJud">
+                                        <xs:annotation>
+                                            <xs:documentation>Preencher com o número do processo judicial.</xs:documentation>
+                                            <xs:documentation>Validação: Deve ser um número de processo judicial válido.</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

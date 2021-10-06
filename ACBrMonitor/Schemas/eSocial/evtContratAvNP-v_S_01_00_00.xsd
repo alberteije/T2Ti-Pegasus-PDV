@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtContratAvNP/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtContratAvNP/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-1270 - Contratação de Trabalhadores Avulsos Não Portuários</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtContratAvNP">
+                    <xs:annotation>
+                        <xs:documentation>Evento Contratação de Trabalhadores Avulsos Não Portuários.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVE_FOPAG_IND_RETIFICACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVE_FOPAG_PERMITE_EXCLUSAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVE_FOPAG_SIMPLIFICADO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_MESMO_PROCEMI</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_EMPREGADOR</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_folha_mensal" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="remunAvNP" maxOccurs="999">
+                                <xs:annotation>
+                                    <xs:documentation>Remuneração dos trabalhadores avulsos não portuários</xs:documentation>
+                                    <xs:documentation>DESCRICAO_COMPLETA:Grupo que apresenta a remuneração dos trabalhadores avulsos não portuários, de forma totalizada por estabelecimento contratante.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {tpInsc}, {nrInsc}, {codLotacao}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="tpInsc" type="TS_tpInsc_1_3_4">
+                                            <xs:annotation>
+                                                <xs:documentation>Preencher com o código correspondente ao tipo de inscrição, conforme Tabela 05.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="nrInsc" type="TS_nrInsc_12_14">
+                                            <xs:annotation>
+                                                <xs:documentation>Informar o número de inscrição do estabelecimento do contribuinte de acordo com o tipo de inscrição indicado no campo {remunAvNP/tpInsc}(./tpInsc).</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser um número de inscrição válido e existente na Tabela de Estabelecimentos (S-1005).</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="codLotacao" type="TS_codigo_esocial">
+                                            <xs:annotation>
+                                                <xs:documentation>Informar o código atribuído pelo empregador para a lotação tributária.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser um código válido e existente na Tabela de Lotações Tributárias (S-1020).</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="vrBcCp00" type="TS_valorMonetario">
+                                            <xs:annotation>
+                                                <xs:documentation>Valor da base de cálculo da contribuição previdenciária sobre a remuneração dos trabalhadores avulsos não portuários.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="vrBcCp15" type="TS_valorMonetario">
+                                            <xs:annotation>
+                                                <xs:documentation>Valor da base de cálculo da contribuição adicional para o financiamento dos benefícios de aposentadoria especial após 15 anos de contribuição.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="vrBcCp20" type="TS_valorMonetario">
+                                            <xs:annotation>
+                                                <xs:documentation>Valor da base de cálculo da contribuição adicional para o financiamento dos benefícios de aposentadoria especial após 20 anos de contribuição.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="vrBcCp25" type="TS_valorMonetario">
+                                            <xs:annotation>
+                                                <xs:documentation>Valor da base de cálculo da contribuição adicional para o financiamento dos benefícios de aposentadoria especial após 25 anos de contribuição.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="vrBcCp13" type="TS_valorMonetario">
+                                            <xs:annotation>
+                                                <xs:documentation>Valor da base de cálculo da contribuição previdenciária sobre o 13° salário dos trabalhadores avulsos não portuários contratados.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="vrBcFgts" type="TS_valorMonetario">
+                                            <xs:annotation>
+                                                <xs:documentation>Valor da base de cálculo do FGTS sobre a remuneração dos trabalhadores avulsos não portuários contratados.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="vrDescCP" type="TS_valorMonetario">
+                                            <xs:annotation>
+                                                <xs:documentation>Preencher com o valor total da contribuição descontada dos trabalhadores avulsos não portuários.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

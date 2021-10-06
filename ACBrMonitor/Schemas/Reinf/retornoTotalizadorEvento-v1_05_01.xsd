@@ -1,0 +1,726 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.reinf.esocial.gov.br/schemas/evtTotal/v1_05_01" targetNamespace="http://www.reinf.esocial.gov.br/schemas/evtTotal/v1_05_01" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="./xmldsig-core-schema.xsd"/>
+  <xs:element name="Reinf">
+    <xs:annotation>
+      <xs:documentation>EFD-Reinf</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="evtTotal" minOccurs="1" maxOccurs="1">
+          <xs:annotation>
+            <xs:documentation>Evento Totalização</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEvento" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do evento</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="perApur" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Informar o ano/mês no formato AAAA-MM ou ano/mês/dia no formato AAAA-MM-DD de referência das informações. O formato diário refere-se a informação de bases e tributos informados apenas através do evento R-3010.</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="7"/>
+                          <xs:maxLength value="10"/>
+                          <xs:pattern value="((20([0-9][0-9])-(0[1-9]|1[0-2]))|(20([0-9][0-9])-(0[1-9]|1[0-2])-(3[0-1]|[0-2][0-9])))"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="ideContri" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do contribuinte</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="tpInsc" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Preencher com o código correspondente ao tipo de inscrição.  Deve ser igual a [1] (CNPJ) ou [2] (CPF)</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="1|2"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="nrInsc" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Informar o número de inscrição do contribuinte de acordo com o tipo de inscrição indicado no campo {tpInsc}. Se for um CNPJ deve ser informada apenas a Raiz/Base de oito posições, exceto se natureza jurídica de administração pública direta federal ([101-5], [104-0], [107-4], [116-3], situação em que o campo deve ser preenchido com o CNPJ completo (14 posições).</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="8"/>
+                          <xs:maxLength value="14"/>
+                          <xs:pattern value="[0-9]{11}|[0-9]{8}|[0-9]{14}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="ideRecRetorno" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações do Recibo de Retorno</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ideStatus" type="TStatus" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Situação atual do evento</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="infoRecEv" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações de processamento dos eventos</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="nrProtEntr"  minOccurs="0" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Número do protocolo de entrega do evento.</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:length value="49"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="dhProcess" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Data e hora do início do processamento</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:dateTime"/>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="tpEv" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Tipo do Evento</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1"/>
+                          <xs:maxLength value="6" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="idEv" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>ID do Evento</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1"/>
+                          <xs:maxLength value="36" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="hash" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Hash do arquivo processado</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1"/>
+                          <xs:maxLength value="60" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="infoTotal" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações relativas a totalizadores de bases e tributos.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="nrRecArqBase" minOccurs="0" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Deve ser um recibo de entrega válido, correspondente ao arquivo que deu origem à presente solicitação (R-2099).</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1"/>
+                          <xs:maxLength value="52" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="ideEstab" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Identificação do Estabelecimento</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="tpInsc" minOccurs="1" maxOccurs="1">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Preencher com o código correspondente ao tipo de inscrição. Deve ser igual a [1] (CNPJ) ou [4] (CNO)</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:unsignedByte">
+                                <xs:pattern value="[1|4]"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="nrInsc" minOccurs="1" maxOccurs="1">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Informar o número de inscrição do estabelecimento de acordo com o tipo de inscrição indicado no campo {tpInsc}.</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:pattern value="[0-9]{14}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+
+                          <xs:element name="RTom" minOccurs="0" maxOccurs="1">
+                            <xs:annotation>
+                              <xs:documentation>Totalizador das retenções de contribuição previdenciária sobre serviços tomados, apuradas no evento R-2010.</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="cnpjPrestador" minOccurs="1" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>CNPJ do Prestador de Serviços. Origem: R-2010</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="[0-9]{14}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="CNO" minOccurs="0" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>Número de inscrição no Cadastro Nacional de Obras - CNO</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="[0-9]{12}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrTotalBaseRet" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Base de cálculo da retenção da contribuição previdenciária. Origem: R-2010.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="infoCRTom" minOccurs="0" maxOccurs="2">
+                                  <xs:annotation>
+                                    <xs:documentation>Informações de retenções sobre serviços prestados</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="CRTom" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Código de Receita - CR relativo a contribuições sociais devidas à Previdência Social sobre serviços tomados. Valores válidos: 1141-06, 1162-01</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="1"/>
+                                            <xs:maxLength value="6"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="VlrCRTom" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Valor da contribuição previdenciária correspondente ao Código de Receita - CR informado em {CRTom}. Deve ser maior que 0 (zero)</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="4"/>
+                                            <xs:maxLength value="17" />
+                                            <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="VlrCRTomSusp" minOccurs="0" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Valor da contribuição previdenciária com exibilidade suspensa correspondente ao Código de Receita - CR informado em {CRTom}</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="4"/>
+                                            <xs:maxLength value="17" />
+                                            <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+
+                          <xs:element name="RPrest" minOccurs="0" maxOccurs="1">
+                            <xs:annotation>
+                              <xs:documentation>Totalizador das bases de cálculo e das retenções de contribuição previdenciária sobre serviços prestados, apuradas no evento R-2020</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="tpInscTomador" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o código correspondente ao tipo de inscrição. Origem: R-2020. Valores Válidos: 1,4</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:unsignedByte">
+                                      <xs:minInclusive value="1"/>
+                                      <xs:maxInclusive value="4"/>
+                                      <xs:pattern value="[1|4]"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="nrInscTomador" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Número de inscrição do Tomador de Serviços</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="[0-9]{14}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrTotalBaseRet" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com a soma da base de cálculo da retenção da contribuição previdenciária das notas fiscais emitidas para o contratante</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrTotalRetPrinc" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Soma do valor da retenção das notas fiscais de serviço emitidas para o contratante</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrTotalRetAdic" minOccurs="0" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Soma do valor do adicional de retenção das notas fiscais</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrTotalNRetPrinc" minOccurs="0" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da retenção principal em decorrência da decisão judicial.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrTotalNRetAdic" minOccurs="0" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da retenção principal em decorrência da decisão judicial.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+
+                          <xs:element name="RRecRepAD" minOccurs="0" maxOccurs="unbounded">
+                            <xs:annotation>
+                              <xs:documentation>Totalizador das bases de cálculo e das retenções de contribuição previdenciária sobre recursos repassados a Associações Desportivas que mantenham equipe de futebol profissional, apuradas no evento R-2040</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="cnpjAssocDesp" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>CNPJ da associação desportiva - origem R-2040</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="[0-9]{14}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrTotalRep" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor bruto dos recursos repassados. Origem: R- 2040.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="CRRecRepAD" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Código de Receita - CR relativo a contribuição social devida à Previdência Social sobre recursos repassados a Associações Desportivas que mantenham equipe de futebol profissional, calculada segundo as regras estabelecidas na legislação em vigor. Origem: R-2040. Valores válidos: CR 1151-02</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="1"/>
+                                      <xs:maxLength value="6"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrCRRecRepAD" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da contribuição previdenciária correspondente ao Código de Receita - CR informado em {CRRepAD}. Origem: R-2040</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrCRRecRepADSusp" minOccurs="0" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da contribuição previdenciária que deixou de ser efetuada ou que foi depositada em juízo em decorrência de decisão judicial/administrativa correspondente ao Código de Receita - CR informado em {CRRepAD}. Origem: R-2040</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+
+                          <xs:element name="RComl" minOccurs="0" maxOccurs="3">
+                            <xs:annotation>
+                              <xs:documentation>Totalizador das contribuições sociais incidentes sobre a comercialização de produção por Produtor Rural Pessoa Jurídica e Agroindústria</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="CRComl" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Código de Receita - CR relativo a contribuição social devida à Previdência Social sobre Comercialização de Produção, calculada segundo as regras estabelecidas na legislação em vigor. Valores válidos: 1657-01 (classTrib igual a 7), 1657-02 (ClassTrib diferente de 7), 1646-05 (classTrib igual a 7), 1646-06 (ClassTrib diferente de 7), 1213-02 (classTrib igual a 7), 1213-04 (ClassTrib diferente de 7)</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="1"/>
+                                      <xs:maxLength value="6"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrCRComl" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da contribuição previdenciária correspondente ao Código de Receita - CR informado em {CRComl}</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrCRComlSusp" minOccurs="0" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da contribuição previdenciária com exibilidade suspensa correspondente ao Código de Receita - CR informado em {CRComl}</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="RAquis" minOccurs="0" maxOccurs="10">
+                            <xs:annotation>
+                              <xs:documentation>Totalizador das contribuições sociais incidentes sobre aquisição de produção, apuradas no evento R-2055</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="CRAquis" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Código de Receita - CR relativo a contribuição social devida à Previdência Social sobre Aquisição de Produção Rural</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="1"/>
+                                      <xs:maxLength value="6"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrCRAquis" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da contribuição previdenciária correspondente ao Código de Receita - CR informado em {CRAquis}, apurado de acordo com a legislação em vigor na competência</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrCRAquisSusp" minOccurs="0" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da contribuição previdenciária com exigibilidade suspensa correspondente ao Código de Receita - CR informado em {CRAquis}</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="RCPRB" minOccurs="0" maxOccurs="4">
+                            <xs:annotation>
+                              <xs:documentation>Totalizador da contribuição previdenciária sobre a Receita Bruta - CPRB, apuradas no evento R-2060</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="CRCPRB" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Código de Receita - CR. Valores Válidos: 2991-01, 2985-01, 2985-04, 2985-06 (sem os hífens)</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="1"/>
+                                      <xs:maxLength value="6"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrCRCPRB" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor do total da Contribuição Previdenciária sobre Receita Bruta</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrCRCPRBSusp" minOccurs="0" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da Contribuição Previdenciária com exigibilidade suspensa Origem: R-2060.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+
+                          <xs:element name="RRecEspetDesp" minOccurs="0" maxOccurs="1">
+                            <xs:annotation>
+                              <xs:documentation>Totalizador da contribuição previdenciária incidente sobre Receitas de Espetáculos Desportivos, apuradas no evento R-3010</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="CRRecEspetDesp" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Código de Receita - CR - relativo a contribuição social devida à Previdência Social sobre Receita de Espetáculos Desportivos, calculada segundo as regras estabelecidas na legislação em vigor. Valores válidos: 1151-01</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="1"/>
+                                      <xs:maxLength value="6"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrReceitaTotal" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor acumulado da receita total auferida em espetáculos desportivos</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrCRRecEspetDesp" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da contribuição previdenciária correspondente ao Código de Receita - CR informado em {CRRecEspetDesp}. Origem: R-3010. Validação: Deve ser igual ao somatório dos valores informados no campo {vlrReceitaTotal} multiplicado por 5%.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrCRRecEspetDespSusp" minOccurs="0" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da contribuição previdenciária com exigibilidade suspensa correspondente ao Código de Receita - CR informado em {CRRecEspetDesp}. Validação: R-3010 - somatório dos valores informados no campo {vlrCPSuspTotal}</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" use="required">
+              <xs:annotation>
+                <xs:documentation>Identificação única do evento.</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:ID">
+                  <xs:length value="36" />
+                  <xs:pattern value="I{1}D{1}[0-9]{34}" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="TStatus">
+    <xs:sequence>
+      <xs:element name="cdRetorno" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Código do Retorno: 0 - Sucesso; 1 - Erro; 2 - Em processamento</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedByte">
+            <xs:pattern value="[0|1|2]"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="descRetorno" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Descrição do retorno</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="1000"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="regOcorrs" type="TRegistroOcorrencias"  minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>Informaçoes de ocorrências registradas.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TRegistroOcorrencias">
+    <xs:annotation>
+      <xs:documentation>Define uma ocorrencia encontrada no processamento de um arquivo.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="tpOcorr" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Contém o tipo da ocorrencia: 1 - Erro, 2 - Aviso</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedByte">
+            <xs:pattern value="[1|2]"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="localErroAviso" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Campo onde ocorreu o aviso/erro</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="200"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="codResp" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Código do status da resposta do processamento da consulta</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="6"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="dscResp" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Descrição literal da resposta do processamento da consulta</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="999"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

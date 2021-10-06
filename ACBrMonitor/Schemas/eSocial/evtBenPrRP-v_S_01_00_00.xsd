@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtBenPrRP/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtBenPrRP/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-1207 - Benefícios - Entes Públicos</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtBenPrRP">
+                    <xs:annotation>
+                        <xs:documentation>Evento Benefícios - Entes Públicos.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_CONTROLE_DUPLICIDADE</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_GERAL_VALIDA_DADOS_TABCONTRIB</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_ANUAL_DEZEMBRO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_BENEFICIO_EXISTENTE_RET</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_IND_RETIFICACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_PERMITE_EXCLUSAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RUBRICA_COMPATIVEL_DECTERCEIRO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_PERIODO_APURACAO</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_folha_opp" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador_cnpj" />
+                            <xs:element name="ideBenef">
+                                <xs:annotation>
+                                    <xs:documentation>Identificação do beneficiário.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {cpfBenef}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="cpfBenef" type="TS_cpf">
+                                            <xs:annotation>
+                                                <xs:documentation>Informar o CPF do beneficiário.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser um CPF válido.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="dmDev" maxOccurs="999">
+                                <xs:annotation>
+                                    <xs:documentation>Demonstrativo de valores devidos ao beneficiário</xs:documentation>
+                                    <xs:documentation>DESCRICAO_COMPLETA:Identificação de cada um dos demonstrativos de valores devidos ao beneficiário.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {ideDmDev}</xs:documentation>
+                                    <xs:documentation>REGRA:REGRA_DEMONSTRATIVO</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="ideDmDev" type="TS_codigo_esocial">
+                                            <xs:annotation>
+                                                <xs:documentation>Identificador atribuído pelo órgão público para o demonstrativo de valores devidos ao beneficiário. O ente público pode preencher este campo utilizando-se de um identificador padrão para todos os beneficiários; no entanto, havendo mais de um demonstrativo relativo a uma mesma competência, devem ser utilizados identificadores diferentes para cada um dos demonstrativos.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser um identificador único dentro do mesmo {perApur}(1207_ideEvento_perApur) para cada um dos demonstrativos do beneficiário.</xs:documentation>
+                                                <xs:documentation>REGRA:REGRA_CARACTERE_ESPECIAL</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="nrBeneficio" type="TS_nrBeneficio">
+                                            <xs:annotation>
+                                                <xs:documentation>Preencher com o número do benefício.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="infoPerApur" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações relativas ao período de apuração.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O (se não existir o grupo {infoPerAnt}(1207_dmDev_infoPerAnt)); OC (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="ideEstab" maxOccurs="500" type="T_ideEstab" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="infoPerAnt" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações relativas a períodos anteriores</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Grupo destinado às informações relativas a períodos anteriores. Somente preencher esse grupo se houver proventos ou pensões retroativos.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O (se não existir o grupo {infoPerApur}(1207_dmDev_infoPerApur)); OC (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="idePeriodo" maxOccurs="180">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Identificação do período de referência do provento ou pensão</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Identificação do período ao qual se referem as diferenças de provento ou pensão.</xs:documentation>
+                                                            <xs:documentation>CHAVE_GRUPO: {perRef}</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="perRef" type="TS_periodo_mensal">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informar o período ao qual se refere o complemento de provento ou pensão, no formato AAAA-MM.</xs:documentation>
+                                                                        <xs:documentation>Validação: Deve ser igual ou anterior ao período de apuração informado em {perApur}(1207_ideEvento_perApur).</xs:documentation>
+                                                                        <xs:documentation>Deve ser informado no formato AAAA-MM.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="ideEstab" maxOccurs="500" type="T_ideEstab" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="T_ideEstab">
+        <xs:annotation>
+            <xs:documentation>Identificação da unidade do órgão público</xs:documentation>
+            <xs:documentation>DESCRICAO_COMPLETA:Identificação da unidade do órgão público na qual o beneficiário possui provento ou pensão.</xs:documentation>
+            <xs:documentation>CHAVE_GRUPO: {tpInsc}, {nrInsc}</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="tpInsc" type="TS_tpInsc_1" />
+            <xs:element name="nrInsc" type="TS_cnpj">
+                <xs:annotation>
+                    <xs:documentation>Informar o número de inscrição da unidade do órgão público.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="itensRemun" type="T_itensRemun_rpps" maxOccurs="200">
+                <xs:annotation>
+                    <xs:documentation>Itens que compõem o provento ou pensão do beneficiário</xs:documentation>
+                    <xs:documentation>DESCRICAO_COMPLETA:Rubricas que compõem o provento ou pensão do beneficiário.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

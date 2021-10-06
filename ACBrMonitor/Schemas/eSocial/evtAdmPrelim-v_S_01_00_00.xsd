@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtAdmPrelim/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtAdmPrelim/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-2190 - Registro Preliminar de Trabalhador</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtAdmPrelim">
+                    <xs:annotation>
+                        <xs:documentation>Evento Registro Preliminar de Trabalhador.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ADMISSAO_VALIDA_DT_ADM</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ADMISSAO_VALIDA_DURACAO_CONTRATO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_BLOQUEIA_USO_CPF_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EMPREGADO_DOMESTICO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTO_IMPACTO_FOPAG</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXCLUSAO_ADMISSAO_PRELIMINAR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_MESMO_PROCEMI</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RETIFICA_MESMO_VINCULO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_ADMISSAO_PRELIMINAR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_MATRICULA</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_trab_admissao" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="infoRegPrelim">
+                                <xs:annotation>
+                                    <xs:documentation>Informações do registro preliminar do trabalhador.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {cpfTrab}, {matricula}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="cpfTrab" type="TS_cpfTrab" />
+                                        <xs:element name="dtNascto" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Preencher com a data de nascimento.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="dtAdm" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Preencher com a data de admissão do trabalhador (ou data de início, no caso de Trabalhador Sem Vínculo de Emprego/Estatutário - TSVE).</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser posterior à data de nascimento do trabalhador e igual ou posterior à data de início da obrigatoriedade dos eventos não periódicos para o empregador.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="matricula" type="TS_codigo_esocial">
+                                            <xs:annotation>
+                                                <xs:documentation>Matrícula atribuída ao trabalhador pela empresa.</xs:documentation>
+                                                <xs:documentation>Validação: O valor informado não pode conter a expressão 'eSocial' nas 7 (sete) primeiras posições.</xs:documentation>
+                                                <xs:documentation>REGRA:REGRA_CARACTERE_ESPECIAL</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="codCateg" type="TS_codCateg">
+                                            <xs:annotation>
+                                                <xs:documentation>Preencher com o código da categoria do trabalhador.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser um código de categoria sujeito ao Registro de Eventos Trabalhistas - RET de trabalhador não vinculado ao Regime Próprio de Previdência Social - RPPS, ou seja, "Empregado" ([1XX]), algumas categorias de "Agente Público" ([301, 302, 303, 304, 306, 307, 309, 310, 312]), "Avulso" ([2XX]), "Cessão" ([4XX]), algumas categorias de "Contribuinte Individual" ([721, 722, 723, 731, 734, 738, 761, 771]) ou de "Bolsista" ([901, 902]).</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="natAtividade" minOccurs="0" type="TS_natAtividade">
+                                            <xs:annotation>
+                                                <xs:documentation>Natureza da atividade.</xs:documentation>
+                                                <xs:documentation>Validação: Preenchimento obrigatório se {codCateg}(./codCateg) for relativo a "Empregado", "Agente Público", "Avulso" ou igual a [401, 731, 734, 738]. Não deve ser preenchido se {codCateg}(./codCateg) = [721, 722, 771, 901].</xs:documentation>
+                                                <xs:documentation>Se {codCateg}(./codCateg) = [104], deve ser preenchido com [1]. Se {codCateg}(./codCateg) = [102], deve ser preenchido com [2].</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="infoRegCTPS" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações referentes ao registro e à CTPS Digital</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Informações referentes ao registro eletrônico de empregados e à Carteira de Trabalho e Previdência Digital - CTPS Digital.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: OC (se {codCateg}(2190_infoRegPrelim_codCateg) for relativo a "Empregado" ou "Agente Público"); N (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="CBOCargo" type="TS_cbo">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informar a Classificação Brasileira de Ocupações - CBO relativa ao cargo.</xs:documentation>
+                                                            <xs:documentation>Validação: Deve ser um código válido e existente na tabela de CBO, com 6 (seis) posições.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="vrSalFx" type="TS_vrSalFx" />
+                                                    <xs:element name="undSalFixo" type="TS_undSalFixo" />
+                                                    <xs:element name="tpContr" type="TS_tpContr" />
+                                                    <xs:element name="dtTerm" minOccurs="0" type="xs:date">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Data do término do contrato por prazo determinado.</xs:documentation>
+                                                            <xs:documentation>Validação: O preenchimento é obrigatório se {tpContr}(./tpContr) = [2]. Não informar se {tpContr}(./tpContr) = [1]. Deve ser igual ou posterior à data de admissão.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

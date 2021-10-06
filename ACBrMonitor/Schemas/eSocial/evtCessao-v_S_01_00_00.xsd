@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtCessao/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtCessao/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-2231 - Cessão/Exercício em Outro Órgão</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtCessao">
+                    <xs:annotation>
+                        <xs:documentation>Evento Cessão/Exercício em Outro Órgão.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTO_EXT_SEM_IMPACTO_FOPAG</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTO_IMPACTO_FOPAG</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXCLUI_EVENTO_CESSAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXTEMP_REINTEGRACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_MESMO_PROCEMI</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RETIFICA_MESMO_VINCULO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VINCULO_ATIVO_NA_DTEVENTO</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_trab_PJ" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador_cnpj" />
+                            <xs:element name="ideVinculo" type="T_ideVinculo" />
+                            <xs:element name="infoCessao">
+                                <xs:annotation>
+                                    <xs:documentation>Informações da cessão/exercício em outro órgão.</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:choice>
+                                            <xs:element name="iniCessao">
+                                                <xs:annotation>
+                                                    <xs:documentation>Informações de início da cessão/exercício em outro órgão.</xs:documentation>
+                                                    <xs:documentation>CHAVE_GRUPO: {dtIniCessao}</xs:documentation>
+                                                    <xs:documentation>CONDICAO_GRUPO: O (se não for preenchido o grupo {fimCessao}(../fimCessao)); N (nos demais casos)</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="dtIniCessao" type="xs:date">
+                                                            <xs:annotation>
+                                                                <xs:documentation>Data de início da cessão/exercício em outro órgão.</xs:documentation>
+                                                                <xs:documentation>Validação: Deve-se obedecer às seguintes regras:</xs:documentation>
+                                                                <xs:documentation>a) Não pode ser posterior à data atual;</xs:documentation>
+                                                                <xs:documentation>b) Não pode existir evento de cessão/exercício em outro órgão (ou evento de afastamento pelo código de motivo de afastamento [14]) com data anterior a {dtIniCessao}(./dtIniCessao) sem que tenha sido encerrado.</xs:documentation>
+                                                            </xs:annotation>
+                                                        </xs:element>
+                                                        <xs:element name="cnpjCess" type="TS_cnpj">
+                                                            <xs:annotation>
+                                                                <xs:documentation>Preencher com o CNPJ do empregador/órgão público cessionário/de destino.</xs:documentation>
+                                                                <xs:documentation>Validação: Deve ser um CNPJ diferente do CNPJ do empregador/órgão público e diferente dos estabelecimentos informados através do evento S-1005.</xs:documentation>
+                                                                <xs:documentation>REGRA:REGRA_VALIDA_CNPJ</xs:documentation>
+                                                            </xs:annotation>
+                                                        </xs:element>
+                                                        <xs:element name="respRemun" type="TS_sim_nao">
+                                                            <xs:annotation>
+                                                                <xs:documentation>Informar se o empregador/órgão público declarante continuará informando remunerações (S-1200/S-1202) do trabalhador cedido/em exercício em outro órgão.</xs:documentation>
+                                                            </xs:annotation>
+                                                        </xs:element>
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="fimCessao">
+                                                <xs:annotation>
+                                                    <xs:documentation>Informação de término da cessão/exercício em outro órgão.</xs:documentation>
+                                                    <xs:documentation>CHAVE_GRUPO: {dtTermCessao}</xs:documentation>
+                                                    <xs:documentation>CONDICAO_GRUPO: O (se não for preenchido o grupo {iniCessao}(../iniCessao)); N (nos demais casos)</xs:documentation>
+                                                    <xs:documentation>REGRA:REGRA_EXISTE_EVENTO_CESSAO</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="dtTermCessao" type="xs:date">
+                                                            <xs:annotation>
+                                                                <xs:documentation>Preencher com a data de término da cessão/exercício em outro órgão.</xs:documentation>
+                                                                <xs:documentation>Validação: Deve-se obedecer às seguintes regras:</xs:documentation>
+                                                                <xs:documentation>a) Deve ser igual ou posterior à data de início da cessão/exercício em outro órgão;</xs:documentation>
+                                                                <xs:documentation>b) Não pode ser posterior à data atual.</xs:documentation>
+                                                            </xs:annotation>
+                                                        </xs:element>
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:choice>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

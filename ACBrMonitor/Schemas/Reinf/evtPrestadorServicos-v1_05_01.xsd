@@ -1,0 +1,677 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.reinf.esocial.gov.br/schemas/evtPrestadorServicos/v1_05_01" targetNamespace="http://www.reinf.esocial.gov.br/schemas/evtPrestadorServicos/v1_05_01" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="./xmldsig-core-schema.xsd"/>
+  <xs:element name="Reinf">
+    <xs:annotation>
+      <xs:documentation>EFD-Reinf</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="evtServPrest" minOccurs="1" maxOccurs="1">
+          <xs:annotation>
+            <xs:documentation>Evento Serviços Prestados (Cessão de Mão de Obra ou Empreitada)</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEvento" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do evento</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="indRetif" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Indicativo de Retificação:
+                            1 - Arquivo Original
+                            2 - Arquivo Retificador
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="nrRecibo" minOccurs="0" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Número do recibo do arquivo a ser retificado.</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="16"/>
+                          <xs:maxLength value="52" />
+                          <xs:pattern value="[0-9]{1,18}[-][0-9]{2}[-][0-9]{4}[-][0-9]{4}[-][0-9]{1,18}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="perApur" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Informar o ano/mês (formato AAAA-MM) de referência das informações</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:gYearMonth">
+                          <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="tpAmb" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Identificação do ambiente:
+                            1 - Produção;
+                            2 - Produção restrita;
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedInt">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="procEmi" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Processo de emissão do evento:
+                            1- Emissão com aplicativo do contribuinte
+                            2- Aplicativo governamental
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedInt">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="verProc" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Versão do processo de emissão do evento. Informar a versão do aplicativo emissor do evento</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1"/>
+                          <xs:maxLength value="20"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="ideContri" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                  <xs:annotation>
+                    <xs:documentation>Informações de identificação do contribuinte</xs:documentation>
+                  </xs:annotation>
+                  <xs:sequence>
+                    <xs:element name="tpInsc" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Preencher com o código correspondente ao tipo de inscrição. Deve ser igual a [1] (CNPJ)</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="1"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="nrInsc" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>
+                          Informar o CNPJ apenas com a Raiz/Base de oito posições, exceto se natureza jurídica do declarante for de
+                          administração pública direta federal ([101-5], [104-0], [107-4] e [116-3]), situação em que o campo deve
+                          ser preenchido com o CNPJ completo com 14 posições.
+                        </xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:pattern value="[0-9]{8}|[0-9]{14}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="infoServPrest" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                  <xs:annotation>
+                    <xs:documentation>Informação dos Serviços Prestados (Cessão de Mão de Obra ou Empreitada)</xs:documentation>
+                  </xs:annotation>
+                  <xs:sequence>
+                    <xs:element name="ideEstabPrest" minOccurs="1" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Registro que identifica o estabelecimento "prestador" de serviços mediante cessão de mão de obra.
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:sequence>
+                          <xs:element name="tpInscEstabPrest" minOccurs="1" maxOccurs="1">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>
+                                  Preencher com o código correspondente ao tipo de inscrição.
+                                  Validação: Deve ser igual a [1] (CNPJ)
+                                </xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:unsignedInt">
+                                <xs:pattern value="[1]"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="nrInscEstabPrest" minOccurs="1" maxOccurs="1">
+                            <xs:annotation>
+                              <xs:documentation>
+                                Informar o número de inscrição do contribuinte de acordo com o tipo de inscrição indicado no campo {tpInscEstabPrest}
+                              </xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:pattern value="[0-9]{14}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="ideTomador" minOccurs="1" maxOccurs="1">
+                            <xs:complexType>
+                              <xs:annotation>
+                                <xs:documentation>Identificação dos tomadores dos serviços</xs:documentation>
+                              </xs:annotation>
+                              <xs:sequence>
+                                <xs:element name="tpInscTomador" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>
+                                        Preencher com o código correspondente ao tipo de inscrição
+                                        Validação: Deve ser igual a [1] (CNPJ) ou [4] CNO
+                                        Valores Válidos: 1,4
+                                      </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:unsignedByte">
+                                      <xs:pattern value="[1|4]"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="nrInscTomador" minOccurs="1" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>Indicar o número de inscrição do tomador, conforme indicado no campo {tpInscTomador}</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="[0-9]{12}|[0-9]{14}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="indObra" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>
+                                        Indicativo de Prestação de Serviços em Obra de Construção Civil:
+                                        0 - Não é obra de construção civil ou não está sujeita a matrícula de obra
+                                        1 - Obra de Construção Civil - Empreitada Total
+                                        2 - Obra de Construção Civil - Empreitada Parcial
+                                      </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:unsignedByte">
+                                      <xs:pattern value="[0|1|2]"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrTotalBruto" minOccurs="1" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>Preencher com o valor bruto da(s) nota(s) fiscal(is)</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrTotalBaseRet" minOccurs="1" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>
+                                      Preencher com a soma da base de cálculo da retenção da contribuição previdenciária das notas fiscais emitidas para o contratante
+                                    </xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrTotalRetPrinc" minOccurs="1" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>Soma do valor da retenção das notas fiscais de serviço emitidas para o contratante</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrTotalRetAdic" minOccurs="0" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>Soma do valor do adicional de retenção das notas fiscais</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrTotalNRetPrinc" minOccurs="0" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>
+                                      Valor da retenção principal que deixou de ser efetuada pelo contratante ou que foi depositada
+                                      em juízo em decorrência da decisão judicial
+                                    </xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrTotalNRetAdic" minOccurs="0" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>
+                                      Valor da retenção adicional que deixou de ser efetuada pelo contratante ou que foi depositada
+                                      em juízo em decorrência da decisão judicial
+                                    </xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="nfs" minOccurs="1" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <xs:annotation>
+                                      <xs:documentation>Notas Fiscais do Prestador de Serviços</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:sequence>
+                                      <xs:element name="serie" minOccurs="1" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>
+                                            Informar o número de série da nota fiscal/fatura ou do Recibo Provisório de Serviço - RPS ou de outro documento fiscal válido. Preencher com 0 (zero) caso não exista número de série.
+                                          </xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="1"/>
+                                            <xs:maxLength value="5"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="numDocto" minOccurs="1" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>
+                                            Número da Nota Fiscal/Fatura ou outro documento fiscal válido, como Recibo Provisório de Serviço - RPS, CT-e OS, entre outros.
+                                          </xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="1"/>
+                                            <xs:maxLength value="15"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="dtEmissaoNF" minOccurs="1" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>
+                                            Data de Emissão da Nota Fiscal/Fatura ou do Recibo Provisório de Serviço - RPS ou de outro documento fiscal válido.
+                                            Validação: O mês/ano informado deve ser igual ao mês/ano indicado no registro de abertura do arquivo.
+                                          </xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:date"/>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vlrBruto" minOccurs="1" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>
+                                            Preencher com o valor bruto da nota fiscal ou do Recibo Provisório de Serviço - RPS ou de outro documento fiscal válido.
+                                          </xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="4"/>
+                                            <xs:maxLength value="17" />
+                                            <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="obs" minOccurs="0" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>Observações</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:string">
+                                            <xs:maxLength value="250" />
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="infoTpServ" minOccurs="1" maxOccurs="9">
+                                        <xs:complexType>
+                                          <xs:annotation>
+                                            <xs:documentation>Informações sobre os tipos de Serviços constantes da Nota Fiscal</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:sequence>
+                                            <xs:element name="tpServico" minOccurs="1" maxOccurs="1">
+                                              <xs:annotation>
+                                                <xs:documentation>Informar o tipo de serviço, conforme tabela 6.</xs:documentation>
+                                              </xs:annotation>
+                                              <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:pattern value="[0-9]{1,9}"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vlrBaseRet" minOccurs="1" maxOccurs="1">
+                                              <xs:annotation>
+                                                <xs:documentation>Base de cálculo da retenção da contribuição previdenciária.</xs:documentation>
+                                              </xs:annotation>
+                                              <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:minLength value="4"/>
+                                                  <xs:maxLength value="17" />
+                                                  <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vlrRetencao" minOccurs="1" maxOccurs="1">
+                                              <xs:annotation>
+                                                <xs:documentation>
+                                                  Preencher com o valor da retenção apurada de acordo com o que determina a legislação vigente
+                                                  relativa aos serviços contidos na nota fiscal/fatura.
+                                                  Validação: Não pode ser maior que 11% de {vlrBaseRet}.
+                                                </xs:documentation>
+                                              </xs:annotation>
+                                              <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:minLength value="4"/>
+                                                  <xs:maxLength value="17" />
+                                                  <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vlrRetSub" minOccurs="0" maxOccurs="1">
+                                              <xs:annotation>
+                                                <xs:documentation>
+                                                  Informar o valor da retenção destacada na(s) nota fiscal(ais), relativo aos serviços subcontratados, se houver,
+                                                  que irá deduzir a retenção apurada no mês, desde que todos os documentos envolvidos se refiram à mesma competência
+                                                  e ao mesmo serviço, conforme disciplina a legislação.
+                                                </xs:documentation>
+                                              </xs:annotation>
+                                              <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:minLength value="4"/>
+                                                  <xs:maxLength value="17" />
+                                                  <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vlrNRetPrinc" minOccurs="0" maxOccurs="1">
+                                              <xs:annotation>
+                                                <xs:documentation>
+                                                  Valor da retenção principal que deixou de ser efetuada pelo contratante ou que foi depositada em juízo
+                                                  em decorrência de decisão judicial/administrativa.
+                                                  Validação: Não pode ser maior que {vlrRetencao}
+                                                </xs:documentation>
+                                              </xs:annotation>
+                                              <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:minLength value="4"/>
+                                                  <xs:maxLength value="17" />
+                                                  <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vlrServicos15" minOccurs="0" maxOccurs="1">
+                                              <xs:annotation>
+                                                <xs:documentation>
+                                                  Valor dos Serviços prestados por segurados em condições especiais, cuja atividade permita
+                                                  concessão de aposentadoria especial após 15 anos de contribuição
+                                                </xs:documentation>
+                                              </xs:annotation>
+                                              <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:minLength value="4"/>
+                                                  <xs:maxLength value="17" />
+                                                  <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vlrServicos20" minOccurs="0" maxOccurs="1">
+                                              <xs:annotation>
+                                                <xs:documentation>
+                                                  Valor dos Serviços prestados por segurados em condições especiais, cuja atividade permita
+                                                  concessão de aposentadoria especial após 20 anos de contribuição
+                                                </xs:documentation>
+                                              </xs:annotation>
+                                              <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:minLength value="4"/>
+                                                  <xs:maxLength value="17"/>
+                                                  <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vlrServicos25" minOccurs="0" maxOccurs="1">
+                                              <xs:annotation>
+                                                <xs:documentation>
+                                                  Valor dos Serviços prestados por segurados em condições especiais, cuja atividade permita
+                                                  concessão de aposentadoria especial após 25 anos de contribuição
+                                                </xs:documentation>
+                                              </xs:annotation>
+                                              <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:minLength value="4"/>
+                                                  <xs:maxLength value="17"/>
+                                                  <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vlrAdicional" minOccurs="0" maxOccurs="1">
+                                              <xs:annotation>
+                                                <xs:documentation>
+                                                  Adicional apurado de retenção da nota fiscal, caso os serviços tenham sido prestados sob condições
+                                                  especiais que ensejem aposentadoria especial aos trabalhadores após 15, 20, ou 25 anos de contribuição.
+                                                </xs:documentation>
+                                              </xs:annotation>
+                                              <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:minLength value="4"/>
+                                                  <xs:maxLength value="17" />
+                                                  <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vlrNRetAdic" minOccurs="0" maxOccurs="1">
+                                              <xs:annotation>
+                                                <xs:documentation>
+                                                  Valor da retenção adicional que deixou de ser efetuada pelo contratante ou que foi depositada em juízo
+                                                  em decorrência de decisão judicial/administrativa.
+                                                  Validação: Não pode ser maior que {vlrAdicional}
+                                                </xs:documentation>
+                                              </xs:annotation>
+                                              <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:minLength value="4"/>
+                                                  <xs:maxLength value="17" />
+                                                  <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                          </xs:sequence>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="infoProcRetPr" minOccurs="0" maxOccurs="50">
+                                  <xs:complexType>
+                                    <xs:annotation>
+                                      <xs:documentation>Informações de processos relacionados a não retenção de contribuição previdenciária</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:sequence>
+                                      <xs:element name="tpProcRetPrinc" minOccurs="1" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>
+                                            Preencher com o código correspondente ao tipo de processo:
+                                            1 - Administrativo;
+                                            2 - Judicial.
+                                            Valores Válidos: 1, 2.
+                                          </xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:unsignedByte">
+                                            <xs:pattern value="[1|2]"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="nrProcRetPrinc" minOccurs="1" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>Informar o número do processo administrativo/judicial.</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="1"/>
+                                            <xs:maxLength value="21"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="codSuspPrinc" minOccurs="0" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>
+                                            Código do Indicativo da Suspensão, atribuído pelo contribuinte.
+                                            Este campo deve ser utilizado se, num mesmo processo, houver mais de uma matéria tributária
+                                            objeto de contestação e as decisões forem diferentes para cada uma.
+                                          </xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:string">
+                                            <xs:pattern value="[0-9]{0,14}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="valorPrinc" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Valor da retenção de contribuição previdenciária principal que deixou de ser efetuada em função de processo administrativo ou judicial.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="4"/>
+                                            <xs:maxLength value="17" />
+                                            <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="infoProcRetAd" minOccurs="0" maxOccurs="50">
+                                  <xs:complexType>
+                                    <xs:annotation>
+                                      <xs:documentation>
+                                        Informações de processos relacionados a não retenção de contribuição previdenciária adicional
+                                        Validação: A soma dos valores informados no campo {valorAdic} deste grupo deve ser igual a {vlrTotalNRetAdic}.
+                                      </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:sequence>
+                                      <xs:element name="tpProcRetAdic" minOccurs="1" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>
+                                            Preencher com o código correspondente ao tipo de processo:
+                                            1 - Administrativo;
+                                            2 - Judicial.
+                                            Valores Válidos: 1, 2.
+                                          </xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:unsignedByte">
+                                            <xs:pattern value="[1|2]"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="nrProcRetAdic" minOccurs="1" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>Informar o número do processo administrativo/judicial.</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="1"/>
+                                            <xs:maxLength value="21"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="codSuspAdic" minOccurs="0" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>
+                                            Código do Indicativo da Suspensão, atribuído pelo contribuinte. Este campo deve ser utilizado se,
+                                            num mesmo processo, houver mais de uma matéria tributária objeto de contestação e as decisões forem diferentes para cada uma.
+                                          </xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:string">
+                                            <xs:pattern value="[0-9]{0,14}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="valorAdic" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Valor da retenção de contribuição previdenciária adicional que deixou de ser efetuada em função de processo administrativo ou judicial.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="4"/>
+                                            <xs:maxLength value="17" />
+                                            <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" use="required" >
+              <xs:annotation>
+                <xs:documentation>Identificação única do evento.</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:ID">
+                  <xs:length value="36"/>
+                  <xs:pattern value="I{1}D{1}[0-9]{34}" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

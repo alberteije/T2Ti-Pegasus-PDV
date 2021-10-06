@@ -1,0 +1,292 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.esocial.gov.br/schema/evt/evtTabAmbiente/v02_04_02" targetNamespace="http://www.esocial.gov.br/schema/evt/evtTabAmbiente/v02_04_02" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd"/>
+  <xs:element name="eSocial">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="evtTabAmbiente">
+          <xs:annotation>
+            <xs:documentation>Evento de tabela de Ambientes de Trabalho do Empregador</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEvento" type="TIdeCadastro">
+                <xs:annotation>
+                  <xs:documentation>Informações de Identificação do Evento</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="ideEmpregador" type="TEmpregador">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do empregador</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="infoAmbiente">
+                <xs:annotation>
+                  <xs:documentation>Identificação da operação (inclusão, alteração ou exclusão) e das informações do ambiente.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:choice>
+                      <xs:element name="inclusao">
+                        <xs:annotation>
+                          <xs:documentation>Inclusão de novas informações</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="ideAmbiente" type="TIdeAmbiente">
+                              <xs:annotation>
+                                <xs:documentation>Informações de identificação do ambiente de trabalho do empregador e de validade das informações.</xs:documentation>
+                              </xs:annotation>
+                            </xs:element>
+                            <xs:element name="dadosAmbiente" type="TDadosAmbiente">
+                              <xs:annotation>
+                                <xs:documentation>Informações do ambiente de trabalho</xs:documentation>
+                              </xs:annotation>
+                            </xs:element>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                      <xs:element name="alteracao">
+                        <xs:annotation>
+                          <xs:documentation>Alteração de informações já existentes</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="ideAmbiente" type="TIdeAmbiente">
+                              <xs:annotation>
+                                <xs:documentation>Grupo de informações de identificação do Ambiente de Trabalho, apresentando código e período de validade do Ambiente cujas informações serão alteradas pelos dados constantes neste evento.</xs:documentation>
+                              </xs:annotation>
+                            </xs:element>
+                            <xs:element name="dadosAmbiente" type="TDadosAmbiente">
+                              <xs:annotation>
+                                <xs:documentation>Informações do Ambiente de Trabalho</xs:documentation>
+                              </xs:annotation>
+                            </xs:element>
+                            <xs:element name="novaValidade" type="TPeriodoValidade" minOccurs="0">
+                              <xs:annotation>
+                                <xs:documentation>Informação preenchida exclusivamente em caso de alteração do período de validade das informações do Ambiente identificado em {ideAmbiente}, apresentando o novo período de validade.</xs:documentation>
+                              </xs:annotation>
+                            </xs:element>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                      <xs:element name="exclusao">
+                        <xs:annotation>
+                          <xs:documentation>Exclusão de informações</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="ideAmbiente" type="TIdeAmbiente">
+                              <xs:annotation>
+                                <xs:documentation>Grupo de informações que identifica o Ambiente que será excluído.</xs:documentation>
+                              </xs:annotation>
+                            </xs:element>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:choice>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Id" type="xs:ID" use="required"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="TIdeCadastro">
+    <xs:annotation>
+      <xs:documentation>Identificação de evento de cadastro/tabelas</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="tpAmb">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Tipo de ambiente</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="procEmi">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Processo de emissão do evento</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="verProc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Versão do processo de emissão do evento. </xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="20"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TEmpregador">
+    <xs:sequence>
+      <xs:element name="tpInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Tipo de Inscrição, conforme tabela 5.</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Número de Inscrição</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d{8,15}"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TIdeAmbiente">
+    <xs:annotation>
+      <xs:documentation>Informações de identificação do Ambiente de Trabalho</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="codAmb">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Código do Ambiente de Trabalho</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="30"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="iniValid">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Início da validade (AAAA-MM)</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[2]{1}\d{3}-(1[0-2]|0[1-9])"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="fimValid" minOccurs="0">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Período final da validade, no formato (AAAA-MM)</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[2]{1}\d{3}-(1[0-2]|0[1-9])"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TDadosAmbiente">
+    <xs:annotation>
+      <xs:documentation>Informações do ambiente de trabalho.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="dscAmb">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Descrição do ambiente de trabalho</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:whiteSpace value="preserve"/>
+            <xs:minLength value="3"/>
+            <xs:maxLength value="999"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="localAmb">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Local do ambiente</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="tpInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Tipo de Inscrição, conforme tabela 5.</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Número de Inscrição</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d{8,15}"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="fatorRisco" maxOccurs="999">
+        <xs:annotation>
+          <xs:documentation>O registro apresenta o detalhamento do(s) fator(es) de risco(s) presente(s) no ambiente identificado.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="codFatRis">
+              <xs:simpleType>
+                <xs:annotation>
+                  <xs:documentation>Código do fator de risco</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                  <xs:minLength value="4"/>
+                  <xs:maxLength value="10"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TPeriodoValidade">
+    <xs:sequence>
+      <xs:element name="iniValid">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Início da validade (AAAA-MM)</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[2]{1}\d{3}-(1[0-2]|0[1-9])"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="fimValid" minOccurs="0">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Período final da validade, no formato (AAAA-MM)</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[2]{1}\d{3}-(1[0-2]|0[1-9])"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

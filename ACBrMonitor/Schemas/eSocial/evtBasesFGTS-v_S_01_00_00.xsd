@@ -1,0 +1,549 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtBasesFGTS/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtBasesFGTS/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-5003 - Informações do FGTS por Trabalhador</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtBasesFGTS">
+                    <xs:annotation>
+                        <xs:documentation>Evento Informações do FGTS por Trabalhador.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_retorno_trab" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="ideTrabalhador">
+                                <xs:annotation>
+                                    <xs:documentation>Identificação do trabalhador</xs:documentation>
+                                    <xs:documentation>DESCRICAO_COMPLETA:Grupo que apresenta a identificação básica do trabalhador ao qual se refere o evento de retorno.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {cpfTrab}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="cpfTrab" type="TS_cpfRetorno" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="infoFGTS">
+                                <xs:annotation>
+                                    <xs:documentation>Informações relativas ao FGTS</xs:documentation>
+                                    <xs:documentation>DESCRICAO_COMPLETA:Informações relativas ao Fundo de Garantia do Tempo de Serviço - FGTS.</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="dtVenc" minOccurs="0" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Data de vencimento do FGTS mensal.</xs:documentation>
+                                                <xs:documentation>Validação: Preencher somente se houver informação no grupo {infoBaseFGTS}(./ideEstab_ideLotacao_infoTrabFGTS_infoBaseFGTS).</xs:documentation>
+                                                <xs:documentation>Se informada, deve corresponder ao dia 7 (sete) do mês subsequente ao indicado em {perApur}(5003_ideEvento_perApur), se esse dia for útil. Caso não seja, deve corresponder ao dia útil imediatamente anterior.</xs:documentation>
+                                                <xs:documentation>Considera-se como dia não útil o sábado, o domingo e todo aquele constante do Calendário Nacional de feriados bancários divulgados pelo Banco Central do Brasil.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="ideEstab" maxOccurs="unbounded">
+                                            <xs:annotation>
+                                                <xs:documentation>Identificação do estabelecimento</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Identificação do estabelecimento ou obra de construção civil.</xs:documentation>
+                                                <xs:documentation>CHAVE_GRUPO: {tpInsc}, {nrInsc}</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="tpInsc" minOccurs="0" type="TS_tpInsc_1_2_3_4">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com o código correspondente ao tipo de inscrição, conforme Tabela 05.</xs:documentation>
+                                                            <xs:documentation>Origem: campo {ideEstabLot/tpInsc} de:</xs:documentation>
+                                                            <xs:documentation>a) {infoPerApur}(1200_dmDev_infoPerApur) ou {idePeriodo}(1200_dmDev_infoPerAnt_ideADC_idePeriodo) do S-1200;</xs:documentation>
+                                                            <xs:documentation>b) {infoPerApur}(2299_infoDeslig_verbasResc_dmDev_infoPerApur) ou {idePeriodo}(2299_infoDeslig_verbasResc_dmDev_infoPerAnt_ideADC_idePeriodo) do S-2299;</xs:documentation>
+                                                            <xs:documentation>c) {dmDev}(2399_infoTSVTermino_verbasResc_dmDev) do S-2399.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="nrInsc" minOccurs="0" type="TS_nrInsc_11_12_14">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informar o número de inscrição do contribuinte de acordo com o tipo de inscrição indicado no campo {ideEstab/tpInsc}(./tpInsc).</xs:documentation>
+                                                            <xs:documentation>Origem: campo {ideEstabLot/nrInsc} de:</xs:documentation>
+                                                            <xs:documentation>a) {infoPerApur}(1200_dmDev_infoPerApur) ou {idePeriodo}(1200_dmDev_infoPerAnt_ideADC_idePeriodo) do S-1200;</xs:documentation>
+                                                            <xs:documentation>b) {infoPerApur}(2299_infoDeslig_verbasResc_dmDev_infoPerApur) ou {idePeriodo}(2299_infoDeslig_verbasResc_dmDev_infoPerAnt_ideADC_idePeriodo) do S-2299;</xs:documentation>
+                                                            <xs:documentation>c) {dmDev}(2399_infoTSVTermino_verbasResc_dmDev) do S-2399.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="ideLotacao" maxOccurs="unbounded">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Identificação da lotação tributária.</xs:documentation>
+                                                            <xs:documentation>CHAVE_GRUPO: {codLotacao}, {tpLotacao}, {tpInsc}, {nrInsc}</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="codLotacao" minOccurs="0" type="TS_codigo_esocial">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informar o código atribuído pelo empregador para a lotação tributária.</xs:documentation>
+                                                                        <xs:documentation>Origem: campo {ideEstabLot/codLotacao} de:</xs:documentation>
+                                                                        <xs:documentation>a) {infoPerApur}(1200_dmDev_infoPerApur) ou {idePeriodo}(1200_dmDev_infoPerAnt_ideADC_idePeriodo) do S-1200;</xs:documentation>
+                                                                        <xs:documentation>b) {infoPerApur}(2299_infoDeslig_verbasResc_dmDev_infoPerApur) ou {idePeriodo}(2299_infoDeslig_verbasResc_dmDev_infoPerAnt_ideADC_idePeriodo) do S-2299;</xs:documentation>
+                                                                        <xs:documentation>c) {dmDev}(2399_infoTSVTermino_verbasResc_dmDev) do S-2399.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="tpLotacao" minOccurs="0" type="TS_tpLotacao">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Preencher com o código correspondente ao tipo de lotação, conforme Tabela 10.</xs:documentation>
+                                                                        <xs:documentation>Evento de origem: S-1020.</xs:documentation>
+                                                                        <xs:documentation>Validação: a) Se origem de {codLotacao}(./codLotacao) for {infoPerApur}(1200_dmDev_infoPerApur) do S-1200, {infoPerApur}(2299_infoDeslig_verbasResc_dmDev_infoPerApur) do S-2299 ou {dmDev}(2399_infoTSVTermino_verbasResc_dmDev) do S-2399, retornar o tipo de lotação vigente em {perApur}(5003_ideEvento_perApur);</xs:documentation>
+                                                                        <xs:documentation>b) Se origem de {codLotacao}(./codLotacao) for {idePeriodo}(1200_dmDev_infoPerAnt_ideADC_idePeriodo) do S-1200, retornar o tipo de lotação vigente em {perRef}(1200_dmDev_infoPerAnt_ideADC_idePeriodo_perRef) desse evento;</xs:documentation>
+                                                                        <xs:documentation>c) Se origem de {codLotacao}(./codLotacao) for {idePeriodo}(2299_infoDeslig_verbasResc_dmDev_infoPerAnt_ideADC_idePeriodo) do S-2299, retornar o tipo de lotação vigente em {perRef}(2299_infoDeslig_verbasResc_dmDev_infoPerAnt_ideADC_idePeriodo_perRef) desse evento.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="tpInsc" minOccurs="0" type="TS_tpInsc_1_2_4">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Preencher com o código correspondente ao tipo de inscrição, conforme Tabela 05.</xs:documentation>
+                                                                        <xs:documentation>Evento de origem: S-1020.</xs:documentation>
+                                                                        <xs:documentation>Validação: a) Se origem de {codLotacao}(./codLotacao) for {infoPerApur}(1200_dmDev_infoPerApur) do S-1200, {infoPerApur}(2299_infoDeslig_verbasResc_dmDev_infoPerApur) do S-2299 ou {dmDev}(2399_infoTSVTermino_verbasResc_dmDev) do S-2399, retornar o tipo de inscrição vigente em {perApur}(5003_ideEvento_perApur);</xs:documentation>
+                                                                        <xs:documentation>b) Se origem de {codLotacao}(./codLotacao) for {idePeriodo}(1200_dmDev_infoPerAnt_ideADC_idePeriodo) do S-1200, retornar o tipo de inscrição vigente em {perRef}(1200_dmDev_infoPerAnt_ideADC_idePeriodo_perRef) desse evento;</xs:documentation>
+                                                                        <xs:documentation>c) Se origem de {codLotacao}(./codLotacao) for {idePeriodo}(2299_infoDeslig_verbasResc_dmDev_infoPerAnt_ideADC_idePeriodo) do S-2299, retornar o tipo de inscrição vigente em {perRef}(2299_infoDeslig_verbasResc_dmDev_infoPerAnt_ideADC_idePeriodo_perRef) desse evento.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="nrInsc" minOccurs="0" type="TS_nrInsc_11_12_14">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Preencher com o número de inscrição (CNPJ, CPF, CNO) ao qual pertence a lotação tributária, conforme indicado na Tabela 10.</xs:documentation>
+                                                                        <xs:documentation>Evento de origem: S-1020.</xs:documentation>
+                                                                        <xs:documentation>Validação: a) Se origem de {codLotacao}(./codLotacao) for {infoPerApur}(1200_dmDev_infoPerApur) do S-1200, {infoPerApur}(2299_infoDeslig_verbasResc_dmDev_infoPerApur) do S-2299 ou {dmDev}(2399_infoTSVTermino_verbasResc_dmDev) do S-2399, retornar o número de inscrição vigente em {perApur}(5003_ideEvento_perApur);</xs:documentation>
+                                                                        <xs:documentation>b) Se origem de {codLotacao}(./codLotacao) for {idePeriodo}(1200_dmDev_infoPerAnt_ideADC_idePeriodo) do S-1200, retornar o número de inscrição vigente em {perRef}(1200_dmDev_infoPerAnt_ideADC_idePeriodo_perRef) desse evento;</xs:documentation>
+                                                                        <xs:documentation>c) Se origem de {codLotacao}(./codLotacao) for {idePeriodo}(2299_infoDeslig_verbasResc_dmDev_infoPerAnt_ideADC_idePeriodo) do S-2299, retornar o número de inscrição vigente em {perRef}(2299_infoDeslig_verbasResc_dmDev_infoPerAnt_ideADC_idePeriodo_perRef) desse evento.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="infoTrabFGTS" maxOccurs="99">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informações relativas à matrícula e categoria do trabalhador.</xs:documentation>
+                                                                        <xs:documentation>CHAVE_GRUPO: {matricula}, {codCateg}</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="matricula" minOccurs="0" type="TS_codigo_esocial">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Matrícula atribuída ao trabalhador pela empresa ou, no caso de servidor público, a matrícula constante no Sistema de Administração de Recursos Humanos do órgão.</xs:documentation>
+                                                                                    <xs:documentation>Evento de origem: S-1200, S-2299, S-2399 ou S-3000.</xs:documentation>
+                                                                                    <xs:documentation>Validação: a) Se o evento de origem for S-1200/S-2299/S-2399, retornar a matrícula informada nesse evento;</xs:documentation>
+                                                                                    <xs:documentation>b) Se o evento de origem for S-3000, retornar a matrícula informada no evento objeto da exclusão.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="codCateg" type="TS_codCateg">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Preencher com o código da categoria do trabalhador, conforme Tabela 01.</xs:documentation>
+                                                                                    <xs:documentation>Evento de origem: S-1200, S-2299, S-2399 ou S-3000.</xs:documentation>
+                                                                                    <xs:documentation>Validação: a) Se o evento de origem for S-1200, retornar o código de categoria informado nesse evento;</xs:documentation>
+                                                                                    <xs:documentation>b) Se o evento de origem for S-2299 ou S-2399, retornar o código de categoria existente no Registro de Eventos Trabalhistas - RET;</xs:documentation>
+                                                                                    <xs:documentation>c) Se o evento de origem for S-3000 (referente a exclusão de S-1200), retornar o código de categoria informado no evento S-1200 (objeto da exclusão);</xs:documentation>
+                                                                                    <xs:documentation>d) Se o evento de origem for S-3000 (referente a exclusão de S-2299 ou S-2399), retornar o código de categoria existente no RET relativo ao contrato informado em S-2299 ou S-2399 (objeto da exclusão).</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="categOrig" minOccurs="0" type="TS_codCateg">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Preencher com o código correspondente à categoria de origem do dirigente sindical ou do trabalhador cedido.</xs:documentation>
+                                                                                    <xs:documentation>Origem: campo {infoDirigenteSindical/categOrig}(2300_infoTSVInicio_infoComplementares_infoDirigenteSindical_categOrig) ou {infoTrabCedido/categOrig}(2300_infoTSVInicio_infoComplementares_infoTrabCedido_categOrig) de S-2300.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="tpRegTrab" minOccurs="0" type="TS_tpRegTrab">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Tipo de regime trabalhista.</xs:documentation>
+                                                                                    <xs:documentation>Validação: Deve corresponder ao tipo de regime trabalhista existente no RET.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="remunSuc" minOccurs="0" type="TS_sim_nao">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Indicar se a remuneração é relativa a verbas de natureza salarial ou não salarial devidas pela empresa sucessora a empregados desligados ainda na sucedida.</xs:documentation>
+                                                                                    <xs:documentation>Evento de origem: S-1200.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="dtDeslig" minOccurs="0" type="xs:date">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Preencher com a data de desligamento do vínculo (último dia trabalhado).</xs:documentation>
+                                                                                    <xs:documentation>Validação: Deve corresponder à data de desligamento existente no RET. Não retornar caso haja reintegração com data posterior ao desligamento.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="mtvDeslig" minOccurs="0">
+                                                                                <xs:simpleType>
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Código de motivo do desligamento, conforme Tabela 19.</xs:documentation>
+                                                                                        <xs:documentation>Validação: Deve corresponder ao motivo do desligamento existente no RET. Não retornar caso haja reintegração com data posterior ao desligamento.</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                    <xs:restriction base="xs:string">
+                                                                                        <xs:pattern value="\d{2}" />
+                                                                                    </xs:restriction>
+                                                                                </xs:simpleType>
+                                                                            </xs:element>
+                                                                            <xs:element name="dtTerm" minOccurs="0" type="xs:date">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Data do término.</xs:documentation>
+                                                                                    <xs:documentation>Validação: Deve corresponder à data do término existente no RET.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="mtvDesligTSV" minOccurs="0">
+                                                                                <xs:simpleType>
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Código de motivo do término do TSVE.</xs:documentation>
+                                                                                        <xs:documentation>Validação: Deve corresponder ao motivo do término existente no RET.</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                    <xs:restriction base="xs:string">
+                                                                                        <xs:pattern value="\d{2}" />
+                                                                                    </xs:restriction>
+                                                                                </xs:simpleType>
+                                                                            </xs:element>
+                                                                            <xs:element name="sucessaoVinc" minOccurs="0" type="T_sucessaoVinc">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Grupo de informações da sucessão de vínculo trabalhista</xs:documentation>
+                                                                                    <xs:documentation>DESCRICAO_COMPLETA:Grupo de informações da sucessão de vínculo trabalhista.</xs:documentation>
+                                                                                    <xs:documentation>Evento de origem: S-1200.</xs:documentation>
+                                                                                    <xs:documentation>CONDICAO_GRUPO: O (se {remunSuc}(../remunSuc) = [S]); N (nos demais casos)</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="infoBaseFGTS" minOccurs="0">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Bases de cálculo e valores do FGTS</xs:documentation>
+                                                                                    <xs:documentation>DESCRICAO_COMPLETA:Informações referentes a bases de cálculo e valores do FGTS.</xs:documentation>
+                                                                                    <xs:documentation>CONDICAO_GRUPO: OC ((se {codCateg}(../codCateg) = [1XX, 301, 302, 303, 304, 306, 307, 309, 310, 312] com {tpRegTrab}(../tpRegTrab) = [1] ou não informado) OU (se {codCateg}(../codCateg) = [201, 202, 721]) OU (se {codCateg}(../codCateg) = [401, 410] com {categOrig}(../categOrig) = [1XX, 301, 302, 303, 304, 306, 307, 309, 310, 312] ou não informada e com {tpRegTrab}(../tpRegTrab) = [1] ou não informado)); N (nos demais casos)</xs:documentation>
+                                                                                </xs:annotation>
+                                                                                <xs:complexType>
+                                                                                    <xs:sequence>
+                                                                                        <xs:element name="basePerApur" minOccurs="0" maxOccurs="99">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Bases de cálculo e valores, exceto se {tpAcConv} = [E, H]</xs:documentation>
+                                                                                                <xs:documentation>DESCRICAO_COMPLETA:Informações sobre bases de cálculo e valores do FGTS referentes à remuneração do período de apuração e de períodos anteriores, exceto se {tpAcConv} = [E, H].</xs:documentation>
+                                                                                                <xs:documentation>Evento de origem: S-1200, S-2299 ou S-2399.</xs:documentation>
+                                                                                                <xs:documentation>CHAVE_GRUPO: {tpValor}, {indIncid}</xs:documentation>
+                                                                                                <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                            <xs:complexType>
+                                                                                                <xs:sequence>
+                                                                                                    <xs:element name="tpValor">
+                                                                                                        <xs:simpleType>
+                                                                                                            <xs:annotation>
+                                                                                                                <xs:documentation>Tipo de valor que influi na apuração do FGTS.</xs:documentation>
+                                                                                                            </xs:annotation>
+                                                                                                            <xs:restriction base="xs:byte">
+                                                                                                                <xs:enumeration value="11">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS mensal</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="12">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS 13° salário</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="13">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS (período anterior) mensal</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="14">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS (período anterior) 13º salário</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="15">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS mensal - Aprendiz/Contrato Verde e Amarelo</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="16">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS 13° salário - Aprendiz/Contrato Verde e Amarelo</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="17">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS (período anterior) mensal - Aprendiz/Contrato Verde e Amarelo</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="18">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS (período anterior) 13º salário - Aprendiz/Contrato Verde e Amarelo</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="21">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS mês da rescisão</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="22">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS 13° salário rescisório</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="23">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS aviso prévio indenizado</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="24">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS (período anterior) mês da rescisão</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="25">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS (período anterior) 13º salário rescisório</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="26">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS (período anterior) aviso prévio indenizado</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="27">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS mês da rescisão - Aprendiz/Contrato Verde e Amarelo</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="28">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS 13° salário rescisório - Aprendiz/Contrato Verde e Amarelo</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="29">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS aviso prévio indenizado - Aprendiz/Contrato Verde e Amarelo</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="30">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS (período anterior) mês da rescisão - Aprendiz/Contrato Verde e Amarelo</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="31">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS (período anterior) 13° salário rescisório - Aprendiz/Contrato Verde e Amarelo</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="32">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS (período anterior) aviso prévio indenizado - Aprendiz/Contrato Verde e Amarelo</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="41">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS mensal - Indenização compensatória do empregado doméstico</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="42">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS 13° salário - Indenização compensatória do empregado doméstico</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="43">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS (período anterior) mensal - Indenização compensatória do empregado doméstico</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="44">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS (período anterior) 13º salário - Indenização compensatória do empregado doméstico</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="45">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS mês da rescisão - Indenização compensatória do empregado doméstico</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="46">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS 13° salário rescisório - Indenização compensatória do empregado doméstico</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="47">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS aviso prévio indenizado - Indenização compensatória do empregado doméstico</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="48">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS (período anterior) mês da rescisão - Indenização compensatória do empregado doméstico</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="49">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS (período anterior) 13º salário rescisório - Indenização compensatória do empregado doméstico</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                                <xs:enumeration value="50">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>FGTS (período anterior) aviso prévio indenizado - Indenização compensatória do empregado doméstico</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:enumeration>
+                                                                                                            </xs:restriction>
+                                                                                                        </xs:simpleType>
+                                                                                                    </xs:element>
+                                                                                                    <xs:element name="indIncid" type="TS_indIncid" />
+                                                                                                    <xs:element name="remFGTS" type="TS_valorMonetario_positivo">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Remuneração (valor da base de cálculo) do FGTS, conforme definido nos campos {tpValor}(./tpValor) e {indIncid}(./indIncid).</xs:documentation>
+                                                                                                            <xs:documentation>Validação: Deve ser maior que 0 (zero).</xs:documentation>
+                                                                                                            <xs:documentation>Deve corresponder ao somatório dos valores informados no campo {vrRubr} em S-1200 e S-2299 (grupos {infoPerApur} e {infoPerAnt}, quando {tpAcConv} for diferente de [E, H]), e também em S-2399, devendo somar os valores das rubricas cujo {tpRubr}(1010_infoRubrica_inclusao_dadosRubrica_tpRubr) em S-1010 seja igual a [1, 3] e subtrair os valores das rubricas cujo {tpRubr}(1010_infoRubrica_inclusao_dadosRubrica_tpRubr) em S-1010 seja igual a [2, 4], observando a Tabela 23.</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:element>
+                                                                                                    <xs:element name="dpsFGTS" minOccurs="0" type="TS_valorMonetario_positivo">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Valor histórico do FGTS a ser depositado na conta vinculada do trabalhador.</xs:documentation>
+                                                                                                            <xs:documentation>Validação: Deve ser maior que 0 (zero) e informado somente se {indIncid}(./indIncid) = [1].</xs:documentation>
+                                                                                                            <xs:documentation>Deve corresponder à multiplicação de {remFGTS}(./remFGTS) pela alíquota abaixo:</xs:documentation>
+                                                                                                            <xs:documentation>a) Se {tpValor}(./tpValor) = [11, 12, 13, 14, 21, 22, 23, 24, 25, 26], alíquota de 8%;</xs:documentation>
+                                                                                                            <xs:documentation>b) Se {tpValor}(./tpValor) = [15, 16, 17, 18, 27, 28, 29, 30, 31, 32], alíquota de 2%;</xs:documentation>
+                                                                                                            <xs:documentation>c) Se {tpValor}(./tpValor) = [41, 42, 43, 44, 45, 46, 47, 48, 49, 50], alíquota de 3,2%.</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:element>
+                                                                                                    <xs:element name="detRubrSusp" minOccurs="0" maxOccurs="unbounded" type="T_detRubrSusp">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Detalhamento da(s) rubrica(s) com incidência de FGTS suspensa</xs:documentation>
+                                                                                                            <xs:documentation>DESCRICAO_COMPLETA:Detalhamento da(s) rubrica(s) com incidência de FGTS suspensa em decorrência de decisão judicial.</xs:documentation>
+                                                                                                            <xs:documentation>CHAVE_GRUPO: {codRubr}, {ideTabRubr}</xs:documentation>
+                                                                                                            <xs:documentation>CONDICAO_GRUPO: O (se {indIncid}(../indIncid) = [9]); N (nos demais casos)</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:element>
+                                                                                                </xs:sequence>
+                                                                                            </xs:complexType>
+                                                                                        </xs:element>
+                                                                                        <xs:element name="infoBasePerAntE" minOccurs="0" maxOccurs="180">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Informações sobre bases e valores do FGTS quando {tpAcConv}(5003_infoFGTS_ideEstab_ideLotacao_infoTrabFGTS_infoBaseFGTS_infoBasePerAntE_tpAcConv) = [E, H]</xs:documentation>
+                                                                                                <xs:documentation>DESCRICAO_COMPLETA:Informações referentes a bases de cálculo e valores do FGTS de períodos anteriores quando {tpAcConv}(./tpAcConv) = [E, H].</xs:documentation>
+                                                                                                <xs:documentation>CHAVE_GRUPO: {perRef}, {tpAcConv}</xs:documentation>
+                                                                                                <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                            <xs:complexType>
+                                                                                                <xs:sequence>
+                                                                                                    <xs:element name="perRef" type="TS_periodo_mensal">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Informar o período ao qual se refere a remuneração, no formato AAAA-MM.</xs:documentation>
+                                                                                                            <xs:documentation>Evento de origem: S-1200 ou S-2299.</xs:documentation>
+                                                                                                            <xs:documentation>Validação: Deve corresponder ao período informado no evento de origem.</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:element>
+                                                                                                    <xs:element name="tpAcConv" type="TS_tpAcConv_FGTS"/>
+                                                                                                    <xs:element name="basePerAntE" maxOccurs="99">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Bases de cálculo e valores quando {tpAcConv}(5003_infoFGTS_ideEstab_ideLotacao_infoTrabFGTS_infoBaseFGTS_infoBasePerAntE_tpAcConv) = [E, H]</xs:documentation>
+                                                                                                            <xs:documentation>DESCRICAO_COMPLETA:Informações sobre bases de cálculo e valores do FGTS referentes à remuneração de períodos anteriores quando {tpAcConv}(../tpAcConv) = [E, H].</xs:documentation>
+                                                                                                            <xs:documentation>CHAVE_GRUPO: {tpValorE}, {indIncidE}</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                        <xs:complexType>
+                                                                                                            <xs:sequence>
+                                                                                                                <xs:element name="tpValorE" type="TS_tpValorE">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>Tipo de valor que influi na apuração do FGTS.</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:element>
+                                                                                                                <xs:element name="indIncidE" type="TS_indIncid" />
+                                                                                                                <xs:element name="remFGTSE" type="TS_valorMonetario_positivo">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>Remuneração (valor da base de cálculo) do FGTS, conforme definido nos campos {tpValorE}(./tpValorE) e {indIncidE}(./indIncidE).</xs:documentation>
+                                                                                                                        <xs:documentation>Validação: Deve ser maior que 0 (zero).</xs:documentation>
+                                                                                                                        <xs:documentation>Deve corresponder ao somatório dos valores informados no campo {vrRubr} em S-1200 e S-2299 (grupo {infoPerAnt}, agrupado por {tpAcConv}(../tpAcConv)), devendo somar os valores das rubricas cujo {tpRubr}(1010_infoRubrica_inclusao_dadosRubrica_tpRubr) em S-1010 seja igual a [1, 3] e subtrair os valores das rubricas cujo {tpRubr}(1010_infoRubrica_inclusao_dadosRubrica_tpRubr) em S-1010 seja igual a [2, 4], observando a Tabela 23.</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:element>
+                                                                                                                <xs:element name="dpsFGTSE" minOccurs="0" type="TS_valorMonetario_positivo">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>Valor histórico do FGTS a ser depositado na conta vinculada do trabalhador.</xs:documentation>
+                                                                                                                        <xs:documentation>Validação: Deve ser maior que 0 (zero) e informado somente se {indIncidE}(./indIncidE) = [1].</xs:documentation>
+                                                                                                                        <xs:documentation>Deve corresponder à multiplicação de {remFGTSE}(./remFGTSE) pela alíquota abaixo:</xs:documentation>
+                                                                                                                        <xs:documentation>a) Se {tpValorE}(./tpValorE) = [13, 14, 24, 25, 26], alíquota de 8%;</xs:documentation>
+                                                                                                                        <xs:documentation>b) Se {tpValorE}(./tpValorE) = [17, 18, 30, 31, 32], alíquota de 2%;</xs:documentation>
+                                                                                                                        <xs:documentation>c) Se {tpValorE}(./tpValorE) = [43, 44, 48, 49, 50], alíquota de 3,2%.</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:element>
+                                                                                                                <xs:element name="detRubrSusp" minOccurs="0" maxOccurs="unbounded" type="T_detRubrSusp">
+                                                                                                                    <xs:annotation>
+                                                                                                                        <xs:documentation>Detalhamento da(s) rubrica(s) com incidência de FGTS suspensa</xs:documentation>
+                                                                                                                        <xs:documentation>DESCRICAO_COMPLETA:Detalhamento da(s) rubrica(s) com incidência de FGTS suspensa em decorrência de decisão judicial.</xs:documentation>
+                                                                                                                        <xs:documentation>CHAVE_GRUPO: {codRubr}, {ideTabRubr}</xs:documentation>
+                                                                                                                        <xs:documentation>CONDICAO_GRUPO: O (se {indIncidE}(../indIncidE) = [9]); N (nos demais casos)</xs:documentation>
+                                                                                                                    </xs:annotation>
+                                                                                                                </xs:element>
+                                                                                                            </xs:sequence>
+                                                                                                        </xs:complexType>
+                                                                                                    </xs:element>
+                                                                                                </xs:sequence>
+                                                                                            </xs:complexType>
+                                                                                        </xs:element>
+                                                                                    </xs:sequence>
+                                                                                </xs:complexType>
+                                                                            </xs:element>
+                                                                            <xs:element name="procCS" minOccurs="0">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Informação sobre processo judicial que suspende a exigibilidade da Contribuição Social Rescisória</xs:documentation>
+                                                                                    <xs:documentation>DESCRICAO_COMPLETA:Informação sobre processo judicial que suspende a exigibilidade da Contribuição Social Rescisória.</xs:documentation>
+                                                                                    <xs:documentation>Evento de origem: S-2299.</xs:documentation>
+                                                                                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                                                </xs:annotation>
+                                                                                <xs:complexType>
+                                                                                    <xs:sequence>
+                                                                                        <xs:element name="nrProcJud" type="TS_nrProcJud">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Informar o número de processo judicial cadastrado.</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:element>
+                                                                                    </xs:sequence>
+                                                                                </xs:complexType>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>                                                    
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id_retorno" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="T_detRubrSusp">
+        <xs:sequence>
+            <xs:element name="codRubr" type="TS_codigo_esocial">
+                <xs:annotation>
+                    <xs:documentation>Informar o código atribuído pelo empregador que identifica a rubrica em sua folha de pagamento.</xs:documentation>
+                    <xs:documentation>Evento de origem: S-1200, S-2299 ou S-2399.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="ideTabRubr" type="TS_ideTabRubr">
+                <xs:annotation>
+                    <xs:documentation>Preencher com o identificador da Tabela de Rubricas para a rubrica definida em {codRubr}(./codRubr).</xs:documentation>
+                    <xs:documentation>Evento de origem: S-1200, S-2299 ou S-2399.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="vrRubr" type="TS_vrRubr">
+                <xs:annotation>
+                    <xs:documentation>Valor total da rubrica.</xs:documentation>
+                    <xs:documentation>Evento de origem: S-1200, S-2299 ou S-2399.</xs:documentation>
+                    <xs:documentation>Validação: Deve corresponder ao somatório dos valores informados no campo {vrRubr} dos eventos de origem para a respectiva rubrica.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="ideProcessoFGTS" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>Identificação de processo - Incidência de FGTS</xs:documentation>
+                    <xs:documentation>DESCRICAO_COMPLETA:Processo(s) judicial(is) com decisão/sentença favorável, determinando a não incidência de FGTS.</xs:documentation>
+                    <xs:documentation>Evento de origem: S-1010.</xs:documentation>
+                    <xs:documentation>CHAVE_GRUPO: {nrProc}</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="nrProc" type="TS_nrProcJud">
+                            <xs:annotation>
+                                <xs:documentation>Informar o número do processo.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

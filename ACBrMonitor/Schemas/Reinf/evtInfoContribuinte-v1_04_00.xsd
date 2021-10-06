@@ -1,0 +1,758 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.reinf.esocial.gov.br/schemas/evtInfoContribuinte/v1_04_00" targetNamespace="http://www.reinf.esocial.gov.br/schemas/evtInfoContribuinte/v1_04_00" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="./xmldsig-core-schema.xsd"/>
+  <xs:element name="Reinf">
+    <xs:annotation>
+      <xs:documentation>EFD-Reinf</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="evtInfoContri"  minOccurs="1" maxOccurs="1">
+          <xs:annotation>
+            <xs:documentation>Evento de informações do Contribuinte</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEvento" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do evento</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="tpAmb" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Identificação do ambiente:
+                            1 - Produção;
+                            2 - Produção restrita;
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedInt">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="procEmi" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Processo de emissão do evento
+                            1- Emissão com aplicativo do contribuinte;
+                            2- Emissão com aplicativo governamental.
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedInt">
+                          <xs:pattern value="1|2"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="verProc" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Versão do processo de emissão do evento.  Informar a versão do aplicativo emissor do evento.
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1"/>
+                          <xs:maxLength value="20"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="ideContri" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do contribuinte</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="tpInsc" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Preencher com o código correspondente ao tipo de inscrição. Deve ser igual a [1] (CNPJ) ou [2] (CPF)</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="1|2"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="nrInsc" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Informar o número de inscrição do contribuinte de acordo com o tipo de inscrição indicado no campo {tpInsc}. 
+                          Se for um CNPJ deve ser informada apenas a Raiz/Base de oito posições, exceto se natureza jurídica de administração pública 
+                          direta federal ([101-5], [104-0], [107-4], [116-3], situação em que o campo deve ser preenchido com o CNPJ completo (14 posições).
+                        </xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:pattern value="[0-9]{8}|[0-9]{11}|[0-9]{14}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="infoContri" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações do contribuinte</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:choice minOccurs="1" maxOccurs="1">
+                      <xs:element name="inclusao" minOccurs="1" maxOccurs="1">
+                        <xs:annotation>
+                          <xs:documentation>Inclusão de novas informações</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="idePeriodo" minOccurs="1" maxOccurs="1">
+                              <xs:annotation>
+                                <xs:documentation>Período de validade das informações incluídas</xs:documentation>
+                              </xs:annotation>
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="iniValid" minOccurs="1" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o mês e ano de início da validade das informações prestadas no evento. Formato AAAA-MM. </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:string">
+                                        <xs:length value="7"/>
+                                        <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="fimValid" minOccurs="0" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o mês e ano de término da validade das informações, se houver.Formato AAAA-MM.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:string">
+                                        <xs:length value="7"/>
+                                        <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                </xs:sequence>
+                              </xs:complexType>
+                            </xs:element>
+                            <xs:element name="infoCadastro" minOccurs="1" maxOccurs="1">
+                              <xs:annotation>
+                                <xs:documentation>Informações do contribuinte</xs:documentation>
+                              </xs:annotation>
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="classTrib" minOccurs="1" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o código correspondente à classificação tributária do contribuinte, conforme Tabela de Classificação Tributária.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:string">
+                                        <xs:length value="2"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="indEscrituracao" minOccurs="1" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>
+                                        Indicativo da obrigatoriedade do contribuinte em fazer a sua escrituração contábil na ECD - Escrituração Contábil Digital:
+                                        0 - Empresa Não obrigada à ECD;
+                                        1 - Empresa obrigada à ECD.
+                                      </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:unsignedInt">
+                                        <xs:pattern value="0|1"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="indDesoneracao" minOccurs="1" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>
+                                        Indicativo de desoneração da folha pela CPRB.
+                                        0 - Não Aplicável;
+                                        1 - Empresa enquadrada nos termos da Lei 12.546/2011 e alterações.
+                                      </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:unsignedInt">
+                                        <xs:pattern value="0|1"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="indAcordoIsenMulta" minOccurs="1" maxOccurs="1">
+                                    <xs:simpleType>
+                                      <xs:annotation>
+                                        <xs:documentation>
+                                          Indicativo da existência de acordo internacional para isenção de multa.
+                                          Informações exclusivas de organismos internacionais e outrasinstituições extraterritoriais.
+                                          0 - Sem acordo;
+                                          1 - Com acordo.
+                                        </xs:documentation>
+                                      </xs:annotation>
+                                      <xs:restriction base="xs:unsignedInt">
+                                        <xs:pattern value="0|1"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="indSitPJ" minOccurs="0" maxOccurs="1">
+                                    <xs:simpleType>
+                                      <xs:annotation>
+                                        <xs:documentation>
+                                          Indicativo da situação da Pessoa Jurídica
+                                          0 - Situação Normal;
+                                          1 - Extinção;
+                                          2 - Fusão;
+                                          3 - Cisão;
+                                          4 - Incorporação.
+                                        </xs:documentation>
+                                      </xs:annotation>
+                                      <xs:restriction base="xs:unsignedInt">
+                                        <xs:pattern value="[0-4]"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="contato" minOccurs="1" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Informações de contato</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element name="nmCtt" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Nome do contato na empresa. Pessoa responsável por ser o contato do contribuinte com a Receita Federal do Brasil relativamente à EFD-Reinf.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:minLength value="1"/>
+                                              <xs:maxLength value="70"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="cpfCtt" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Preencher com o número do CPF do contato.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="[0-9]{11}"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="foneFixo" minOccurs="0" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Informar o número do telefone, com DDD.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:minLength value="1"/>
+                                              <xs:maxLength value="13"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="foneCel" minOccurs="0" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Telefone celular, com DDD.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:minLength value="1"/>
+                                              <xs:maxLength value="13"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="email" minOccurs="0" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Endereço eletrônico.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:minLength value="1"/>
+                                              <xs:maxLength value="60"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
+                                  <xs:element name="softHouse" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:annotation>
+                                      <xs:documentation>Informações da empresa desenvolvedora da aplicação que gera os arquivos.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element name="cnpjSoftHouse" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>CNPJ da empresa desenvolvedora do software </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="[0-9]{14}"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="nmRazao" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Se pessoa jurídica ou órgão público, informar a Razão Social. Caso contrário, informar o nome do contribuinte.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:minLength value="1"/>
+                                              <xs:maxLength value="115"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="nmCont" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Nome do contato na empresa. </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:minLength value="1"/>
+                                              <xs:maxLength value="70"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="telefone" minOccurs="0" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Informar o número do telefone, com DDD. </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:minLength value="1"/>
+                                              <xs:maxLength value="13"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="email" minOccurs="0" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Endereço eletrônico.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:minLength value="1"/>
+                                              <xs:maxLength value="60"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
+                                  <xs:element name="infoEFR" minOccurs="0" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Informações de órgãos públicos estaduais e municipais relativas a Ente Federativo Responsável - EFR</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element name="ideEFR" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Informar se o Órgão Público é o Ente Federativo Responsável - EFR ou se é uma unidade administrativa autônoma vinculada a um EFR:
+                                              S - É EFR;
+                                              N - Não é EFR.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="S|N"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="cnpjEFR" minOccurs="0" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              CNPJ do Ente Federativo Responsável - EFR
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="[0-9]{14}"/>
+                                            </xs:restriction>                                            
+                                          </xs:simpleType>
+                                        </xs:element>
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
+                                </xs:sequence>
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                      <xs:element name="alteracao" minOccurs="1" maxOccurs="1">
+                        <xs:annotation>
+                          <xs:documentation>Alteração das informações</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="idePeriodo" minOccurs="1" maxOccurs="1">
+                              <xs:annotation>
+                                <xs:documentation>Período de validade das informações alteradas</xs:documentation>
+                              </xs:annotation>
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="iniValid" minOccurs="1" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o mês e ano de início da validade das informações prestadas no evento, no formato AAAA-MM.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:string">
+                                        <xs:length value="7"/>
+                                        <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="fimValid" minOccurs="0" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o mês e ano de término da validade das informações, se houver, no formato AAAA-MM.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:string">
+                                        <xs:length value="7"/>
+                                        <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                </xs:sequence>
+                              </xs:complexType>
+                            </xs:element>
+                            <xs:element name="infoCadastro" minOccurs="1" maxOccurs="1">
+                              <xs:annotation>
+                                <xs:documentation>Informações do contribuinte</xs:documentation>
+                              </xs:annotation>
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="classTrib" minOccurs="1" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o código correspondente à classificação tributária do contribuinte, conforme Tabela de Classificação Tributária.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:string">
+                                        <xs:length value="2"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="indEscrituracao" minOccurs="1" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>
+                                        Indicativo da obrigatoriedade do contribuinte em fazer a sua escrituração contábil na ECD - Escrituração Contábil Digital:
+                                        0 - Empresa Não obrigada à ECD;
+                                        1 - Empresa obrigada à ECD.
+                                      </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:unsignedInt">
+                                        <xs:pattern value="0|1"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="indDesoneracao" minOccurs="1" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>
+                                        Indicativo de desoneração da folha pela CPRB.
+                                        0 - Não Aplicável;
+                                        1 - Empresa enquadrada nos termos da Lei 12.546/2011 e alterações.
+                                      </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:unsignedInt">
+                                        <xs:pattern value="0|1"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="indAcordoIsenMulta" minOccurs="1" maxOccurs="1">
+                                    <xs:simpleType>
+                                      <xs:annotation>
+                                        <xs:documentation>
+                                          Indicativo da existência de acordo internacional para isenção de multa.
+                                          Informações exclusivas de organismos internacionais e outrasinstituições extraterritoriais
+                                          0 - Sem acordo;
+                                          1 - Com acordo.
+                                        </xs:documentation>
+                                      </xs:annotation>
+                                      <xs:restriction base="xs:unsignedInt">
+                                        <xs:pattern value="0|1"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="indSitPJ" minOccurs="0" maxOccurs="1">
+                                    <xs:simpleType>
+                                      <xs:annotation>
+                                        <xs:documentation>
+                                          Indicativo da Situação da Pessoa Jurídica
+                                          0 - Situação Normal;
+                                          1 - Extinção;
+                                          2 - Fusão;
+                                          3 - Cisão;
+                                          4 - Incorporação.
+                                        </xs:documentation>
+                                      </xs:annotation>
+                                      <xs:restriction base="xs:unsignedInt">
+                                        <xs:pattern value="[0-4]"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="contato" minOccurs="1" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Informações de contato</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element name="nmCtt" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Nome do contato no contribuinte. Pessoa responsável por ser o contato do contribuinte com a Receita Federal do Brasil relativamente à EFD-Reinf.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:minLength value="1"/>
+                                              <xs:maxLength value="70"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="cpfCtt" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Número do CPF do contato.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="[0-9]{11}"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="foneFixo" minOccurs="0" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Informar o número do telefone, com DDD.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:maxLength value="13"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="foneCel" minOccurs="0" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Informar o número do telefone celular, com DDD.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:maxLength value="13"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="email" minOccurs="0" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Endereço eletrônico do contato. </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:minLength value="1"/>
+                                              <xs:maxLength value="60"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
+                                  <xs:element name="softHouse" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:annotation>
+                                      <xs:documentation>Informações da empresa desenvolvedora da aplicação que gera os arquivos.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element name="cnpjSoftHouse" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>CNPJ da empresa desenvolvedora do software </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="[0-9]{14}"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="nmRazao" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Informar o nome do contribuinte, no caso de pessoa física, ou a razão social, no caso de pessoa jurídica.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:minLength value="1"/>
+                                              <xs:maxLength value="115"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="nmCont" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Nome do contato na empresa. </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:minLength value="1"/>
+                                              <xs:maxLength value="70"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="telefone" minOccurs="0" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Informar o número do telefone, com DDD.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:minLength value="1"/>
+                                              <xs:maxLength value="13"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="email" minOccurs="0" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>Endereço eletrônico.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:minLength value="1"/>
+                                              <xs:maxLength value="60"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
+                                  <xs:element name="infoEFR" minOccurs="0" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Informações de órgãos públicos estaduais e municipais relativas a Ente Federativo Responsável - EFR</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element name="ideEFR" minOccurs="1" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Informar se o Órgão Público é o Ente Federativo Responsável - EFR ou se é uma unidade administrativa autônoma vinculada a um EFR:
+                                              S - É EFR;
+                                              N - Não é EFR.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="S|N"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="cnpjEFR" minOccurs="0" maxOccurs="1">
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              CNPJ do Ente Federativo Responsável - EFR
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                              <xs:pattern value="[0-9]{14}"/>
+                                            </xs:restriction>
+                                          </xs:simpleType>
+                                        </xs:element>
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
+                                </xs:sequence>
+                              </xs:complexType>
+                            </xs:element>
+                            <xs:element name="novaValidade" minOccurs="0" maxOccurs="1">
+                              <xs:annotation>
+                                <xs:documentation>Novo período de validade das informações</xs:documentation>
+                              </xs:annotation>
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="iniValid" minOccurs="1" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o mês e ano de início da validade das informações prestadas no evento, no formato AAAA-MM.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:string">
+                                        <xs:length value="7"/>
+                                        <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="fimValid" minOccurs="0" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o mês e ano de término da validade das informações, se houver, no formato AAAA-MM.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:string">
+                                        <xs:length value="7"/>
+                                        <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                </xs:sequence>
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                      <xs:element name="exclusao" minOccurs="1" maxOccurs="1">
+                        <xs:annotation>
+                          <xs:documentation>Exclusão das informações</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="idePeriodo" minOccurs="1" maxOccurs="1">
+                              <xs:annotation>
+                                <xs:documentation>Período de validade das informações excluídas</xs:documentation>
+                              </xs:annotation>
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="iniValid" minOccurs="1" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o mês e ano de início da validade das informações prestadas no evento no formato AAAA-MM.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:string">
+                                        <xs:length value="7"/>
+                                        <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element name="fimValid" minOccurs="0" maxOccurs="1">
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o mês e ano de término da validade das informações, se houver, no formato AAAA-MM.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:string">
+                                        <xs:length value="7"/>
+                                        <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                </xs:sequence>
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:choice>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" use="required">
+              <xs:annotation>
+                <xs:documentation>Identificador do Evento</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:ID">
+                  <xs:length value="36" />
+                  <xs:pattern value="I{1}D{1}[0-9]{34}" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,638 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.reinf.esocial.gov.br/schemas/evtEspDesportivo/v1_05_00" targetNamespace="http://www.reinf.esocial.gov.br/schemas/evtEspDesportivo/v1_05_00" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="./xmldsig-core-schema.xsd"/>
+  <xs:element name="Reinf">
+    <xs:annotation>
+      <xs:documentation>EFD-Reinf</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="evtEspDesportivo" minOccurs="1" maxOccurs="1">
+          <xs:annotation>
+            <xs:documentation>Evento Espetáculo Desportivo do qual participe ao menos uma equipe que mantenha equipe de futebol profissional.</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEvento" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do evento</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="indRetif" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Informe [1] para arquivo original ou [2] para arquivo de retificação.</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="nrRecibo" minOccurs="0" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Preencher com o número do recibo do arquivo a ser retificado.
+                            Validação: O preenchimento é obrigatório se {indRetif} = [2].
+                            Deve ser um recibo de entrega válido, correspondente ao arquivo objeto da retificação.
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="18"/>
+                          <xs:maxLength value="52"/>
+                          <xs:pattern value="[0-9]{1,18}[-][0-9]{2}[-][0-9]{4}[-][0-9]{6}[-][0-9]{1,18}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="dtApuracao" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Informar a data de realização do espetáculo desportivo no formato AAAA-MM-DD.
+                            Validação: Deve ser uma data posterior a implementação da EFD-Reinf.
+                            Não pode ser superior à data atual.
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:date">
+                          <xs:pattern value="2{1}0{1}[0-9]{2}-[0-1]{1}[0-9]{1}-[0-3]{1}[0-9]{1}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="tpAmb" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Identificação do ambiente:
+                            1 - Produção;
+                            2 - Produção restrita;
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedInt">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="procEmi" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Processo de emissão do evento:
+                            1 - Emissão com aplicativo do contribuinte
+                            2 - Aplicativo governamental
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="verProc" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Versão do processo de emissão do evento. Informar a versão do aplicativo emissor do evento</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1"/>
+                          <xs:maxLength value="20"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="ideContri"  minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação da Entidade promotora do espetáculo desportivo</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="tpInsc"  minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>
+                          Preencher com o código correspondente ao tipo de inscrição do contribuinte.
+                          Validação: Deve ser igual a [1] (CNPJ).
+                        </xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="1"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="nrInsc"  minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>
+                          Informar o CNPJ apenas com a Raiz/Base de oito posições, exceto se natureza jurídica do declarante for de
+                          administração pública direta federal ([101-5], [104-0], [107-4] e [116-3]), situação em que o campo deve
+                          ser preenchido com o CNPJ completo com 14 posições.
+                        </xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:pattern value="[0-9]{8}|[0-9]{14}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="ideEstab"  minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Registro que identifica o estabelecimento que comercializou a produção</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="tpInscEstab"  minOccurs="1" maxOccurs="1">
+                            <xs:annotation>
+                              <xs:documentation>Preencher com o código correspondente ao tipo de inscrição. Deve ser igual a [1] (CNPJ)</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:unsignedByte">
+                                <xs:pattern value="[1]"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="nrInscEstab"  minOccurs="1" maxOccurs="1">
+                            <xs:annotation>
+                              <xs:documentation>
+                                Informar o número de inscrição do estabelecimento do contribuinte declarante de acordo com o tipo de inscrição indicado no campo {tpInscEstab}.
+                                Validação: A inscrição informada deve ser compatível com o {tpInscEstab} e válido.
+                              </xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:pattern value="[0-9]{14}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="boletim" minOccurs="1"  maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:annotation>
+                                <xs:documentation>Boletim do Espetáculo Desportivo</xs:documentation>
+                              </xs:annotation>
+                              <xs:sequence>
+                                <xs:element name="nrBoletim"  minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>
+                                        Número do boletim relativo ao espetáculo desportivo.
+                                        Validação: Não pode haver duplicidade de registros com o mesmo {nrBoletim}
+                                      </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="[0-9]{4}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="tpCompeticao"  minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>
+                                        Tipo de Competição:
+                                        1 - Oficial;
+                                        2 - Não Oficial.
+                                      </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:unsignedByte">
+                                      <xs:pattern value="[1|2]"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="categEvento" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>
+                                        Categoria do evento:
+                                        1 - Internacional;
+                                        2 - Interestadual;
+                                        3 - Estadual;
+                                        4 - Local;
+                                      </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:unsignedByte">
+                                      <xs:pattern value="[1-4]"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="modDesportiva" minOccurs="1" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>Descrição da modalidade do evento desportivo</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="1"/>
+                                      <xs:maxLength value="100"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="nomeCompeticao" minOccurs="1" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>Nome da competição. (Campeonato Brasileiro, Copa do Brasil, Campeonato Estadual, entre outras)</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="1"/>
+                                      <xs:maxLength value="100"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="cnpjMandante" minOccurs="1" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>
+                                      Preencher com o CNPJ do clube mandante
+                                      Validação: Deve ser um CNPJ válido
+                                    </xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="[0-9]{14}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="cnpjVisitante" minOccurs="0" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>
+                                      Preencher com o número de inscrição do clube visitante no CNPJ. Não deve ser preenchido em caso de clube estrangeiro
+                                      Validação: Se informado, deve ser um CNPJ válido
+                                    </xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="[0-9]{14}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="nomeVisitante" minOccurs="0" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>
+                                      Nome do clube visitante
+                                      Validação: Preenchimento obrigatório se não preencher {cnpjVisitante}
+                                    </xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:maxLength value="80"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="pracaDesportiva" minOccurs="1" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>
+                                      Praça desportiva do local do evento
+                                    </xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="1"/>
+                                      <xs:maxLength value="100"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="codMunic" minOccurs="0" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>Código do município, conforme tabela do IBGE</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="[0-9]{7}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="uf" minOccurs="1" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>
+                                      Preencher com a sigla da Unidade da Federação
+                                      Validação: Deve ser uma UF válida.
+                                    </xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="[A-Z]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="qtdePagantes" minOccurs="1" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>Quantidade de espectadores pagantes do evento</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:unsignedInt">
+                                      <xs:pattern value="[0-9]{1,6}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="qtdeNaoPagantes" minOccurs="1" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>Quantidade de espectadores não pagantes do evento</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:unsignedInt">
+                                      <xs:pattern value="[0-9]{1,6}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="receitaIngressos" minOccurs="1" maxOccurs="999">
+                                  <xs:annotation>
+                                    <xs:documentation>Receita da Venda de Ingressos</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="tpIngresso" minOccurs="1" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>
+                                            Tipo de Ingresso:
+                                            1 - Arquibancada;
+                                            2 - Geral;
+                                            3 - Cadeiras;
+                                            4 - Camarote;
+                                          </xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:unsignedByte">
+                                            <xs:pattern value="[1-4]"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="descIngr" minOccurs="1" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>Descrição do tipo de ingresso</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="1"/>
+                                            <xs:maxLength value="30"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="qtdeIngrVenda" minOccurs="1" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>Número de ingressos colocados à venda</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:unsignedInt">
+                                            <xs:pattern value="[0-9]{1,6}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="qtdeIngrVendidos" minOccurs="1" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>
+                                            Número de ingressos vendidos
+                                            Validação: Não pode ser superior ao valor informado em {qtdeIngrVenda}
+                                          </xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:unsignedInt">
+                                            <xs:pattern value="[0-9]{1,6}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="qtdeIngrDev" minOccurs="1" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>
+                                            Número de ingressos devolvidos
+                                            Validação: Não pode ser superior ao valor informado em {qtdeIngrVenda}
+                                          </xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:unsignedInt">
+                                            <xs:pattern value="[0-9]{1,6}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="precoIndiv" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Preço individual do ingresso</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vlrTotal" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Valor total arrecadado
+                                              Validação: Deve corresponder a {qtdeIngrVendidos} x {precoIndiv}
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="outrasReceitas"  minOccurs="0" maxOccurs="999">
+                                  <xs:annotation>
+                                    <xs:documentation>Outras receitas do espetáculo</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="tpReceita" minOccurs="1" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>
+                                            Tipo de receita, conforme tabela:
+                                            1 - Transmissão;
+                                            2 - Propaganda;
+                                            3 - Publicidade;
+                                            4 - Sorteio;
+                                            5 - Outros.
+                                          </xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:unsignedByte">
+                                            <xs:pattern value="[1-5]"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vlrReceita" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Valor da receita auferida</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="descReceita" minOccurs="1" maxOccurs="1">
+                                        <xs:annotation>
+                                          <xs:documentation>Descrição da receita</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="1"/>
+                                            <xs:maxLength value="20"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="receitaTotal" minOccurs="1" maxOccurs="1">
+                            <xs:annotation>
+                              <xs:documentation>Totalização da Receita</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="vlrReceitaTotal" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>
+                                        Valor da receita bruta total
+                                        Validação: Deve corresponder a soma de {vlrTotal} de {receitaIngressos} e de {vlrReceita}
+                                        de {outrasReceitas} que estejam vinculados ao mesmo estabelecimento
+                                      </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrCP" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>
+                                        Valor da contribuição previdenciária
+                                      </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrCPSuspTotal" minOccurs="0" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>
+                                        Valor da Contribuição Previdenciária com exigibilidade suspensa.
+                                        Validação: deve ser igual ao somatório dos campos {vlrCPSusp} do grupo infoProc
+                                      </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrReceitaClubes" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor total da receita destinada aos clubes participantes</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrRetParc" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>
+                                        Valor retido do clube para amortização do parcelamento especial da Lei 8.641/93, quando for o caso.
+                                        Se não houver retenção, preencher com 0 (zero).
+                                      </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="infoProc" minOccurs="0" maxOccurs="50">
+                                  <xs:annotation>
+                                    <xs:documentation>
+                                      Informações de processos relacionados a Suspensão da Contribuição previdenciária
+                                      Validação: A soma dos valores informados no campo { vlrCPSusp } deste grupo deve
+                                      ser igual a { vlrCPSuspTotal} do grupo {receitaTotal}.
+                                    </xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="tpProc" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Preencher com o código correspondente ao tipo de processo:
+                                              1 - Administrativo
+                                              2 - Judicial
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:unsignedByte">
+                                            <xs:pattern value="[1|2]"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="nrProc" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Informar o número do processo administrativo/judicial.
+                                              Validação: O processo deve existir na tabela de PROCESSOS.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="1"/>
+                                            <xs:maxLength value="21"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="codSusp" minOccurs="0" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Código do Indicativo da Suspensão, atribuído pelo contribuinte. Este campo deve ser utilizado se, num mesmo processo,
+                                              houver mais de uma matéria tributária objeto de contestação e as decisões forem diferentes para cada uma.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:pattern value="[0-9]{0,14}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vlrCPSusp" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Valor da Contribuição Previdenciária com exigibilidade suspensa.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" use="required" >
+              <xs:annotation>
+                <xs:documentation>Identificação única do evento.</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:ID">
+                  <xs:length value="36" />
+                  <xs:pattern value="I{1}D{1}[0-9]{34}" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

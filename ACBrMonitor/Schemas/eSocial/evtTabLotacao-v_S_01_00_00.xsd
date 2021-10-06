@@ -1,0 +1,230 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtTabLotacao/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtTabLotacao/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-1020 - Tabela de Lotações Tributárias</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtTabLotacao">
+                    <xs:annotation>
+                        <xs:documentation>Evento Tabela de Lotações Tributárias.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TABGERAL_ALTERACAO_PERIODO_CONFLITANTE</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TABGERAL_EXISTE_REGISTRO_ALTERADO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TABGERAL_EXISTE_REGISTRO_EXCLUIDO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TABGERAL_INCLUSAO_PERIODO_CONFLITANTE</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TABLOTACAO_VALIDA_FPASTERCEIROS</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TAB_PERMITE_EXCLUSAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_DT_FUTURA</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_evtTab" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="infoLotacao">
+                                <xs:annotation>
+                                    <xs:documentation>Informações da lotação</xs:documentation>
+                                    <xs:documentation>DESCRICAO_COMPLETA:Identificação da operação (inclusão, alteração ou exclusão) e das informações da lotação.</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:choice>
+                                            <xs:element name="inclusao">
+                                                <xs:annotation>
+                                                    <xs:documentation>Inclusão de novas informações.</xs:documentation>
+                                                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="ideLotacao" type="T_ideLotacao" />
+                                                        <xs:element name="dadosLotacao" type="T_dadosLotacao" />
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="alteracao">
+                                                <xs:annotation>
+                                                    <xs:documentation>Alteração das informações.</xs:documentation>
+                                                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="ideLotacao" type="T_ideLotacao" />
+                                                        <xs:element name="dadosLotacao" type="T_dadosLotacao" />
+                                                        <xs:element name="novaValidade" minOccurs="0" type="T_novaValidade" />
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="exclusao">
+                                                <xs:annotation>
+                                                    <xs:documentation>Exclusão das informações.</xs:documentation>
+                                                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="ideLotacao" type="T_ideLotacao" />
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:choice>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="T_ideLotacao">
+        <xs:annotation>
+            <xs:documentation>Identificação da lotação e validade das informações</xs:documentation>
+            <xs:documentation>DESCRICAO_COMPLETA:Identificação da lotação e período de validade das informações.</xs:documentation>
+            <xs:documentation>CHAVE_GRUPO: {codLotacao}, {iniValid}, {fimValid}</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="codLotacao" type="TS_codigo_esocial">
+                <xs:annotation>
+                    <xs:documentation>Informar o código atribuído pelo empregador para a lotação tributária.</xs:documentation>
+                    <xs:documentation>Validação: O código atribuído não pode conter a expressão 'eSocial' nas 7 primeiras posições.</xs:documentation>
+                    <xs:documentation>REGRA:REGRA_CARACTERE_ESPECIAL</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="iniValid" type="TS_iniValid" />
+            <xs:element name="fimValid" minOccurs="0" type="TS_fimValid" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="T_dadosLotacao">
+        <xs:annotation>
+            <xs:documentation>Detalhamento das informações da lotação.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="tpLotacao" type="TS_tpLotacao" />
+            <xs:element name="tpInsc" minOccurs="0" type="TS_tpInsc_1_2_4">
+                <xs:annotation>
+                    <xs:documentation>Preencher com o código correspondente ao tipo de inscrição, conforme Tabela 05.</xs:documentation>
+                    <xs:documentation>Validação: O campo não deve ser preenchido se {tpLotacao}(./tpLotacao) for igual a [01, 10, 21, 24, 90, 91]. Nos demais casos, observar conteúdo exigido para o campo {dadosLotacao/nrInsc}(./nrInsc), conforme Tabela 10.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="nrInsc" minOccurs="0" type="TS_nrInsc_11_12_14">
+                <xs:annotation>
+                    <xs:documentation>Preencher com o número de inscrição (CNPJ, CPF, CNO) ao qual pertence a lotação tributária.</xs:documentation>
+                    <xs:documentation>Validação: a) Deve ser preenchido de acordo com o conteúdo exigido, conforme especificado no campo {dadosLotacao/tpInsc}(./tpInsc) e na Tabela 10;</xs:documentation>
+                    <xs:documentation>b) Deve ser um identificador válido, constante das bases da RFB.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="fpasLotacao">
+                <xs:annotation>
+                    <xs:documentation>Informações de FPAS e Terceiros relativos à lotação tributária.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="fpas" type="TS_fpas" />
+                        <xs:element name="codTercs" type="TS_codTercs">
+                            <xs:annotation>
+                                <xs:documentation>Preencher com o código de Terceiros, já considerando a existência de eventuais convênios para recolhimento direto. Ex.: Se o contribuinte está enquadrado com FPAS [507], cujo código cheio de Terceiros é [0079], se possuir convênio com SENAI deve informar o código [0075].</xs:documentation>
+                                <xs:documentation>Validação: Se a classificação tributária em S-1000 for igual a [01, 02, 03, 04], informar [0000]. Nos demais casos, o código de Terceiros informado deve ser compatível com o código de FPAS informado, conforme Tabela 04.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="codTercsSusp" minOccurs="0" type="TS_codTercs">
+                            <xs:annotation>
+                                <xs:documentation>Informar o código combinado dos Terceiros para os quais o recolhimento está suspenso em virtude de processos judiciais. Ex.: Se o contribuinte possui decisões de processos para suspensão de recolhimentos ao SESI (0008) e ao SEBRAE (0064), deve informar o código combinado das duas entidades, ou seja, [0072].</xs:documentation>
+                                <xs:documentation>Validação: Deve ser um código consistente com a Tabela 04.</xs:documentation>
+                                <xs:documentation>Deve haver um processo em {procJudTerceiro}(1020_infoLotacao_inclusao_dadosLotacao_fpasLotacao_infoProcJudTerceiros_procJudTerceiro) para cada código de Terceiro cujo recolhimento esteja suspenso.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="infoProcJudTerceiros" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>Informações de processos judiciais relativos às contribuições destinadas a Outras Entidades</xs:documentation>
+                                <xs:documentation>DESCRICAO_COMPLETA:Informações sobre a existência de processos judiciais, com sentença/decisão favorável ao contribuinte, relativos às contribuições destinadas a Outras Entidades e Fundos.</xs:documentation>
+                                <xs:documentation>CONDICAO_GRUPO: O (se {codTercsSusp}(1020_infoLotacao_inclusao_dadosLotacao_fpasLotacao_codTercsSusp) for preenchido); N (nos demais casos)</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="procJudTerceiro" maxOccurs="99">
+                                        <xs:annotation>
+                                            <xs:documentation>Identificação do processo judicial.</xs:documentation>
+                                            <xs:documentation>CHAVE_GRUPO: {codTerc}, {nrProcJud}</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element name="codTerc" type="TS_codTercs">
+                                                    <xs:annotation>
+                                                        <xs:documentation>Informar o código de Terceiro.</xs:documentation>
+                                                        <xs:documentation>Validação: Deve ser um código de Terceiro válido e compatível com o FPAS/Terceiros informado no grupo superior, conforme Tabela 04.</xs:documentation>
+                                                    </xs:annotation>
+                                                </xs:element>
+                                                <xs:element name="nrProcJud" type="TS_nrProcJud_1" />
+                                                <xs:element name="codSusp" type="TS_codSusp" />
+                                            </xs:sequence>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="infoEmprParcial" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Informação complementar de obra de construção civil</xs:documentation>
+                    <xs:documentation>DESCRICAO_COMPLETA:Informação complementar que apresenta identificação do contratante de obra de construção civil sob regime de empreitada parcial ou subempreitada.</xs:documentation>
+                    <xs:documentation>CONDICAO_GRUPO: O (se {tpLotacao}(1020_infoLotacao_inclusao_dadosLotacao_tpLotacao) = [02]); N (nos demais casos)</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="tpInscContrat" type="TS_tpInsc_1_2">
+                            <xs:annotation>
+                                <xs:documentation>Tipo de inscrição do contratante.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="nrInscContrat" type="TS_nrInsc_11_14">
+                            <xs:annotation>
+                                <xs:documentation>Número de inscrição (CNPJ/CPF) do contratante.</xs:documentation>
+                                <xs:documentation>Validação: Deve ser um número de CNPJ ou CPF válido, conforme definido em {tpInscContrat}(./tpInscContrat).</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="tpInscProp" type="TS_tpInsc_1_2" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>Tipo de inscrição do proprietário do CNO.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="nrInscProp" type="TS_nrInsc_11_14" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>Preencher com o número de inscrição (CNPJ/CPF) do proprietário do CNO.</xs:documentation>
+                                <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se {tpInscProp}(./tpInscProp) for informado. Deve ser um número de CNPJ ou CPF válido, conforme indicado em {tpInscProp}(./tpInscProp), e constar como responsável no cadastro do CNO.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="dadosOpPort" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Informações do operador portuário.</xs:documentation>
+                    <xs:documentation>CONDICAO_GRUPO: O (se {tpLotacao}(1020_infoLotacao_inclusao_dadosLotacao_tpLotacao) = [08]); N (nos demais casos)</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="aliqRat" type="TS_aliqRat">
+                            <xs:annotation>
+                                <xs:documentation>Preencher com a alíquota definida na legislação vigente para a atividade (CNAE) preponderante.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="fap" type="TS_fap">
+                            <xs:annotation>
+                                <xs:documentation>Fator Acidentário de Prevenção - FAP.</xs:documentation>
+                                <xs:documentation>Validação: Deve ser um número maior ou igual a 0,5000 e menor ou igual a 2,0000, de acordo com o estabelecido pelo órgão governamental competente.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

@@ -1,0 +1,295 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtTabProcesso/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtTabProcesso/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-1070 - Tabela de Processos Administrativos/Judiciais</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtTabProcesso">
+                    <xs:annotation>
+                        <xs:documentation>Evento Tabela de Processos</xs:documentation>
+                        <xs:documentation>DESCRICAO_COMPLETA:Evento Tabela de Processos Administrativos/Judiciais.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_PERMITE_ALT_EXCL_CODSUSP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TABGERAL_ALTERACAO_PERIODO_CONFLITANTE</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TABGERAL_EXISTE_REGISTRO_ALTERADO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TABGERAL_EXISTE_REGISTRO_EXCLUIDO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TABGERAL_INCLUSAO_PERIODO_CONFLITANTE</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TAB_PERMITE_EXCLUSAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_DT_FUTURA</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_PROCESSO</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_evtTab" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="infoProcesso">
+                                <xs:annotation>
+                                    <xs:documentation>Informações do processo.</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:choice>
+                                            <xs:element name="inclusao">
+                                                <xs:annotation>
+                                                    <xs:documentation>Inclusão de novas informações.</xs:documentation>
+                                                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="ideProcesso" type="T_ideProcesso" />
+                                                        <xs:element name="dadosProc" type="T_dadosProc" />
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="alteracao">
+                                                <xs:annotation>
+                                                    <xs:documentation>Alteração das informações.</xs:documentation>
+                                                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="ideProcesso" type="T_ideProcesso" />
+                                                        <xs:element name="dadosProc" type="T_dadosProc" />
+                                                        <xs:element name="novaValidade" minOccurs="0" type="T_novaValidade" />
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="exclusao">
+                                                <xs:annotation>
+                                                    <xs:documentation>Exclusão das informações.</xs:documentation>
+                                                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="ideProcesso" type="T_ideProcesso" />
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:choice>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="T_ideProcesso">
+        <xs:annotation>
+            <xs:documentation>Identificação do processo e validade das informações</xs:documentation>
+            <xs:documentation>DESCRICAO_COMPLETA:Identificação do processo e período de validade das informações.</xs:documentation>
+            <xs:documentation>CHAVE_GRUPO: {tpProc}, {nrProc}, {iniValid}, {fimValid}</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="tpProc" type="TS_tpProc_1_2_4" />
+            <xs:element name="nrProc" type="TS_nrProc_16_17_20_21">
+                <xs:annotation>
+                    <xs:documentation>Informar o número do processo administrativo/judicial de acordo com o tipo informado em {tpProc}(./tpProc).</xs:documentation>
+                    <xs:documentation>Validação: Deve ser um número de processo válido e:</xs:documentation>
+                    <xs:documentation>a) Se {tpProc}(./tpProc) = [1], deve possuir 17 (dezessete) ou 21 (vinte e um) algarismos;</xs:documentation>
+                    <xs:documentation>b) Se {tpProc}(./tpProc) = [2], deve possuir 20 (vinte) algarismos;</xs:documentation>
+                    <xs:documentation>c) Se {tpProc}(./tpProc) = [4], deve possuir 16 (dezesseis) algarismos.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="iniValid" type="TS_iniValid" />
+            <xs:element name="fimValid" minOccurs="0" type="TS_fimValid" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="T_dadosProc">
+        <xs:annotation>
+            <xs:documentation>Dados do processo.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="indAutoria" minOccurs="0">
+                <xs:simpleType>
+                    <xs:annotation>
+                        <xs:documentation>Indicativo da autoria da ação judicial.</xs:documentation>
+                        <xs:documentation>Validação: Preenchimento obrigatório se {tpProc}(1070_infoProcesso_inclusao_ideProcesso_tpProc) = [2].</xs:documentation>
+                    </xs:annotation>
+                    <xs:restriction base="xs:byte">
+                        <xs:enumeration value="1">
+                            <xs:annotation>
+                                <xs:documentation>Próprio contribuinte</xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="2">
+                            <xs:annotation>
+                                <xs:documentation>Outra entidade, empresa ou empregado</xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="indMatProc">
+                <xs:simpleType>
+                    <xs:annotation>
+                        <xs:documentation>Indicativo da matéria do processo.</xs:documentation>
+                    </xs:annotation>
+                    <xs:restriction base="xs:byte">
+                        <xs:enumeration value="1">
+                            <xs:annotation>
+                                <xs:documentation>Exclusivamente tributária ou tributária e FGTS</xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="7">
+                            <xs:annotation>
+                                <xs:documentation>Exclusivamente FGTS e/ou Contribuição Social Rescisória (Lei Complementar 110/2001)</xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="observacao" minOccurs="0" type="TS_observacao">
+                <xs:annotation>
+                    <xs:documentation>Observações relacionadas ao processo.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="dadosProcJud" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Informações complementares do processo judicial.</xs:documentation>
+                    <xs:documentation>CONDICAO_GRUPO: O (se {tpProc}(1070_infoProcesso_inclusao_ideProcesso_tpProc) = [2] e {indMatProc}(1070_infoProcesso_inclusao_dadosProc_indMatProc) = [1]); N (nos demais casos)</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ufVara" type="TS_uf">
+                            <xs:annotation>
+                                <xs:documentation>Identificação da Unidade da Federação - UF da Seção Judiciária.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="codMunic" type="TS_codMunic" />
+                        <xs:element name="idVara">
+                            <xs:simpleType>
+                                <xs:annotation>
+                                    <xs:documentation>Código de identificação da Vara.</xs:documentation>
+                                </xs:annotation>
+                                <xs:restriction base="xs:integer">
+                                    <xs:pattern value="\d{1,4}" />
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="infoSusp" minOccurs="0" maxOccurs="99">
+                <xs:annotation>
+                    <xs:documentation>Informações de suspensão de exigibilidade de tributos</xs:documentation>
+                    <xs:documentation>DESCRICAO_COMPLETA:Informações de suspensão de exigibilidade de tributos em virtude de processo administrativo ou judicial.</xs:documentation>
+                    <xs:documentation>CHAVE_GRUPO: {codSusp}</xs:documentation>
+                    <xs:documentation>CONDICAO_GRUPO: O (se {indMatProc}(1070_infoProcesso_inclusao_dadosProc_indMatProc) = [1]); N (nos demais casos)</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="codSusp" type="TS_codSusp">
+                            <xs:annotation>
+                                <xs:documentation>Código do indicativo da suspensão, atribuído pelo empregador.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="indSusp">
+                            <xs:simpleType>
+                                <xs:annotation>
+                                    <xs:documentation>Indicativo de suspensão da exigibilidade.</xs:documentation>
+                                    <xs:documentation>Validação: Se {tpProc}(1070_infoProcesso_inclusao_ideProcesso_tpProc) = [1], deve ser preenchido com [03, 14, 92].</xs:documentation>
+                                    <xs:documentation>Se {tpProc}(1070_infoProcesso_inclusao_ideProcesso_tpProc) = [2], deve ser preenchido com [01, 02, 04, 05, 08, 09, 10, 11, 12, 13, 90, 92].</xs:documentation>
+                                    <xs:documentation>Se {tpProc}(1070_infoProcesso_inclusao_ideProcesso_tpProc) = [4], deve ser preenchido com [14].</xs:documentation>
+                                </xs:annotation>
+                                <xs:restriction base="xs:string">
+                                    <xs:enumeration value="01">
+                                        <xs:annotation>
+                                            <xs:documentation>Liminar em mandado de segurança</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                    <xs:enumeration value="02">
+                                        <xs:annotation>
+                                            <xs:documentation>Depósito judicial do montante integral</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                    <xs:enumeration value="03">
+                                        <xs:annotation>
+                                            <xs:documentation>Depósito administrativo do montante integral</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                    <xs:enumeration value="04">
+                                        <xs:annotation>
+                                            <xs:documentation>Antecipação de tutela</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                    <xs:enumeration value="05">
+                                        <xs:annotation>
+                                            <xs:documentation>Liminar em medida cautelar</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                    <xs:enumeration value="08">
+                                        <xs:annotation>
+                                            <xs:documentation>Sentença em mandado de segurança favorável ao contribuinte</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                    <xs:enumeration value="09">
+                                        <xs:annotation>
+                                            <xs:documentation>Sentença em ação ordinária favorável ao contribuinte e confirmada pelo TRF</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                    <xs:enumeration value="10">
+                                        <xs:annotation>
+                                            <xs:documentation>Acórdão do TRF favorável ao contribuinte</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                    <xs:enumeration value="11">
+                                        <xs:annotation>
+                                            <xs:documentation>Acórdão do STJ em recurso especial favorável ao contribuinte</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                    <xs:enumeration value="12">
+                                        <xs:annotation>
+                                            <xs:documentation>Acórdão do STF em recurso extraordinário favorável ao contribuinte</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                    <xs:enumeration value="13">
+                                        <xs:annotation>
+                                            <xs:documentation>Sentença 1ª instância não transitada em julgado com efeito suspensivo</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                    <xs:enumeration value="14">
+                                        <xs:annotation>
+                                            <xs:documentation>Contestação administrativa FAP</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                    <xs:enumeration value="90">
+                                        <xs:annotation>
+                                            <xs:documentation>Decisão definitiva a favor do contribuinte</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                    <xs:enumeration value="92">
+                                        <xs:annotation>
+                                            <xs:documentation>Sem suspensão da exigibilidade</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element name="dtDecisao" type="xs:date">
+                            <xs:annotation>
+                                <xs:documentation>Data da decisão, sentença ou despacho administrativo.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="indDeposito" type="TS_sim_nao">
+                            <xs:annotation>
+                                <xs:documentation>Indicativo de depósito do montante integral.</xs:documentation>
+                                <xs:documentation>Validação: Se {indSusp}(1070_infoProcesso_inclusao_dadosProc_infoSusp_indSusp) = [90], preencher obrigatoriamente com [N].</xs:documentation>
+                                <xs:documentation>Se {indSusp}(1070_infoProcesso_inclusao_dadosProc_infoSusp_indSusp) = [02, 03] preencher obrigatoriamente com [S].</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

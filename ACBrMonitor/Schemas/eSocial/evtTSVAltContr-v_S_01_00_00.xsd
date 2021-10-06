@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtTSVAltContr/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtTSVAltContr/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-2306 - Trabalhador Sem Vínculo de Emprego/Estatutário - Alteração Contratual</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtTSVAltContr">
+                    <xs:annotation>
+                        <xs:documentation>Evento TSVE - Alteração Contratual</xs:documentation>
+                        <xs:documentation>DESCRICAO_COMPLETA:Evento Trabalhador Sem Vínculo de Emprego/Estatutário - Alteração Contratual.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_GERAL_VALIDA_DADOS_TABCONTRIB</xs:documentation>                        
+                        <xs:documentation>REGRA:REGRA_MESMO_PROCEMI</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RETIFICA_MESMO_VINCULO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TSV_ATIVO_NA_DTEVENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_TRABALHADOR_BASE_CPF</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_trab" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="ideTrabSemVinculo" type="T_ideTrabSemVinculo" />
+                            <xs:element name="infoTSVAlteracao">
+                                <xs:annotation>
+                                    <xs:documentation>TSVE - Alteração Contratual.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {dtAlteracao}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="dtAlteracao" type="TS_dtAlteracao" />
+                                        <xs:element name="natAtividade" minOccurs="0" type="TS_natAtividade">
+                                            <xs:annotation>
+                                                <xs:documentation>Natureza da atividade.</xs:documentation>
+                                                <xs:documentation>Validação: Preenchimento obrigatório se o código de categoria no Registro de Eventos Trabalhistas - RET for igual a [201, 202, 401, 731, 734, 738]. Não deve ser preenchido se o código de categoria no RET for igual a [721, 722, 771, 901].</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="infoComplementares" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações complementares</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Grupo onde são fornecidas informações complementares, preenchidas conforme a categoria do TSVE.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O (de acordo com a condição dos grupos inferiores); OC (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="cargoFuncao" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Cargo/Função ocupado pelo TSVE</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Grupo que apresenta o cargo e/ou função ocupada pelo TSVE.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: OC (se o código de categoria no RET for igual a [901, 903, 904]); O (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="nmCargo" minOccurs="0" type="TS_texto_100">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informar o nome do cargo.</xs:documentation>
+                                                                        <xs:documentation>Validação: Preenchimento obrigatório se o código de categoria no RET for diferente de [410].</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="CBOCargo" minOccurs="0" type="TS_CBOCargo" />
+                                                                <xs:element name="nmFuncao" minOccurs="0" type="TS_texto_100">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informar o nome da função de confiança.</xs:documentation>
+                                                                        <xs:documentation>Validação: Preenchimento obrigatório se o código de categoria no RET for igual a [410] e não houver informação de {nmCargo}(./nmCargo).</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="CBOFuncao" minOccurs="0" type="TS_CBOFuncao" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="remuneracao" type="T_remuneracao" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações da remuneração e periodicidade de pagamento.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: O (se o código de categoria no RET for igual a [721, 722, 771]); OC (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="infoDirigenteSindical" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações relativas ao dirigente sindical.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: O (se o código de categoria no RET for igual a [401]); N (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="tpRegPrev" type="TS_tpRegPrev">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Tipo de regime previdenciário (ou Sistema de Proteção Social dos Militares).</xs:documentation>
+                                                                        <xs:documentation>Validação: Se {infoDirigenteSindical/categOrig}(2300_infoTSVInicio_infoComplementares_infoDirigenteSindical_categOrig) do evento S-2300 for relativa a "Empregado", não pode ser preenchido com [2].</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="infoTrabCedido" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações relativas ao trabalhador cedido/em exercício em outro órgão</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Informações relativas ao trabalhador cedido/em exercício em outro órgão, preenchidas exclusivamente pelo cessionário/órgão de destino.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: O (se o código de categoria no RET for igual a [410]); N (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="tpRegPrev" type="TS_tpRegPrev">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Tipo de regime previdenciário (ou Sistema de Proteção Social dos Militares).</xs:documentation>
+                                                                        <xs:documentation>Validação: Se {infoTrabCedido/categOrig}(2300_infoTSVInicio_infoComplementares_infoTrabCedido_categOrig) do evento S-2300 for relativa a "Empregado", não pode ser preenchido com [2].</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="infoMandElet" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações relativas a servidor público exercente de mandato eletivo.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: O (se o código de categoria no RET for igual a [304]); N (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="indRemunCargo" minOccurs="0" type="TS_indRemunCargo" />
+                                                                <xs:element name="tpRegPrev" type="TS_tpRegPrev">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Tipo de regime previdenciário (ou Sistema de Proteção Social dos Militares).</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="infoEstagiario" minOccurs="0" type="T_infoEstagiario">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações do estagiário.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: O (se o código de categoria no RET for igual a [901]); N (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

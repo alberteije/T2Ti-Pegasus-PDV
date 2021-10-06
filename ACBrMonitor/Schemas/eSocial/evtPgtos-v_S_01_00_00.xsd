@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtPgtos/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtPgtos/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-1210 - Pagamentos de Rendimentos do Trabalho</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtPgtos">
+                    <xs:annotation>
+                        <xs:documentation>Evento Pagamentos de Rendimentos do Trabalho.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_CONTROLE_DUPLICIDADE</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EMPREGADO_DOMESTICO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVE_FOPAG_SIMPLIFICADO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_MESMO_PROCEMI</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_PAGTO_IND_RETIFICACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_DT_PGTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_PER_APUR_PGTO</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_folha_mensal" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="ideBenef">
+                                <xs:annotation>
+                                    <xs:documentation>Identificação do beneficiário do pagamento.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {cpfBenef}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="cpfBenef" type="TS_cpf">
+                                            <xs:annotation>
+                                                <xs:documentation>Informar o CPF do beneficiário.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser o mesmo CPF informado no evento de remuneração ou desligamento (S-1200, S-1202, S-1207, S-2299 ou S-2399).</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="infoPgto" maxOccurs="999">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações dos pagamentos efetuados.</xs:documentation>
+                                                <xs:documentation>CHAVE_GRUPO: {tpPgto}, {perRef}, {ideDmDev}</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="dtPgto" type="xs:date">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informar a data de pagamento.</xs:documentation>
+                                                            <xs:documentation>Validação: A data informada deve estar compreendida no período de apuração ({perApur}(1210_ideEvento_perApur)), exceto se {procEmi}(1210_ideEvento_procEmi) = [2, 4, 22].</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="tpPgto">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Informar o evento de origem do pagamento.</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:byte">
+                                                                <xs:enumeration value="1">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Pagamento de remuneração, conforme apurado em {ideDmDev}(1200_dmDev_ideDmDev) do S-1200</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="2">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Pagamento de verbas rescisórias conforme apurado em {ideDmDev}(2299_infoDeslig_verbasResc_dmDev_ideDmDev) do S-2299</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="3">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Pagamento de verbas rescisórias conforme apurado em {ideDmDev}(2399_infoTSVTermino_verbasResc_dmDev_ideDmDev) do S-2399</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="4">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Pagamento de remuneração conforme apurado em {ideDmDev}(1202_dmDev_ideDmDev) do S-1202</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="5">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Pagamento de benefícios previdenciários, conforme apurado em {ideDmDev}(1207_dmDev_ideDmDev) do S-1207</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="perRef" type="TS_perApur">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informar a competência declarada no campo {perApur} do evento remuneratório a que se refere o pagamento, no formato AAAA-MM (ou AAAA, se for relativa à folha de 13° salário). Se {tpPgto}(1210_ideBenef_infoPgto_tpPgto) = [2, 3], informar o mês/ano da data de desligamento (ou de término), no formato AAAA-MM.</xs:documentation>
+                                                            <xs:documentation>Validação: Deve corresponder ao conteúdo indicado na relação a seguir:</xs:documentation>
+                                                            <xs:documentation>Se {tpPgto}(1210_ideBenef_infoPgto_tpPgto) = [1], {perApur}(1200_ideEvento_perApur) do S-1200;</xs:documentation>
+                                                            <xs:documentation>Se {tpPgto}(1210_ideBenef_infoPgto_tpPgto) = [2], mês/ano de {dtDeslig}(2299_infoDeslig_dtDeslig) do S-2299 (formato AAAA-MM);</xs:documentation>
+                                                            <xs:documentation>Se {tpPgto}(1210_ideBenef_infoPgto_tpPgto) = [3], mês/ano de {dtTerm}(2399_infoTSVTermino_dtTerm) do S-2399 (formato AAAA-MM);</xs:documentation>
+                                                            <xs:documentation>Se {tpPgto}(1210_ideBenef_infoPgto_tpPgto) = [4], {perApur}(1202_ideEvento_perApur) do S-1202;</xs:documentation>
+                                                            <xs:documentation>Se {tpPgto}(1210_ideBenef_infoPgto_tpPgto) = [5], {perApur}(1207_ideEvento_perApur) do S-1207.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="ideDmDev" type="TS_codigo_esocial">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Identificador atribuído pela fonte pagadora para o demonstrativo de valores devidos ao trabalhador conforme definido em S-1200, S-1202, S-1207, S-2299 ou S-2399.</xs:documentation>
+                                                            <xs:documentation>Validação: Deve ser um valor atribuído pela fonte pagadora em S-1200, S-1202, S-1207, S-2299 ou S-2399 no campo {ideDmDev}, obedecendo à relação:</xs:documentation>
+                                                            <xs:documentation>Se {tpPgto}(1210_ideBenef_infoPgto_tpPgto) = [1], em S-1200;</xs:documentation>
+                                                            <xs:documentation>Se {tpPgto}(1210_ideBenef_infoPgto_tpPgto) = [2], em S-2299;</xs:documentation>
+                                                            <xs:documentation>Se {tpPgto}(1210_ideBenef_infoPgto_tpPgto) = [3], em S-2399;</xs:documentation>
+                                                            <xs:documentation>Se {tpPgto}(1210_ideBenef_infoPgto_tpPgto) = [4], em S-1202;</xs:documentation>
+                                                            <xs:documentation>Se {tpPgto}(1210_ideBenef_infoPgto_tpPgto) = [5], em S-1207.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="vrLiq" type="TS_valorMonetario">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Valor líquido recebido pelo trabalhador, composto pelos vencimentos e descontos, inclusive os descontos de IRRF e de pensão alimentícia (se houver).</xs:documentation>
+                                                            <xs:documentation>Validação: Não pode ser um valor negativo.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

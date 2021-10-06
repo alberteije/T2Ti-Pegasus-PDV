@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtAltCadastral/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtAltCadastral/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-2205 - Alteração de Dados Cadastrais do Trabalhador</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtAltCadastral">
+                    <xs:annotation>
+                        <xs:documentation>Evento Alteração de Dados Cadastrais do Trabalhador.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_TRABALHADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXTEMP_DOMESTICO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXTEMP_REINTEGRACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_TRABALHADOR_BASE_CPF</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_trab" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="ideTrabalhador">
+                                <xs:annotation>
+                                    <xs:documentation>Identificação do trabalhador.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {cpfTrab}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="cpfTrab" type="TS_cpfTrab" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="alteracao">
+                                <xs:annotation>
+                                    <xs:documentation>Alteração de dados cadastrais do trabalhador.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {dtAlteracao}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="dtAlteracao" type="TS_dtAlteracao" />
+                                        <xs:element name="dadosTrabalhador">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações pessoais do trabalhador.</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="nmTrab" type="TS_nmTrab" />
+                                                    <xs:element name="sexo" type="TS_sexoTrab" />
+                                                    <xs:element name="racaCor" type="TS_racaCorTrab" />
+                                                    <xs:element name="estCiv" minOccurs="0" type="TS_estCivilTrab" />
+                                                    <xs:element name="grauInstr" type="TS_grauInstr" />
+                                                    <xs:element name="nmSoc" minOccurs="0" type="TS_nmSoc" />
+                                                    <xs:element name="paisNac" type="TS_paisNac" />
+                                                    <xs:element name="endereco">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Endereço do trabalhador</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Grupo de informações do endereço do trabalhador.</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:choice>
+                                                                    <xs:element name="brasil" type="T_endereco_brasil" />
+                                                                    <xs:element name="exterior" type="T_endereco_exterior" />
+                                                                </xs:choice>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="trabImig" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações do trabalhador imigrante.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: OC (se {paisNac}(2205_alteracao_dadosTrabalhador_paisNac) for diferente de [105]); N (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="tmpResid" minOccurs="0" type="TS_tmpResid">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Tempo de residência do trabalhador imigrante.</xs:documentation>
+                                                                        <xs:documentation>Validação: Preenchimento obrigatório quando houver trabalhador com ({dtAdm}(2200_vinculo_infoRegimeTrab_infoCeletista_dtAdm) ou {dtExercicio}(2200_vinculo_infoRegimeTrab_infoEstatutario_dtExercicio) ou {dtInicio}(2300_infoTSVInicio_dtInicio)) no Registro de Eventos Trabalhistas - RET >= [2021-05-10].</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="condIng" type="TS_condIng" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="infoDeficiencia" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Pessoa com deficiência.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="defFisica" type="TS_defFisica" />
+                                                                <xs:element name="defVisual" type="TS_defVisual" />
+                                                                <xs:element name="defAuditiva" type="TS_defAuditiva" />
+                                                                <xs:element name="defMental" type="TS_defMental" />
+                                                                <xs:element name="defIntelectual" type="TS_defIntelectual" />
+                                                                <xs:element name="reabReadap" type="TS_reabReadap" />
+                                                                <xs:element name="infoCota" minOccurs="0" type="TS_sim_nao">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informar se o trabalhador preenche cota de pessoas com deficiência habilitadas ou de beneficiários reabilitados.</xs:documentation>
+                                                                        <xs:documentation>Validação: Preenchimento obrigatório e exclusivo quando houver trabalhador cadastrado no evento S-2200 com {tpRegTrab}(2200_vinculo_tpRegTrab) = [1] e ativo em {dtAlteracao}(2205_alteracao_dtAlteracao).</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="observacao" minOccurs="0" type="TS_observacao" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="dependente" minOccurs="0" maxOccurs="99">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações dos dependentes.</xs:documentation>
+                                                            <xs:documentation>CHAVE_GRUPO: {tpDep}, {nmDep}, {dtNascto}</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="tpDep" type="TS_tpDep" />
+                                                                <xs:element name="nmDep" type="TS_nmDep" />
+                                                                <xs:element name="dtNascto" type="TS_dtNascto" />
+                                                                <xs:element name="cpfDep" minOccurs="0" type="TS_cpfDep" />
+                                                                <xs:element name="sexoDep" minOccurs="0" type="TS_sexo">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Sexo do dependente.</xs:documentation>
+                                                                        <xs:documentation>Validação: Preenchimento obrigatório e exclusivo quando houver trabalhador cadastrado no evento S-2200, ativo em {dtAlteracao}(2205_alteracao_dtAlteracao) e com {tpRegPrev} = [2] no RET.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="depIRRF" type="TS_depIRRF" />
+                                                                <xs:element name="depSF" type="TS_depSF" />
+                                                                <xs:element name="incTrab" type="TS_incTrab" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="contato" minOccurs="0" type="T_contato">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações de contato.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtFechaEvPer/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtFechaEvPer/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-1299 - Fechamento dos Eventos Periódicos</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtFechaEvPer">
+                    <xs:annotation>
+                        <xs:documentation>Evento Fechamento dos Eventos Periódicos.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVE_FOPAG_SIMPLIFICADO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_ANUAL_DEZEMBRO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_FECHAMENTO_FOPAG</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_folha_sem_retificacao" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="infoFech">
+                                <xs:annotation>
+                                    <xs:documentation>Informações do fechamento.</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="evtRemun" type="TS_sim_nao">
+                                            <xs:annotation>
+                                                <xs:documentation>Possui informações relativas a remuneração de trabalhadores ou provento/pensão de beneficiários no período de apuração?</xs:documentation>
+                                                <xs:documentation>Validação: Se for igual a [S], deve existir evento de remuneração (S-1200, S-1202, S-1207, S-2299 ou S-2399) para o período de apuração. Caso contrário, não deve existir evento de remuneração.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="evtComProd" type="TS_sim_nao">
+                                            <xs:annotation>
+                                                <xs:documentation>Possui informações de comercialização de produção?</xs:documentation>
+                                                <xs:documentation>Validação: Se for igual a [S], deve existir o evento S-1260 para o período de apuração. Caso contrário, não deve existir o evento.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="evtContratAvNP" type="TS_sim_nao">
+                                            <xs:annotation>
+                                                <xs:documentation>Contratou, por intermédio de sindicato, serviços de trabalhadores avulsos não portuários?</xs:documentation>
+                                                <xs:documentation>Validação: Se for igual a [S], deve existir o evento S-1270 para o período de apuração. Caso contrário, não deve existir o evento.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="evtInfoComplPer" type="TS_sim_nao">
+                                            <xs:annotation>
+                                                <xs:documentation>Possui informações de desoneração de folha de pagamento ou, sendo empresa enquadrada no Simples, possui informações sobre a receita obtida em atividades cuja contribuição previdenciária incidente sobre a folha de pagamento é concomitantemente substituída e não substituída?</xs:documentation>
+                                                <xs:documentation>Validação: Se for igual a [S], deve existir o evento S-1280 para o período de apuração. Caso contrário, não deve existir o evento.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="indExcApur1250" minOccurs="0">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:documentation>Indicativo de exclusão de apuração das aquisições de produção rural (eventos S-1250) do período de apuração.</xs:documentation>
+                                                    <xs:documentation>Validação: Não informar se {perApur}(1299_ideEvento_perApur) >= [2021-05] ou se {indApuracao}(1299_ideEvento_indApuracao) = [2]. Preenchimento obrigatório caso o campo tenha sido informado em fechamento anterior do mesmo período de apuração.</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:string">
+                                                    <xs:enumeration value="S">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Sim</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

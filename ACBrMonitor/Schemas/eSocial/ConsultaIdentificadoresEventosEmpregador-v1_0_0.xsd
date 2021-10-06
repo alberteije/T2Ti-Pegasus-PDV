@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema version="1.0.0"
+           xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:esocial="http://www.esocial.gov.br/schema/consulta/identificadores-eventos/empregador/v1_0_0"
+           targetNamespace="http://www.esocial.gov.br/schema/consulta/identificadores-eventos/empregador/v1_0_0"
+           elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="./xmldsig-core-schema.xsd" />
+
+  <xs:element name="eSocial">
+    <xs:annotation>
+      <xs:documentation>Elemento raiz do eSocial.</xs:documentation>
+    </xs:annotation>
+
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="consultaIdentificadoresEvts">
+          <xs:annotation>
+            <xs:documentation>Elemento de  informacoes relativas a consulta de eventos.</xs:documentation>
+          </xs:annotation>
+
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEmpregador" type="esocial:TIdeEmpregador">
+                <xs:annotation>
+                  <xs:documentation>Identificação do empregador.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+
+              <xs:element name="consultaEvtsEmpregador" type="esocial:TConsultaEventosEmpregador">
+                <xs:annotation>
+                  <xs:documentation>Contém o filtro para consulta aos eventos do empregador que não sejam eventos de tabela e trabalhistas..</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="TConsultaEventosEmpregador">
+    <xs:annotation>
+      <xs:documentation>Define o filtro para consulta aos eventos do empregador que não sejam eventos de tabela e trabalhistas.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+
+      <xs:element name="tpEvt">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Tipo do evento</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:length value="6" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+
+      <xs:element name="perApur">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Período ao qual se referem as informações. AAAA-MM ou AAAA</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="4" />
+            <xs:maxLength value="7" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TIdeEmpregador">
+    <xs:annotation>
+      <xs:documentation>Define a identificação do empregador. 1-CNPJ; 2-CPF;</xs:documentation>
+    </xs:annotation>
+
+    <xs:sequence>
+
+      <xs:element name="tpInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Tipo de empregador. 1-CNPJ; 2-CPF;</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base ="xs:byte">
+            <xs:enumeration value="1" />
+            <xs:enumeration value="2" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Número de Inscrição</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d{8,15}" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

@@ -1,0 +1,333 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtInfoEmpregador/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtInfoEmpregador/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-1000 - Informações do Empregador/Contribuinte/Órgão Público</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtInfoEmpregador">
+                    <xs:annotation>
+                        <xs:documentation>Evento Informações do Empregador.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_INFO_EMP_PERIODO_CONFLITANTE</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_INFO_EMP_VALIDA_CLASSTRIB_NATJURID</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_INFO_EMP_VALIDA_DTINICIAL</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TAB_PERMITE_EXCLUSAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_DT_FUTURA</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_EMPREGADOR</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_evtTab_inicial" />
+                            <xs:element name="ideEmpregador">
+                                <xs:annotation>
+                                    <xs:documentation>Informações de identificação do empregador.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {tpInsc}, {nrInsc}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="tpInsc" type="TS_tpInsc_1_2" />
+                                        <xs:element name="nrInsc" type="TS_nrInsc_8_11_14">
+                                            <xs:annotation>
+                                                <xs:documentation>Informar o número de inscrição do contribuinte de acordo com o tipo de inscrição indicado no campo {tpInsc}(./tpInsc).</xs:documentation>
+                                                <xs:documentation>Validação: Se {tpInsc}(./tpInsc) for igual a [1], deve ser um número de CNPJ válido. Neste caso, deve ser informada apenas a raiz/base (8 posições), exceto se natureza jurídica do declarante for igual a 101-5, 104-0, 107-4, 110-4, 113-9, 116-3, 125-2, 128-7 ou 134-1, situação em que o campo deve ser preenchido com o CNPJ completo (14 posições).</xs:documentation>
+                                                <xs:documentation>Se {tpInsc}(./tpInsc) for igual a [2], deve ser um CPF válido.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="infoEmpregador">
+                                <xs:annotation>
+                                    <xs:documentation>Informações do empregador.</xs:documentation>
+                                    <xs:documentation>DESCRICAO_COMPLETA:Identificação da operação (inclusão, alteração ou exclusão) e das respectivas informações do empregador.</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:choice>
+                                            <xs:element name="inclusao">
+                                                <xs:annotation>
+                                                    <xs:documentation>Inclusão de novas informações.</xs:documentation>
+                                                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="idePeriodo" type="T_idePeriodo" />
+                                                        <xs:element name="infoCadastro" type="T_infoCadastro" />
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="alteracao">
+                                                <xs:annotation>
+                                                    <xs:documentation>Alteração das informações.</xs:documentation>
+                                                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="idePeriodo" type="T_idePeriodo" />
+                                                        <xs:element name="infoCadastro" type="T_infoCadastro" />
+                                                        <xs:element name="novaValidade" minOccurs="0" type="T_idePeriodo">
+                                                            <xs:annotation>
+                                                                <xs:documentation>Novo período de validade das informações.</xs:documentation>
+                                                                <xs:documentation>DESCRICAO_COMPLETA:Informação preenchida exclusivamente em caso de alteração do período de validade das informações, apresentando o novo período de validade.</xs:documentation>
+                                                                <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                            </xs:annotation>
+                                                        </xs:element>
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="exclusao">
+                                                <xs:annotation>
+                                                    <xs:documentation>Exclusão das informações.</xs:documentation>
+                                                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="idePeriodo" type="T_idePeriodo" />
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:choice>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="T_idePeriodo">
+        <xs:annotation>
+            <xs:documentation>Período de validade das informações.</xs:documentation>
+            <xs:documentation>CHAVE_GRUPO: {iniValid}, {fimValid}</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="iniValid" type="TS_iniValid" />
+            <xs:element name="fimValid" minOccurs="0" type="TS_fimValid" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="T_infoCadastro">
+        <xs:annotation>
+            <xs:documentation>Detalhamento das informações do empregador.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="classTrib">
+                <xs:simpleType>
+                    <xs:annotation>
+                        <xs:documentation>Preencher com o código correspondente à classificação tributária do contribuinte.</xs:documentation>
+                        <xs:documentation>Validação: Deve ser um código válido e existente na Tabela 08. Os códigos [21] e [22] somente podem ser utilizados se {tpInsc}(1000_ideEmpregador_tpInsc) for igual a [2]. Para os demais códigos, {tpInsc}(1000_ideEmpregador_tpInsc) deve ser igual a [1].</xs:documentation>
+                    </xs:annotation>
+                    <xs:restriction base="xs:string">
+                        <xs:pattern value="\d{2}" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="indCoop" minOccurs="0" type="TS_indCoop">
+                <xs:annotation>
+                    <xs:documentation>Indicativo de cooperativa.</xs:documentation>
+                    <xs:documentation>Validação: O preenchimento do campo é exclusivo e obrigatório para PJ. Somente pode ser diferente de [0] se a natureza jurídica do declarante for igual a 214-3.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="indConstr" minOccurs="0" type="TS_indConstr">
+                <xs:annotation>
+                    <xs:documentation>Indicativo de construtora.</xs:documentation>
+                    <xs:documentation>Validação: O preenchimento do campo é exclusivo e obrigatório para PJ.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="indDesFolha">
+                <xs:simpleType>
+                    <xs:annotation>
+                        <xs:documentation>Indicativo de desoneração da folha.</xs:documentation>
+                        <xs:documentation>Validação: Pode ser igual a [1] apenas se {classTrib}(./classTrib) = [02, 03, 99]. Nos demais casos, deve ser igual a [0].</xs:documentation>
+                    </xs:annotation>
+                    <xs:restriction base="xs:byte">
+                        <xs:enumeration value="0">
+                            <xs:annotation>
+                                <xs:documentation>Não aplicável</xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1">
+                            <xs:annotation>
+                                <xs:documentation>Empresa enquadrada nos arts. 7º a 9º da Lei 12.546/2011</xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="indOpcCP" minOccurs="0">
+                <xs:simpleType>
+                    <xs:annotation>
+                        <xs:documentation>Indicativo da opção pelo produtor rural pela forma de tributação da contribuição previdenciária, nos termos do art. 25, § 13, da Lei 8.212/1991 e do art. 25, § 7°, da Lei 8.870/1994. O não preenchimento deste campo por parte do produtor rural implica opção pela comercialização da sua produção.</xs:documentation>
+                        <xs:documentation>Validação: Não preencher se {classTrib}(./classTrib) for diferente de [07, 21].</xs:documentation>
+                    </xs:annotation>
+                    <xs:restriction base="xs:byte">
+                        <xs:enumeration value="1">
+                            <xs:annotation>
+                                <xs:documentation>Sobre a comercialização da sua produção</xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="2">
+                            <xs:annotation>
+                                <xs:documentation>Sobre a folha de pagamento</xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="indPorte" minOccurs="0">
+                <xs:simpleType>
+                    <xs:annotation>
+                        <xs:documentation>Indicativo de microempresa - ME ou empresa de pequeno porte - EPP para permissão de acesso ao módulo simplificado. Não preencher caso o empregador não se enquadre como micro ou pequena empresa.</xs:documentation>
+                        <xs:documentation>Validação: Não preencher se {classTrib}(./classTrib) = [21, 22].</xs:documentation>
+                    </xs:annotation>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="S">
+                            <xs:annotation>
+                                <xs:documentation>Sim</xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="indOptRegEletron">
+                <xs:simpleType>
+                    <xs:annotation>
+                        <xs:documentation>Indica se houve opção pelo registro eletrônico de empregados.</xs:documentation>
+                    </xs:annotation>
+                    <xs:restriction base="xs:byte">
+                        <xs:enumeration value="0">
+                            <xs:annotation>
+                                <xs:documentation>Não optou pelo registro eletrônico de empregados</xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="1">
+                            <xs:annotation>
+                                <xs:documentation>Optou pelo registro eletrônico de empregados</xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="cnpjEFR" minOccurs="0" type="TS_cnpj">
+                <xs:annotation>
+                    <xs:documentation>CNPJ do Ente Federativo Responsável - EFR.</xs:documentation>
+                    <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se a natureza jurídica do declarante for Administração Pública (grupo [1]). Nesse caso, informar o campo com 14 (catorze) algarismos.</xs:documentation>
+                    <xs:documentation>Informação validada no cadastro do CNPJ da RFB.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="dadosIsencao" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Informações complementares - Empresas isentas - Dados da isenção.</xs:documentation>
+                    <xs:documentation>CONDICAO_GRUPO: OC (se {classTrib}(1000_infoEmpregador_inclusao_infoCadastro_classTrib) = [80]); N (nos demais casos)</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ideMinLei">
+                            <xs:simpleType>
+                                <xs:annotation>
+                                    <xs:documentation>Sigla e nome do Ministério ou lei que concedeu o certificado.</xs:documentation>
+                                </xs:annotation>
+                                <xs:restriction base="xs:string">
+                                    <xs:minLength value="1" />
+                                    <xs:maxLength value="70" />
+                                    <xs:pattern value=".*[^\s].*" />
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element name="nrCertif">
+                            <xs:simpleType>
+                                <xs:annotation>
+                                    <xs:documentation>Número do Certificado de Entidade Beneficente de Assistência Social - CEBAS, número da portaria de concessão do certificado, ou, no caso de concessão através de lei específica, o número da lei.</xs:documentation>
+                                </xs:annotation>
+                                <xs:restriction base="xs:string">
+                                    <xs:minLength value="1" />
+                                    <xs:maxLength value="40" />
+                                    <xs:pattern value=".*[^\s].*" />
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element name="dtEmisCertif" type="xs:date">
+                            <xs:annotation>
+                                <xs:documentation>Data de emissão do certificado/publicação da lei.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="dtVencCertif" type="xs:date">
+                            <xs:annotation>
+                                <xs:documentation>Data de vencimento do certificado.</xs:documentation>
+                                <xs:documentation>Validação: Não pode ser anterior a {dtEmisCertif}(./dtEmisCertif).</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="nrProtRenov" minOccurs="0">
+                            <xs:simpleType>
+                                <xs:annotation>
+                                    <xs:documentation>Número do protocolo do pedido de renovação.</xs:documentation>
+                                </xs:annotation>
+                                <xs:restriction base="xs:string">
+                                    <xs:minLength value="1" />
+                                    <xs:maxLength value="40" />
+                                    <xs:pattern value=".*[^\s].*" />
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element name="dtProtRenov" minOccurs="0" type="xs:date">
+                            <xs:annotation>
+                                <xs:documentation>Data do protocolo de renovação.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="dtDou" minOccurs="0" type="xs:date">
+                            <xs:annotation>
+                                <xs:documentation>Data de publicação no Diário Oficial da União - DOU.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="pagDou" minOccurs="0">
+                            <xs:simpleType>
+                                <xs:annotation>
+                                    <xs:documentation>Número da página no DOU referente à publicação do documento de concessão do certificado.</xs:documentation>
+                                </xs:annotation>
+                                <xs:restriction base="xs:integer">
+                                    <xs:pattern value="\d{1,5}" />
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="infoOrgInternacional" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Informações exclusivas de organismos internacionais e outras instituições extraterritoriais.</xs:documentation>
+                    <xs:documentation>CONDICAO_GRUPO: O (se a natureza jurídica pertencer ao grupo [5]); N (nos demais casos)</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="indAcordoIsenMulta">
+                            <xs:simpleType>
+                                <xs:annotation>
+                                    <xs:documentation>Indicativo da existência de acordo internacional para isenção de multa.</xs:documentation>
+                                </xs:annotation>
+                                <xs:restriction base="xs:byte">
+                                    <xs:enumeration value="0">
+                                        <xs:annotation>
+                                            <xs:documentation>Sem acordo</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                    <xs:enumeration value="1">
+                                        <xs:annotation>
+                                            <xs:documentation>Com acordo</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:enumeration>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

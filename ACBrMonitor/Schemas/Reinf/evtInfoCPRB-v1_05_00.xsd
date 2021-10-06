@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.reinf.esocial.gov.br/schemas/evtInfoCPRB/v1_05_00" targetNamespace="http://www.reinf.esocial.gov.br/schemas/evtInfoCPRB/v1_05_00" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="./xmldsig-core-schema.xsd"/>
+  <xs:element name="Reinf">
+    <xs:annotation>
+      <xs:documentation>EFD-Reinf</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="evtCPRB" minOccurs="1" maxOccurs="1">
+          <xs:annotation>
+            <xs:documentation>Evento da contribuição previdenciária sobre a receita bruta - CPRB</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEvento" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do evento</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="indRetif" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Indicativo de Retificação:
+                            1 - Arquivo Original
+                            2 - Arquivo de Retificação
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="nrRecibo" minOccurs="0" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Número do recibo do arquivo a ser retificado.</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="16"/>
+                          <xs:maxLength value="52"/>
+                          <xs:pattern value="[0-9]{1,18}[-][0-9]{2}[-][0-9]{4}[-][0-9]{4}[-][0-9]{1,18}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="perApur" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Informar o ano/mês (formato AAAA-MM) de referência das informações</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:gYearMonth">
+                          <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="tpAmb" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Identificação do ambiente:
+                            1 - Produção;
+                            2 - Produção restrita;
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedInt">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="procEmi" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Processo de emissão do evento:
+                            1 - Emissão com aplicativo do contribuinte
+                            2 - Aplicativo governamental
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="verProc" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Versão do processo de emissão do evento. Informar a versão do aplicativo emissor do evento</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1"/>
+                          <xs:maxLength value="20"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="ideContri" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do contribuinte</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="tpInsc" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>
+                            Preencher com o código correspondente ao tipo de inscrição do contribuinte
+                            Deve ser igual a [1] (CNPJ).
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="1"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="nrInsc" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>
+                          Informar o CNPJ apenas com a Raiz/Base de oito posições, exceto se natureza jurídica do declarante for de
+                          administração pública direta federal ([101-5], [104-0], [107-4] e [116-3]), situação em que o campo deve
+                          ser preenchido com o CNPJ completo com 14 posições.
+                        </xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:pattern value="[0-9]{8}|[0-9]{14}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="infoCPRB" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informação da Contribuição Previdenciária sobre a Receita Bruta</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ideEstab" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Registro que identifica o estabelecimento que auferiu a receita bruta.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="tpInscEstab" minOccurs="1" maxOccurs="1">
+                            <xs:annotation>
+                              <xs:documentation>
+                                Preencher com o código correspondente ao tipo de inscrição: Deve ser igual a [1] (CNPJ) ou [4] CNO
+                              </xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:unsignedInt">
+                                <xs:pattern value="[1|4]"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="nrInscEstab" minOccurs="1" maxOccurs="1">
+                            <xs:annotation>
+                              <xs:documentation>
+                                Preencher com o número de inscrição do estabelecimento pertencente ao contribuinte declarante, de acordo com o tipo de inscrição indicado no campo {tpInscEstab}.
+                              </xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:pattern value="[0-9]{12}|[0-9]{14}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="vlrRecBrutaTotal" minOccurs="1" maxOccurs="1">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Valor da Receita Bruta Total do Estabelecimento no Período.</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="4"/>
+                                <xs:maxLength value="17" />
+                                <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="vlrCPApurTotal" minOccurs="1" maxOccurs="1">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Valor total da Contribuição Previdenciária sobre Receita Bruta apurada pelo Estabelecimento no período.</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="4"/>
+                                <xs:maxLength value="17" />
+                                <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="vlrCPRBSuspTotal" minOccurs="0" maxOccurs="1">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Valor da Contribuição Previdenciária com exigibilidade suspensa.</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="4"/>
+                                <xs:maxLength value="17" />
+                                <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="tipoCod" minOccurs="1" maxOccurs="unbounded">
+                            <xs:annotation>
+                              <xs:documentation>Registro que apresenta o valor total da receita por tipo de código de atividade econômica</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="codAtivEcon" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>
+                                        Código indicador correspondente à atividade comercial, produto ou serviço sujeito a incidência da Contribuição Previdenciária sobre a Receita Bruta, conforme Tabela 09.
+                                      </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="8"/>
+                                      <xs:maxLength value="8"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrRecBrutaAtiv" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o valor total da receita da atividade.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrExcRecBruta" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o Valor total das Exclusões da Receita Bruta previstas em lei.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrAdicRecBruta" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o Valor total das Adições da Receita Bruta previstas em lei.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrBcCPRB" minOccurs="1" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o Valor da Base de Cálculo da Contribuição Previdenciária sobre a Receita Bruta.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrCPRBapur" minOccurs="0" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Preencher com o Valor Contribuição Previdenciária sobre a Receita Bruta.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="4"/>
+                                      <xs:maxLength value="17" />
+                                      <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="tipoAjuste" minOccurs="0" maxOccurs="unbounded">
+                                  <xs:annotation>
+                                    <xs:documentation>
+                                      Registro a ser preenchido caso a pessoa jurídica tenha de proceder a ajustes da contribuição apurada no período,
+                                      decorrentes da legislação tributária da contribuição, de estorno ou de outras situações.
+                                    </xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="tpAjuste" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Preencher com o código correspondente ao tipo de ajuste:
+                                              0 - Ajuste de redução;
+                                              1 - Ajuste de acréscimo;
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:unsignedByte">
+                                            <xs:pattern value="[0|1]"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="codAjuste" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Preencher com o código de ajuste:
+                                              1 - Ajuste da CPRB: Adoção do Regime de Caixa;
+                                              2 - Ajuste da CPRB: Diferimento de Valores a recolher no período;
+                                              3 - Adição de valores Diferidos em Período(s) Anteriores(es);
+                                              4 - Exportações diretas;
+                                              5 - Transporte internacional de cargas;
+                                              6 - Vendas canceladas e os descontos incondicionais concedidos;
+                                              7 - IPI, se incluído na receita bruta;
+                                              8 - ICMS, quando cobrado pelo vendedor dos bens ou prestador dos serviços na condição de substituto tributário;
+                                              9 - Receita bruta reconhecida pela construção, recuperação, reforma, ampliação ou melhoramento da infraestrutura,
+                                              cuja contrapartida seja ativo intangível representativo de direito de exploração, no caso de contratos de concessão de serviços públicos;
+                                              10 - O valor do aporte de recursos realizado nos termos do art 6 §3 inciso III da Lei 11.079/2004;
+                                              11 - Demais ajustes oriundos da Legislação Tributária, estorno ou outras situações.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:integer">
+                                            <xs:minInclusive value="1"/>
+                                            <xs:maxInclusive value="11"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vlrAjuste" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Valor do ajuste</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="4"/>
+                                            <xs:maxLength value="17" />
+                                            <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="descAjuste" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Descrição resumida do ajuste</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="1"/>
+                                            <xs:maxLength value="20"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="dtAjuste" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Informar o mês/ano (formato AAAA-MM) de referência do ajuste</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:gYearMonth">
+                                            <xs:pattern value="20([0-9][0-9])-(0[1-9]|1[0-2])"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="infoProc" minOccurs="0" maxOccurs="50">
+                                  <xs:annotation>
+                                    <xs:documentation>Informações de processos relacionados a Suspensão da CPRB.</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="tpProc" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Preencher com o código correspondente ao tipo de processo:
+                                              1 - Administrativo;
+                                              2 - Judicial.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:unsignedByte">
+                                            <xs:pattern value="[1|2]"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="nrProc" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Informar o número do processo administrativo/judicial.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="1"/>
+                                            <xs:maxLength value="21"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="codSusp" minOccurs="0" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Código do Indicativo da Suspensão, atribuído pelo contribuinte. Este campo deve ser utilizado se, num mesmo processo,
+                                              houver mais de uma matéria tributária objeto de contestação e as decisões forem diferentes para cada uma.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:pattern value="[0-9]{0,14}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vlrCPRBSusp" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Valor da Contribuição Previdenciária com exigibilidade suspensa.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="4"/>
+                                            <xs:maxLength value="17" />
+                                            <xs:pattern value="[0-9]{1,14}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" use="required">
+              <xs:annotation>
+                <xs:documentation>Identificação única do evento</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:ID">
+                  <xs:length value="36" />
+                  <xs:pattern value="I{1}D{1}[0-9]{34}" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

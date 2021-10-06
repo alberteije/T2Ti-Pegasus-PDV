@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtBaixa/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtBaixa/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-8299 - Baixa Judicial do Vínculo</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtBaixa">
+                    <xs:annotation>
+                        <xs:documentation>Evento Baixa Judicial do Vínculo.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_BAIXA_JUDICIAL</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_BAIXA_TRABALHADOR_AFASTADO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_DESLIG_EXCLUI_DESLIGAMENTO_REINTEG</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_DESLIG_EXCLUSAO_EVENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_DESLIG_EXISTE_EVENTO_POSTERIOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RETIFICA_MESMO_VINCULO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VINCULO_ATIVO_NA_DTEVENTO</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_trab_jud" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="ideVinculo" type="T_ideVinculo" />
+                            <xs:element name="infoBaixa">
+                                <xs:annotation>
+                                    <xs:documentation>Informações relativas à baixa judicial do vínculo.</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="mtvDeslig">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:documentation>Código de motivo do desligamento.</xs:documentation>
+                                                    <xs:documentation>Validação: Deve ser um código válido e existente na Tabela 19, bem como compatível com o código de categoria do trabalhador, conforme Tabela 19.</xs:documentation>
+                                                    <xs:documentation>Não podem ser informados motivos que não implicam rescisão do contrato de trabalho (igual a [11, 12, 13, 25, 28, 29, 30, 34, 36]).</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:string">
+                                                    <xs:pattern value="\d{2}" />
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="dtDeslig" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Preencher com a data de desligamento do vínculo (último dia trabalhado).</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser uma data igual ou posterior a 20/09/2019 e igual ou anterior à data atual.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="dtProjFimAPI" minOccurs="0" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Data projetada para o término do aviso prévio indenizado.</xs:documentation>
+                                                <xs:documentation>Validação: Se preenchida, deve ser uma data posterior a {dtDeslig}(./dtDeslig).</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="nrProcTrab" type="TS_nrProcJud">
+                                            <xs:annotation>
+                                                <xs:documentation>Número que identifica o processo judicial onde a baixa do vínculo foi determinada.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser um processo judicial válido, com 20 (vinte) algarismos.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="observacao" minOccurs="0" type="TS_observacao">
+                                            <xs:annotation>
+                                                <xs:documentation>Observação relevante sobre o desligamento do trabalhador, que não esteja consignada em outros campos.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

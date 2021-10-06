@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtCdBenefAlt/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtCdBenefAlt/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-2405 - Cadastro de Beneficiário - Entes Públicos - Alteração</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtCdBenefAlt">
+                    <xs:annotation>
+                        <xs:documentation>Evento Cadastro de Beneficiário - Alteração</xs:documentation>
+                        <xs:documentation>DESCRICAO_COMPLETA:Evento Cadastro de Beneficiário - Entes Públicos - Alteração.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>                        
+                        <xs:documentation>REGRA:REGRA_EVENTO_EXT_SEM_IMPACTO_FOPAG</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_TRABALHADOR_BASE_CPF</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_trab_PJ" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador_cnpj" />
+                            <xs:element name="ideBenef">
+                                <xs:annotation>
+                                    <xs:documentation>Identificação do beneficiário.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {cpfBenef}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="cpfBenef" type="TS_cpf">
+                                            <xs:annotation>
+                                                <xs:documentation>Informar o CPF do beneficiário.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser um CPF válido e cadastrado pelo órgão público declarante por meio do evento S-2400.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="alteracao">
+                                <xs:annotation>
+                                    <xs:documentation>Alteração de dados do beneficiário.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {dtAlteracao}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="dtAlteracao" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Preencher com a data de alteração.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser posterior à data de início informada no evento S-2400 e igual ou anterior à data atual.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="dadosBenef">
+                                            <xs:annotation>
+                                                <xs:documentation>Dados do beneficiário.</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="nmBenefic" type="TS_nmBenefic" />
+                                                    <xs:element name="sexo" type="TS_sexo">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Sexo do beneficiário.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="racaCor" type="TS_racaCorBenef" />
+                                                    <xs:element name="estCiv" minOccurs="0" type="TS_estCivilBenef" />
+                                                    <xs:element name="incFisMen" type="TS_incFisMen" />
+                                                    <xs:element name="endereco">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Endereço do beneficiário.</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Grupo de informações do endereço do beneficiário.</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:choice>
+                                                                    <xs:element name="brasil" type="T_endereco_brasil" />
+                                                                    <xs:element name="exterior" type="T_endereco_exterior" />
+                                                                </xs:choice>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="dependente" minOccurs="0" maxOccurs="99">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações dos dependentes.</xs:documentation>
+                                                            <xs:documentation>CHAVE_GRUPO: {tpDep}, {nmDep}, {dtNascto}</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="tpDep" type="TS_tpDep" />
+                                                                <xs:element name="nmDep" type="TS_nmDep" />
+                                                                <xs:element name="dtNascto" type="TS_dtNascto" />
+                                                                <xs:element name="cpfDep" minOccurs="0" type="TS_cpfDepBenef" />
+                                                                <xs:element name="sexoDep" type="TS_sexo">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Sexo do dependente.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="depIRRF" type="TS_depIRRF_Benef" />
+                                                                <xs:element name="incFisMen" type="TS_incFisMenDep" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtReintegr/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtReintegr/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-2298 - Reintegração/Outros Provimentos</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtReintegr">
+                    <xs:annotation>
+                        <xs:documentation>Evento Reintegração/Outros Provimentos.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EMPREGADO_DOMESTICO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTO_IMPACTO_FOPAG</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_EVENTO_DESLIGAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXTEMP_REINTEGRACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_MESMO_PROCEMI</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REINTEG_EXCLUSAO_EVENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RETIFICA_MESMO_VINCULO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_EMPREGADOR</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_trab" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="ideVinculo" type="T_ideVinculo" />
+                            <xs:element name="infoReintegr">
+                                <xs:annotation>
+                                    <xs:documentation>Informações da reintegração.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {dtEfetRetorno}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="tpReint">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:documentation>Tipo de reintegração/outro provimento.</xs:documentation>
+                                                    <xs:documentation>Validação: Os tipos [3, 4, 5] só podem ser informados se a natureza jurídica do declarante for Administração Pública (grupo [1]).</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:byte">
+                                                    <xs:enumeration value="1">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Reintegração por decisão judicial</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="2">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Reintegração por anistia legal</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="3">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Reversão de servidor público</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="4">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Recondução de servidor público</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="5">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Reinclusão de militar</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="9">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Outros</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="nrProcJud" minOccurs="0" type="TS_nrProcJud">
+                                            <xs:annotation>
+                                                <xs:documentation>Em caso de reintegração por determinação judicial, preencher com o número do processo.</xs:documentation>
+                                                <xs:documentation>Validação: Informação obrigatória e exclusiva se {tpReint}(./tpReint) = [1].</xs:documentation>
+                                                <xs:documentation>Se preenchido, deve ser um processo judicial válido, com 20 (vinte) algarismos.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="nrLeiAnistia" minOccurs="0">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:documentation>Informar a lei de anistia, descrevendo seu número e ano de publicação.</xs:documentation>
+                                                    <xs:documentation>Validação: Preenchimento obrigatório se {tpReint}(./tpReint) = [2].</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:string">
+                                                    <xs:pattern value="\w{5,13}" />
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="dtEfetRetorno" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Informar a data do efetivo retorno ao trabalho.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser uma data válida, posterior à data de desligamento do trabalhador. Não pode ser posterior a 30 (trinta) dias da data atual.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="dtEfeito" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Informar a data de início dos efeitos financeiros da reintegração.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser uma data igual ou anterior à data do efetivo retorno ao trabalho e posterior à data do desligamento.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>    
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

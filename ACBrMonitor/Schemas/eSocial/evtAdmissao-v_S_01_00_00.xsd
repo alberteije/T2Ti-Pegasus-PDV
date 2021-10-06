@@ -1,0 +1,821 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtAdmissao/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtAdmissao/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-2200 - Cadastramento Inicial do Vínculo e Admissão/Ingresso de Trabalhador</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtAdmissao">
+                    <xs:annotation>
+                        <xs:documentation>Evento Cadastramento Inicial do Vínculo e Admissão/Ingresso de Trabalhador.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ADMISSAO_POSTERIOR_INICIO_ATIVIDADES</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ADMISSAO_VALIDA_DT_ADM</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ADMISSAO_VALIDA_DURACAO_CONTRATO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_BLOQUEIA_USO_CPF_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_COMPATIBILIDADE_CATEGORIA_CLASSTRIB</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_COMPATIB_CATEG_EVENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EMPREGADO_DOMESTICO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTO_IMPACTO_FOPAG</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVETRAB_VALIDA_OPCAO_FGTS</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXTEMP_DOMESTICO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXTEMP_REINTEGRACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_GERAL_VALIDA_DADOS_TABCONTRIB</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_MESMO_PROCEMI</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_MUDANCA_CPF</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REGISTRO_PRELIMINAR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RETIFICA_MESMO_VINCULO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_MATRICULA</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_TRABALHADOR_BASE_CPF</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_trab_admissao" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="trabalhador">
+                                <xs:annotation>
+                                    <xs:documentation>Informações pessoais do trabalhador.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {cpfTrab}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="cpfTrab" type="TS_cpfTrab" />
+                                        <xs:element name="nmTrab" type="TS_nmTrab" />
+                                        <xs:element name="sexo" type="TS_sexoTrab" />
+                                        <xs:element name="racaCor" type="TS_racaCorTrab" />
+                                        <xs:element name="estCiv" minOccurs="0" type="TS_estCivilTrab" />
+                                        <xs:element name="grauInstr" type="TS_grauInstr" />
+                                        <xs:element name="nmSoc" minOccurs="0" type="TS_nmSoc" />
+                                        <xs:element name="nascimento" type="T_nascimento" />
+                                        <xs:element name="endereco" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Endereço do trabalhador</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Grupo de informações do endereço do trabalhador.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O (se grupo {desligamento}(2200_vinculo_desligamento) não estiver preenchido); F (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:choice>
+                                                        <xs:element name="brasil" type="T_endereco_brasil">
+                                                            <xs:annotation>
+                                                                <xs:documentation>Endereço no Brasil.</xs:documentation>
+                                                                <xs:documentation>CONDICAO_GRUPO: O (se não informados os grupos {exterior}(2200_trabalhador_endereco_exterior) e {desligamento}(2200_vinculo_desligamento)); N (se grupo {exterior}(2200_trabalhador_endereco_exterior) estiver preenchido); F (nos demais casos)</xs:documentation>
+                                                            </xs:annotation>
+                                                        </xs:element>
+                                                        <xs:element name="exterior" type="T_endereco_exterior">
+                                                            <xs:annotation>
+                                                                <xs:documentation>Endereço no exterior.</xs:documentation>
+                                                                <xs:documentation>CONDICAO_GRUPO: O (se não informados os grupos {brasil}(2200_trabalhador_endereco_brasil) e {desligamento}(2200_vinculo_desligamento)); N (se grupo {brasil}(2200_trabalhador_endereco_brasil) estiver preenchido); F (nos demais casos)</xs:documentation>
+                                                            </xs:annotation>
+                                                        </xs:element>
+                                                    </xs:choice>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="trabImig" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações do trabalhador imigrante.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: N (se {paisNac}(2200_trabalhador_nascimento_paisNac) = [105]); OC (se {paisNac}(2200_trabalhador_nascimento_paisNac) for diferente de [105]) e se grupo {desligamento}(2200_vinculo_desligamento) não estiver preenchido); F (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="tmpResid" minOccurs="0" type="TS_tmpResid">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Tempo de residência do trabalhador imigrante.</xs:documentation>
+                                                            <xs:documentation>Validação: Preenchimento obrigatório se ({dtAdm}(2200_vinculo_infoRegimeTrab_infoCeletista_dtAdm) ou {dtExercicio}(2200_vinculo_infoRegimeTrab_infoEstatutario_dtExercicio)) >= [2021-05-10].</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="condIng" type="TS_condIng" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="infoDeficiencia" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Pessoa com deficiência.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: OC (se grupo {desligamento}(2200_vinculo_desligamento) não estiver preenchido); F (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="defFisica" type="TS_defFisica" />
+                                                    <xs:element name="defVisual" type="TS_defVisual" />
+                                                    <xs:element name="defAuditiva" type="TS_defAuditiva" />
+                                                    <xs:element name="defMental" type="TS_defMental" />
+                                                    <xs:element name="defIntelectual" type="TS_defIntelectual" />
+                                                    <xs:element name="reabReadap" type="TS_reabReadap" />
+                                                    <xs:element name="infoCota" minOccurs="0" type="TS_sim_nao">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informar se o trabalhador preenche cota de pessoas com deficiência habilitadas ou de beneficiários reabilitados.</xs:documentation>
+                                                            <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se {tpRegTrab}(2200_vinculo_tpRegTrab) = [1].</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="observacao" minOccurs="0" type="TS_observacao" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="dependente" minOccurs="0" maxOccurs="99">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações dos dependentes.</xs:documentation>
+                                                <xs:documentation>CHAVE_GRUPO: {tpDep}, {nmDep}, {dtNascto}</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="tpDep" type="TS_tpDep" />
+                                                    <xs:element name="nmDep" type="TS_nmDep" />
+                                                    <xs:element name="dtNascto" type="TS_dtNascto" />
+                                                    <xs:element name="cpfDep" minOccurs="0" type="TS_cpfDep" />
+                                                    <xs:element name="sexoDep" minOccurs="0" type="TS_sexo">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Sexo do dependente.</xs:documentation>
+                                                            <xs:documentation>Validação: Preenchimento obrigatório se {tpRegPrev}(2200_vinculo_tpRegPrev) = [2] e {cadIni}(2200_vinculo_cadIni) = [N]. Não informar se {tpRegPrev}(2200_vinculo_tpRegPrev) for diferente de [2].</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="depIRRF" type="TS_depIRRF" />
+                                                    <xs:element name="depSF" type="TS_depSF" />
+                                                    <xs:element name="incTrab" type="TS_incTrab" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="contato" minOccurs="0" type="T_contato">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações de contato.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: OC (se grupo {desligamento}(2200_vinculo_desligamento) não estiver preenchido); F (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="vinculo">
+                                <xs:annotation>
+                                    <xs:documentation>Informações do vínculo.</xs:documentation>
+                                    <xs:documentation>DESCRICAO_COMPLETA:Grupo de informações do vínculo.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {matricula}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="matricula" type="TS_codigo_esocial">
+                                            <xs:annotation>
+                                                <xs:documentation>Matrícula atribuída ao trabalhador pela empresa ou, no caso de servidor público, a matrícula constante no Sistema de Administração de Recursos Humanos do órgão.</xs:documentation>
+                                                <xs:documentation>Validação: O valor informado não pode conter a expressão 'eSocial' nas 7 (sete) primeiras posições.</xs:documentation>
+                                                <xs:documentation>REGRA:REGRA_CARACTERE_ESPECIAL</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="tpRegTrab" type="TS_tpRegTrab">
+                                            <xs:annotation>
+                                                <xs:documentation>Tipo de regime trabalhista.</xs:documentation>
+                                                <xs:documentation>Validação: Se {codCateg}(2200_vinculo_infoContrato_codCateg) = [104], deve ser preenchido com [1].</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="tpRegPrev" type="TS_tpRegPrev" />
+                                        <xs:element name="cadIni">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:documentation>Indicar se o evento se refere a cadastramento inicial de vínculo (o ingresso do trabalhador no empregador declarante, por admissão ou transferência, é anterior à data de início da obrigatoriedade de envio de seus eventos não periódicos) ou se refere a admissão (o ingresso do trabalhador no empregador declarante é igual ou posterior à data de início de obrigatoriedade de envio de seus eventos não periódicos).</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:string">
+                                                    <xs:enumeration value="S">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Sim (Cadastramento Inicial)</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="N">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Não (Admissão)</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="infoRegimeTrab">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações do regime trabalhista.</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:choice>
+                                                        <xs:element name="infoCeletista">
+                                                            <xs:annotation>
+                                                                <xs:documentation>Informações de trabalhador celetista.</xs:documentation>
+                                                                <xs:documentation>CONDICAO_GRUPO: O (se {tpRegTrab}(2200_vinculo_tpRegTrab) = [1]); N (nos demais casos)</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:complexType>
+                                                                <xs:sequence>
+                                                                    <xs:element name="dtAdm" type="xs:date">
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>Preencher com a data de admissão do trabalhador.</xs:documentation>
+                                                                            <xs:documentation>No caso de transferência do empregado ou de mudança de CPF, preencher com a data inicial do vínculo no primeiro empregador (data de início do vínculo).</xs:documentation>
+                                                                            <xs:documentation>Validação: Devem ser observadas as seguintes regras:</xs:documentation>
+                                                                            <xs:documentation>a) Deve ser posterior à data de nascimento do trabalhador;</xs:documentation>
+                                                                            <xs:documentation>b) Se {cadIni}(2200_vinculo_cadIni) = [S], deve ser anterior à data de início da obrigatoriedade dos eventos não periódicos para o empregador no eSocial;</xs:documentation>
+                                                                            <xs:documentation>c) Se {cadIni}(2200_vinculo_cadIni) = [N] e {tpAdmissao}(2200_vinculo_infoRegimeTrab_infoCeletista_tpAdmissao) = [1], deve ser igual ou posterior à data de início da obrigatoriedade dos eventos não periódicos para o empregador no eSocial.</xs:documentation>
+                                                                        </xs:annotation>
+                                                                    </xs:element>
+                                                                    <xs:element name="tpAdmissao">
+                                                                        <xs:simpleType>
+                                                                            <xs:annotation>
+                                                                                <xs:documentation>Tipo de admissão do trabalhador.</xs:documentation>
+                                                                                <xs:documentation>Validação: Se for igual a [5], {codCateg}(2200_vinculo_infoContrato_codCateg) deve ser igual a [104] e {procEmi}(2200_ideEvento_procEmi) deve ser igual a [2, 22].</xs:documentation>
+                                                                                <xs:documentation>Se for igual a [6], {cadIni}(2200_vinculo_cadIni) deve ser igual a [N].</xs:documentation>
+                                                                            </xs:annotation>
+                                                                            <xs:restriction base="xs:byte">
+                                                                                <xs:enumeration value="1">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Admissão</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                                <xs:enumeration value="2">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Transferência de empresa do mesmo grupo econômico</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                                <xs:enumeration value="3">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Transferência de empresa consorciada ou de consórcio</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                                <xs:enumeration value="4">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Transferência por motivo de sucessão, incorporação, cisão ou fusão</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                                <xs:enumeration value="5">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Transferência do empregado doméstico para outro representante da mesma unidade familiar</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                                <xs:enumeration value="6">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Mudança de CPF</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                            </xs:restriction>
+                                                                        </xs:simpleType>
+                                                                    </xs:element>
+                                                                    <xs:element name="indAdmissao">
+                                                                        <xs:simpleType>
+                                                                            <xs:annotation>
+                                                                                <xs:documentation>Indicativo de admissão.</xs:documentation>
+                                                                            </xs:annotation>
+                                                                            <xs:restriction base="xs:byte">
+                                                                                <xs:enumeration value="1">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Normal</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                                <xs:enumeration value="2">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Decorrente de ação fiscal</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                                <xs:enumeration value="3">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Decorrente de decisão judicial</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                            </xs:restriction>
+                                                                        </xs:simpleType>
+                                                                    </xs:element>
+                                                                    <xs:element name="nrProcTrab" minOccurs="0" type="TS_nrProcJud">
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>Número que identifica o processo trabalhista, quando a admissão se der por decisão judicial.</xs:documentation>
+                                                                            <xs:documentation>Validação: Não informar se {indAdmissao}(./indAdmissao) = [1, 2]. Se preenchido, deve ser um processo judicial válido, com 20 (vinte) algarismos.</xs:documentation>
+                                                                        </xs:annotation>
+                                                                    </xs:element>
+                                                                    <xs:element name="tpRegJor" type="TS_tpRegJor" />
+                                                                    <xs:element name="natAtividade" type="TS_natAtividade" />
+                                                                    <xs:element name="dtBase" minOccurs="0" type="TS_dtBase" />
+                                                                    <xs:element name="cnpjSindCategProf" type="TS_cnpjSindCategProf" />
+                                                                    <xs:element name="FGTS" minOccurs="0">
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>Informações do FGTS</xs:documentation>
+                                                                            <xs:documentation>DESCRICAO_COMPLETA:Informações do Fundo de Garantia do Tempo de Serviço - FGTS.</xs:documentation>
+                                                                            <xs:documentation>CONDICAO_GRUPO: N (se {tpAdmissao}(../tpAdmissao) = [6] OU (se {codCateg}(2200_vinculo_infoContrato_codCateg) for diferente de [104] e {dtAdm}(../dtAdm) >= [1988-10-05]) OU (se {codCateg}(2200_vinculo_infoContrato_codCateg) = [104] e {dtAdm}(../dtAdm) >= [2015-10-01])); O (nos demais casos)</xs:documentation>
+                                                                        </xs:annotation>
+                                                                        <xs:complexType>
+                                                                            <xs:sequence>
+                                                                                <xs:element name="dtOpcFGTS" type="TS_dtOpcFGTS" />
+                                                                            </xs:sequence>
+                                                                        </xs:complexType>
+                                                                    </xs:element>
+                                                                    <xs:element name="trabTemporario" minOccurs="0">
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>Dados sobre trabalho temporário</xs:documentation>
+                                                                            <xs:documentation>DESCRICAO_COMPLETA:Dados sobre trabalho temporário. Preenchimento obrigatório no caso de contratação de trabalhador temporário.</xs:documentation>
+                                                                            <xs:documentation>CONDICAO_GRUPO: N (se {codCateg}(2200_vinculo_infoContrato_codCateg) for diferente de [106]); O (se {codCateg}(2200_vinculo_infoContrato_codCateg) = [106] e se grupo {desligamento}(2200_vinculo_desligamento) não estiver preenchido); F (nos demais casos)</xs:documentation>
+                                                                        </xs:annotation>
+                                                                        <xs:complexType>
+                                                                            <xs:sequence>
+                                                                                <xs:element name="hipLeg">
+                                                                                    <xs:simpleType>
+                                                                                        <xs:annotation>
+                                                                                            <xs:documentation>Hipótese legal para contratação de trabalhador temporário.</xs:documentation>
+                                                                                        </xs:annotation>
+                                                                                        <xs:restriction base="xs:byte">
+                                                                                            <xs:enumeration value="1">
+                                                                                                <xs:annotation>
+                                                                                                    <xs:documentation>Necessidade de substituição transitória de pessoal permanente</xs:documentation>
+                                                                                                </xs:annotation>
+                                                                                            </xs:enumeration>
+                                                                                            <xs:enumeration value="2">
+                                                                                                <xs:annotation>
+                                                                                                    <xs:documentation>Demanda complementar de serviços</xs:documentation>
+                                                                                                </xs:annotation>
+                                                                                            </xs:enumeration>
+                                                                                        </xs:restriction>
+                                                                                    </xs:simpleType>
+                                                                                </xs:element>
+                                                                                <xs:element name="justContr" type="TS_texto_999">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Descrição do fato determinado que, no caso concreto, justifica a hipótese legal para a contratação de trabalho temporário. O prazo de contratação do trabalho temporário deve ser compatível com o motivo justificador alegado.</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:element>
+                                                                                <xs:element name="ideEstabVinc">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Identificação do estabelecimento ao qual o trabalhador está vinculado</xs:documentation>
+                                                                                        <xs:documentation>DESCRICAO_COMPLETA:Identificação do estabelecimento ao qual o trabalhador temporário está vinculado. Se o local da efetiva prestação do serviço não possuir inscrição, deverá ser informado o CNPJ/CPF ao qual o local da efetiva prestação está vinculado.</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                    <xs:complexType>
+                                                                                        <xs:sequence>
+                                                                                            <xs:element name="tpInsc" type="TS_tpInsc_1_2" />
+                                                                                            <xs:element name="nrInsc" type="TS_nrInsc_11_14">
+                                                                                                <xs:annotation>
+                                                                                                    <xs:documentation>Informar o número de inscrição do contratante de serviços, de acordo com o tipo de inscrição informado em {ideEstabVinc/tpInsc}(./tpInsc).</xs:documentation>
+                                                                                                    <xs:documentation>Validação: Se {ideEstabVinc/tpInsc}(./tpInsc) for igual a [1], deve ser um CNPJ válido, com 14 (catorze) algarismos. Se {ideEstabVinc/tpInsc}(./tpInsc) for igual a [2], deve ser um CPF válido.</xs:documentation>
+                                                                                                </xs:annotation>
+                                                                                            </xs:element>
+                                                                                        </xs:sequence>
+                                                                                    </xs:complexType>
+                                                                                </xs:element>
+                                                                                <xs:element name="ideTrabSubstituido" minOccurs="0" maxOccurs="9">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Identificação do(s) trabalhador(es) substituído(s).</xs:documentation>
+                                                                                        <xs:documentation>CHAVE_GRUPO: {cpfTrabSubst}</xs:documentation>
+                                                                                        <xs:documentation>CONDICAO_GRUPO: O (se {hipLeg}(2200_vinculo_infoRegimeTrab_infoCeletista_trabTemporario_hipLeg) = [1]); N (nos demais casos)</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                    <xs:complexType>
+                                                                                        <xs:sequence>
+                                                                                            <xs:element name="cpfTrabSubst" type="TS_cpf">
+                                                                                                <xs:annotation>
+                                                                                                    <xs:documentation>CPF do trabalhador substituído.</xs:documentation>
+                                                                                                    <xs:documentation>Validação: Deve ser um CPF válido.</xs:documentation>
+                                                                                                </xs:annotation>
+                                                                                            </xs:element>
+                                                                                        </xs:sequence>
+                                                                                    </xs:complexType>
+                                                                                </xs:element>
+                                                                            </xs:sequence>
+                                                                        </xs:complexType>
+                                                                    </xs:element>
+                                                                    <xs:element name="aprend" minOccurs="0" type="T_aprend">
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>Informações relacionadas ao aprendiz</xs:documentation>
+                                                                            <xs:documentation>DESCRICAO_COMPLETA:Informações para identificação do empregador contratante de aprendiz.</xs:documentation>
+                                                                            <xs:documentation>Preenchimento obrigatório no caso de contratação de aprendiz por entidade educativa sem fins lucrativos que tenha por objetivo a assistência ao adolescente e à educação profissional (art. 430, inciso II, CLT) ou por entidade de prática desportiva filiada ao Sistema Nacional do Desporto ou a Sistema de Desporto de Estado, do Distrito Federal ou de Município (art. 430, inciso III, CLT).</xs:documentation>
+                                                                            <xs:documentation>CONDICAO_GRUPO: N (se {codCateg}(2200_vinculo_infoContrato_codCateg) for diferente de [103]); OC (se {codCateg}(2200_vinculo_infoContrato_codCateg) = [103] e se grupo {desligamento}(2200_vinculo_desligamento) não estiver preenchido); F (nos demais casos)</xs:documentation>
+                                                                        </xs:annotation>
+                                                                    </xs:element>
+                                                                </xs:sequence>
+                                                            </xs:complexType>
+                                                        </xs:element>
+                                                        <xs:element name="infoEstatutario">
+                                                            <xs:annotation>
+                                                                <xs:documentation>Informações de trabalhador estatutário.</xs:documentation>
+                                                                <xs:documentation>CONDICAO_GRUPO: O (se {tpRegTrab}(2200_vinculo_tpRegTrab) = [2]); N (nos demais casos)</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:complexType>
+                                                                <xs:sequence>
+                                                                    <xs:element name="tpProv">
+                                                                        <xs:simpleType>
+                                                                            <xs:annotation>
+                                                                                <xs:documentation>Preencher com o tipo de provimento.</xs:documentation>
+                                                                                <xs:documentation>Validação: Os valores [3, 5, 6, 7, 8, 9] só são permitidos se a natureza jurídica do declarante for Administração Pública (grupo [1]).</xs:documentation>
+                                                                                <xs:documentation>Se {codCateg}(2200_vinculo_infoContrato_codCateg) = [302], deve ser preenchido com [2].</xs:documentation>
+                                                                            </xs:annotation>
+                                                                            <xs:restriction base="xs:byte">
+                                                                                <xs:enumeration value="1">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Nomeação em cargo efetivo</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                                <xs:enumeration value="2">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Nomeação exclusivamente em cargo em comissão</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                                <xs:enumeration value="3">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Incorporação, matrícula ou nomeação (militar)</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                                <xs:enumeration value="5">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Redistribuição</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                                <xs:enumeration value="6">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Diplomação</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                                <xs:enumeration value="7">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Contratação por tempo determinado</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                                <xs:enumeration value="8">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Remoção (em caso de alteração do órgão declarante)</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                                <xs:enumeration value="9">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Designação</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                                <xs:enumeration value="10">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Mudança de CPF</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                                <xs:enumeration value="99">
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Outros não relacionados acima</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                </xs:enumeration>
+                                                                            </xs:restriction>
+                                                                        </xs:simpleType>
+                                                                    </xs:element>
+                                                                    <xs:element name="dtExercicio" type="xs:date">
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>Data da entrada em exercício pelo servidor.</xs:documentation>
+                                                                            <xs:documentation>Validação: Devem ser observadas as seguintes regras:</xs:documentation>
+                                                                            <xs:documentation>a) Deve ser posterior à data de nascimento do trabalhador;</xs:documentation>
+                                                                            <xs:documentation>b) Se {cadIni}(2200_vinculo_cadIni) = [S], deve ser anterior à data de início da obrigatoriedade dos eventos não periódicos para o empregador/ente público no eSocial;</xs:documentation>
+                                                                            <xs:documentation>c) Se {cadIni}(2200_vinculo_cadIni) = [N] e {tpProv}(2200_vinculo_infoRegimeTrab_infoEstatutario_tpProv) for diferente de [5, 8, 10], deve ser igual ou posterior à data de início da obrigatoriedade dos eventos não periódicos para o empregador/ente público no eSocial.</xs:documentation>
+                                                                        </xs:annotation>
+                                                                    </xs:element>
+                                                                    <xs:element name="tpPlanRP" minOccurs="0" type="TS_tpPlanRP">
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>Tipo de plano de segregação da massa.</xs:documentation>
+                                                                            <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se {tpRegPrev}(2200_vinculo_tpRegPrev) = [2].</xs:documentation>
+                                                                        </xs:annotation>
+                                                                    </xs:element>
+                                                                    <xs:element name="indTetoRGPS" minOccurs="0" type="TS_sim_nao">
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>Informar se o servidor está sujeito ao teto do RGPS pela instituição do regime de previdência complementar.</xs:documentation>
+                                                                            <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se {tpRegPrev}(2200_vinculo_tpRegPrev) = [2].</xs:documentation>
+                                                                        </xs:annotation>
+                                                                    </xs:element>
+                                                                    <xs:element name="indAbonoPerm" minOccurs="0" type="TS_sim_nao">
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>Indicar se o servidor recebe abono permanência.</xs:documentation>
+                                                                            <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se {tpRegPrev}(2200_vinculo_tpRegPrev) = [2].</xs:documentation>
+                                                                        </xs:annotation>
+                                                                    </xs:element>
+                                                                    <xs:element name="dtIniAbono" minOccurs="0" type="xs:date">
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>Informar a data de inicio do abono permanência.</xs:documentation>
+                                                                            <xs:documentation>Validação: Preenchimento obrigatório se {indAbonoPerm}(./indAbonoPerm) = [S] e {cadIni}(2200_vinculo_cadIni) = [N]. Não informar se {indAbonoPerm}(./indAbonoPerm) = [N]. Se preenchida, devem ser observadas as seguintes regras:</xs:documentation>
+                                                                            <xs:documentation>a) Deve ser igual ou posterior à data de exercício do servidor;</xs:documentation>
+                                                                            <xs:documentation>b) Se {cadIni}(2200_vinculo_cadIni) = [S], deve ser anterior à data de início da obrigatoriedade dos eventos não periódicos para o ente público;</xs:documentation>
+                                                                            <xs:documentation>c) Se {cadIni}(2200_vinculo_cadIni) = [N], deve ser igual ou anterior à data da transferência ou alteração do CPF do servidor ({sucessaoVinc/dtTransf}(2200_vinculo_sucessaoVinc_dtTransf) ou {dtAltCPF}(2200_vinculo_mudancaCPF_dtAltCPF)). Não informar se {tpProv}(2200_vinculo_infoRegimeTrab_infoEstatutario_tpProv) for diferente de [5, 8, 10].</xs:documentation>
+                                                                        </xs:annotation>
+                                                                    </xs:element>
+                                                                </xs:sequence>
+                                                            </xs:complexType>
+                                                        </xs:element>
+                                                    </xs:choice>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="infoContrato">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações do contrato de trabalho.</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="nmCargo" minOccurs="0" type="TS_texto_100">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informar o nome do cargo.</xs:documentation>
+                                                            <xs:documentation>Validação: O preenchimento é obrigatório, exceto se for relativo a servidor nomeado em cargo em comissão ({tpRegTrab}(2200_vinculo_tpRegTrab) = [2] e {tpProv}(2200_vinculo_infoRegimeTrab_infoEstatutario_tpProv) = [2]).</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="CBOCargo" minOccurs="0" type="TS_CBOCargo" />
+                                                    <xs:element name="dtIngrCargo" minOccurs="0" type="xs:date">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Data de ingresso do servidor no cargo.</xs:documentation>
+                                                            <xs:documentation>Validação: Não preencher se {tpRegTrab}(2200_vinculo_tpRegTrab) = [1] ou se {CBOCargo}(./CBOCargo) não for informado. Se preenchida, devem ser observadas as seguintes regras:</xs:documentation>
+                                                            <xs:documentation>a) Deve ser igual ou posterior à data de exercício do servidor;</xs:documentation>
+                                                            <xs:documentation>b) Se {cadIni}(2200_vinculo_cadIni) = [S], deve ser anterior à data de início da obrigatoriedade dos eventos não periódicos para o ente público;</xs:documentation>
+                                                            <xs:documentation>c) Se {cadIni}(2200_vinculo_cadIni) = [N], deve ser igual ou anterior à data da transferência ou alteração do CPF do servidor ({sucessaoVinc/dtTransf}(2200_vinculo_sucessaoVinc_dtTransf) ou {dtAltCPF}(2200_vinculo_mudancaCPF_dtAltCPF)). Não informar se {tpProv}(2200_vinculo_infoRegimeTrab_infoEstatutario_tpProv) for diferente de [5, 8, 10].</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="nmFuncao" minOccurs="0" type="TS_texto_100">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informar o nome da função de confiança/cargo em comissão.</xs:documentation>
+                                                            <xs:documentation>Validação: Preenchimento obrigatório se for relativo a servidor nomeado em cargo em comissão ({tpRegTrab}(2200_vinculo_tpRegTrab) = [2] e {tpProv}(2200_vinculo_infoRegimeTrab_infoEstatutario_tpProv) = [2]).</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="CBOFuncao" minOccurs="0" type="TS_CBOFuncao" />
+                                                    <xs:element name="acumCargo" minOccurs="0" type="TS_sim_nao">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informar se o cargo, emprego ou função pública é acumulável.</xs:documentation>
+                                                            <xs:documentation>Validação: Preenchimento obrigatório se {cadIni}(2200_vinculo_cadIni) = [N] e se a natureza jurídica do declarante for igual a 1XX-X, 201-1 ou 203-8.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="codCateg" type="TS_codCateg" />
+                                                    <xs:element name="remuneracao" minOccurs="0" type="T_remuneracao">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações da remuneração e periodicidade de pagamento.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: N (se {tpRegTrab}(2200_vinculo_tpRegTrab) = [2]); O (se {tpRegTrab}(2200_vinculo_tpRegTrab) = [1] e se grupo {desligamento}(2200_vinculo_desligamento) não estiver preenchido); F (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="duracao" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Duração do contrato de trabalho.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: N (se {tpRegTrab}(2200_vinculo_tpRegTrab) = [2]); O (se {tpRegTrab}(2200_vinculo_tpRegTrab) = [1] e se grupo {desligamento}(2200_vinculo_desligamento) não estiver preenchido); F (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="tpContr" type="TS_tpContr" />
+                                                                <xs:element name="dtTerm" minOccurs="0" type="TS_dtTerm" />
+                                                                <xs:element name="clauAssec" minOccurs="0" type="TS_sim_nao">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Indicar se o contrato por prazo determinado contém cláusula assecuratória do direito recíproco de rescisão antes da data de seu término.</xs:documentation>
+                                                                        <xs:documentation>Validação: O preenchimento é obrigatório se {tpContr}(./tpContr) = [2, 3]. Não preencher se {tpContr}(./tpContr) = [1].</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="objDet" minOccurs="0" type="TS_objDet" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="localTrabalho" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações do local de trabalho.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: O (se grupo {desligamento}(2200_vinculo_desligamento) não estiver preenchido); F (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="localTrabGeral" minOccurs="0" type="T_localTrabGeral">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Estabelecimento onde o trabalhador exercerá suas atividades</xs:documentation>
+                                                                        <xs:documentation>DESCRICAO_COMPLETA:Estabelecimento (CNPJ, CNO, CAEPF) onde o trabalhador (exceto doméstico e temporário) exercerá suas atividades. Caso o trabalhador exerça suas atividades em instalações de terceiros, este campo deve ser preenchido com o estabelecimento do próprio empregador ao qual o trabalhador esteja vinculado.</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: N (se {codCateg}(2200_vinculo_infoContrato_codCateg) = [104]); O (se {codCateg}(2200_vinculo_infoContrato_codCateg) for diferente de [104] e se grupo {desligamento}(2200_vinculo_desligamento) não estiver preenchido); F (nos demais casos)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="localTempDom" minOccurs="0" type="T_endereco_brasil">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Endereço de trabalho do trabalhador doméstico e trabalhador temporário</xs:documentation>
+                                                                        <xs:documentation>DESCRICAO_COMPLETA:Grupo preenchido exclusivamente em caso de trabalhador doméstico e trabalhador temporário, indicando o endereço onde o trabalhador exerce suas atividades.</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: N (se {codCateg}(2200_vinculo_infoContrato_codCateg) for diferente de [104, 106]); O (se {codCateg}(2200_vinculo_infoContrato_codCateg) = [104, 106] e se grupo {desligamento}(2200_vinculo_desligamento) não estiver preenchido); F (nos demais casos)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="horContratual" minOccurs="0" type="T_horContratual">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações do horário contratual do trabalhador.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: O (se {tpRegJor}(2200_vinculo_infoRegimeTrab_infoCeletista_tpRegJor) = [1] e se grupo {desligamento}(2200_vinculo_desligamento) não estiver preenchido); OC (se {tpRegJor}(2200_vinculo_infoRegimeTrab_infoCeletista_tpRegJor) for diferente de [1] e se grupo {desligamento}(2200_vinculo_desligamento) não estiver preenchido); F (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="alvaraJudicial" minOccurs="0" type="T_alvaraJudicial">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Dados do alvará judicial</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Informações do alvará judicial em caso de contratação de menores de 14 anos, em qualquer categoria, e de maiores de 14 e menores de 16, em categoria diferente de "Aprendiz".</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: OC (se grupo {desligamento}(2200_vinculo_desligamento) não estiver preenchido); F (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="observacoes" minOccurs="0" maxOccurs="99">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Observações do contrato de trabalho.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: OC (se grupo {desligamento}(2200_vinculo_desligamento) não estiver preenchido); F (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="observacao" type="TS_observacao">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Observação relacionada ao contrato de trabalho.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="treiCap" minOccurs="0" maxOccurs="99" type="T_treiCap">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Treinamentos, capacitações, exercícios simulados e outras anotações</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Treinamentos, capacitações, exercícios simulados, autorizações ou outras anotações que devam ser anotadas no registro de empregados e/ou na CTPS, por determinação de Norma Regulamentadora - NR.</xs:documentation>
+                                                            <xs:documentation>CHAVE_GRUPO: {codTreiCap}</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: OC (se grupo {desligamento}(2200_vinculo_desligamento) não estiver preenchido); F (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="sucessaoVinc" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Grupo de informações da sucessão de vínculo trabalhista/estatutário.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O (se {tpAdmissao}(2200_vinculo_infoRegimeTrab_infoCeletista_tpAdmissao) = [2, 3, 4] ou {tpProv}(2200_vinculo_infoRegimeTrab_infoEstatutario_tpProv) = [5, 8]); N (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="tpInsc">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Preencher com o código correspondente ao tipo de inscrição, conforme Tabela 05.</xs:documentation>
+                                                                <xs:documentation>Validação: Somente é possível informar [5] se {dtTransf}(./dtTransf) for igual ou anterior a [1999-06-30].</xs:documentation>
+                                                                <xs:documentation>Somente é possível informar [6] se {dtTransf}(./dtTransf) for igual ou anterior a [2011-12-31].</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:byte">
+                                                                <xs:enumeration value="1">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>CNPJ</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="2">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>CPF</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="5">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>CGC</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="6">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>CEI</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="nrInsc">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Informar o número de inscrição do empregador anterior, de acordo com o tipo de inscrição indicado no campo {sucessaoVinc/tpInsc}(./tpInsc).</xs:documentation>
+                                                                <xs:documentation>Validação: Deve ser um número de inscrição válido e diferente da inscrição do declarante, considerando as particularidades aplicadas à informação de CNPJ de órgão público em S-1000.</xs:documentation>
+                                                                <xs:documentation>Se {sucessaoVinc/tpInsc}(./tpInsc) = [1], deve possuir 14 (catorze) algarismos e ser diferente do CNPJ base do empregador (exceto se {ideEmpregador/nrInsc}(2200_ideEmpregador_nrInsc) tiver 14 (catorze) algarismos) e dos estabelecimentos informados através do evento S-1005.</xs:documentation>
+                                                                <xs:documentation>Se {sucessaoVinc/tpInsc}(./tpInsc) = [2], deve possuir 11 (onze) algarismos.</xs:documentation>
+                                                                <xs:documentation>Se {sucessaoVinc/tpInsc}(./tpInsc) = [5], deve possuir somente algarismos.</xs:documentation>
+                                                                <xs:documentation>Se {sucessaoVinc/tpInsc}(./tpInsc) = [6], deve possuir 12 (doze) algarismos.</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:string">
+                                                                <xs:pattern value="\d{8,14}" />
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="matricAnt" minOccurs="0" type="TS_codigo_esocial">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Matrícula do trabalhador no empregador anterior.</xs:documentation>
+                                                            <xs:documentation>Validação: O preenchimento é obrigatório se {cadIni}(2200_vinculo_cadIni) = [N].</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="dtTransf" type="xs:date">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com a data da transferência do empregado para o empregador declarante.</xs:documentation>
+                                                            <xs:documentation>Validação: Devem ser observadas as seguintes regras:</xs:documentation>
+                                                            <xs:documentation>a) Deve ser posterior à data de admissão do trabalhador;</xs:documentation>
+                                                            <xs:documentation>b) Se {cadIni}(2200_vinculo_cadIni) = [S], deve ser anterior à data de início da obrigatoriedade dos eventos não periódicos para o empregador;</xs:documentation>
+                                                            <xs:documentation>c) Se {cadIni}(2200_vinculo_cadIni) = [N], deve ser igual ou posterior à data de início da obrigatoriedade dos eventos não periódicos para o empregador.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="observacao" minOccurs="0" type="TS_observacao" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="transfDom" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações do empregado doméstico transferido de outro representante da mesma unidade familiar.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O (se {tpAdmissao}(2200_vinculo_infoRegimeTrab_infoCeletista_tpAdmissao) for igual [5]); N (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="cpfSubstituido" type="TS_cpf">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com o número do CPF do representante anterior da unidade familiar.</xs:documentation>
+                                                            <xs:documentation>Validação: Deve ser um CPF válido e diferente do CPF do declarante e do empregado.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="matricAnt" minOccurs="0" type="TS_codigo_esocial">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Matrícula do trabalhador no representante anterior da unidade familiar.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="dtTransf" type="xs:date">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Data da transferência do vínculo ao novo representante da unidade familiar.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="mudancaCPF" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações de mudança de CPF do trabalhador.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O (se {tpAdmissao}(2200_vinculo_infoRegimeTrab_infoCeletista_tpAdmissao) = [6] ou {tpProv}(2200_vinculo_infoRegimeTrab_infoEstatutario_tpProv) = [10]); N (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="cpfAnt" type="TS_cpf">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com o número do CPF antigo do trabalhador.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="matricAnt" type="TS_codigo_esocial">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com a matrícula anterior do trabalhador.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="dtAltCPF" type="xs:date">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Data de alteração do CPF.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="observacao" minOccurs="0" type="TS_observacao" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="afastamento" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações de afastamento do trabalhador</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Informações de afastamento do trabalhador.</xs:documentation>
+                                                <xs:documentation>Preenchimento exclusivo em caso de trabalhador que permaneça afastado na data de início da obrigatoriedade dos eventos não periódicos para o empregador no eSocial ou na data de transferência ou alteração de CPF do empregado.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: N (se grupo {desligamento}(2200_vinculo_desligamento) estiver preenchido); OC (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="dtIniAfast" type="xs:date">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Data de início do afastamento.</xs:documentation>
+                                                            <xs:documentation>Validação: Devem ser observadas as seguintes regras:</xs:documentation>
+                                                            <xs:documentation>a) Deve ser igual ou posterior à data de admissão/exercício do trabalhador;</xs:documentation>
+                                                            <xs:documentation>b) Se {cadIni}(2200_vinculo_cadIni) = [S], deve ser anterior à data de início da obrigatoriedade dos eventos não periódicos para o empregador;</xs:documentation>
+                                                            <xs:documentation>c) Se {cadIni}(2200_vinculo_cadIni) = [N], deve ser anterior à data da transferência ou alteração do CPF do empregado ({sucessaoVinc/dtTransf}(2200_vinculo_sucessaoVinc_dtTransf), {transfDom/dtTransf}(2200_vinculo_transfDom_dtTransf) ou {dtAltCPF}(2200_vinculo_mudancaCPF_dtAltCPF)). Não informar se {tpAdmissao}(2200_vinculo_infoRegimeTrab_infoCeletista_tpAdmissao) = [1] ou se {tpProv}(2200_vinculo_infoRegimeTrab_infoEstatutario_tpProv) for diferente de [5, 8, 10].</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="codMotAfast" type="TS_codMotAfast" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="desligamento" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informação do desligamento do trabalhador</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Informação do desligamento do trabalhador.</xs:documentation>
+                                                <xs:documentation>Grupo preenchido exclusivamente caso seja necessário enviar cadastramento inicial referente a trabalhador que já tenha sido desligado da empresa antes do início dos eventos não periódicos para o empregador no eSocial (por exemplo, envio para pagamento de diferenças salariais - acordo/dissídio/convenção coletiva - em meses posteriores ao desligamento e sob vigência dos eventos periódicos para o empregador no eSocial) ou no caso de desligamento em data anterior à transferência do empregado.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: N (se (grupo {afastamento}(2200_vinculo_afastamento) ou {cessao}(2200_vinculo_cessao) estiver preenchido) ou (se {tpAdmissao}(2200_vinculo_infoRegimeTrab_infoCeletista_tpAdmissao) = [6] ou {tpProv}(2200_vinculo_infoRegimeTrab_infoEstatutario_tpProv) = [10])); OC (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="dtDeslig" type="xs:date">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com a data de desligamento do vínculo (último dia trabalhado).</xs:documentation>
+                                                            <xs:documentation>Validação: Devem ser observadas as seguintes regras:</xs:documentation>
+                                                            <xs:documentation>a) Deve ser igual ou posterior à data de admissão/exercício do trabalhador;</xs:documentation>
+                                                            <xs:documentation>b) Se {cadIni}(2200_vinculo_cadIni) = [S], deve ser anterior à data de início da obrigatoriedade dos eventos não periódicos para o empregador;</xs:documentation>
+                                                            <xs:documentation>c) Se {cadIni}(2200_vinculo_cadIni) = [N], deve ser anterior à data da transferência do empregado ({sucessaoVinc/dtTransf}(2200_vinculo_sucessaoVinc_dtTransf) ou {transfDom/dtTransf}(2200_vinculo_transfDom_dtTransf)). Não informar se {tpAdmissao}(2200_vinculo_infoRegimeTrab_infoCeletista_tpAdmissao) = [1] ou se {tpProv}(2200_vinculo_infoRegimeTrab_infoEstatutario_tpProv) for diferente de [5, 8].</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="cessao" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informação de cessão/exercício em outro órgão do trabalhador</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Informação de cessão/exercício em outro órgão do trabalhador.</xs:documentation>
+                                                <xs:documentation>Preenchimento exclusivo em caso de trabalhador que permaneça cedido/em exercício em outro órgão na data de início da obrigatoriedade dos eventos não periódicos para o empregador/ente público no eSocial ou na data de transferência ou alteração de CPF do empregado.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: N (se grupo {desligamento}(2200_vinculo_desligamento) estiver preenchido); OC (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="dtIniCessao" type="xs:date">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Data de início da cessão/exercício em outro órgão.</xs:documentation>
+                                                            <xs:documentation>Validação: Devem ser observadas as seguintes regras:</xs:documentation>
+                                                            <xs:documentation>a) Deve ser igual ou posterior à data de admissão/exercício do trabalhador;</xs:documentation>
+                                                            <xs:documentation>b) Se {cadIni}(2200_vinculo_cadIni) = [S], deve ser anterior à data de início da obrigatoriedade dos eventos não periódicos para o ente público e a natureza jurídica do declarante deve ser Administração Pública (grupo [1]);</xs:documentation>
+                                                            <xs:documentation>c) Se {cadIni}(2200_vinculo_cadIni) = [N], deve ser anterior à data da transferência ou alteração do CPF do empregado ({sucessaoVinc/dtTransf}(2200_vinculo_sucessaoVinc_dtTransf) ou {dtAltCPF}(2200_vinculo_mudancaCPF_dtAltCPF)) e igual ou posterior a [2021-05-10]. Não informar se {tpAdmissao}(2200_vinculo_infoRegimeTrab_infoCeletista_tpAdmissao) = [1] ou se {tpProv}(2200_vinculo_infoRegimeTrab_infoEstatutario_tpProv) for diferente de [5, 8, 10].</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

@@ -1,0 +1,324 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.esocial.gov.br/schema/evt/evtTabHorTur/v02_05_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtTabHorTur/v02_05_00" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd"/>
+  <xs:element name="eSocial">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="evtTabHorTur">
+          <xs:annotation>
+            <xs:documentation>Evento Tabela de Horários/Turnos de Trabalho</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEvento" type="TIdeCadastro">
+                <xs:annotation>
+                  <xs:documentation>Informações de Identificação do Evento</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="ideEmpregador" type="TEmpregador">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do empregador</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="infoHorContratual">
+                <xs:annotation>
+                  <xs:documentation>Informações do horário contratual</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:choice>
+                      <xs:element name="inclusao">
+                        <xs:annotation>
+                          <xs:documentation>Inclusão de novas informações</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="ideHorContratual" type="TIdeHorContratual">
+                              <xs:annotation>
+                                <xs:documentation>Identificação da Horário Contratual</xs:documentation>
+                              </xs:annotation>
+                            </xs:element>
+                            <xs:element name="dadosHorContratual" type="TDadosHorContratual">
+                              <xs:annotation>
+                                <xs:documentation>Informações do horário contratual</xs:documentation>
+                              </xs:annotation>
+                            </xs:element>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                      <xs:element name="alteracao">
+                        <xs:annotation>
+                          <xs:documentation>Alteração das informações</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="ideHorContratual" type="TIdeHorContratual">
+                              <xs:annotation>
+                                <xs:documentation>Informações de identificação do horário contratual</xs:documentation>
+                              </xs:annotation>
+                            </xs:element>
+                            <xs:element name="dadosHorContratual" type="TDadosHorContratual">
+                              <xs:annotation>
+                                <xs:documentation>Informações do horário contratual</xs:documentation>
+                              </xs:annotation>
+                            </xs:element>
+                            <xs:element name="novaValidade" type="TPeriodoValidade" minOccurs="0">
+                              <xs:annotation>
+                                <xs:documentation>Novo período de validade das informações</xs:documentation>
+                              </xs:annotation>
+                            </xs:element>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                      <xs:element name="exclusao">
+                        <xs:annotation>
+                          <xs:documentation>Exclusão das informações</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="ideHorContratual" type="TIdeHorContratual">
+                              <xs:annotation>
+                                <xs:documentation>Identificação do horário contratual que será excluído</xs:documentation>
+                              </xs:annotation>
+                            </xs:element>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:choice>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Id" type="xs:ID" use="required"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="TIdeCadastro">
+    <xs:annotation>
+      <xs:documentation>Identificação de evento de cadastro/tabelas</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="tpAmb">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Tipo de ambiente</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="procEmi">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Processo de emissão do evento</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="verProc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Versão do processo de emissão do evento</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="20"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TEmpregador">
+    <xs:sequence>
+      <xs:element name="tpInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Tipo de Inscrição, conforme Tabela 05</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Número de Inscrição</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d{8,14}"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TIdeHorContratual">
+    <xs:annotation>
+      <xs:documentation>Informações de identificação do Horário Contratual</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="codHorContrat">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Código do Horário Contratual</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="30"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="iniValid">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Início da validade (AAAA-MM)</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[2]{1}\d{3}-(1[0-2]|0[1-9])"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="fimValid" minOccurs="0">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Período final da validade, no formato (AAAA-MM)</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[2]{1}\d{3}-(1[0-2]|0[1-9])"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TDadosHorContratual">
+    <xs:annotation>
+      <xs:documentation>Informações do Horário Contratual</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="hrEntr">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Horário de entrada do trabalhador ou inicial da jornada</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:length value="4"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="hrSaida">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Horário de saída do trabalhador ou inicial da jornada</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:length value="4"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="durJornada">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Duração da jornada em minutos</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:integer">
+            <xs:pattern value="\d{1,4}"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="perHorFlexivel">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Indicar se é permitida a flexibilidade:
+            S - Sim;
+            N - Não;</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[N|S]"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="horarioIntervalo" minOccurs="0" maxOccurs="99">
+        <xs:annotation>
+          <xs:documentation>Intervalos da Jornada definidos no horário contratual</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="tpInterv">
+              <xs:simpleType>
+                <xs:annotation>
+                  <xs:documentation>Tipo de Intervalo da Jornada</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:byte">
+                  <xs:pattern value="\d"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="durInterv">
+              <xs:simpleType>
+                <xs:annotation>
+                  <xs:documentation>Duração do Intervalo da jornada em minutos</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:integer">
+                  <xs:pattern value="\d{1,3}"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="iniInterv" minOccurs="0">
+              <xs:simpleType>
+                <xs:annotation>
+                  <xs:documentation>Horário do início do intervalo</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                  <xs:length value="4"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="termInterv" minOccurs="0">
+              <xs:simpleType>
+                <xs:annotation>
+                  <xs:documentation>Horário de término do intervalo</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                  <xs:length value="4"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TPeriodoValidade">
+    <xs:annotation>
+      <xs:documentation>Período de validade das informações</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="iniValid">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Início da validade (AAAA-MM)</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[2]{1}\d{3}-(1[0-2]|0[1-9])"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="fimValid" minOccurs="0">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Período final da validade, no formato (AAAA-MM)</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[2]{1}\d{3}-(1[0-2]|0[1-9])"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema version="1.0.0"
+           xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:esocial="http://www.esocial.gov.br/schema/download/solicitacao/id/v1_0_0"
+           targetNamespace="http://www.esocial.gov.br/schema/download/solicitacao/id/v1_0_0"
+           elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+
+  <xs:element name="eSocial">
+    <xs:annotation>
+      <xs:documentation>Elemento raiz do eSocial.</xs:documentation>
+    </xs:annotation>
+
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="download">
+          <xs:annotation>
+            <xs:documentation>Elemento de  informacoes relativas ao download.</xs:documentation>
+          </xs:annotation>
+
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEmpregador" type="esocial:TIdeEmpregador">
+                <xs:annotation>
+                  <xs:documentation>Identificação do empregador.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+
+              <xs:element name="solicDownloadEvtsPorId" type="esocial:TSolicitacaoDownloadPorIdEvento">
+                <xs:annotation>
+                  <xs:documentation>Contém  os parâmetros para solicitar download por Id do evento.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="TSolicitacaoDownloadPorIdEvento">
+    <xs:annotation>
+      <xs:documentation>Define os parâmetros para consulta por Id do evento.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="id" type="xs:ID" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>Identificação única do evento. Atributo Id que fica na tag evtXXXXX de cada evento.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TIdeEmpregador">
+    <xs:annotation>
+      <xs:documentation>Define a identificação do empregador. 1-CNPJ; 2-CPF;</xs:documentation>
+    </xs:annotation>
+
+    <xs:sequence>
+
+      <xs:element name="tpInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Tipo de empregador. 1-CNPJ; 2-CPF;</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base ="xs:byte">
+            <xs:enumeration value="1" />
+            <xs:enumeration value="2" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Número de Inscrição</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d{8,15}" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

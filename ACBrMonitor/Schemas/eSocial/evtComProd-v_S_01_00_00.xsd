@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtComProd/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtComProd/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-1260 - Comercialização da Produção Rural Pessoa Física</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtComProd">
+                    <xs:annotation>
+                        <xs:documentation>Evento Comercialização da Produção Rural Pessoa Física.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVE_FOPAG_COMERC_PROD</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVE_FOPAG_IND_RETIFICACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVE_FOPAG_INFO_COMPAT_CLASSTRIB</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVE_FOPAG_PERMITE_EXCLUSAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVE_FOPAG_SIMPLIFICADO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_MESMO_PROCEMI</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_EMPREGADOR</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_folha_mensal_PF" />
+                            <xs:element name="ideEmpregador">
+                                <xs:annotation>
+                                    <xs:documentation>Informações de identificação do empregador.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {tpInsc}, {nrInsc}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="tpInsc" type="TS_tpInsc_2" />
+                                        <xs:element name="nrInsc" type="TS_cpf">
+                                            <xs:annotation>
+                                                <xs:documentation>Informar o número de inscrição do contribuinte de acordo com o tipo de inscrição indicado no campo {ideEmpregador/tpInsc}(./tpInsc) e conforme informado em S-1000.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="infoComProd">
+                                <xs:annotation>
+                                    <xs:documentation>Informação da comercialização de produção.</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="ideEstabel">
+                                            <xs:annotation>
+                                                <xs:documentation>Identificação do estabelecimento que comercializou a produção.</xs:documentation>
+                                                <xs:documentation>CHAVE_GRUPO: {nrInscEstabRural}</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="nrInscEstabRural">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Preencher com o número de inscrição no CAEPF do estabelecimento rural.</xs:documentation>
+                                                                <xs:documentation>Validação: Deve ser um número de inscrição válido e existente na Tabela de Estabelecimentos (S-1005). Se {indGuia}(1260_ideEvento_indGuia) estiver preenchido, o número de inscrição deve possuir {tpCaepf}(1005_infoEstab_inclusao_dadosEstab_infoCaepf_tpCaepf) em S-1005 = [3].</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:string">
+                                                                <xs:pattern value="\d{14}" />
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="tpComerc" maxOccurs="5">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Valor total da comercialização por "tipo" de comercialização.</xs:documentation>
+                                                            <xs:documentation>CHAVE_GRUPO: {indComerc}</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="indComerc" type="TS_indComerc">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Indicativo de comercialização.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="vrTotCom" type="TS_valorMonetario_positivo">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Preencher com o valor total da comercialização.</xs:documentation>
+                                                                        <xs:documentation>Validação: Deve ser maior que 0 (zero).</xs:documentation>
+                                                                        <xs:documentation>Se {indComerc}(./indComerc) for igual a [3, 7], deve corresponder à soma do campo {vrComerc}(1260_infoComProd_ideEstabel_tpComerc_ideAdquir_vrComerc) dos registros vinculados.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="ideAdquir" minOccurs="0" maxOccurs="9999">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Identificação dos adquirentes da produção.</xs:documentation>
+                                                                        <xs:documentation>CHAVE_GRUPO: {tpInsc}, {nrInsc}</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: F (se {indComerc}(../indComerc) = [3, 7, 8]); N (nos demais casos)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="tpInsc" type="TS_tpInsc_1_2">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Preencher com o código correspondente ao tipo de inscrição, conforme Tabela 05.</xs:documentation>
+                                                                                    <xs:documentation>Validação: Se {indComerc}(../indComerc) for igual a [3, 7], deve ser igual a [1, 2]. Se {indComerc}(../indComerc) for igual a [8], deve ser igual a [1].</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="nrInsc" type="TS_nrInsc_11_14">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Informar o número de inscrição do contribuinte de acordo com o tipo de inscrição indicado no campo {ideAdquir/tpInsc}(./tpInsc).</xs:documentation>
+                                                                                    <xs:documentation>Validação: A inscrição informada deve ser compatível com o {ideAdquir/tpInsc}(./tpInsc) e diferente da inscrição do declarante.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="vrComerc" type="TS_valorMonetario_positivo">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Valor bruto da comercialização da produção.</xs:documentation>
+                                                                                    <xs:documentation>Validação: Deve ser maior que 0 (zero).</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="nfs" minOccurs="0" maxOccurs="999">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Notas fiscais da aquisição de produção</xs:documentation>
+                                                                                    <xs:documentation>DESCRICAO_COMPLETA:Detalhamento das notas fiscais relativas à comercialização de produção com o adquirente identificado no grupo superior.</xs:documentation>
+                                                                                    <xs:documentation>CHAVE_GRUPO: {serie}, {nrDocto}</xs:documentation>
+                                                                                    <xs:documentation>CONDICAO_GRUPO: F</xs:documentation>
+                                                                                </xs:annotation>
+                                                                                <xs:complexType>
+                                                                                    <xs:sequence>
+                                                                                        <xs:element name="serie" minOccurs="0">
+                                                                                            <xs:simpleType>
+                                                                                                <xs:annotation>
+                                                                                                    <xs:documentation>Informar o número de série da nota fiscal/fatura.</xs:documentation>
+                                                                                                </xs:annotation>
+                                                                                                <xs:restriction base="xs:string">
+                                                                                                    <xs:minLength value="1" />
+                                                                                                    <xs:maxLength value="5" />
+                                                                                                </xs:restriction>
+                                                                                            </xs:simpleType>
+                                                                                        </xs:element>
+                                                                                        <xs:element name="nrDocto">
+                                                                                            <xs:simpleType>
+                                                                                                <xs:annotation>
+                                                                                                    <xs:documentation>Número da nota fiscal/fatura.</xs:documentation>
+                                                                                                </xs:annotation>
+                                                                                                <xs:restriction base="xs:string">
+                                                                                                    <xs:minLength value="1" />
+                                                                                                    <xs:maxLength value="20" />
+                                                                                                </xs:restriction>
+                                                                                            </xs:simpleType>
+                                                                                        </xs:element>
+                                                                                        <xs:element name="dtEmisNF" type="xs:date">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Data de emissão da nota fiscal/fatura.</xs:documentation>
+                                                                                                <xs:documentation>Validação: O mês/ano da emissão da nota fiscal deve ser igual ao mês/ano indicado no registro de abertura do arquivo.</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:element>
+                                                                                        <xs:element name="vlrBruto" type="TS_valorMonetario">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Preencher com o valor bruto da(s) nota(s) fiscal(is).</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:element>
+                                                                                        <xs:element name="vrCPDescPR" type="TS_valorMonetario">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Preencher com o valor da contribuição previdenciária descontada pelo adquirente na comercialização de produção. Se não houver informação, preencher com 0 (zero).</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:element>
+                                                                                        <xs:element name="vrRatDescPR" type="TS_valorMonetario">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Valor da contribuição destinada ao financiamento dos benefícios concedidos em razão do grau de incidência da incapacidade laborativa decorrente dos riscos ambientais do trabalho, incidente sobre a comercialização de produção rural de produtor rural. Se não houver informação, preencher com 0 (zero).</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:element>
+                                                                                        <xs:element name="vrSenarDesc" type="TS_valorMonetario">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Valor da contribuição destinada ao SENAR, incidente sobre a comercialização de produção rural de produtor rural pessoa física/segurado especial. Se não houver informação, preencher com 0 (zero).</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:element>
+                                                                                    </xs:sequence>
+                                                                                </xs:complexType>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                                <xs:element name="infoProcJud" minOccurs="0" maxOccurs="10">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informação de processos judiciais</xs:documentation>
+                                                                        <xs:documentation>DESCRICAO_COMPLETA:Informações de processos judiciais com decisão/sentença favorável ao contribuinte e relativos à contribuição incidente sobre a comercialização.</xs:documentation>
+                                                                        <xs:documentation>CHAVE_GRUPO: {tpProc}, {nrProc}, {codSusp}</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="tpProc" type="TS_tpProc_1_2" />
+                                                                            <xs:element name="nrProc" type="TS_nrProc_17_20_21">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Informar um número de processo cadastrado através do evento S-1070, cujo {indMatProc}(1070_infoProcesso_inclusao_dadosProc_indMatProc) seja igual a [1].</xs:documentation>
+                                                                                    <xs:documentation>Validação: Deve ser um número de processo administrativo ou judicial válido e existente na Tabela de Processos (S-1070), com {indMatProc}(1070_infoProcesso_inclusao_dadosProc_indMatProc) = [1].</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="codSusp" type="TS_codSusp" />
+                                                                            <xs:element name="vrCPSusp" minOccurs="0" type="TS_valorMonetario_positivo">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Valor da contribuição previdenciária com exigibilidade suspensa.</xs:documentation>
+                                                                                    <xs:documentation>Validação: Preenchimento obrigatório se {vrRatSusp}(./vrRatSusp) e {vrSenarSusp}(./vrSenarSusp) não tiverem sido preenchidos.</xs:documentation>
+                                                                                    <xs:documentation>Deve ser um valor maior que 0 (zero).</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="vrRatSusp" minOccurs="0" type="TS_valorMonetario_positivo">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Valor da contribuição para GILRAT com exigibilidade suspensa.</xs:documentation>
+                                                                                    <xs:documentation>Validação: Preenchimento obrigatório se {vrCPSusp}(./vrCPSusp) e {vrSenarSusp}(./vrSenarSusp) não tiverem sido preenchidos.</xs:documentation>
+                                                                                    <xs:documentation>Deve ser um valor maior que 0 (zero).</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="vrSenarSusp" minOccurs="0" type="TS_valorMonetario_positivo">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Valor da contribuição para o SENAR com exigibilidade suspensa.</xs:documentation>
+                                                                                    <xs:documentation>Validação: Preenchimento obrigatório se {vrCPSusp}(./vrCPSusp) e {vrRatSusp}(./vrRatSusp) não tiverem sido preenchidos.</xs:documentation>
+                                                                                    <xs:documentation>Deve ser um valor maior que 0 (zero).</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

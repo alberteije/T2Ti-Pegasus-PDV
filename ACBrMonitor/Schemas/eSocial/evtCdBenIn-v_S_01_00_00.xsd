@@ -1,0 +1,276 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtCdBenIn/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtCdBenIn/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-2410 - Cadastro de Benefício - Entes Públicos - Início</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtCdBenIn">
+                    <xs:annotation>
+                        <xs:documentation>Evento Cadastro de Benefício - Início</xs:documentation>
+                        <xs:documentation>DESCRICAO_COMPLETA:Evento Cadastro de Benefício - Entes Públicos - Início.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_BENEFICIO_VALIDA_NUMERO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXTEMP_REATIVACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_MUDANCA_CPF</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RETIFICA_MESMO_BENEFICIO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_CNPJ</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_trab_PJ" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador_cnpj" />
+                            <xs:element name="beneficiario">
+                                <xs:annotation>
+                                    <xs:documentation>Informações do beneficiário.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {cpfBenef}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="cpfBenef" type="TS_cpf">
+                                            <xs:annotation>
+                                                <xs:documentation>Informar o CPF do beneficiário.</xs:documentation>
+                                                <xs:documentation>Validação: Deve observar o que segue:</xs:documentation>
+                                                <xs:documentation>a) Se {cadIni}(2410_infoBenInicio_cadIni) = [S], deve estar cadastrado no evento S-2400 com data de início igual à data de obrigatoriedade dos eventos não periódicos para o ente público no eSocial;</xs:documentation>
+                                                <xs:documentation>b) Se {indSitBenef}(2410_infoBenInicio_indSitBenef) = [1], deve estar cadastrado no evento S-2400 com data de início igual ou anterior a {dtIniBeneficio}(2410_infoBenInicio_dtIniBeneficio) (ou a {dtPublic}(2410_infoBenInicio_dtPublic), caso este campo tenha sido informado);</xs:documentation>
+                                                <xs:documentation>c) Se {indSitBenef}(2410_infoBenInicio_indSitBenef) = [2, 3], deve estar cadastrado no evento S-2400 com data de início igual ou anterior a {dtTransf}(2410_infoBenInicio_sucessaoBenef_dtTransf) ou {dtAltCPF}(2410_infoBenInicio_mudancaCPF_dtAltCPF), respectivamente.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="matricula" minOccurs="0" type="TS_codigo_esocial">
+                                            <xs:annotation>
+                                                <xs:documentation>Matrícula do servidor/militar constante no Sistema de Administração de Recursos Humanos do órgão cujo vínculo deu ensejo ao benefício. No caso de pensão por morte, informar a matrícula do instituidor da pensão.</xs:documentation>
+                                                <xs:documentation>Validação: Informação obrigatória se {cadIni}(2410_infoBenInicio_cadIni) = [N] e {tpBeneficio}(2410_infoBenInicio_dadosBeneficio_tpBeneficio) pertencer ao grupo [01, 02, 03, 04, 05, 06, 11] da Tabela 25.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="cnpjOrigem" minOccurs="0" type="TS_cnpj">
+                                            <xs:annotation>
+                                                <xs:documentation>Preencher com o CNPJ do órgão público responsável pela matrícula do servidor/militar. Informação obrigatória se {cadIni}(2410_infoBenInicio_cadIni) = [N], desde que haja informação de matrícula e que o CNPJ seja diferente do CNPJ do órgão declarante.</xs:documentation>
+                                                <xs:documentation>Validação: Preenchimento obrigatório se {cadIni}(2410_infoBenInicio_cadIni) = [N] e houver informação de {matricula}(./matricula), exceto se existir vínculo (evento S-2200) para o beneficiário (indicado em {cpfBenef}(./cpfBenef) e {matricula}(./matricula)) no órgão declarante.</xs:documentation>
+                                                <xs:documentation>Se informado, deve ser um CNPJ válido e diferente do CNPJ do órgão público declarante, com 14 (catorze) algarismos.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="infoBenInicio">
+                                <xs:annotation>
+                                    <xs:documentation>Informações do benefício - Início.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {nrBeneficio}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="cadIni" type="TS_sim_nao">
+                                            <xs:annotation>
+                                                <xs:documentation>Indicar se a data de início do benefício é anterior à obrigatoriedade dos eventos não periódicos para o ente público no eSocial.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="indSitBenef" minOccurs="0">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:documentation>Indicar a situação do benefício no órgão declarante.</xs:documentation>
+                                                    <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se {cadIni}(./cadIni) = [N].</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:byte">
+                                                    <xs:enumeration value="1">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Benefício concedido pelo próprio órgão declarante</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="2">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Benefício transferido de outro órgão</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="3">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Mudança de CPF do beneficiário</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="nrBeneficio" type="TS_nrBeneficio">
+                                            <xs:annotation>
+                                                <xs:documentation>Número do benefício.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="dtIniBeneficio" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Data de início do benefício.</xs:documentation>
+                                                <xs:documentation>Validação: Deve observar o que segue:</xs:documentation>
+                                                <xs:documentation>a) Se {cadIni}(./cadIni) = [S], deve ser anterior à data de início da obrigatoriedade dos eventos não periódicos para o ente público no eSocial;</xs:documentation>
+                                                <xs:documentation>b) Se {cadIni}(./cadIni) = [N], deve ser igual ou posterior à data de início da obrigatoriedade dos eventos não periódicos para o ente público no eSocial e igual ou anterior à data atual.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="dtPublic" type="xs:date" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informar a data de publicação da concessão do benefício, somente quando o ato concessório tiver vigência retroativa.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser posterior a {dtIniBeneficio}(./dtIniBeneficio).</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="dadosBeneficio">
+                                            <xs:annotation>
+                                                <xs:documentation>Dados relativos ao benefício.</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="tpBeneficio" type="TS_tpBeneficio">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Tipo de benefício.</xs:documentation>
+                                                            <xs:documentation>Validação: Deve ser um código válido e existente na Tabela 25. Se {cadIni}(2410_infoBenInicio_cadIni) = [N], não é permitido utilizar código do grupo [08] dessa tabela.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="tpPlanRP" type="TS_tpPlanRP" />
+                                                    <xs:element name="dsc" minOccurs="0" type="TS_texto_255">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Descrição do instrumento ou situação que originou o pagamento do benefício.</xs:documentation>
+                                                            <xs:documentation>Validação: Preenchimento obrigatório se {tpBeneficio}(./tpBeneficio) = [0909, 1001, 1009].</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="indDecJud" minOccurs="0" type="TS_sim_nao">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informar se o benefício foi concedido por determinação judicial.</xs:documentation>
+                                                            <xs:documentation>Validação: Preenchimento obrigatório se {cadIni}(2410_infoBenInicio_cadIni) = [N].</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="infoPenMorte" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações relativas à pensão por morte.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: O (se {tpBeneficio}(../tpBeneficio) pertencer ao grupo [06]); N (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="tpPenMorte" type="TS_tpPenMorte" />
+                                                                <xs:element name="instPenMorte" minOccurs="0">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informações do instituidor da pensão por morte.</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: O (se {cadIni}(2410_infoBenInicio_cadIni) = [N]); F (se {cadIni}(2410_infoBenInicio_cadIni) = [S])</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="cpfInst" type="TS_cpf">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Preencher com o CPF do instituidor da pensão por morte.</xs:documentation>
+                                                                                    <xs:documentation>Validação: Deve ser um CPF válido.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="dtInst" type="xs:date">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Data de óbito do instituidor da pensão por morte.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="sucessaoBenef" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Grupo de informações de transferência de benefício.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O (se {indSitBenef}(2410_infoBenInicio_indSitBenef) = [2]); N (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="cnpjOrgaoAnt" type="TS_cnpj">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informar o CNPJ do órgão público anterior.</xs:documentation>
+                                                            <xs:documentation>Validação: Deve ser um CNPJ válido e diferente da inscrição do declarante, considerando as particularidades aplicadas à informação de CNPJ de órgão público em S-1000. Além disso, deve possuir 14 (catorze) algarismos e ser diferente do CNPJ base do órgão público declarante (exceto se {ideEmpregador/nrInsc}(2410_ideEmpregador_nrInsc) tiver 14 (catorze) algarismos) e dos estabelecimentos informados através do evento S-1005.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="nrBeneficioAnt" type="TS_nrBeneficio">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Número do benefício no ente público anterior.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="dtTransf" type="xs:date">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com a data da transferência do benefício para o órgão público declarante.</xs:documentation>
+                                                            <xs:documentation>Validação: Devem ser observadas as seguintes regras:</xs:documentation>
+                                                            <xs:documentation>a) Deve ser posterior à data de início do benefício;</xs:documentation>
+                                                            <xs:documentation>b) Deve ser igual ou posterior à data de início da obrigatoriedade dos eventos não periódicos para o ente público no eSocial e igual ou anterior à data atual.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="observacao" minOccurs="0" type="TS_observacao" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="mudancaCPF" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações de mudança de CPF do beneficiário.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O (se {indSitBenef}(2410_infoBenInicio_indSitBenef) = [3]); N (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="cpfAnt" type="TS_cpf">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com o número do CPF antigo do beneficiário.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="nrBeneficioAnt" type="TS_nrBeneficio">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com o número do benefício anterior.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="dtAltCPF" type="xs:date">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Data de alteração do CPF.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="observacao" minOccurs="0" type="TS_observacao" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="infoBenTermino" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações da cessação do benefício</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Informações da cessação do benefício.</xs:documentation>
+                                                <xs:documentation>Grupo preenchido exclusivamente caso seja necessário enviar evento de reativação de benefício cessado antes do início dos eventos não periódicos para o ente público no eSocial ou para informação de diferenças de proventos e pensões devidos sob a vigência dos eventos periódicos para o ente público no eSocial.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: OC (se {cadIni}(2410_infoBenInicio_cadIni) = [S] ou {indSitBenef}(2410_infoBenInicio_indSitBenef) = [2]); N (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="dtTermBeneficio" type="xs:date">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Data de cessação do benefício.</xs:documentation>
+                                                            <xs:documentation>Validação: Devem ser observadas as seguintes regras:</xs:documentation>
+                                                            <xs:documentation>a) Deve ser igual ou posterior à data de início do benefício;</xs:documentation>
+                                                            <xs:documentation>b) Se {cadIni}(2410_infoBenInicio_cadIni) = [S], deve ser anterior à data de início da obrigatoriedade dos eventos não periódicos para o ente público no eSocial;</xs:documentation>
+                                                            <xs:documentation>c) Se {indSitBenef}(2410_infoBenInicio_indSitBenef) = [2], deve ser anterior a {dtTransf}(2410_infoBenInicio_sucessaoBenef_dtTransf).</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="mtvTermino">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Motivo da cessação do benefício.</xs:documentation>
+                                                                <xs:documentation>Validação: Deve ser um código válido e existente na Tabela 26, com exceção dos códigos [09, 10].</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:byte">
+                                                                <xs:pattern value="\d{2}" />
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

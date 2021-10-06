@@ -1,0 +1,575 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtExpRisco/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtExpRisco/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-2240 - Condições Ambientais do Trabalho - Agentes Nocivos</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtExpRisco">
+                    <xs:annotation>
+                        <xs:documentation>Evento Condições Ambientais do Trabalho - Agentes Nocivos.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTO_EXT_SEM_IMPACTO_FOPAG</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXTEMP_REINTEGRACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_GERAL_VALIDA_DADOS_TABCONTRIB</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_MESMO_PROCEMI</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RETIFICA_MESMO_VINCULO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TSV_ATIVO_NA_DTEVENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VINCULO_ATIVO_NA_DTEVENTO</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_trab" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="ideVinculo" type="T_ideVinculo_sst" />
+                            <xs:element name="infoExpRisco">
+                                <xs:annotation>
+                                    <xs:documentation>Ambiente de trabalho, atividades desempenhadas e exposição a agentes nocivos</xs:documentation>
+                                    <xs:documentation>DESCRICAO_COMPLETA:Informações sobre o ambiente de trabalho, atividades desempenhadas e exposição a agentes nocivos.</xs:documentation>                        
+                                    <xs:documentation>CHAVE_GRUPO: {dtIniCondicao}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="dtIniCondicao" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Informar a data em que o trabalhador iniciou as atividades nas condições descritas ou a data de início da obrigatoriedade deste evento para o empregador no eSocial, a que for mais recente.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser uma data válida, igual ou posterior à data de admissão do vínculo a que se refere. Não pode ser anterior à data de início da obrigatoriedade deste evento para o empregador no eSocial, nem pode ser posterior a 30 (trinta) dias da data atual.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="infoAmb">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações relativas ao ambiente de trabalho.</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="localAmb">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Informar o tipo de estabelecimento do ambiente de trabalho.</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:byte">
+                                                                <xs:enumeration value="1">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Estabelecimento do próprio empregador</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="2">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Estabelecimento de terceiros</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="dscSetor" type="TS_texto_100">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Descrição do lugar administrativo, na estrutura organizacional da empresa, onde o trabalhador exerce suas atividades laborais.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="tpInsc" type="TS_tpInsc_1_3_4" />
+                                                    <xs:element name="nrInsc" type="TS_nrInsc_12_14">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Número de inscrição onde está localizado o ambiente.</xs:documentation>
+                                                            <xs:documentation>Validação: Deve ser um identificador válido, compatível com o conteúdo do campo {infoAmb/tpInsc}(./tpInsc) e:</xs:documentation>
+                                                            <xs:documentation>a) Se {localAmb}(./localAmb) = [1], deve ser válido e existente na Tabela de Estabelecimentos (S-1005);</xs:documentation>
+                                                            <xs:documentation>b) Se {localAmb}(./localAmb) = [2], deve ser diferente dos estabelecimentos informados na Tabela S-1005 e, se {infoAmb/tpInsc}(./tpInsc) = [1] e o empregador for pessoa jurídica, a raiz do CNPJ informado deve ser diferente da constante em S-1000.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="infoAtiv">
+                                            <xs:annotation>
+                                                <xs:documentation>Descrição das atividades desempenhadas.</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="dscAtivDes" type="TS_texto_999">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Descrição das atividades, físicas ou mentais, realizadas pelo trabalhador, por força do poder de comando a que se submete. As atividades deverão ser escritas com exatidão, e de forma sucinta, com a utilização de verbos no infinitivo impessoal. Ex.: Distribuir panfletos, operar máquina de envase, etc.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="agNoc" maxOccurs="999">
+                                            <xs:annotation>
+                                                <xs:documentation>Agente(s) nocivo(s) ao(s) qual(is) o trabalhador está exposto.</xs:documentation>
+                                                <xs:documentation>CHAVE_GRUPO: {codAgNoc}, {dscAgNoc}</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="codAgNoc">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Informar o código do agente nocivo ao qual o trabalhador está exposto. Preencher com números e pontos. Caso não haja exposição, informar o código [09.01.001] (Ausência de agente nocivo ou de atividades previstas no Anexo IV do Decreto 3.048/1999).</xs:documentation>
+                                                                <xs:documentation>Validação: Deve ser um código válido e existente na Tabela 24. Não é possível informar nenhum outro código de agente nocivo quando houver o código [09.01.001].</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:string">
+                                                                <xs:length value="9" />
+                                                                <xs:pattern value="\d{2}\.\d{2}\.\d{3}" />
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="dscAgNoc" minOccurs="0" type="TS_texto_999">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Descrição do agente nocivo.</xs:documentation>
+                                                            <xs:documentation>Validação: Preenchimento obrigatório se {codAgNoc}(./codAgNoc) = [01.01.001, 01.02.001, 01.03.001, 01.04.001, 01.05.001, 01.06.001, 01.07.001, 01.08.001, 01.09.001, 01.10.001, 01.12.001, 01.13.001, 01.14.001, 01.15.001, 01.16.001, 01.17.001, 01.18.001, 05.01.001].</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="tpAval">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Tipo de avaliação do agente nocivo.</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:byte">
+                                                                <xs:enumeration value="1">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Critério quantitativo</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="2">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Critério qualitativo</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="intConc" minOccurs="0">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Intensidade, concentração ou dose da exposição do trabalhador ao agente nocivo cujo critério de avaliação seja quantitativo.</xs:documentation>
+                                                                <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se {tpAval}(./tpAval) = [1].</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:decimal">
+                                                                <xs:totalDigits value="10" />
+                                                                <xs:fractionDigits value="4" />
+                                                                <xs:maxInclusive value="999999.9999" />
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="limTol" minOccurs="0">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Limite de tolerância calculado para agentes específicos, conforme técnica de medição exigida na legislação.</xs:documentation>
+                                                                <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se {tpAval}(./tpAval) = [1] e {codAgNoc}(./codAgNoc) = [01.18.001, 02.01.014].</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:decimal">
+                                                                <xs:totalDigits value="10" />
+                                                                <xs:fractionDigits value="4" />
+                                                                <xs:maxInclusive value="999999.9999" />
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="unMed" minOccurs="0">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Dose ou unidade de medida da intensidade ou concentração do agente.</xs:documentation>
+                                                                <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se {tpAval}(./tpAval) = [1].</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:byte">
+                                                                <xs:enumeration value="1">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>dose diária de ruído</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="2">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>decibel linear (dB (linear))</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="3">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>decibel (C) (dB(C))</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="4">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>decibel (A) (dB(A))</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="5">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>metro por segundo ao quadrado (m/s^^2^^)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="6">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>metro por segundo elevado a 1,75 (m/s^^1,75^^)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="7">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>parte de vapor ou gás por milhão de partes de ar contaminado (ppm)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="8">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>miligrama por metro cúbico de ar (mg/m^^3^^)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="9">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>fibra por centímetro cúbico (f/cm^^3^^)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="10">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>grau Celsius (ºC)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="11">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>metro por segundo (m/s)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="12">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>porcentual</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="13">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>lux (lx)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="14">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>unidade formadora de colônias por metro cúbico (ufc/m^^3^^)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="15">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>dose diária</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="16">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>dose mensal</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="17">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>dose trimestral</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="18">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>dose anual</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="19">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>watt por metro quadrado (W/m^^2^^)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="20">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>ampère por metro (A/m)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="21">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>militesla (mT)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="22">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>microtesla (μT)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="23">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>miliampère (mA)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="24">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>quilovolt por metro (kV/m)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="25">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>volt por metro (V/m)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="26">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>joule por metro quadrado (J/m^^2^^)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="27">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>milijoule por centímetro quadrado (mJ/cm^^2^^)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="28">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>milisievert (mSv)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="29">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>milhão de partículas por decímetro cúbico (mppdc)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="30">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>umidade relativa do ar (UR (%))</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="tecMedicao" minOccurs="0">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Técnica utilizada para medição da intensidade ou concentração.</xs:documentation>
+                                                                <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se {tpAval}(./tpAval) = [1].</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:string">
+                                                                <xs:minLength value="1" />
+                                                                <xs:maxLength value="40" />
+                                                                <xs:pattern value=".*[^\s].*" />
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="epcEpi">
+                                                        <xs:annotation>
+                                                            <xs:documentation>EPC e EPI</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Informações relativas a Equipamentos de Proteção Coletiva - EPC e Equipamentos de Proteção Individual - EPI.</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="utilizEPC">
+                                                                    <xs:simpleType>
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>O empregador implementa medidas de proteção coletiva (EPC) para eliminar ou reduzir a exposição dos trabalhadores ao agente nocivo?</xs:documentation>
+                                                                        </xs:annotation>
+                                                                        <xs:restriction base="xs:byte">
+                                                                            <xs:enumeration value="0">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Não se aplica</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:enumeration>
+                                                                            <xs:enumeration value="1">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Não implementa</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:enumeration>
+                                                                            <xs:enumeration value="2">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Implementa</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:enumeration>
+                                                                        </xs:restriction>
+                                                                    </xs:simpleType>
+                                                                </xs:element>
+                                                                <xs:element name="eficEpc" type="TS_sim_nao" minOccurs="0">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Os EPCs são eficazes na neutralização dos riscos ao trabalhador?</xs:documentation>
+                                                                        <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se {utilizEPC}(./utilizEPC) = [2].</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="utilizEPI">
+                                                                    <xs:simpleType>
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>Utilização de EPI.</xs:documentation>
+                                                                        </xs:annotation>
+                                                                        <xs:restriction base="xs:byte">
+                                                                            <xs:enumeration value="0">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Não se aplica</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:enumeration>
+                                                                            <xs:enumeration value="1">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Não utilizado</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:enumeration>
+                                                                            <xs:enumeration value="2">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Utilizado</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:enumeration>
+                                                                        </xs:restriction>
+                                                                    </xs:simpleType>
+                                                                </xs:element>
+                                                                <xs:element name="epi" minOccurs="0" maxOccurs="50">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>EPI.</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: O (se {utilizEPI}(../utilizEPI) = [2]); N (nos demais casos)</xs:documentation>
+                                                                        <xs:documentation>CHAVE_GRUPO: {docAval}, {dscEPI}</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="docAval" minOccurs="0" type="TS_texto_255">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Certificado de Aprovação - CA ou documento de avaliação do EPI.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="dscEPI" minOccurs="0" type="TS_texto_999">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Descrição do EPI.</xs:documentation>
+                                                                                    <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se {docAval}(./docAval) não for informado.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="eficEpi" type="TS_sim_nao">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>O EPI é eficaz na neutralização do risco ao trabalhador?</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                                <xs:element name="epiCompl" minOccurs="0" maxOccurs="1">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Requisitos das NR-06 e NR-09 pelo(s) EPI(s) informado(s)</xs:documentation>
+                                                                        <xs:documentation>DESCRICAO_COMPLETA:Requisitos da Norma Regulamentadora 06 - NR-06 e da Norma Regulamentadora 09 - NR-09 pelo(s) EPI(s) informado(s).</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: O (se {utilizEPI}(../utilizEPI) = [2]); N (nos demais casos)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="medProtecao" type="TS_sim_nao">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Foi tentada a implementação de medidas de proteção coletiva, de caráter administrativo ou de organização, optando-se pelo EPI por inviabilidade técnica, insuficiência ou interinidade, ou ainda em caráter complementar ou emergencial?</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="condFuncto" type="TS_sim_nao">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Foram observadas as condições de funcionamento do EPI ao longo do tempo, conforme especificação técnica do fabricante nacional ou importador, ajustadas às condições de campo?</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="usoInint" type="TS_sim_nao">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Foi observado o uso ininterrupto do EPI ao longo do tempo, conforme especificação técnica do fabricante nacional ou importador, ajustadas às condições de campo?</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="przValid" type="TS_sim_nao">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Foi observado o prazo de validade do CA no momento da compra do EPI?</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="periodicTroca" type="TS_sim_nao">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>É observada a periodicidade de troca definida pelo fabricante nacional ou importador e/ou programas ambientais, comprovada mediante recibo assinado pelo usuário em época própria?</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="higienizacao" type="TS_sim_nao">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>É observada a higienização conforme orientação do fabricante nacional ou importador?</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="respReg" maxOccurs="9">
+                                            <xs:annotation>
+                                                <xs:documentation>Responsável pelos registros ambientais</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Informações relativas ao responsável pelos registros ambientais.</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="cpfResp" type="TS_cpf">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com o CPF do responsável pelos registros ambientais.</xs:documentation>
+                                                            <xs:documentation>Validação: Deve ser um CPF válido.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="ideOC">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Órgão de classe ao qual o responsável pelos registros ambientais está vinculado.</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:byte">
+                                                                <xs:enumeration value="1">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Conselho Regional de Medicina - CRM</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="4">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Conselho Regional de Engenharia e Agronomia - CREA</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="9">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Outros</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="dscOC" minOccurs="0">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Descrição (sigla) do órgão de classe ao qual o responsável pelos registros ambientais está vinculado.</xs:documentation>
+                                                                <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se {ideOC}(./ideOC) = [9].</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:string">
+                                                                <xs:minLength value="1" />
+                                                                <xs:maxLength value="20" />
+                                                                <xs:pattern value=".*[^\s].*" />
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="nrOC">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Número de inscrição no órgão de classe.</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:string">
+                                                                <xs:minLength value="1" />
+                                                                <xs:maxLength value="14" />
+                                                                <xs:pattern value=".*[^\s].*" />
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="ufOC" type="TS_uf">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Sigla da Unidade da Federação - UF do órgão de classe.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="obs" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Observações relativas a registros ambientais.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="obsCompl" type="TS_texto_999">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Observação(ões) complementar(es) referente(s) a registros ambientais.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

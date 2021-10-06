@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.reinf.esocial.gov.br/schemas/retornoLoteEventos/v1_05_00" targetNamespace="http://www.reinf.esocial.gov.br/schemas/retornoLoteEventos/v1_05_00" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="./xmldsig-core-schema.xsd"/>
+  <xs:element name="Reinf">
+    <xs:annotation>
+      <xs:documentation>Elemento raiz do Reinf.</xs:documentation> 
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="retornoLoteEventos" minOccurs="1" maxOccurs="1">
+          <xs:annotation>
+            <xs:documentation>
+              Xml que contém o retorno do processo de recepção, e também o resultado do processo de validação.
+              O XML será disponibilizado apenas no momento em que o transmissor enviar o lote.
+              Neste momento a tag retornoProcessamentoLote será preenchida.
+            </xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideTransmissor"  type="TIdeTransmissor" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Identificação do transmissor.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="status" type="TStatus" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Contém o status atual do lote.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="retornoEventos" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Contém o(s) resultado(s) do processamento dos eventos do lote.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence maxOccurs="100">
+                    <xs:element name="evento" type="TArquivoReinf"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" use="required" type="xs:ID">
+              <xs:annotation>
+                <xs:documentation>Identificação única do retorno do Lote.</xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
+            </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+      
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:complexType name="TIdeTransmissor">
+    <xs:annotation>
+      <xs:documentation>Define a identificação do transmissor.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="IdTransmissor" minOccurs="1" maxOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="14"  />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="TArquivoReinf">
+    <xs:annotation>
+      <xs:documentation>
+        Define os dados de um arquivo do Reinf (evento).
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:any processContents="skip">
+        <xs:annotation>
+          <xs:documentation>Contém xml com o retorno do processamento do evento. (conforme Xsd retornoEvento)</xs:documentation>
+        </xs:annotation>
+      </xs:any>
+    </xs:sequence>
+    <xs:attribute name="id" use="required" type="xs:ID">
+      <xs:annotation>
+        <xs:documentation>
+          Contém chave de acesso do evento.
+          Esta informação é importante para que o próprio XSD consiga detectar se existe
+          mais de um evento com mesmo ID no lote e, caso exista, negue sua recepção.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+  
+  
+  <xs:complexType name="TStatus">
+    <xs:annotation>
+      <xs:documentation>Contém o status atual do da resposta do processamento do lote (Código e Descrição).</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="cdStatus" minOccurs="1" maxOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="6"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="descRetorno" minOccurs="1" maxOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="255"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="dadosRegistroOcorrenciaLote" type="TRegistroOcorrencias"  minOccurs="0" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Informaçoes de ocorrências registradas.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="TRegistroOcorrencias">
+    <xs:annotation>
+      <xs:documentation>Define uma ocorrencia encontrada no processamento de um arquivo.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="ocorrencias" minOccurs="1" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="tipo" minOccurs="1" maxOccurs="1">
+              <xs:annotation>
+                <xs:documentation>Contém o tipo da ocorrencia: 1 - Aviso, 2 - Erro</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:integer">
+                  <xs:totalDigits value="1"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="localizacaoErroAviso" minOccurs="0" maxOccurs="1">
+              <xs:annotation>
+                <xs:documentation>Campo onde ocorreu o aviso/erro.</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:minLength value="1"/>
+                  <xs:maxLength value="100"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="codigo" minOccurs="1" maxOccurs="1">
+              <xs:annotation>
+                <xs:documentation>Codigo do status da resposta do processamento do evento</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:minLength value="1"/>
+                  <xs:maxLength value="6"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="descricao" minOccurs="1" maxOccurs="1">
+              <xs:annotation>
+                <xs:documentation>Descricao literal da resposta do processamento do evento</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:minLength value="1"/>
+                  <xs:maxLength value="255"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+
+
+
+
+
+

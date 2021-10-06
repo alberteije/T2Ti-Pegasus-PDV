@@ -1,0 +1,768 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.esocial.gov.br/schema/evt/evtCAT/v02_05_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtCAT/v02_05_00" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd"/>
+  <xs:element name="eSocial">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="evtCAT">
+          <xs:annotation>
+            <xs:documentation>Evento Comunicação de Acidente de Trabalho</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEvento" type="TIdeEveTrab">
+                <xs:annotation>
+                  <xs:documentation>Informações de Identificação do Evento</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="ideEmpregador" type="TEmpregador">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do empregador</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="ideVinculo">
+                <xs:annotation>
+                  <xs:documentation>Informações de Identificação do Trabalhador e do Vínculo</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="cpfTrab">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>CPF do trabalhador</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:length value="11"/>
+                          <xs:pattern value="\d{11}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="nisTrab" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>NIS</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:maxLength value="11"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="matricula" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Matricula</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1"/>
+                          <xs:maxLength value="30"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="codCateg" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Código da Categoria</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:integer">
+                          <xs:pattern value="\d{3}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="cat">
+                <xs:annotation>
+                  <xs:documentation>Comunicação de Acidente de Trabalho</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="dtAcid">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Data do Acidente</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:date">
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="tpAcid">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Tipo de Acidente de Trabalho</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:length value="6"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="hrAcid" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Hora do Acidente</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:length value="4"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="hrsTrabAntesAcid">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Horas trabalhadas antes do acidente</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:length value="4"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="tpCat">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Tipo de CAT</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:byte">
+                          <xs:pattern value="\d"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="indCatObito">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Houve Óbito?
+                          S - Sim
+                          N - Não</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:pattern value="[N|S]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="dtObito" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Data do óbito</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:date">
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="indComunPolicia">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Indique se houve comunicação à autoridade policial:
+                          S - Sim
+                          N - Não</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:pattern value="[N|S]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="codSitGeradora">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Situação geradora do acidente</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:integer">
+                          <xs:pattern value="\d{9}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="iniciatCAT">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Iniciativa da CAT</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:byte">
+                          <xs:pattern value="\d"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="obsCAT" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Observação</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="2"/>
+                          <xs:maxLength value="999"/>
+                          <xs:whiteSpace value="preserve"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="localAcidente">
+                      <xs:annotation>
+                        <xs:documentation>Local do Acidente</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="tpLocal">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Tipo do local do acidente</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:byte">
+                                <xs:pattern value="\d"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="dscLocal" minOccurs="0">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Especificação do local do acidente</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="2"/>
+                                <xs:maxLength value="255"/>
+                                <xs:whiteSpace value="preserve"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="codAmb" minOccurs="0">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Código do Ambiente de Trabalho</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="1"/>
+                                <xs:maxLength value="30"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="tpLograd">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Tipo de Logradouro</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="1"/>
+                                <xs:maxLength value="4"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="dscLograd">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Descrição do logradouro</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="1"/>
+                                <xs:maxLength value="100"/>
+                                <xs:whiteSpace value="preserve"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="nrLograd">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Número do logradouro</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="1"/>
+                                <xs:maxLength value="10"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="complemento" minOccurs="0">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Complemento</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="1"/>
+                                <xs:maxLength value="30"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="bairro" minOccurs="0">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Nome do bairro/distrito</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="1"/>
+                                <xs:maxLength value="90"/>
+                                <xs:whiteSpace value="preserve"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="cep" minOccurs="0">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Código de Endereçamento Postal - CEP</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:pattern value="\d{8}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="codMunic" minOccurs="0">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Código do Município</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:integer">
+                                <xs:pattern value="\d{7}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="uf" minOccurs="0">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Sigla da UF</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="AC"/>
+                                <xs:enumeration value="AL"/>
+                                <xs:enumeration value="AP"/>
+                                <xs:enumeration value="AM"/>
+                                <xs:enumeration value="BA"/>
+                                <xs:enumeration value="CE"/>
+                                <xs:enumeration value="DF"/>
+                                <xs:enumeration value="ES"/>
+                                <xs:enumeration value="GO"/>
+                                <xs:enumeration value="MA"/>
+                                <xs:enumeration value="MT"/>
+                                <xs:enumeration value="MS"/>
+                                <xs:enumeration value="MG"/>
+                                <xs:enumeration value="PA"/>
+                                <xs:enumeration value="PB"/>
+                                <xs:enumeration value="PR"/>
+                                <xs:enumeration value="PE"/>
+                                <xs:enumeration value="PI"/>
+                                <xs:enumeration value="RJ"/>
+                                <xs:enumeration value="RN"/>
+                                <xs:enumeration value="RS"/>
+                                <xs:enumeration value="RO"/>
+                                <xs:enumeration value="RR"/>
+                                <xs:enumeration value="SC"/>
+                                <xs:enumeration value="SP"/>
+                                <xs:enumeration value="SE"/>
+                                <xs:enumeration value="TO"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="pais" minOccurs="0">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>País</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="1"/>
+                                <xs:maxLength value="3"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="codPostal" minOccurs="0">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>CEP</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="4"/>
+                                <xs:maxLength value="12"/>
+                                <xs:whiteSpace value="preserve"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="ideLocalAcid" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Identificação do local onde ocorreu o acidente</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="tpInsc">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Tipo de Inscrição, conforme Tabela 05</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:byte">
+                                      <xs:pattern value="\d"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="nrInsc">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Número de Inscrição</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="\d{8,14}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="parteAtingida" maxOccurs="99">
+                      <xs:annotation>
+                        <xs:documentation>Parte do Corpo Atingida</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="codParteAting">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Indicar a parte atingida, conforme tabela 13</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:integer">
+                                <xs:pattern value="\d{9}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="lateralidade">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Nos casos de órgãos bilaterais, ou seja, que se situam dos lados do corpo, assinalar a lado (direito ou esquerdo) Exemplo: no caso do órgão atingido ser uma perna, apontar qual foi a atingida, se a perna direita, se a perna esquerda, ou se ambas Se o órgão atingido é único, como por exemplo, a cabeça, assinalar este campo como não aplicável</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:byte">
+                                <xs:pattern value="\d"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="agenteCausador" maxOccurs="99">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="codAgntCausador">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Agente causador do acidente, conforme tabelas 14 ou 15</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:integer">
+                                <xs:pattern value="\d{9}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="atestado" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="codCNES" minOccurs="0">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Código da unidade de atendimento médico no Cadastro Nacional de Estabelecimento de Saúde</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="1"/>
+                                <xs:maxLength value="7"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="dtAtendimento">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Data do atendimento</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:date">
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="hrAtendimento">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Hora do atendimento</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:length value="4"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="indInternacao">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Indicativo de Internação:
+                                S - Sim;
+                                N - Não</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:pattern value="[N|S]"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="durTrat">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Duração estimada do tratamento, em dias</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:integer">
+                                <xs:pattern value="\d{1,4}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="indAfast">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Indicativo do afastamento:
+                                S - Sim;
+                                N - Não</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:pattern value="[N|S]"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="dscLesao">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Preencher com a descrição da lesão, conforme tabela 17</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:integer">
+                                <xs:pattern value="\d{9}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="dscCompLesao" minOccurs="0">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Descrição complementar da lesão</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="2"/>
+                                <xs:maxLength value="200"/>
+                                <xs:whiteSpace value="preserve"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="diagProvavel" minOccurs="0">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Diagnóstico Provável</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="1"/>
+                                <xs:maxLength value="100"/>
+                                <xs:whiteSpace value="preserve"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="codCID">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Código na Tabela CID</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="1"/>
+                                <xs:maxLength value="4"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="observacao" minOccurs="0">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Observação</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="2"/>
+                                <xs:maxLength value="255"/>
+                                <xs:whiteSpace value="preserve"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="emitente">
+                            <xs:annotation>
+                              <xs:documentation>Médico/Dentista que emitiu o atestado</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="nmEmit">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Nome do médico/dentista que emitiu o atestado</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="2"/>
+                                      <xs:maxLength value="70"/>
+                                      <xs:whiteSpace value="preserve"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="ideOC">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Órgão de classe:
+                                      1 - Conselho Regional de Medicina (CRM);
+                                      2 - Conselho Regional de Odontologia (CRO)</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:byte">
+                                      <xs:pattern value="\d"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="nrOC">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Inscr no órgão de classe</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="2"/>
+                                      <xs:maxLength value="14"/>
+                                      <xs:whiteSpace value="preserve"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="ufOC" minOccurs="0">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Sigla da UF do órgão de classe</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:enumeration value="AC"/>
+                                      <xs:enumeration value="AL"/>
+                                      <xs:enumeration value="AP"/>
+                                      <xs:enumeration value="AM"/>
+                                      <xs:enumeration value="BA"/>
+                                      <xs:enumeration value="CE"/>
+                                      <xs:enumeration value="DF"/>
+                                      <xs:enumeration value="ES"/>
+                                      <xs:enumeration value="GO"/>
+                                      <xs:enumeration value="MA"/>
+                                      <xs:enumeration value="MT"/>
+                                      <xs:enumeration value="MS"/>
+                                      <xs:enumeration value="MG"/>
+                                      <xs:enumeration value="PA"/>
+                                      <xs:enumeration value="PB"/>
+                                      <xs:enumeration value="PR"/>
+                                      <xs:enumeration value="PE"/>
+                                      <xs:enumeration value="PI"/>
+                                      <xs:enumeration value="RJ"/>
+                                      <xs:enumeration value="RN"/>
+                                      <xs:enumeration value="RS"/>
+                                      <xs:enumeration value="RO"/>
+                                      <xs:enumeration value="RR"/>
+                                      <xs:enumeration value="SC"/>
+                                      <xs:enumeration value="SP"/>
+                                      <xs:enumeration value="SE"/>
+                                      <xs:enumeration value="TO"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="catOrigem" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>CAT de origem</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="nrRecCatOrig">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Número da CAT origem</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="1"/>
+                                <xs:maxLength value="40"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Id" type="xs:ID" use="required"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="TIdeEveTrab">
+    <xs:annotation>
+      <xs:documentation>Identificação do evento</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="indRetif">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Indicativo de Retificação</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrRecibo" minOccurs="0">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Número do recibo do arquivo a ser retificado</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="40"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="tpAmb">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Tipo de ambiente</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="procEmi">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Processo de emissão do evento</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="verProc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Versão do processo de emissão do evento</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="20"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TEmpregador">
+    <xs:sequence>
+      <xs:element name="tpInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Tipo de Inscrição, conforme Tabela 05</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Número de Inscrição</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d{8,14}"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

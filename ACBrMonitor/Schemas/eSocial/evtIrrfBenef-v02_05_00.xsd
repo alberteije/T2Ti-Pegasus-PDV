@@ -1,0 +1,344 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.esocial.gov.br/schema/evt/evtIrrfBenef/v02_05_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtIrrfBenef/v02_05_00" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd"/>
+  <xs:element name="eSocial">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="evtIrrfBenef">
+          <xs:annotation>
+            <xs:documentation>IRRF do beneficiário</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEvento">
+                <xs:annotation>
+                  <xs:documentation>Identificação do evento de retorno</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="nrRecArqBase">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Recibo do arquivo de origem</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1"/>
+                          <xs:maxLength value="40"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="perApur">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Período ao qual se referem as informações</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="4"/>
+                          <xs:maxLength value="7"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="ideEmpregador" type="TEmpregador">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do empregador</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="ideTrabalhador">
+                <xs:annotation>
+                  <xs:documentation>Identificação do Trabalhador</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="cpfTrab">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>CPF do trabalhador</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:length value="11"/>
+                          <xs:pattern value="\d{11}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="infoDep" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Informações relativas a existência de dependentes</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="vrDedDep">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Dedução IRRF relativo a dependentes</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:decimal">
+                          <xs:totalDigits value="14"/>
+                          <xs:fractionDigits value="2"/>
+                          <xs:maxInclusive value="999999999999"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="infoIrrf" maxOccurs="9">
+                <xs:annotation>
+                  <xs:documentation>Informações relativas ao IRRF</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="codCateg" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Código da Categoria</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:integer">
+                          <xs:pattern value="\d{3}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="indResBr">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Tem residência fiscal no Brasil?</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:pattern value="[N|S]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="basesIrrf" maxOccurs="99">
+                      <xs:annotation>
+                        <xs:documentation>Bases do IRRF</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="tpValor">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Tipo de valor</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:byte">
+                                <xs:pattern value="\d{1,2}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="valor">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Valor</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:decimal">
+                                <xs:totalDigits value="14"/>
+                                <xs:fractionDigits value="2"/>
+                                <xs:maxInclusive value="999999999999"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="irrf" minOccurs="0" maxOccurs="20">
+                      <xs:annotation>
+                        <xs:documentation>Informações relativas ao IRRF</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="tpCR">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Código de Receita - CR</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:integer">
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="vrIrrfDesc">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Valor efetivamente descontado do trabalhador relativo ao IRRF</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:decimal">
+                                <xs:totalDigits value="14"/>
+                                <xs:fractionDigits value="2"/>
+                                <xs:maxInclusive value="999999999999"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="idePgtoExt" type="TNaoResid" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Informações complementares sobre pagamentos a residente fiscal no exterior</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Id" type="xs:ID" use="required"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="TEmpregador">
+    <xs:sequence>
+      <xs:element name="tpInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Tipo de Inscrição, conforme Tabela 05</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Número de Inscrição</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d{8,14}"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TNaoResid">
+    <xs:annotation>
+      <xs:documentation>Endereço no Exterior - Fiscal</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="idePais">
+        <xs:annotation>
+          <xs:documentation>Identificação do País onde foi efetuado o pagamento</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="codPais">
+              <xs:simpleType>
+                <xs:annotation>
+                  <xs:documentation>Código do País</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                  <xs:length value="3"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="indNIF">
+              <xs:simpleType>
+                <xs:annotation>
+                  <xs:documentation>Indicativo do preenchimento do NIF</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:byte">
+                  <xs:pattern value="\d"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="nifBenef" minOccurs="0">
+              <xs:simpleType>
+                <xs:annotation>
+                  <xs:documentation>Número de Identificação Fiscal - NIF</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                  <xs:minLength value="2"/>
+                  <xs:maxLength value="20"/>
+                  <xs:whiteSpace value="preserve"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="endExt">
+        <xs:annotation>
+          <xs:documentation>Informações complementares de endereço do beneficiário</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="dscLograd">
+              <xs:simpleType>
+                <xs:annotation>
+                  <xs:documentation>Descrição do logradouro</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                  <xs:minLength value="1"/>
+                  <xs:maxLength value="100"/>
+                  <xs:whiteSpace value="preserve"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="nrLograd" minOccurs="0">
+              <xs:simpleType>
+                <xs:annotation>
+                  <xs:documentation>Número do logradouro</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                  <xs:minLength value="1"/>
+                  <xs:maxLength value="10"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="complem" minOccurs="0">
+              <xs:simpleType>
+                <xs:annotation>
+                  <xs:documentation>Complemento do logradouro</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                  <xs:minLength value="1"/>
+                  <xs:maxLength value="30"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="bairro" minOccurs="0">
+              <xs:simpleType>
+                <xs:annotation>
+                  <xs:documentation>Nome do bairro/distrito</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                  <xs:minLength value="1"/>
+                  <xs:maxLength value="90"/>
+                  <xs:whiteSpace value="preserve"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="nmCid">
+              <xs:simpleType>
+                <xs:annotation>
+                  <xs:documentation>Nome da Cidade</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                  <xs:minLength value="2"/>
+                  <xs:maxLength value="50"/>
+                  <xs:whiteSpace value="preserve"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="codPostal" minOccurs="0">
+              <xs:simpleType>
+                <xs:annotation>
+                  <xs:documentation>Código de Endereçamento Postal</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                  <xs:minLength value="4"/>
+                  <xs:maxLength value="12"/>
+                  <xs:whiteSpace value="preserve"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

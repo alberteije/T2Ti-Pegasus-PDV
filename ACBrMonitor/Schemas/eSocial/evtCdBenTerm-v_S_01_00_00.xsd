@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtCdBenTerm/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtCdBenTerm/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-2420 - Cadastro de Benefício - Entes Públicos - Término</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtCdBenTerm">
+                    <xs:annotation>
+                        <xs:documentation>Evento Cadastro de Benefício - Término</xs:documentation>
+                        <xs:documentation>DESCRICAO_COMPLETA:Evento Cadastro de Benefício - Entes Públicos - Término.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_BENEFICIO_ATIVO_NA_DTEVENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXTEMP_REATIVACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_MUDANCA_CPF</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RETIFICA_MESMO_BENEFICIO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_CNPJ</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_trab_PJ" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador_cnpj" />
+                            <xs:element name="ideBeneficio" type="T_ideBeneficio" />
+                            <xs:element name="infoBenTermino">
+                                <xs:annotation>
+                                    <xs:documentation>Informações da cessação do benefício.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {dtTermBeneficio}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="dtTermBeneficio" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Data de cessação do benefício.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser igual ou anterior à data atual. No caso de benefício reativado, também deve ser uma data igual ou posterior a {dtEfetReativ}(2418_infoReativ_dtEfetReativ) do evento S-2418.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="mtvTermino">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:documentation>Motivo da cessação do benefício.</xs:documentation>
+                                                    <xs:documentation>Validação: Deve ser um código válido e existente na Tabela 26.</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:byte">
+                                                    <xs:pattern value="\d{2}" />
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="cnpjOrgaoSuc" minOccurs="0" type="TS_cnpj">
+                                            <xs:annotation>
+                                                <xs:documentation>Informar o CNPJ do órgão público sucessor.</xs:documentation>
+                                                <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se {mtvTermino}(./mtvTermino) = [09].</xs:documentation>
+                                                <xs:documentation>Deve ser um CNPJ válido e diferente da inscrição do declarante, considerando as particularidades aplicadas à informação de CNPJ de órgão público em S-1000. Além disso, deve possuir 14 (catorze) algarismos e ser diferente do CNPJ base do órgão público declarante (exceto se {ideEmpregador/nrInsc}(2420_ideEmpregador_nrInsc) tiver 14 (catorze) algarismos) e dos estabelecimentos informados através do evento S-1005.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="novoCPF" minOccurs="0" type="TS_cpf">
+                                            <xs:annotation>
+                                                <xs:documentation>Preencher com o novo CPF do beneficiário.</xs:documentation>
+                                                <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se {mtvTermino}(./mtvTermino) = [10].</xs:documentation>
+                                                <xs:documentation>Deve ser um CPF válido e diferente do antigo CPF do beneficiário.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

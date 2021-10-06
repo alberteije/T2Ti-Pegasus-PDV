@@ -1,0 +1,468 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.esocial.gov.br/schema/evt/evtBasesFGTS/v02_05_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtBasesFGTS/v02_05_00" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd"/>
+  <xs:element name="eSocial">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="evtBasesFGTS">
+          <xs:annotation>
+            <xs:documentation>Evento Bases FGTS por Trabalhador</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEvento">
+                <xs:annotation>
+                  <xs:documentation>Identificação do evento de retorno</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="nrRecArqBase">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Recibo do arquivo de origem</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1"/>
+                          <xs:maxLength value="40"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="perApur">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Período ao qual se referem as informações</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="4"/>
+                          <xs:maxLength value="7"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="ideEmpregador" type="TEmpregador">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do empregador</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="ideTrabalhador">
+                <xs:annotation>
+                  <xs:documentation>Identificação do Trabalhador</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="cpfTrab">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>CPF do trabalhador</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:length value="11"/>
+                          <xs:pattern value="\d{11}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="nisTrab" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>NIS</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:maxLength value="11"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="infoFGTS" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Informações relativas ao FGTS</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="dtVenc" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Data vencimento FGTS</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:date">
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="ideEstabLot" maxOccurs="unbounded">
+                      <xs:annotation>
+                        <xs:documentation>Identificação do estabelecimento e lotação</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="tpInsc">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Tipo de Inscrição, conforme Tabela 05</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:byte">
+                                <xs:pattern value="\d"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="nrInsc">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Número de Inscrição</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:pattern value="\d{8,14}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="codLotacao">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Código da Lotação</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:minLength value="1"/>
+                                <xs:maxLength value="30"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="infoTrabFGTS" maxOccurs="10">
+                            <xs:annotation>
+                              <xs:documentation>Informações relativas à matrícula, categoria e incidências</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="matricula" minOccurs="0">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Matricula</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="1"/>
+                                      <xs:maxLength value="30"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="codCateg">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Código da Categoria</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:integer">
+                                      <xs:pattern value="\d{3}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="dtAdm" minOccurs="0">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Data de admissão do trabalhador</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:date">
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="dtDeslig" minOccurs="0">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Data do Desligamento</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:date">
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="dtInicio" minOccurs="0">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Data de Início</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:date">
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="mtvDeslig" minOccurs="0">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Código de Motivo do Desligamento</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="\d{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="dtTerm" minOccurs="0">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Data do Término</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:date">
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="mtvDesligTSV" minOccurs="0">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Motivo deslig TSV</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:length value="2"/>
+                                      <xs:pattern value="\d{2}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="infoBaseFGTS" minOccurs="0">
+                                  <xs:annotation>
+                                    <xs:documentation>Bases de cálculo do FGTS</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="basePerApur" minOccurs="0" maxOccurs="21">
+                                        <xs:annotation>
+                                          <xs:documentation>Bases de cálculo, exceto se {tpAcConv} = [E]</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:complexType>
+                                          <xs:sequence>
+                                            <xs:element name="tpValor">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Tipo de valor</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:byte">
+                                                  <xs:pattern value="\d{1,2}"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="remFGTS">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Remuneração (valor da base de cálculo) do FGTS</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="14"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                  <xs:maxInclusive value="999999999999"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                          </xs:sequence>
+                                        </xs:complexType>
+                                      </xs:element>
+                                      <xs:element name="infoBasePerAntE" minOccurs="0" maxOccurs="180">
+                                        <xs:annotation>
+                                          <xs:documentation>Informações sobre bases do FGTS quando {tpAcConv} = [E]</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:complexType>
+                                          <xs:sequence>
+                                            <xs:element name="perRef">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Período de referência</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:minLength value="4"/>
+                                                  <xs:maxLength value="7"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="basePerAntE" maxOccurs="11">
+                                              <xs:annotation>
+                                                <xs:documentation>Bases de cálculo quando {tpAcConv} = [E]</xs:documentation>
+                                              </xs:annotation>
+                                              <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="tpValorE">
+                                                    <xs:simpleType>
+                                                      <xs:annotation>
+                                                        <xs:documentation>Tipo de valor que influi na apuração do FGTS</xs:documentation>
+                                                      </xs:annotation>
+                                                      <xs:restriction base="xs:byte">
+                                                        <xs:pattern value="\d{2}"/>
+                                                      </xs:restriction>
+                                                    </xs:simpleType>
+                                                  </xs:element>
+                                                  <xs:element name="remFGTSE">
+                                                    <xs:simpleType>
+                                                      <xs:annotation>
+                                                        <xs:documentation>Remuneração (valor da base de cálculo) do FGTS</xs:documentation>
+                                                      </xs:annotation>
+                                                      <xs:restriction base="xs:decimal">
+                                                        <xs:totalDigits value="14"/>
+                                                        <xs:fractionDigits value="2"/>
+                                                        <xs:maxInclusive value="999999999999"/>
+                                                      </xs:restriction>
+                                                    </xs:simpleType>
+                                                  </xs:element>
+                                                </xs:sequence>
+                                              </xs:complexType>
+                                            </xs:element>
+                                          </xs:sequence>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="infoDpsFGTS" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Informações sobre valores de FGTS</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="infoTrabDps" maxOccurs="10">
+                            <xs:annotation>
+                              <xs:documentation>Matrícula e categoria do trabalhador</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="matricula" minOccurs="0">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Matricula</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="1"/>
+                                      <xs:maxLength value="30"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="codCateg">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Código da Categoria</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:integer">
+                                      <xs:pattern value="\d{3}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="dpsPerApur" minOccurs="0" maxOccurs="20">
+                                  <xs:annotation>
+                                    <xs:documentation>Valor do FGTS, exceto se {tpAcConv} = [E]</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="tpDps">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Tipo de depósito</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:byte">
+                                            <xs:pattern value="\d{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="dpsFGTS">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Depósito FGTS</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:decimal">
+                                            <xs:totalDigits value="14"/>
+                                            <xs:fractionDigits value="2"/>
+                                            <xs:maxInclusive value="999999999999"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="infoDpsPerAntE" minOccurs="0" maxOccurs="180">
+                                  <xs:annotation>
+                                    <xs:documentation>Informações sobre FGTS quando {tpAcConv} = [E]</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="perRef">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Período de referência</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="4"/>
+                                            <xs:maxLength value="7"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="dpsPerAntE" maxOccurs="10">
+                                        <xs:annotation>
+                                          <xs:documentation>Valores de FGTS quando {tpAcConv} = [E]</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:complexType>
+                                          <xs:sequence>
+                                            <xs:element name="tpDpsE">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Tipo de depósito</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:byte">
+                                                  <xs:pattern value="\d{2}"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="dpsFGTSE">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Valor histórico do FGTS a ser depositado</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="14"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                  <xs:maxInclusive value="999999999999"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                          </xs:sequence>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Id" type="xs:ID" use="required"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="TEmpregador">
+    <xs:sequence>
+      <xs:element name="tpInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Tipo de Inscrição, conforme Tabela 05</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Número de Inscrição</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d{8,14}"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

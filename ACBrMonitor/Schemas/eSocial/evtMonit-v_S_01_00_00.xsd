@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtMonit/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtMonit/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-2220 - Monitoramento da Saúde do Trabalhador</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtMonit">
+                    <xs:annotation>
+                        <xs:documentation>Evento Monitoramento da Saúde do Trabalhador.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTO_EXT_SEM_IMPACTO_FOPAG</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_EVENTO_TSV_INICIO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_VINCULO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXTEMP_REINTEGRACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_MESMO_PROCEMI</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RETIFICA_MESMO_VINCULO</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_trab" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="ideVinculo" type="T_ideVinculo_sst" />
+                            <xs:element name="exMedOcup">
+                                <xs:annotation>
+                                    <xs:documentation>Informações do exame médico ocupacional.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {tpExameOcup}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="tpExameOcup">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:documentation>Tipo do exame médico ocupacional.</xs:documentation>
+                                                    <xs:documentation>Validação: Se informado [0], não pode existir outro evento S-2220 para o mesmo contrato com {dtAso}(./aso_dtAso) anterior.</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:byte">
+                                                    <xs:enumeration value="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Exame médico admissional</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="1">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Exame médico periódico, conforme Norma Regulamentadora 07 - NR-07 e/ou planejamento do Programa de Controle Médico de Saúde Ocupacional - PCMSO</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="2">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Exame médico de retorno ao trabalho</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="3">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Exame médico de mudança de função ou de mudança de risco ocupacional</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="4">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Exame médico de monitoração pontual, não enquadrado nos demais casos</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="9">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Exame médico demissional</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="aso">
+                                            <xs:annotation>
+                                                <xs:documentation>ASO</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Detalhamento das informações do Atestado de Saúde Ocupacional - ASO.</xs:documentation>
+                                                <xs:documentation>CHAVE_GRUPO: {dtAso}</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="dtAso" type="xs:date">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Data de emissão do ASO.</xs:documentation>
+                                                            <xs:documentation>Validação: Deve ser uma data válida, igual ou anterior à data atual e igual ou posterior à data de início da obrigatoriedade deste evento para o empregador no eSocial.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="resAso" minOccurs="0">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Resultado do ASO.</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:byte">
+                                                                <xs:enumeration value="1">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Apto</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                                <xs:enumeration value="2">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Inapto</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:enumeration>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="exame" maxOccurs="99">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Avaliações clínicas e exames complementares realizados</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Grupo que detalha as avaliações clínicas e os exames complementares porventura realizados pelo trabalhador em virtude do determinado nos Anexos da NR-07, além de outros solicitados pelo médico e os referentes ao ASO.</xs:documentation>
+                                                            <xs:documentation>CHAVE_GRUPO: {dtExm}, {procRealizado}</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="dtExm" type="xs:date">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Data do exame realizado.</xs:documentation>
+                                                                        <xs:documentation>Validação: Deve ser uma data válida, igual ou anterior à data do ASO informada em {dtAso}(../dtAso).</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="procRealizado">
+                                                                    <xs:simpleType>
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>Código do procedimento diagnóstico.</xs:documentation>
+                                                                            <xs:documentation>Validação: Deve ser um código válido e existente na Tabela 27.</xs:documentation>
+                                                                        </xs:annotation>
+                                                                        <xs:restriction base="xs:integer">
+                                                                            <xs:pattern value="\d{4}" />
+                                                                        </xs:restriction>
+                                                                    </xs:simpleType>
+                                                                </xs:element>
+                                                                <xs:element name="obsProc" minOccurs="0" type="TS_texto_999">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Observação sobre o procedimento diagnóstico realizado.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="ordExame">
+                                                                    <xs:simpleType>
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>Ordem do exame.</xs:documentation>
+                                                                        </xs:annotation>
+                                                                        <xs:restriction base="xs:byte">
+                                                                            <xs:enumeration value="1">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Inicial</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:enumeration>
+                                                                            <xs:enumeration value="2">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Sequencial</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:enumeration>
+                                                                        </xs:restriction>
+                                                                    </xs:simpleType>
+                                                                </xs:element>
+                                                                <xs:element name="indResult" minOccurs="0">
+                                                                    <xs:simpleType>
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>Indicação dos resultados.</xs:documentation>
+                                                                        </xs:annotation>
+                                                                        <xs:restriction base="xs:byte">
+                                                                            <xs:enumeration value="1">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Normal</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:enumeration>
+                                                                            <xs:enumeration value="2">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Alterado</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:enumeration>
+                                                                            <xs:enumeration value="3">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Estável</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:enumeration>
+                                                                            <xs:enumeration value="4">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Agravamento</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:enumeration>
+                                                                        </xs:restriction>
+                                                                    </xs:simpleType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="medico">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações sobre o médico emitente do ASO.</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="nmMed" type="TS_nome">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Preencher com o nome do médico emitente do ASO.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="nrCRM" type="TS_crm">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Número de inscrição do médico emitente do ASO no Conselho Regional de Medicina - CRM.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="ufCRM" type="TS_uf">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Preencher com a sigla da Unidade da Federação - UF de expedição do CRM.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="respMonit" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações sobre o médico responsável/coordenador do PCMSO.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="cpfResp" minOccurs="0" type="TS_cpf">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com o CPF do médico responsável/coordenador do PCMSO.</xs:documentation>
+                                                            <xs:documentation>Validação: Se informado, deve ser um CPF válido.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="nmResp" type="TS_nome">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com o nome do médico responsável/coordenador do PCMSO.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="nrCRM" type="TS_crm">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Número de inscrição do médico responsável/coordenador do PCMSO no CRM.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="ufCRM" type="TS_uf">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com a sigla da UF de expedição do CRM.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

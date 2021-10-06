@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtReativBen/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtReativBen/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-2418 - Reativação de Benefício - Entes Públicos</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtReativBen">
+                    <xs:annotation>
+                        <xs:documentation>Evento Reativação de Benefício</xs:documentation>
+                        <xs:documentation>DESCRICAO_COMPLETA:Evento Reativação de Benefício - Entes Públicos.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_EVENTO_BENEFICIO_TERMINO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXTEMP_REATIVACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REATIVACAO_EXCLUSAO_EVENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RETIFICA_MESMO_BENEFICIO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_CNPJ</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_trab_PJ" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador_cnpj" />
+                            <xs:element name="ideBeneficio" type="T_ideBeneficio" />
+                            <xs:element name="infoReativ">
+                                <xs:annotation>
+                                    <xs:documentation>Informações da reativação do benefício.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {dtEfetReativ}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="dtEfetReativ" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Informar a data da efetiva reativação do benefício.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser posterior à data de cessação do benefício e igual ou anterior à data atual.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="dtEfeito" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Data de início dos efeitos financeiros da reativação do benefício.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser uma data igual ou anterior à data da efetiva reativação do benefício e posterior à data de sua cessação.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="xs3p.xsl"?>
+<xs:schema version="1.0.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:esocial="http://www.esocial.gov.br/schema/lote/eventos/envio/v1_1_1"
+           targetNamespace="http://www.esocial.gov.br/schema/lote/eventos/envio/v1_1_1"
+           elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xs:element name="eSocial">
+    <xs:annotation>
+      <xs:documentation>Elemento raiz do eSocial.</xs:documentation>
+    </xs:annotation>
+
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="envioLoteEventos">
+          <xs:annotation>
+            <xs:documentation>Representa um lote de eventos.</xs:documentation>
+          </xs:annotation>
+
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEmpregador" type="esocial:TIdeEmpregador">
+                <xs:annotation>
+                  <xs:documentation>Identificação do empregador.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+
+              <xs:element name="ideTransmissor"  type="esocial:TIdeTransmissor">
+                <xs:annotation>
+                  <xs:documentation>Identificação do transmissor.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+
+              <xs:element name="eventos">
+                <xs:annotation>
+                  <xs:documentation>Contém a relação de eventos que compõe o lote.</xs:documentation>
+                </xs:annotation>
+
+                <xs:complexType>
+                  <xs:sequence maxOccurs="unbounded">
+                    <xs:element name="evento" type="esocial:TArquivoEsocial" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+
+            <xs:attribute name="grupo" type="xs:int" use="required">
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="TIdeEmpregador">
+    <xs:annotation>
+      <xs:documentation>Define a identificação do empregador.</xs:documentation>
+    </xs:annotation>
+
+    <xs:sequence>
+      <xs:element name="tpInsc">
+        <xs:simpleType>
+          <xs:restriction base ="xs:byte">
+            <xs:enumeration value="1" />
+            <xs:enumeration value="2" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Número de Inscrição</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d{8,15}" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TIdeTransmissor">
+    <xs:annotation>
+      <xs:documentation>Define a identificação do transmissor.</xs:documentation>
+    </xs:annotation>
+
+    <xs:sequence>
+      <xs:element name="tpInsc">
+        <xs:simpleType>
+          <xs:restriction base ="xs:byte">
+            <xs:enumeration value="1" />
+            <xs:enumeration value="2" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Número de Inscrição</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d{8,15}" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TArquivoEsocial">
+    <xs:annotation>
+      <xs:documentation>
+        Define os dados de um arquivo do eSocial (evento).
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:sequence>
+      <xs:any processContents="skip">
+        <xs:annotation>
+          <xs:documentation>Contém o xml do evento.</xs:documentation>
+        </xs:annotation>
+      </xs:any>
+    </xs:sequence>
+
+    <xs:attribute name="Id" use="required" type="xs:ID">
+      <xs:annotation>
+        <xs:documentation>
+          Contém a chave de acesso do evento contido no elemento xsd:any. É através deste atributo que o empregador conseguirá fazer o mapeamento
+          entre o evento que ele enviou e o resultado do processamento de cada evento.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+</xs:schema>

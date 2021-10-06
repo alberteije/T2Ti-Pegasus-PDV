@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtRmnRPPS/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtRmnRPPS/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-1202 - Remuneração de Servidor vinculado ao Regime Próprio de Previd. Social</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtRmnRPPS">
+                    <xs:annotation>
+                        <xs:documentation>Evento Remuneração de Servidor vinculado ao RPPS</xs:documentation>
+                        <xs:documentation>DESCRICAO_COMPLETA:Evento Remuneração de Servidor vinculado ao Regime Próprio de Previdência Social.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_COMPATIBILIDADE_CATEGORIA_CLASSTRIB</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_COMPATIB_REGIME_PREV</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_CONTROLE_DUPLICIDADE</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_GERAL_VALIDA_DADOS_TABCONTRIB</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_ANUAL_DEZEMBRO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_CATEG_EXISTENTE_RET</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_IND_RETIFICACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_JA_EXISTE_DESLIGAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_PERMITE_EXCLUSAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_TRAB_EXISTENTE_RET</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_VALIDA_INFO_COMPLEMENTAR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TSV_ATIVO_NA_DTEVENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_PERIODO_APURACAO</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_folha_opp" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador_cnpj" />
+                            <xs:element name="ideTrabalhador">
+                                <xs:annotation>
+                                    <xs:documentation>Identificação do trabalhador.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {cpfTrab}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="cpfTrab" type="TS_cpfRemun" />
+                                        <xs:element name="infoComplem" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações complementares de identificação do trabalhador</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Grupo preenchido quando o evento de remuneração se referir a trabalhador cuja categoria não está sujeita ao evento de admissão ou ao evento TSVE - Início, bem como para informar remuneração devida pelo órgão sucessor a servidor desligado ainda no sucedido. No caso das categorias em que o evento TSVE - Início for opcional, o preenchimento do grupo somente é exigido se não existir o respectivo evento. As informações complementares são necessárias para correta identificação do trabalhador.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O ((se o trabalhador não tiver nenhum cadastro no RET) OU (se {remunOrgSuc}(1202_dmDev_infoPerAnt_remunOrgSuc) = [S])); N (se o trabalhador tiver cadastro ativo no RET); OC (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="nmTrab" type="TS_nmTrab" />
+                                                    <xs:element name="dtNascto" type="TS_dtNascto" />
+                                                    <xs:element name="sucessaoVinc" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Grupo de informações da sucessão de vínculo.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: O (se {remunOrgSuc}(1202_dmDev_infoPerAnt_remunOrgSuc) = [S]); N (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="cnpjOrgaoAnt" type="TS_cnpj">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informar o CNPJ do órgão público anterior.</xs:documentation>
+                                                                        <xs:documentation>Validação: Deve ser um CNPJ válido e diferente da inscrição do declarante, considerando as particularidades aplicadas à informação de CNPJ de órgão público em S-1000. Além disso, deve possuir 14 (catorze) algarismos e ser diferente do CNPJ base do órgão público declarante (exceto se {ideEmpregador/nrInsc}(1202_ideEmpregador_nrInsc) tiver 14 (catorze) algarismos) e dos estabelecimentos informados através do evento S-1005.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="matricAnt" minOccurs="0" type="TS_matricAnt">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Matrícula do trabalhador no órgão público anterior.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="dtExercicio" type="xs:date">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Preencher com a data de exercício do servidor. No caso de transferência do servidor, deve ser preenchida a data inicial do vínculo no primeiro órgão público (data de início do vínculo).</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="observacao" minOccurs="0" type="TS_observacao" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="dmDev" maxOccurs="999">
+                                <xs:annotation>
+                                    <xs:documentation>Demonstrativo de valores devidos ao trabalhador</xs:documentation>
+                                    <xs:documentation>DESCRICAO_COMPLETA:Identificação de cada um dos demonstrativos de valores devidos ao trabalhador.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {ideDmDev}</xs:documentation>
+                                    <xs:documentation>REGRA:REGRA_DEMONSTRATIVO</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="ideDmDev" type="TS_codigo_esocial">
+                                            <xs:annotation>
+                                                <xs:documentation>Identificador atribuído pelo órgão público para o demonstrativo de valores devidos ao trabalhador. O ente público pode preencher este campo utilizando-se de um identificador padrão para todos os trabalhadores; no entanto, havendo mais de um demonstrativo relativo a uma mesma competência, devem ser utilizados identificadores diferentes para cada um dos demonstrativos.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser um identificador único dentro do mesmo {perApur}(1202_ideEvento_perApur) para cada um dos demonstrativos do trabalhador.</xs:documentation>
+                                                <xs:documentation>REGRA:REGRA_CARACTERE_ESPECIAL</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="codCateg" type="TS_codCateg" />
+                                        <xs:element name="infoPerApur" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações relativas ao período de apuração.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O (se não existir o grupo {infoPerAnt}(1202_dmDev_infoPerAnt)); OC (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="ideEstab" maxOccurs="500">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Identificação da unidade do órgão público</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Identificação da unidade do órgão público na qual o servidor possui remuneração.</xs:documentation>
+                                                            <xs:documentation>CHAVE_GRUPO: {tpInsc}, {nrInsc}</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="tpInsc" type="TS_tpInsc_1" />
+                                                                <xs:element name="nrInsc" type="TS_cnpj">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informar o número de inscrição da unidade do órgão público.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="remunPerApur" maxOccurs="8" type="T_remunPer">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Remuneração do trabalhador</xs:documentation>
+                                                                        <xs:documentation>DESCRICAO_COMPLETA:Informações relativas à remuneração do trabalhador no período de apuração.</xs:documentation>
+                                                                        <xs:documentation>CHAVE_GRUPO: {matricula}</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="infoPerAnt" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações relativas a períodos anteriores</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Grupo destinado às informações de:</xs:documentation>
+                                                <xs:documentation>a) remuneração relativa a diferenças de vencimento provenientes de disposições legais;</xs:documentation>
+                                                <xs:documentation>b) verbas de natureza salarial ou não salarial devidas após o desligamento;</xs:documentation>
+                                                <xs:documentation>c) decisões administrativas ou judiciais relativas a diferenças de remuneração.</xs:documentation>
+                                                <xs:documentation>OBS.: As informações previstas acima podem se referir ao período de apuração definido em {perApur}(1202_ideEvento_perApur) ou a períodos anteriores a {perApur}(1202_ideEvento_perApur).</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O (se não existir o grupo {infoPerApur}(1202_dmDev_infoPerApur) e {indApuracao}(1202_ideEvento_indApuracao) = [1]); N (se {indApuracao}(1202_ideEvento_indApuracao) = [2]); OC (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="remunOrgSuc" type="TS_sim_nao">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Indicar se a remuneração é relativa a verbas de natureza salarial ou não salarial devidas pelo órgão sucessor a servidor desligado ainda no sucedido.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="idePeriodo" maxOccurs="180">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Identificação do período de referência da remuneração</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Identificação do período ao qual se referem as diferenças de remuneração.</xs:documentation>
+                                                            <xs:documentation>CHAVE_GRUPO: {perRef}</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="perRef" type="TS_periodo_mensal">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informar o período ao qual se refere o complemento de remuneração, no formato AAAA-MM.</xs:documentation>
+                                                                        <xs:documentation>Validação: Deve ser igual ou anterior ao período de apuração informado em {perApur}(/ideEvento_perApur).</xs:documentation>
+                                                                        <xs:documentation>Deve ser informado no formato AAAA-MM.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="ideEstab" maxOccurs="500">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Identificação da unidade do órgão público</xs:documentation>
+                                                                        <xs:documentation>DESCRICAO_COMPLETA:Identificação da unidade do órgão público na qual o servidor possui remuneração.</xs:documentation>
+                                                                        <xs:documentation>CHAVE_GRUPO: {tpInsc}, {nrInsc}</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="tpInsc" type="TS_tpInsc_1" />
+                                                                            <xs:element name="nrInsc" type="TS_cnpj">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Informar o número de inscrição da unidade do órgão público.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="remunPerAnt" maxOccurs="8" type="T_remunPer">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Remuneração do trabalhador</xs:documentation>
+                                                                                    <xs:documentation>DESCRICAO_COMPLETA:Informações relativas à remuneração do trabalhador em períodos anteriores.</xs:documentation>
+                                                                                    <xs:documentation>CHAVE_GRUPO: {matricula}</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="T_remunPer">
+        <xs:sequence>
+            <xs:element name="matricula" minOccurs="0" type="TS_codigo_esocial">
+                <xs:annotation>
+                    <xs:documentation>Matrícula atribuída ao trabalhador pela empresa ou, no caso de servidor público, a matrícula constante no Sistema de Administração de Recursos Humanos do órgão.</xs:documentation>
+                    <xs:documentation>Validação: Deve corresponder à matrícula informada pelo empregador no evento S-2200 ou S-2300 do respectivo contrato. Não preencher no caso de Trabalhador Sem Vínculo de Emprego/Estatutário - TSVE sem informação de matrícula no evento S-2300 ou, no caso de {remunPerAnt}(1202_dmDev_infoPerAnt_idePeriodo_ideEstab_remunPerAnt), se {remunOrgSuc}(1202_dmDev_infoPerAnt_remunOrgSuc) = [S].</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="itensRemun" type="T_itensRemun_rpps" maxOccurs="200" />
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.reinf.esocial.gov.br/schemas/evt2055AquisicaoProdRural/v1_05_01" targetNamespace="http://www.reinf.esocial.gov.br/schemas/evt2055AquisicaoProdRural/v1_05_01" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="./xmldsig-core-schema.xsd"/>
+  <xs:element name="Reinf">
+    <xs:annotation>
+      <xs:documentation>EFD-Reinf</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="evtAqProd" minOccurs="1" maxOccurs="1">
+          <xs:annotation>
+            <xs:documentation>Evento Aquisição de Produção</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEvento" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do evento</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="indRetif" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Informe [1] para arquivo original ou [2] para arquivo de retificação.</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="nrRecibo" minOccurs="0" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Preencher com o número do recibo do arquivo a ser retificado.</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="16"/>
+                          <xs:maxLength value="52"/>
+                          <xs:pattern value="[0-9]{1,18}[-][0-9]{2}[-][0-9]{4}[-][0-9]{4}[-][0-9]{1,18}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="perApur" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Informar o ano/mês (formato AAAA-MM) de referência das informações</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:gYearMonth">
+                          <xs:pattern value="20([1-9][0-9])-(0[1-9]|1[0-2])"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="tpAmb" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Identificação do ambiente: 1-Produção; 2-Produção restrita;</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedInt">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="procEmi" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Processo de emissão do evento: 1-Emissão com aplicativo do contribuinte; 2-Emissão com aplicativo governamental</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="verProc" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Versão do processo de emissão do evento. Informar a versão do aplicativo emissor do evento</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1"/>
+                          <xs:maxLength value="20"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="retifS1250" minOccurs="0" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Indicativo de retificação de informação enviada ao ambiente nacional do eSocial. Valores válido: 'S'.</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:pattern value="S"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="ideContri" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do empregador/contribuinte</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="tpInsc" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Código correspondente ao tipo de inscrição: 1-CNPJ; 2-CPF</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:unsignedByte">
+                          <xs:pattern value="[1|2]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="nrInsc" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>
+                          Informar o número de inscrição do contribuinte de acordo com o tipo de inscrição indicado no campo {tpInsc}.
+                          Se for um CNPJ deve ser informada apenas a Raiz/Base de oito posições, exceto se a Natureza Jurídica do
+                          contribuinte declarante for de administração pública direta federal ([101-5], [104-0], [107-4], [116-3]),
+                          situação em que o campo deve ser preenchido com o CNPJ completo (14 posições).
+                        </xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:pattern value="[0-9]{11}|[0-9]{8}|[0-9]{14}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="infoAquisProd" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informação da Aquisição de Produção</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ideEstabAdquir" minOccurs="1" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Identificação do estabelecimento adquirente da produção</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="tpInscAdq" minOccurs="1" maxOccurs="1">
+                            <xs:annotation>
+                              <xs:documentation>Preencher com o código correspondente ao tipo de inscrição do adquirente: 1-CNPJ; 3-CAEPF</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:unsignedByte">
+                                <xs:pattern value="[1|3]"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="nrInscAdq" minOccurs="1" maxOccurs="1">
+                            <xs:annotation>
+                              <xs:documentation>Informar o número de inscrição de acordo com o tipo indicado no campo {tpInscAdq}</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:pattern value="[0-9]{14}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="ideProdutor" minOccurs="1" maxOccurs="1">
+                            <xs:annotation>
+                              <xs:documentation>Identificação do produtor rural, do qual foi efetuada aquisição de produção pelo contribuinte declarante</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="tpInscProd" minOccurs="1" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>Tipo de inscrição do produtor: 1-CNPJ; 2-CPF</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:unsignedByte">
+                                      <xs:pattern value="[1|2]"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="nrInscProd" minOccurs="1" maxOccurs="1">
+                                  <xs:annotation>
+                                    <xs:documentation>Número de inscrição do produtor no CPF ou no CNPJ, de acordo com o definido no campo {tpInscProd}.</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="[0-9]{11}|[0-9]{14}"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="indOpcCP" minOccurs="0" maxOccurs="1">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Informar 'S' caso a opção do produtor rural em relação à forma de tributação da contribuição previdenciária seja sobre a folha de pagamento. Se a opção do produtor rural for pela comercialização da produção, este campo não deve ser informado.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:pattern value="S"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="detAquis" minOccurs="1" maxOccurs="6">
+                                  <xs:annotation>
+                                    <xs:documentation>Detalhamento da aquisição de produção rural</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="indAquis" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>
+                                              Indicativo da Aquisição:
+                                              1 - Aquisição da produção de produtor rural pessoa física ou segurado especial em geral;
+                                              2 - Aquisição da produção de produtor rural pessoa física ou segurado especial em geral por Entidade do PAA;
+                                              3 - Aquisição da produção de produtor rural pessoa jurídica por Entidade do PAA;
+                                              4 - Aquisição da produção de produtor rural pessoa física ou segurado especial em geral - Produção Isenta (Lei 13.606/2018);
+                                              5 - Aquisição da produção de produtor rural pessoa física ou segurado especial em geral por Entidade do PAA - Produção Isenta (Lei 13.606/2018);
+                                              6 - Aquisição da produção de produtor rural pessoa jurídica por Entidade do PAA - Produção Isenta (Lei 13.606/2018).
+                                              7 - Aquisição de produção de produtor rural pessoa física ou segurado especial para fins de exportação.
+                                            </xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:unsignedByte">
+                                            <xs:pattern value="[1-7]"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vlrBruto" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Informar o valor bruto da aquisição da produção rural.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="4"/>
+                                            <xs:maxLength value="15" />
+                                            <xs:pattern value="[0-9]{1,12}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vlrCPDescPR" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Preencher com o valor da Contribuição Previdenciária descontada pelo adquirente de produção de produtor rural pessoa física - sub-rogação.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="4"/>
+                                            <xs:maxLength value="15" />
+                                            <xs:pattern value="[0-9]{1,12}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vlrRatDescPR" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Valor da contribuição destinada ao financiamento dos benefícios concedidos em razão do grau de incidência da incapacidade laborativa decorrente dos riscos ambientais do trabalho, incidente sobre a aquisição de produção rural de produtor rural.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="4"/>
+                                            <xs:maxLength value="15" />
+                                            <xs:pattern value="[0-9]{1,12}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vlrSenarDesc" minOccurs="1" maxOccurs="1">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Valor da contribuição destinada ao Senar, incidente sobre a aquisição de produção rural de produtor rural pessoa física/segurado especial.</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:minLength value="4"/>
+                                            <xs:maxLength value="15" />
+                                            <xs:pattern value="[0-9]{1,12}[,][0-9]{2}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="infoProcJud" minOccurs="0" maxOccurs="50">
+                                        <xs:annotation>
+                                          <xs:documentation>Registro preenchido quando o Produtor Rural (pessoa física ou segurado especial), identificado em {ideProdutor} possua processo judicial (tipo 2) com decisão/sentença determinando a não retenção pelo adquirente, das contribuições incidentes sobre a aquisição de produção.</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:complexType>
+                                          <xs:sequence>
+                                            <xs:element name="nrProcJud" minOccurs="1" maxOccurs="1">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Informar o número do processo judicial. Informar o tipo do processo como sendo 2, judicial.</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:minLength value="1"/>
+                                                  <xs:maxLength value="21"/>
+                                                  <xs:pattern value="[0-9]{1,21}"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="codSusp" minOccurs="0" maxOccurs="1">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>
+                                                    Código do Indicativo da Suspensão, atribuído pelo contribuinte. Este campo deve ser utilizado se, num mesmo processo,
+                                                    houver mais de uma matéria tributária objeto de contestação e as decisões forem diferentes para cada uma.
+                                                  </xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:pattern value="[0-9]{0,14}"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vlrCPNRet" minOccurs="0" maxOccurs="1">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Valor da Contribuição Previdenciária que deixou de ser retida pelo declarante em decorrência de decisão/sentença judicial.</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:minLength value="4"/>
+                                                  <xs:maxLength value="15" />
+                                                  <xs:pattern value="[0-9]{1,12}[,][0-9]{2}"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vlrRatNRet" minOccurs="0" maxOccurs="1">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Valor da GILRAT, incidente sobre a aquisição de produção rural de produtor rural, cuja retenção deixou de ser efetuada em decorrência de decisão/sentença judicial.</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:minLength value="4"/>
+                                                  <xs:maxLength value="15" />
+                                                  <xs:pattern value="[0-9]{1,12}[,][0-9]{2}"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vlrSenarNRet" minOccurs="0" maxOccurs="1">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Valor da contribuição destinada ao SENAR, incidente sobre a aquisição de produção rural de produtor rural pessoa física/segurado especial, e que deixou de ser retida em decorrência de decisão/sentença judicial.</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:minLength value="4"/>
+                                                  <xs:maxLength value="15" />
+                                                  <xs:pattern value="[0-9]{1,12}[,][0-9]{2}"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                          </xs:sequence>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" use="required">
+              <xs:annotation>
+                <xs:documentation>Identificação única do evento.</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:ID">
+                  <xs:length value="36" />
+                  <xs:pattern value="I{1}D{1}[0-9]{34}" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

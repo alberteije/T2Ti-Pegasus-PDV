@@ -1,0 +1,259 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtAltContratual/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtAltContratual/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-2206 - Alteração de Contrato de Trabalho/Relação Estatutária</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtAltContratual">
+                    <xs:annotation>
+                        <xs:documentation>Evento Alteração de Contrato de Trabalho/Relação Estatutária.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ADMISSAO_VALIDA_DURACAO_CONTRATO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ALTERA_CATEG</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EMPREGADO_DOMESTICO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXTEMP_DOMESTICO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXTEMP_REINTEGRACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_GERAL_VALIDA_DADOS_TABCONTRIB</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_MESMO_PROCEMI</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RETIFICA_MESMO_VINCULO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_TRABALHADOR_BASE_CPF</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VINCULO_ATIVO_NA_DTEVENTO</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_trab" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="ideVinculo" type="T_ideVinculo" />
+                            <xs:element name="altContratual">
+                                <xs:annotation>
+                                    <xs:documentation>Alteração de dados contratuais.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {dtAlteracao}, {dtEf}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="dtAlteracao" type="TS_dtAlteracao" />
+                                        <xs:element name="dtEf" minOccurs="0" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Data dos efeitos remuneratórios da alteração contratual.</xs:documentation>
+                                                <xs:documentation>Se a alteração foi fruto de lei, acordo coletivo, convenção coletiva ou sentença normativa, informar a data a partir da qual a alteração produz efeitos remuneratórios.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser uma data válida, igual ou posterior à data de admissão.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="dscAlt" minOccurs="0">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:documentation>Descrição da alteração ou do instrumento que a gerou.</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:string">
+                                                    <xs:minLength value="1" />
+                                                    <xs:maxLength value="150" />
+                                                    <xs:pattern value=".*[^\s].*" />
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="vinculo">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações do vinculo.</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Grupo de informações do vínculo trabalhista.</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="tpRegPrev" type="TS_tpRegPrev" />
+                                                    <xs:element name="infoRegimeTrab">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações do regime trabalhista.</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="infoCeletista" minOccurs="0">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informações de trabalhador celetista.</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: O (se {tpRegTrab}(2200_vinculo_tpRegTrab) em S-2200 = [1]); N (nos demais casos)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="tpRegJor" type="TS_tpRegJor" />
+                                                                            <xs:element name="natAtividade" type="TS_natAtividade" />
+                                                                            <xs:element name="dtBase" minOccurs="0" type="TS_dtBase" />
+                                                                            <xs:element name="cnpjSindCategProf" type="TS_cnpjSindCategProf" />
+                                                                            <xs:element name="trabTemporario" minOccurs="0">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Dados sobre trabalho temporário</xs:documentation>
+                                                                                    <xs:documentation>DESCRICAO_COMPLETA:Dados sobre trabalho temporário. Preenchimento obrigatório no caso de prorrogação de contrato de trabalhador temporário.</xs:documentation>
+                                                                                    <xs:documentation>CONDICAO_GRUPO: OC (se {codCateg}(2206_altContratual_vinculo_infoContrato_codCateg) = [106]); N (nos demais casos)</xs:documentation>
+                                                                                </xs:annotation>
+                                                                                <xs:complexType>
+                                                                                    <xs:sequence>
+                                                                                        <xs:element name="justProrr" type="TS_texto_999">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Descrever a justificativa para a prorrogação do contrato de trabalho temporário.</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:element>
+                                                                                    </xs:sequence>
+                                                                                </xs:complexType>
+                                                                            </xs:element>
+                                                                            <xs:element name="aprend" minOccurs="0" type="T_aprend">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Informações relacionadas ao aprendiz</xs:documentation>
+                                                                                    <xs:documentation>DESCRICAO_COMPLETA:Informações para identificação do empregador contratante de aprendiz.</xs:documentation>
+                                                                                    <xs:documentation>Preenchimento obrigatório no caso de contratação de aprendiz por entidade educativa sem fins lucrativos que tenha por objetivo a assistência ao adolescente e à educação profissional (art. 430, inciso II, CLT) ou por entidade de prática desportiva filiada ao Sistema Nacional do Desporto ou a Sistema de Desporto de Estado, do Distrito Federal ou de Município (art. 430, inciso III, CLT).</xs:documentation>
+                                                                                    <xs:documentation>CONDICAO_GRUPO: OC (se {codCateg}(2206_altContratual_vinculo_infoContrato_codCateg) = [103]); N (nos demais casos)</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                                <xs:element name="infoEstatutario" minOccurs="0">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informações de trabalhador estatutário.</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: O (se {tpRegPrev}(2206_altContratual_vinculo_tpRegPrev) = [2] e {tpRegTrab}(2200_vinculo_tpRegTrab) em S-2200 = [2]); N (nos demais casos)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="tpPlanRP" type="TS_tpPlanRP" />
+                                                                            <xs:element name="indTetoRGPS" type="TS_sim_nao">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Informar se o servidor está sujeito ao teto do RGPS pela instituição do regime de previdência complementar.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="indAbonoPerm" type="TS_sim_nao">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Indicar se o servidor recebe abono permanência.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="infoContrato">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações do contrato de trabalho.</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="nmCargo" minOccurs="0" type="TS_texto_100">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informar o nome do cargo.</xs:documentation>
+                                                                        <xs:documentation>Validação: O preenchimento é obrigatório, exceto se for relativo a servidor nomeado em cargo em comissão (no evento S-2200, {tpRegTrab}(2200_vinculo_tpRegTrab) = [2] e {tpProv}(2200_vinculo_infoRegimeTrab_infoEstatutario_tpProv) = [2]).</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="CBOCargo" minOccurs="0" type="TS_CBOCargo" />
+                                                                <xs:element name="nmFuncao" minOccurs="0" type="TS_texto_100">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informar o nome da função de confiança/cargo em comissão.</xs:documentation>
+                                                                        <xs:documentation>Validação: Preenchimento obrigatório se for relativo a servidor nomeado em cargo em comissão (no evento S-2200, {tpRegTrab}(2200_vinculo_tpRegTrab) = [2] e {tpProv}(2200_vinculo_infoRegimeTrab_infoEstatutario_tpProv) = [2]).</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="CBOFuncao" minOccurs="0" type="TS_CBOFuncao" />
+                                                                <xs:element name="acumCargo" minOccurs="0" type="TS_sim_nao">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informar se o cargo, emprego ou função pública é acumulável.</xs:documentation>
+                                                                        <xs:documentation>Validação: Preenchimento obrigatório se a natureza jurídica do declarante for igual a 1XX-X, 201-1 ou 203-8.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="codCateg" type="TS_codCateg" />
+                                                                <xs:element name="remuneracao" minOccurs="0" type="T_remuneracao">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informações da remuneração e periodicidade de pagamento.</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: O (se {tpRegTrab}(2200_vinculo_tpRegTrab) em S-2200 = [1]); N (nos demais casos)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="duracao" minOccurs="0">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Duração do contrato de trabalho.</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: O (se {tpRegTrab}(2200_vinculo_tpRegTrab) em S-2200 = [1]); N (nos demais casos)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="tpContr" type="TS_tpContr" />
+                                                                            <xs:element name="dtTerm" minOccurs="0" type="TS_dtTerm" />
+                                                                            <xs:element name="objDet" minOccurs="0" type="TS_objDet" />
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                                <xs:element name="localTrabalho">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informações do local de trabalho.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="localTrabGeral" minOccurs="0" type="T_localTrabGeral">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Estabelecimento onde o trabalhador exercerá suas atividades</xs:documentation>
+                                                                                    <xs:documentation>DESCRICAO_COMPLETA:Estabelecimento (CNPJ, CNO, CAEPF) onde o trabalhador (exceto doméstico e temporário) exercerá suas atividades. Caso o trabalhador exerça suas atividades em instalações de terceiros, este campo deve ser preenchido com o estabelecimento do próprio empregador ao qual o trabalhador esteja vinculado.</xs:documentation>
+                                                                                    <xs:documentation>CONDICAO_GRUPO: O (se {codCateg}(2206_altContratual_vinculo_infoContrato_codCateg) for diferente de [104]); N (nos demais casos)</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="localTempDom" minOccurs="0" type="T_endereco_brasil">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Endereço de trabalho do trabalhador doméstico e trabalhador temporário</xs:documentation>
+                                                                                    <xs:documentation>DESCRICAO_COMPLETA:Grupo preenchido exclusivamente em caso de trabalhador doméstico e trabalhador temporário, indicando o endereço onde o trabalhador exerce suas atividades.</xs:documentation>
+                                                                                    <xs:documentation>CONDICAO_GRUPO: O (se {codCateg}(2206_altContratual_vinculo_infoContrato_codCateg) = [104, 106]); N (nos demais casos)</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                                <xs:element name="horContratual" minOccurs="0" type="T_horContratual">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informações do horário contratual do trabalhador.</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: O (se {tpRegJor}(../../infoRegimeTrab_infoCeletista_tpRegJor) = [1]); OC (nos demais casos)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="alvaraJudicial" minOccurs="0" type="T_alvaraJudicial">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Dados do alvará judicial</xs:documentation>
+                                                                        <xs:documentation>DESCRICAO_COMPLETA:Informações do alvará judicial em caso de contratação de menores de 14 anos, em qualquer categoria, e de maiores de 14 e menores de 16, em categoria diferente de "Aprendiz".</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="observacoes" minOccurs="0" maxOccurs="99">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Observações do contrato de trabalho.</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="observacao" type="TS_observacao">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Observação relacionada ao contrato de trabalho.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                                <xs:element name="treiCap" minOccurs="0" maxOccurs="99" type="T_treiCap">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Treinamentos, capacitações, exercícios simulados e outras anotações.</xs:documentation>
+                                                                        <xs:documentation>DESCRICAO_COMPLETA:Treinamentos, capacitações, exercícios simulados, autorizações ou outras anotações que devam ser anotadas no registro de empregados e/ou na CTPS, por determinação de Norma Regulamentadora - NR.</xs:documentation>
+                                                                        <xs:documentation>CHAVE_GRUPO: {codTreiCap}</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>                                                                
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

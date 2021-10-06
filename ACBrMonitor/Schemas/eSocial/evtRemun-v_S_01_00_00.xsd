@@ -1,0 +1,387 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtRemun/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtRemun/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-1200 - Remuneração de Trabalhador vinculado ao Regime Geral de Previd. Social</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtRemun">
+                    <xs:annotation>
+                        <xs:documentation>Evento Remuneração de Trabalhador vinculado ao RGPS</xs:documentation>
+                        <xs:documentation>DESCRICAO_COMPLETA:Evento Remuneração de Trabalhador vinculado ao Regime Geral de Previdência Social.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_BLOQUEIA_USO_CPF_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_COMPATIBILIDADE_CATEGORIA_CLASSTRIB</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_COMPATIB_REGIME_PREV</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_CONTROLE_DUPLICIDADE</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EMPREGADO_DOMESTICO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVE_FOPAG_SIMPLIFICADO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_GERAL_VALIDA_DADOS_TABCONTRIB</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_MESMO_PROCEMI</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_ANUAL_DEZEMBRO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_CATEG_COMPATIVEL_TPLOTACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_CATEG_EXISTENTE_RET</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_FGTS_ANTERIOR_ESOCIAL</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_IND_RETIFICACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_JA_EXISTE_DESLIGAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_PERMITE_EXCLUSAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_TRAB_EXISTENTE_RET</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_VALIDA_INFO_COMPLEMENTAR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RUBRICA_COMPATIVEL_CATEGORIA</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RUBRICA_COMPATIVEL_DECTERCEIRO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RUBRICA_COMPATIVEL_RESC</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_TSV_ATIVO_NA_DTEVENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_PERIODO_APURACAO</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_folha" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="ideTrabalhador">
+                                <xs:annotation>
+                                    <xs:documentation>Identificação do trabalhador.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {cpfTrab}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="cpfTrab" type="TS_cpfRemun" />
+                                        <xs:element name="infoMV" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informação de múltiplos vínculos</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Grupo preenchido exclusivamente em caso de trabalhador que possua outros vínculos/atividades nos quais já tenha ocorrido desconto de contribuição previdenciária.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="indMV" type="TS_indMV" />
+                                                    <xs:element name="remunOutrEmpr" minOccurs="1" maxOccurs="999">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Remuneração recebida pelo trabalhador em outras empresas ou atividades</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Informações relativas ao trabalhador que possui vínculo empregatício com outra(s) empresa(s) e/ou que exerce outras atividades como contribuinte individual, detalhando as empresas que efetuaram (ou efetuarão) desconto da contribuição.</xs:documentation>
+                                                            <xs:documentation>CHAVE_GRUPO: {tpInsc}, {nrInsc}, {codCateg}</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="tpInsc" type="TS_tpInsc_1_2" />
+                                                                <xs:element name="nrInsc" type="TS_nrInsc_11_14">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informar o número de inscrição do contribuinte de acordo com o tipo de inscrição indicado no campo {remunOutrEmpr/tpInsc}(./tpInsc).</xs:documentation>
+                                                                        <xs:documentation>Validação: a) Se {indApuracao}(1200_ideEvento_indApuracao) = [1] e {remunOutrEmpr/tpInsc}(./tpInsc) = [1], deve ser um CNPJ válido, diferente do CNPJ base indicado no evento de Informações do Empregador (S-1000) e dos estabelecimentos informados através do evento S-1005.</xs:documentation>
+                                                                        <xs:documentation>b) Se {indApuracao}(1200_ideEvento_indApuracao) = [1] e {remunOutrEmpr/tpInsc}(./tpInsc) = [2], deve ser um CPF válido e diferente do CPF do trabalhador e ainda, caso o empregador seja pessoa física, diferente do CPF do empregador.</xs:documentation>
+                                                                        <xs:documentation>c) Se {indApuracao}(1200_ideEvento_indApuracao) = [2] e {remunOutrEmpr/tpInsc}(./tpInsc) = [1], é permitido informar número de inscrição igual ao CNPJ base indicado no evento de Informações do Empregador (S-1000) e aos estabelecimentos informados através do evento S-1005.</xs:documentation>
+                                                                        <xs:documentation>d) Se {indApuracao}(1200_ideEvento_indApuracao) = [2] e {remunOutrEmpr/tpInsc}(./tpInsc) = [2], deve ser um CPF válido e diferente do CPF do trabalhador, mas é permitido informar número de inscrição igual ao CPF do empregador.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="codCateg" type="TS_codCategOE" />
+                                                                <xs:element name="vlrRemunOE" type="TS_vlrRemunOE" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="infoComplem" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações complementares de identificação do trabalhador</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Grupo preenchido quando o evento de remuneração se referir a trabalhador cuja categoria não está sujeita ao evento de admissão ou ao evento TSVE - Início, bem como para informar remuneração devida pela empresa sucessora a empregado desligado ainda na sucedida. No caso das categorias em que o envio do evento TSVE - Início for opcional, o preenchimento do grupo somente é exigido se não houver o respectivo evento. As informações complementares são necessárias para correta identificação do trabalhador.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O ((se o trabalhador não tiver nenhum cadastro no RET) OU (se {remunSuc}(1200_dmDev_infoPerAnt_ideADC_remunSuc) = [S])); N (se o trabalhador tiver cadastro ativo no RET); OC (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="nmTrab" type="TS_nmTrab" />
+                                                    <xs:element name="dtNascto" type="TS_dtNascto" />
+                                                    <xs:element name="sucessaoVinc" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Grupo de informações da sucessão de vínculo trabalhista.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: O (se {remunSuc}(1200_dmDev_infoPerAnt_ideADC_remunSuc) = [S]); N (nos demais casos)</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="tpInsc" type="TS_tpInsc_1_2" />
+                                                                <xs:element name="nrInsc" type="TS_nrInsc_11_14">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informar o número de inscrição do empregador anterior, de acordo com o tipo de inscrição indicado no campo {sucessaoVinc/tpInsc}(./tpInsc).</xs:documentation>
+                                                                        <xs:documentation>Validação: Deve ser um número de inscrição válido e diferente da inscrição do declarante, considerando as particularidades aplicadas à informação de CNPJ de órgão público em S-1000.</xs:documentation>
+                                                                        <xs:documentation>Se {sucessaoVinc/tpInsc}(./tpInsc) = [1], deve possuir 14 (catorze) algarismos e ser diferente do CNPJ base do empregador (exceto se {ideEmpregador/nrInsc}(1200_ideEmpregador_nrInsc) tiver 14 (catorze) algarismos) e dos estabelecimentos informados através do evento S-1005.</xs:documentation>
+                                                                        <xs:documentation>Se {sucessaoVinc/tpInsc}(./tpInsc) = [2], deve possuir 11 (onze) algarismos.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="matricAnt" minOccurs="0" type="TS_matricAnt" />
+                                                                <xs:element name="dtAdm" type="TS_dtAdm" />
+                                                                <xs:element name="observacao" minOccurs="0" type="TS_observacao" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="procJudTrab" minOccurs="0" maxOccurs="99" type="T_procJudTrab" />
+                                        <xs:element name="infoInterm" minOccurs="0" maxOccurs="31" type="T_infoInterm">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações relativas ao trabalho intermitente.</xs:documentation>
+                                                <xs:documentation>CHAVE_GRUPO: {dia}</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O (se {codCateg}(1200_dmDev_codCateg) = [111] em {perApur}(1200_ideEvento_perApur), {indApuracao}(1200_ideEvento_indApuracao) = [1] e existir o grupo {infoPerApur}(1200_dmDev_infoPerApur)); N (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="dmDev" maxOccurs="999">
+                                <xs:annotation>
+                                    <xs:documentation>Demonstrativo de valores devidos ao trabalhador</xs:documentation>
+                                    <xs:documentation>DESCRICAO_COMPLETA:Identificação de cada um dos demonstrativos de valores devidos ao trabalhador.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {ideDmDev}</xs:documentation>
+                                    <xs:documentation>REGRA:REGRA_DEMONSTRATIVO</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="ideDmDev" type="TS_codigo_esocial">
+                                            <xs:annotation>
+                                                <xs:documentation>Identificador atribuído pela empresa para o demonstrativo de valores devidos ao trabalhador. O empregador pode preencher este campo utilizando-se de um identificador padrão para todos os trabalhadores; no entanto, havendo mais de um demonstrativo relativo a uma mesma competência, devem ser utilizados identificadores diferentes para cada um dos demonstrativos.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser um identificador único dentro do mesmo {perApur}(1200_ideEvento_perApur) para cada um dos demonstrativos do trabalhador.</xs:documentation>
+                                                <xs:documentation>REGRA:REGRA_CARACTERE_ESPECIAL</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="codCateg" type="TS_codCateg" />
+                                        <xs:element name="infoPerApur" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações relativas ao período de apuração.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O (se não existir o grupo {infoPerAnt}(1200_dmDev_infoPerAnt)); OC (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="ideEstabLot" maxOccurs="500">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Identificação do estabelecimento e lotação</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Identificação do estabelecimento e da lotação nos quais o trabalhador possui remuneração no período de apuração. O estabelecimento identificado no grupo pode ser: o número do CNPJ do estabelecimento da própria empresa (matriz/filial), o número da obra (própria) no CNO, ou o número do CAEPF (no caso de pessoa física obrigada a inscrição no Cadastro de Atividade Econômica da Pessoa Física).</xs:documentation>
+                                                            <xs:documentation>CHAVE_GRUPO: {tpInsc}, {nrInsc}, {codLotacao}</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="tpInsc" type="TS_tpInsc_EstabLot" />
+                                                                <xs:element name="nrInsc" type="TS_nrInsc_EstabLot" />
+                                                                <xs:element name="codLotacao" type="TS_codLotacao" />
+                                                                <xs:element name="qtdDiasAv" minOccurs="0" type="TS_dia">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Quantidade de dias trabalhados no mês pelo trabalhador avulso no tomador de serviços identificado em {ideEstabLot/codLotacao}(1200_dmDev_infoPerApur_ideEstabLot_codLotacao). Cada dia, total ou parcial, em que o trabalhador tenha prestado serviços ao tomador deve ser considerado. Ex.: Se, em um mesmo mês, o trabalhador prestou serviços durante uma hora em um dia e durante mais uma hora em outro dia, deve-se informar a quantidade de 2 dias.</xs:documentation>
+                                                                        <xs:documentation>Validação: Informação obrigatória e exclusiva se {ideEstabLot/codLotacao}(./codLotacao) possuir {tpLotacao}(1020_infoLotacao_inclusao_dadosLotacao_tpLotacao) em S-1020 = [08, 09] em {perApur}(1200_ideEvento_perApur) e se {indApuracao}(1200_ideEvento_indApuracao) = [1].</xs:documentation>
+                                                                        <xs:documentation>Se informado, deve ser um número entre 1 e 31, de acordo com o calendário anual.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="remunPerApur" maxOccurs="8">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Remuneração do trabalhador</xs:documentation>
+                                                                        <xs:documentation>DESCRICAO_COMPLETA:Informações relativas à remuneração do trabalhador no período de apuração.</xs:documentation>
+                                                                        <xs:documentation>CHAVE_GRUPO: {matricula}</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="matricula" minOccurs="0" type="TS_codigo_esocial">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Matrícula atribuída ao trabalhador pela empresa ou, no caso de servidor público, a matrícula constante no Sistema de Administração de Recursos Humanos do órgão.</xs:documentation>
+                                                                                    <xs:documentation>Validação: Deve corresponder à matrícula informada pelo empregador no evento S-2190, S-2200 ou S-2300 do respectivo contrato. Não preencher no caso de Trabalhador Sem Vínculo de Emprego/Estatutário - TSVE sem informação de matrícula no evento S-2300.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="indSimples" minOccurs="0" type="TS_indSimples" />
+                                                                            <xs:element name="itensRemun" type="T_itensRemun" maxOccurs="200" />
+                                                                            <xs:element name="infoAgNocivo" minOccurs="0" type="T_infoAgNocivo">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Grau de exposição a agentes nocivos</xs:documentation>
+                                                                                    <xs:documentation>DESCRICAO_COMPLETA:Grupo referente ao detalhamento do grau de exposição do trabalhador aos agentes nocivos que ensejam a cobrança da contribuição adicional para financiamento dos benefícios de aposentadoria especial.</xs:documentation>
+                                                                                    <xs:documentation>CONDICAO_GRUPO: O (se {codCateg}(1200_dmDev_codCateg) = [1XX, 2XX, 3XX, 731, 734, 738]); N (nos demais casos)</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="infoPerAnt" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações relativas a períodos anteriores</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Grupo destinado às informações de:</xs:documentation>
+                                                <xs:documentation>a) remuneração relativa a diferenças salariais provenientes de acordo coletivo, convenção coletiva e dissídio;</xs:documentation>
+                                                <xs:documentation>b) remuneração relativa a diferenças de vencimento provenientes de disposições legais;</xs:documentation>
+                                                <xs:documentation>c) bases de cálculo para efeitos de apuração de FGTS resultantes de conversão de licença saúde em acidente de trabalho;</xs:documentation>
+                                                <xs:documentation>d) verbas de natureza salarial ou não salarial devidas após o desligamento.</xs:documentation>
+                                                <xs:documentation>OBS.: As informações previstas acima podem se referir ao período de apuração definido em {perApur}(1200_ideEvento_perApur) ou a períodos anteriores a {perApur}(1200_ideEvento_perApur).</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: N (se {indApuracao}(1200_ideEvento_indApuracao) = [2] ou {codCateg}(1200_dmDev_codCateg) for diferente de [1XX, 2XX, 3XX, 721, 722, 901]); O (se não existir o grupo {infoPerApur}(1200_dmDev_infoPerApur) e {indApuracao}(1200_ideEvento_indApuracao) = [1]); OC (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="ideADC" maxOccurs="8">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Instrumento ou situação ensejadora da remuneração em períodos anteriores</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Identificação do instrumento ou situação ensejadora da remuneração relativa a períodos de apuração anteriores.</xs:documentation>
+                                                            <xs:documentation>CHAVE_GRUPO: {dtAcConv}, {tpAcConv}</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="dtAcConv" minOccurs="0">
+                                                                    <xs:simpleType>
+                                                                        <xs:annotation>
+                                                                            <xs:documentation>Data da assinatura do acordo, convenção coletiva, sentença normativa ou da conversão da licença saúde em acidente de trabalho.</xs:documentation>
+                                                                            <xs:documentation>Validação: Informação obrigatória se {tpAcConv}(./tpAcConv) = [A, B, C, D, E]. Se preenchida, seu mês/ano deve ser igual ou anterior ao período de apuração, informado em {perApur}(1200_ideEvento_perApur). A data deve ser igual ou posterior a 01/01/1890.</xs:documentation>
+                                                                        </xs:annotation>
+                                                                        <xs:restriction base="xs:date">
+                                                                            <xs:minInclusive value="1890-01-01" />
+                                                                        </xs:restriction>
+                                                                    </xs:simpleType>
+                                                                </xs:element>
+                                                                <xs:element name="tpAcConv" type="TS_tpAcConv" />
+                                                                <xs:element name="dsc" type="TS_dsc" />
+                                                                <xs:element name="remunSuc" type="TS_sim_nao">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Indicar se a remuneração é relativa a verbas de natureza salarial ou não salarial devidas pela empresa sucessora a empregados desligados ainda na sucedida.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="idePeriodo" maxOccurs="180">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Identificação do período de referência da remuneração</xs:documentation>
+                                                                        <xs:documentation>DESCRICAO_COMPLETA:Identificação do período ao qual se referem as diferenças de remuneração.</xs:documentation>
+                                                                        <xs:documentation>CHAVE_GRUPO: {perRef}</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="perRef" type="TS_periodo_mensal">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Informar o período ao qual se refere o complemento de remuneração, no formato AAAA-MM.</xs:documentation>
+                                                                                    <xs:documentation>Validação: Deve ser igual ou anterior ao período de apuração informado em {perApur}(/ideEvento_perApur).</xs:documentation>
+                                                                                    <xs:documentation>Deve ser informado no formato AAAA-MM.</xs:documentation>
+                                                                                    <xs:documentation>Se {tpAcConv}(../tpAcConv) = [H], deve ser anterior ao início dos eventos periódicos para o empregador no eSocial.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="ideEstabLot" maxOccurs="500">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Identificação do estabelecimento e lotação</xs:documentation>
+                                                                                    <xs:documentation>DESCRICAO_COMPLETA:Identificação do estabelecimento e da lotação ao qual se referem as diferenças de remuneração do mês identificado no grupo superior.</xs:documentation>
+                                                                                    <xs:documentation>CHAVE_GRUPO: {tpInsc}, {nrInsc}, {codLotacao}</xs:documentation>
+                                                                                </xs:annotation>
+                                                                                <xs:complexType>
+                                                                                    <xs:sequence>
+                                                                                        <xs:element name="tpInsc" type="TS_tpInsc_EstabLot" />
+                                                                                        <xs:element name="nrInsc" type="TS_nrInsc_EstabLot" />
+                                                                                        <xs:element name="codLotacao" type="TS_codLotacao" />
+                                                                                        <xs:element name="remunPerAnt" maxOccurs="8">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Remuneração do trabalhador</xs:documentation>
+                                                                                                <xs:documentation>DESCRICAO_COMPLETA:Informações relativas à remuneração do trabalhador em períodos anteriores.</xs:documentation>
+                                                                                                <xs:documentation>CHAVE_GRUPO: {matricula}</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                            <xs:complexType>
+                                                                                                <xs:sequence>
+                                                                                                    <xs:element name="matricula" minOccurs="0" type="TS_codigo_esocial">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Matrícula atribuída ao trabalhador pela empresa ou, no caso de servidor público, a matrícula constante no Sistema de Administração de Recursos Humanos do órgão.</xs:documentation>
+                                                                                                            <xs:documentation>Validação: Deve corresponder à matrícula informada pelo empregador no evento S-2190, S-2200 ou S-2300 do respectivo contrato. Não preencher no caso de TSVE sem informação de matrícula no evento S-2300 ou se {remunSuc}(1200_dmDev_infoPerAnt_ideADC_remunSuc) = [S].</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:element>
+                                                                                                    <xs:element name="indSimples" minOccurs="0" type="TS_indSimples" />
+                                                                                                    <xs:element name="itensRemun" type="T_itensRemun" maxOccurs="200" />
+                                                                                                    <xs:element name="infoAgNocivo" minOccurs="0" type="T_infoAgNocivo">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Grau de exposição a agentes nocivos</xs:documentation>
+                                                                                                            <xs:documentation>DESCRICAO_COMPLETA:Grupo referente ao detalhamento do grau de exposição do trabalhador aos agentes nocivos que ensejam a cobrança da contribuição adicional para financiamento dos benefícios de aposentadoria especial.</xs:documentation>
+                                                                                                            <xs:documentation>CONDICAO_GRUPO: O (se {codCateg}(1200_dmDev_codCateg) = [1XX, 2XX, 3XX]); N (nos demais casos)</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:element>
+                                                                                                </xs:sequence>
+                                                                                            </xs:complexType>
+                                                                                        </xs:element>
+                                                                                    </xs:sequence>
+                                                                                </xs:complexType>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="infoComplCont" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações complementares contratuais do trabalhador</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Grupo preenchido exclusivamente quando o evento de remuneração se referir a trabalhador cuja categoria não estiver obrigada ao evento de início de TSVE e se não houver evento S-2300 correspondente.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O ((se {codCateg}(1200_dmDev_codCateg) = [2XX, 304, 305, 4XX, 7XX, 902]) E (se para o trabalhador não houver evento S-2300 ativo) E (se não for informado {remunPerApur/matricula}(1200_dmDev_infoPerApur_ideEstabLot_remunPerApur_matricula) ou {remunPerAnt/matricula}(1200_dmDev_infoPerAnt_ideADC_idePeriodo_ideEstabLot_remunPerAnt_matricula))); OC ((se {codCateg}(1200_dmDev_codCateg) = [901, 903, 904]) E (se para o trabalhador não houver evento S-2300 ativo) E (se não for informado {remunPerApur/matricula}(1200_dmDev_infoPerApur_ideEstabLot_remunPerApur_matricula) ou {remunPerAnt/matricula}(1200_dmDev_infoPerAnt_ideADC_idePeriodo_ideEstabLot_remunPerAnt_matricula))); N (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="codCBO" type="TS_cbo">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Classificação Brasileira de Ocupações - CBO.</xs:documentation>
+                                                            <xs:documentation>Validação: Deve ser um código válido e existente na tabela de CBO, com 6 (seis) posições.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="natAtividade" minOccurs="0" type="TS_natAtividade">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Natureza da atividade.</xs:documentation>
+                                                            <xs:documentation>Validação: O campo deve ser preenchido apenas se atendida uma das condições a seguir apresentadas:</xs:documentation>
+                                                            <xs:documentation>a) {classTrib}(1000_infoEmpregador_inclusao_infoCadastro_classTrib) em S-1000 = [06, 07];</xs:documentation>
+                                                            <xs:documentation>b) {classTrib}(1000_infoEmpregador_inclusao_infoCadastro_classTrib) em S-1000 = [21, 22] e existir remuneração para o trabalhador vinculada a um tipo de CAEPF informado em S-1005 como produtor rural ou segurado especial.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="qtdDiasTrab" minOccurs="0" type="TS_dia">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informação prestada exclusivamente pelo segurado especial em caso de contratação de contribuinte individual, indicando a quantidade de dias trabalhados pelo mesmo.</xs:documentation>
+                                                            <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se {classTrib}(1000_infoEmpregador_inclusao_infoCadastro_classTrib) em S-1000 = [22], {natAtividade}(./natAtividade) = [2] e {indApuracao}(1200_ideEvento_indApuracao) = [1]. Neste caso, preencher com um número entre 1 e 31, de acordo com o calendário anual.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="T_itensRemun">
+        <xs:annotation>
+            <xs:documentation>Itens da remuneração do trabalhador</xs:documentation>
+            <xs:documentation>DESCRICAO_COMPLETA:Rubricas que compõem a remuneração do trabalhador.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="codRubr" type="TS_codigo_esocial">
+                <xs:annotation>
+                    <xs:documentation>Informar o código atribuído pelo empregador que identifica a rubrica em sua folha de pagamento ou o código da rubrica constante da Tabela de Rubricas Padrão.</xs:documentation>
+                    <xs:documentation>Validação: Não pode ser utilizada rubrica:</xs:documentation>
+                    <xs:documentation>a) cujo {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 seja igual a [25, 26, 51] se {codCateg}(1200_dmDev_codCateg) pertencer ao grupo "Contribuinte Individual" ou "Bolsista" da Tabela 01;</xs:documentation>
+                    <xs:documentation>b) cuja {natRubr}(1010_infoRubrica_inclusao_dadosRubrica_natRubr) em S-1010 seja igual a [1801, 9209, 9210, 9220], desde que {perApur}(1200_ideEvento_perApur) >= [2021-05] (se {indApuracao}(1200_ideEvento_indApuracao) = [1]) ou {perApur}(1200_ideEvento_perApur) >= [2021] (se {indApuracao}(1200_ideEvento_indApuracao) = [2]).</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="ideTabRubr" type="TS_ideTabRubr" />
+            <xs:element name="qtdRubr" minOccurs="0" type="TS_qtdRubr" />
+            <xs:element name="fatorRubr" minOccurs="0" type="TS_fator" />
+            <xs:element name="vrRubr" type="TS_vrRubr" />
+            <xs:element name="indApurIR" type="TS_indApurIR" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Indicativo de tipo de apuração de IR.</xs:documentation>
+                    <xs:documentation>Validação: Informação obrigatória e exclusiva se {perApur}(1200_ideEvento_perApur) >= [2021-05] (se {indApuracao}(1200_ideEvento_indApuracao) = [1]) ou se {perApur}(1200_ideEvento_perApur) >= [2021] (se {indApuracao}(1200_ideEvento_indApuracao) = [2]).</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="T_infoAgNocivo">
+        <xs:sequence>
+            <xs:element name="grauExp" type="TS_grauExp" />
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

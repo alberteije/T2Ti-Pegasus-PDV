@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" 
+         xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" 
+         xmlns:uap2="http://schemas.microsoft.com/appx/manifest/uap/windows10/2" 
+         xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" 
+         xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4" 
+         xmlns:uap6="http://schemas.microsoft.com/appx/manifest/uap/windows10/6" 
+         xmlns:uap7="http://schemas.microsoft.com/appx/manifest/uap/windows10/7" 
+         xmlns:uap8="http://schemas.microsoft.com/appx/manifest/uap/windows10/8" 
+         xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10" 
+         xmlns:iot="http://schemas.microsoft.com/appx/manifest/iot/windows10" 
+         xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10" 
+         xmlns:desktop2="http://schemas.microsoft.com/appx/manifest/desktop/windows10/2" 
+         xmlns:desktop6="http://schemas.microsoft.com/appx/manifest/desktop/windows10/6" 
+         xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" 
+         xmlns:rescap3="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities/3" 
+         xmlns:rescap6="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities/6" 
+         xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10" 
+         xmlns:com2="http://schemas.microsoft.com/appx/manifest/com/windows10/2" 
+         xmlns:com3="http://schemas.microsoft.com/appx/manifest/com/windows10/3">
+  <Identity Name="T2Ti.COM.T2TiPegasusPDV" Version="1.0.8.0"
+            Publisher="CN=0A6E4754-6ACC-44ED-81F6-94B57BF2E8BC" ProcessorArchitecture="x64" />
+  <Properties>
+    <DisplayName>T2Ti Pegasus PDV</DisplayName>
+    <PublisherDisplayName>T2Ti.COM</PublisherDisplayName>
+    <Logo>icons/logo_pegasus_pdv.png</Logo>
+    <Description>T2Ti ERP - Pegasus PDV</Description>
+  </Properties>
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19042.630" />
+  </Dependencies>
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+    <Capability Name="internetClient" />
+    <iot:Capability Name="systemManagement" />
+  </Capabilities>
+  <Applications>
+    <Application Id="pegasuspdv" Executable="pegasus_pdv.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements BackgroundColor="transparent"
+        DisplayName="T2Ti Pegasus PDV" Square150x150Logo="icons/logo_pegasus_pdv.png"
+        Square44x44Logo="icons/logo_pegasus_pdv.png" Description="T2Ti ERP - Pegasus PDV" >
+        <uap:DefaultTile ShortName="T2Ti Pegasus PDV" Square310x310Logo="icons/logo_pegasus_pdv.png"
+        Square71x71Logo="icons/logo_pegasus_pdv.png" Wide310x150Logo="icons/logo_pegasus_pdv.png">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo"/>
+            <uap:ShowOn Tile="square310x310Logo"/>
+            <uap:ShowOn Tile="wide310x150Logo"/>
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile>
+        <uap:SplashScreen Image="icons/logo_pegasus_pdv.png"/>
+        <uap:LockScreen BadgeLogo="icons/logo_pegasus_pdv.png" Notification="badge"/>
+      </uap:VisualElements>
+    </Application>
+  </Applications>
+</Package>

@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.esocial.gov.br/schema/evt/evtAvPrevio/v02_05_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtAvPrevio/v02_05_00" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd"/>
+  <xs:element name="eSocial">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="evtAvPrevio">
+          <xs:annotation>
+            <xs:documentation>Evento Aviso Prévio</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEvento" type="TIdeEveTrab">
+                <xs:annotation>
+                  <xs:documentation>Informações de Identificação do Evento</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="ideEmpregador" type="TEmpregador">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do empregador</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="ideVinculo" type="TIdeVinculoNisObrig">
+                <xs:annotation>
+                  <xs:documentation>Informações de Identificação do Trabalhador e do Vínculo</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="infoAvPrevio">
+                <xs:annotation>
+                  <xs:documentation>Informações do Aviso Prévio</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:choice>
+                      <xs:element name="detAvPrevio">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="dtAvPrv">
+                              <xs:simpleType>
+                                <xs:annotation>
+                                  <xs:documentation>Data do Aviso Prévio</xs:documentation>
+                                </xs:annotation>
+                                <xs:restriction base="xs:date">
+                                </xs:restriction>
+                              </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="dtPrevDeslig">
+                              <xs:simpleType>
+                                <xs:annotation>
+                                  <xs:documentation>Data prevista para o desligamento do trabalhador</xs:documentation>
+                                </xs:annotation>
+                                <xs:restriction base="xs:date">
+                                </xs:restriction>
+                              </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="tpAvPrevio">
+                              <xs:simpleType>
+                                <xs:annotation>
+                                  <xs:documentation>Tipo de Aviso Prévio Indica quem avisou o desligamento, conforme opções abaixo:
+                                  1 - Aviso prévio trabalhado dado pelo empregador ao empregado, que optou pela redução de duas horas diárias [caput do art 488 da CLT]
+                                  2 - Aviso prévio trabalhado dado pelo empregador ao empregado, que optou pela redução de dias corridos [parágrafo único do art 488 da CLT]
+                                  3 - Aviso prévio dado pelo empregado (pedido de demissão), dispensado de seu cumprimento 
+                                  4 - Aviso prévio dado pelo empregado (pedido de demissão), não dispensado de seu cumprimento, sob pena de desconto, pelo empregador, dos salários correspondentes ao prazo respectivo (§2º do art 487 da CLT);
+                                  5 - Aviso prévio trabalhado dado pelo empregador rural ao empregado, com redução de um dia por semana ( art 15 da Lei nº 5889/73)</xs:documentation>
+                                </xs:annotation>
+                                <xs:restriction base="xs:byte">
+                                  <xs:pattern value="\d"/>
+                                </xs:restriction>
+                              </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="observacao" minOccurs="0">
+                              <xs:simpleType>
+                                <xs:annotation>
+                                  <xs:documentation>Observação</xs:documentation>
+                                </xs:annotation>
+                                <xs:restriction base="xs:string">
+                                  <xs:minLength value="2"/>
+                                  <xs:maxLength value="255"/>
+                                  <xs:whiteSpace value="preserve"/>
+                                </xs:restriction>
+                              </xs:simpleType>
+                            </xs:element>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                      <xs:element name="cancAvPrevio">
+                        <xs:annotation>
+                          <xs:documentation>Cancelamento do Aviso Prévio</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="dtCancAvPrv">
+                              <xs:simpleType>
+                                <xs:annotation>
+                                  <xs:documentation>Data do Cancelamento do Aviso</xs:documentation>
+                                </xs:annotation>
+                                <xs:restriction base="xs:date">
+                                </xs:restriction>
+                              </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="observacao" minOccurs="0">
+                              <xs:simpleType>
+                                <xs:annotation>
+                                  <xs:documentation>Observação</xs:documentation>
+                                </xs:annotation>
+                                <xs:restriction base="xs:string">
+                                  <xs:minLength value="2"/>
+                                  <xs:maxLength value="255"/>
+                                  <xs:whiteSpace value="preserve"/>
+                                </xs:restriction>
+                              </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="mtvCancAvPrevio">
+                              <xs:simpleType>
+                                <xs:annotation>
+                                  <xs:documentation>Motivo do Cancelamento do Aviso Prévio:
+                                  1 - Reconsideração prevista no artigo 489 da CLT;
+                                  2 - Determinação Judicial;
+                                  3 - Cumprimento de norma legal;
+                                  9 - Outros;</xs:documentation>
+                                </xs:annotation>
+                                <xs:restriction base="xs:byte">
+                                  <xs:pattern value="\d"/>
+                                </xs:restriction>
+                              </xs:simpleType>
+                            </xs:element>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:choice>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Id" type="xs:ID" use="required"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="TIdeEveTrab">
+    <xs:annotation>
+      <xs:documentation>Identificação do evento</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="indRetif">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Indicativo de Retificação</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrRecibo" minOccurs="0">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Número do recibo do arquivo a ser retificado</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="40"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="tpAmb">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Tipo de ambiente</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="procEmi">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Processo de emissão do evento</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="verProc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Versão do processo de emissão do evento</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="20"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TEmpregador">
+    <xs:sequence>
+      <xs:element name="tpInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Tipo de Inscrição, conforme Tabela 05</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Número de Inscrição</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d{8,14}"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TIdeVinculoNisObrig">
+    <xs:annotation>
+      <xs:documentation>Informações do Vínculo</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="cpfTrab">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>CPF do trabalhador</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:length value="11"/>
+            <xs:pattern value="\d{11}"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nisTrab">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>NIS</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="11"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="matricula">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Matricula</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="30"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

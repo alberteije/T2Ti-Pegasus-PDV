@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.gnre.pe.gov.br"
+	elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://www.gnre.pe.gov.br">
+	<include schemaLocation="tiposBasicoGNRE_v1.00.xsd"></include>
+	<simpleType name="TTipoValor">
+		<restriction base="string">
+			<enumeration value="P" />
+			<enumeration value="T" />
+			<enumeration value="A" />
+		</restriction>
+	</simpleType>
+	<element name="TConfigUf">
+		<complexType>
+			<sequence>
+				<element name="ambiente" maxOccurs="1" minOccurs="1">
+					<simpleType>
+						<restriction base="string">
+							<enumeration value="1"></enumeration>
+							<enumeration value="2"></enumeration>
+						</restriction>
+					</simpleType>
+				</element>
+				<element name="uf" type="tns:TUf" maxOccurs="1"
+					minOccurs="1">
+				</element>
+				<element name="situacaoConsulta" maxOccurs="1" minOccurs="1">
+					<complexType>
+						<sequence>
+							<element name="codigo" maxOccurs="1" minOccurs="1">
+								<simpleType>
+									<restriction base="string">
+										<pattern
+											value="[1-9][0-9]{2}">
+										</pattern>
+									</restriction>
+								</simpleType>
+							</element>
+							<element name="descricao" maxOccurs="1" minOccurs="1">
+								<simpleType>
+									<restriction base="string">
+										<maxLength value="255"></maxLength>
+									</restriction>
+								</simpleType>
+							</element>
+						</sequence>
+					</complexType>
+				</element>
+				<element name="exigeUfFavorecida" default="S" 
+					maxOccurs="1" minOccurs="0">
+					<complexType>
+						<simpleContent>
+							<extension base="tns:TSimNao">
+								<attribute name="campo"
+									type="tns:TCamposGNRE" fixed="c01_UfFavorecida" use="required">
+								</attribute>
+							</extension>
+						</simpleContent>
+					</complexType>
+				</element>
+				<element name="exigeReceita" default="S" maxOccurs="1"
+					minOccurs="0">
+					<complexType>
+						<simpleContent>
+							<extension base="tns:TSimNao">
+								<attribute name="campo"
+									type="tns:TCamposGNRE" fixed="c02_receita" use="required">
+								</attribute>
+							</extension>
+						</simpleContent>
+					</complexType>
+				</element>
+				<element name="receitas" maxOccurs="1" minOccurs="0">
+					<complexType>
+						<sequence>
+							<element name="receita"
+								maxOccurs="unbounded" minOccurs="1">
+								<complexType>
+									<sequence>
+										<element
+											name="exigeDetalhamentoReceita" maxOccurs="1"
+											minOccurs="1">
+											<complexType>
+												<simpleContent>
+													<extension
+														base="tns:TSimNao">
+														<attribute
+															name="campo" type="tns:TCamposGNRE"
+															fixed="c25_detalhamentoReceita" use="required">
+														</attribute>
+													</extension>
+												</simpleContent>
+											</complexType>
+										</element>
+										<element
+											name="detalhamentosReceita" maxOccurs="1" minOccurs="0">
+											<complexType>
+												<sequence>
+													<element
+														name="detalhamentoReceita" maxOccurs="unbounded"
+														minOccurs="1">
+														<complexType>
+															<sequence>
+																<element
+																	name="codigo" maxOccurs="1" minOccurs="1">
+																	<simpleType>
+																		<restriction
+																			base="string">
+																			<pattern
+																				value="[0-9]{6}">
+																			</pattern>
+																		</restriction>
+																	</simpleType>
+																</element>
+																<element
+																	name="descricao" maxOccurs="1" minOccurs="1">
+																	<simpleType>
+																		<restriction
+																			base="string">
+																			<maxLength
+																				value="255">
+																			</maxLength>
+																		</restriction>
+																	</simpleType>
+																</element>
+															</sequence>
+														</complexType>
+													</element>
+												</sequence>
+											</complexType>
+										</element>
+										<element name="exigeProduto"
+											maxOccurs="1" minOccurs="1">
+											<complexType>
+												<simpleContent>
+													<extension
+														base="tns:TSimNao">
+														<attribute
+															name="campo" type="tns:TCamposGNRE" fixed="c26_produto"
+															use="required">
+														</attribute>
+													</extension>
+												</simpleContent>
+											</complexType>
+										</element>
+										<element name="produtos"
+											maxOccurs="1" minOccurs="0">
+											<complexType>
+												<sequence>
+													<element
+														name="produto" maxOccurs="unbounded" minOccurs="1">
+														<complexType>
+															<sequence>
+																<element
+																	name="codigo" maxOccurs="1" minOccurs="1">
+																	<simpleType>
+																		<restriction
+																			base="string">
+																			<pattern
+																				value="[1-9]{1}[0-9]{0,3}">
+																			</pattern>
+																		</restriction>
+																	</simpleType>
+																</element>
+																<element
+																	name="descricao" maxOccurs="1" minOccurs="1">
+																	<simpleType>
+																		<restriction
+																			base="string">
+																			<maxLength
+																				value="255">
+																			</maxLength>
+																		</restriction>
+																	</simpleType>
+																</element>
+															</sequence>
+														</complexType>
+													</element>
+												</sequence>
+											</complexType>
+										</element>
+										<element
+											name="exigePeriodoReferencia" maxOccurs="1" minOccurs="1">
+											<complexType>
+												<simpleContent>
+													<extension
+														base="tns:TSimNao">
+														<attribute
+															name="campo" type="tns:TCamposGNRE"
+															fixed="c05_referencia" use="required" />
+													</extension>
+												</simpleContent>
+											</complexType>
+										</element>
+                                        <element name="exigePeriodoApuracao" maxOccurs="1" minOccurs="0">
+                                            <complexType>
+                                            	<simpleContent>
+                                            		<extension base="tns:TSimNao">
+                                            			<attribute name="campo" type="tns:TCamposGNRE" use="required" fixed="periodo">
+                                            			</attribute>
+                                            		</extension>
+                                            	</simpleContent>
+                                            </complexType>
+										</element>
+                                        <element name="periodosApuracao"
+											maxOccurs="1" minOccurs="0">
+											<complexType>
+												<sequence>
+													<element
+														name="periodoApuracao" maxOccurs="unbounded"
+														minOccurs="1">
+														<complexType>
+															<sequence>
+																<element
+																	name="codigo" maxOccurs="1" minOccurs="1">
+																	<simpleType>
+																		<restriction
+																			base="string">
+																			<enumeration
+																				value="0">
+																			</enumeration>
+																			<enumeration
+																				value="1">
+																			</enumeration>
+																			<enumeration
+																				value="2">
+																			</enumeration>
+																			<enumeration
+																				value="3">
+																			</enumeration>
+																			<enumeration
+																				value="4">
+																			</enumeration>
+																			<enumeration
+																				value="5">
+																			</enumeration>
+																		</restriction>
+																	</simpleType>
+																</element>
+																<element
+																	name="descricao" type="tns:TString" maxOccurs="1"
+																	minOccurs="1">
+																</element>
+															</sequence>
+														</complexType>
+													</element>
+												</sequence>
+											</complexType>
+										</element>
+										<element name="exigeParcela"
+											maxOccurs="1" minOccurs="0">
+											<complexType>
+												<simpleContent>
+													<extension
+														base="tns:TSimNao">
+														<attribute
+															name="campo" type="tns:TCamposGNRE" fixed="parcela"
+															use="required" />
+													</extension>
+												</simpleContent>
+											</complexType>
+										</element>
+										<element name="valorExigido"
+											maxOccurs="1" minOccurs="1">
+											<complexType>
+												<simpleContent>
+													<extension
+														base="tns:TTipoValor">
+														<attribute
+															name="campo" type="tns:TCamposGNRE" use="optional" />
+													</extension>
+												</simpleContent>
+											</complexType>
+										</element>
+										<element
+											name="exigeDocumentoOrigem" maxOccurs="1" minOccurs="1">
+											<complexType>
+												<simpleContent>
+													<extension
+														base="tns:TSimNao">
+														<attribute
+															name="campo" type="tns:TCamposGNRE" fixed="c04_docOrigem"
+															use="required" />
+													</extension>
+												</simpleContent>
+											</complexType>
+										</element>
+										<element
+											name="tiposDocumentosOrigem" maxOccurs="1" minOccurs="0">
+											<complexType>
+												<sequence>
+													<element
+														name="tipoDocumentoOrigem" maxOccurs="unbounded"
+														minOccurs="1">
+														<complexType>
+															<sequence>
+																<element
+																	name="codigo" maxOccurs="1" minOccurs="1">
+																	<simpleType>
+																		<restriction
+																			base="string">
+																			<pattern
+																				value="[0-9]{2}">
+																			</pattern>
+																		</restriction>
+																	</simpleType>
+																</element>
+																<element
+																	name="descricao" type="tns:TString" maxOccurs="1"
+																	minOccurs="1">
+																</element>
+															</sequence>
+														</complexType>
+													</element>
+												</sequence>
+												<attribute
+													name="campo" type="tns:TCamposGNRE" use="required" fixed="c28_tipoDocOrigem">
+												</attribute>
+											</complexType>
+										</element>
+										<element
+											name="exigeContribuinteDestinatario" type="tns:TSimNao"
+											maxOccurs="1" minOccurs="1">
+										</element>
+										<element
+											name="exigeCamposAdicionais" maxOccurs="1" minOccurs="1">
+											<complexType>
+												<simpleContent>
+													<extension
+														base="tns:TSimNao">
+														<attribute
+															name="campo" type="tns:TCamposGNRE"
+															fixed="c39_camposExtras" use="required">
+														</attribute>
+													</extension>
+												</simpleContent>
+											</complexType>
+										</element>
+										<element name="camposAdicionais"
+											maxOccurs="1" minOccurs="0">
+											<complexType>
+												<sequence>
+													<element
+														name="campoAdicional" maxOccurs="unbounded"
+														minOccurs="1">
+														<complexType>
+															<sequence>
+																<element
+																	name="obrigatorio" type="tns:TSimNao" maxOccurs="1"
+																	minOccurs="1">
+																</element>
+																<element
+																	name="codigo" maxOccurs="1" minOccurs="1">
+																	<complexType>
+																		<simpleContent>
+																			<extension
+																				base="int">
+																				<attribute
+																					name="campo" type="tns:TCamposGNRE" fixed="codigo" />
+																			</extension>
+																		</simpleContent>
+																	</complexType>
+																</element>
+																<element
+																	name="tipo" maxOccurs="1" minOccurs="1">
+																	<complexType>
+																		<simpleContent>
+																			<extension
+																				base="tns:TTipoCampoExtra">
+																				<attribute
+																					name="campo" type="tns:TCamposGNRE" fixed="tipo" />
+																			</extension>
+																		</simpleContent>
+																	</complexType>
+																</element>
+																<element
+																	name="tamanho" type="int" maxOccurs="1"
+																	minOccurs="0">
+																</element>
+																<element
+																	name="casasDecimais" type="int" maxOccurs="1"
+																	minOccurs="0">
+																</element>
+																<element
+																	name="titulo" type="tns:TString" maxOccurs="1"
+																	minOccurs="1">
+																</element>
+															</sequence>
+															<attribute
+																name="campo" type="tns:TCamposGNRE" fixed="campoExtra"
+																use="required">
+															</attribute>
+														</complexType>
+													</element>
+												</sequence>
+											</complexType>
+										</element>
+									</sequence>
+									<attribute name="codigo"
+										use="required">
+										<simpleType>
+											<restriction
+												base="string">
+												<pattern
+													value="[0-9]{6}">
+												</pattern>
+											</restriction>
+										</simpleType>
+									</attribute>
+									<attribute name="descricao" use="required">
+										<simpleType>
+											<restriction
+												base="string">
+												<maxLength value="60"></maxLength>
+											</restriction>
+										</simpleType>
+									</attribute>
+									<attribute name="courier"
+										type="tns:TSimNao" use="optional" default="N"/>
+								</complexType>
+							</element>
+						</sequence>
+					</complexType>
+				</element>
+				<element name="exigeContribuinteEmitente"
+					type="tns:TSimNao" default="S" maxOccurs="1" minOccurs="0">
+				</element>
+				<element name="exigeDataVencimento" default="S" maxOccurs="1" minOccurs="0">
+					<complexType>
+						<simpleContent>
+							<extension base="tns:TSimNao">
+								<attribute name="campo"
+									type="tns:TCamposGNRE" fixed="c14_dataVencimento" use="required">
+								</attribute>
+							</extension>
+						</simpleContent>
+					</complexType>
+				</element>
+				<element name="exigeConvenio" default="N" maxOccurs="1" minOccurs="0">
+					<complexType>
+						<simpleContent>
+							<extension base="tns:TSimNao">
+								<attribute name="campo"
+									type="tns:TCamposGNRE" fixed="c15_convenio" use="required">
+								</attribute>
+							</extension>
+						</simpleContent>
+					</complexType>
+				</element>
+				<element name="exigeDataPagamento" default="S" maxOccurs="1" minOccurs="0">
+					<complexType>
+						<simpleContent>
+							<extension base="tns:TSimNao">
+								<attribute name="campo"
+									type="tns:TCamposGNRE" fixed="c33_dataPagamento"
+									use="required">
+								</attribute>
+							</extension>
+						</simpleContent>
+					</complexType></element>
+			</sequence>
+		</complexType>
+	</element>
+</schema>

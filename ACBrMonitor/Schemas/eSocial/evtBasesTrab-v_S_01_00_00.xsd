@@ -1,0 +1,781 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtBasesTrab/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtBasesTrab/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-5001 - Informações das Contribuições Sociais por Trabalhador</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtBasesTrab">
+                    <xs:annotation>
+                        <xs:documentation>Evento Informações das Contribuições Sociais por Trabalhador.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_retorno_trab" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="ideTrabalhador">
+                                <xs:annotation>
+                                    <xs:documentation>Identificação do trabalhador.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {cpfTrab}</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="cpfTrab" type="TS_cpfRetorno" />
+                                        <xs:element name="infoCompl" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações complementares do trabalhador e do contrato.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="sucessaoVinc" minOccurs="0" type="T_sucessaoVinc">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Grupo de informações da sucessão de vínculo trabalhista</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Grupo de informações da sucessão de vínculo trabalhista.</xs:documentation>
+                                                            <xs:documentation>Evento de origem: S-1200.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="infoInterm" minOccurs="0" maxOccurs="31">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações relativas ao trabalho intermitente</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Informações relativas ao trabalho intermitente.</xs:documentation>
+                                                            <xs:documentation>Evento de origem: S-1200 ou S-2299.</xs:documentation>
+                                                            <xs:documentation>CHAVE_GRUPO: {dia}</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="dia" type="TS_dia">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Dia do mês efetivamente trabalhado pelo empregado com contrato de trabalho intermitente.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="infoComplCont" minOccurs="0" maxOccurs="unbounded">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações complementares contratuais do trabalhador</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Informações complementares contratuais do trabalhador.</xs:documentation>
+                                                            <xs:documentation>Evento de origem: S-1200.</xs:documentation>
+                                                            <xs:documentation>CHAVE_GRUPO: {codCBO}, {natAtividade}, {qtdDiasTrab}</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="codCBO" type="TS_cbo">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Classificação Brasileira de Ocupações - CBO.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="natAtividade" minOccurs="0" type="TS_natAtividade">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Natureza da atividade.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="qtdDiasTrab" minOccurs="0" type="TS_dia">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informação prestada exclusivamente pelo segurado especial em caso de contratação de contribuinte individual, indicando a quantidade de dias trabalhados pelo mesmo.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="procJudTrab" minOccurs="0" maxOccurs="99">
+                                            <xs:annotation>
+                                                <xs:documentation>Processos judiciais do trabalhador</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Informações sobre processos judiciais do trabalhador com decisão favorável quanto à não incidência ou alterações na incidência de contribuição previdenciária.</xs:documentation>
+                                                <xs:documentation>CHAVE_GRUPO: {nrProcJud}</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="nrProcJud" type="TS_nrProcJud">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informar o número do processo judicial.</xs:documentation>
+                                                            <xs:documentation>Origem: campo {nrProcJud} de S-1200, S-2299 ou S-2399, se {tpTrib} no evento de origem for igual a [2].</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="codSusp" type="TS_codSusp">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Código do indicativo da suspensão, atribuído pelo empregador em S-1070.</xs:documentation>
+                                                            <xs:documentation>Origem: campo {codSusp} de S-1200, S-2299 ou S-2399, se {tpTrib} no evento de origem for igual a [2].</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="infoCpCalc" minOccurs="0" maxOccurs="9">
+                                <xs:annotation>
+                                    <xs:documentation>Cálculo da contribuição previdenciária do segurado</xs:documentation>
+                                    <xs:documentation>DESCRICAO_COMPLETA:Cálculo da contribuição previdenciária do segurado, incidente sobre a remuneração do período de apuração e de períodos anteriores informada nos eventos S-1200, S-2299 e S-2399.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {tpCR}</xs:documentation>
+                                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="tpCR">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:documentation>Código de Receita - CR da contribuição descontada do trabalhador.</xs:documentation>
+                                                    <xs:documentation>Validação: Se {indApuracao}(5001_ideEvento_indApuracao) = [2], deve ser igual a [108221, 108222, 108223, 108224].</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:integer">
+                                                    <xs:enumeration value="108201">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Contribuição Previdenciária - CP descontada do segurado empregado/avulso</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="108202">
+                                                        <xs:annotation>
+                                                            <xs:documentation>CP descontada do segurado empregado rural curto prazo - Lei 11.718/2008</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="108203">
+                                                        <xs:annotation>
+                                                            <xs:documentation>CP descontada do segurado empregado doméstico ou segurado especial</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="108204">
+                                                        <xs:annotation>
+                                                            <xs:documentation>CP descontada do segurado especial curto prazo - Lei 11.718/2008</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="108221">
+                                                        <xs:annotation>
+                                                            <xs:documentation>CP descontada do segurado empregado/avulso 13° salário</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="108222">
+                                                        <xs:annotation>
+                                                            <xs:documentation>CP descontada do segurado empregado rural curto prazo 13° salário - Lei 11.718/2008</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="108223">
+                                                        <xs:annotation>
+                                                            <xs:documentation>CP descontada do segurado empregado doméstico ou segurado especial 13° salário</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="108224">
+                                                        <xs:annotation>
+                                                            <xs:documentation>CP descontada do segurado especial curto prazo 13° salário - Lei 11.718/2008</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="109901">
+                                                        <xs:annotation>
+                                                            <xs:documentation>CP descontada do contribuinte individual, alíquota de 11%</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                    <xs:enumeration value="109902">
+                                                        <xs:annotation>
+                                                            <xs:documentation>CP descontada do contribuinte individual, alíquota de 20%</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:enumeration>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="vrCpSeg" type="TS_valorMonetario">
+                                            <xs:annotation>
+                                                <xs:documentation>Valor da contribuição do segurado, devida à Previdência Social, calculada segundo as regras da legislação em vigor, por CR.</xs:documentation>
+                                                <xs:documentation>Validação: 1. Se {indMV} do S-1200/S-2299/S-2399 = [3], {vrCpSeg}(./vrCpSeg) = [0]; portanto, não há CR.</xs:documentation>
+                                                <xs:documentation> </xs:documentation>
+                                                <xs:documentation>2. Se {indMV} do S-1200/S-2299/S-2399 = [1, 2], efetuar o somatório das ocorrências do campo {vlrRemunOE} e o somatório de {valor}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_valor) quando {tpValor}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_tpValor) = [11, 12, 13, 14, 19], resultando em [TotalRemun]. Este procedimento visa a identificação da(s) alíquota(s) aplicável(eis):</xs:documentation>
+                                                <xs:documentation>2.1. Se {indMV} do S-1200/S-2299/S-2399 = [1], aplicar a(s) alíquota(s) conforme a categoria do segurado sobre a remuneração paga pelo declarante (somatório de {valor}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_valor) quando {tpValor}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_tpValor) = [11, 12, 13, 14, 19]), observado o limite máximo do salário de contribuição.</xs:documentation>
+                                                <xs:documentation>2.2. Se {indMV} do S-1200/S-2299/S-2399 = [2]:</xs:documentation>
+                                                <xs:documentation>a) Se [TotalRemun] ultrapassar o limite máximo do salário de contribuição, aplicar a(s) alíquota(s) conforme a categoria do segurado sobre a diferença entre o referido limite máximo e o somatório das ocorrências do campo {vlrRemunOE}. Para os períodos de apuração iguais ou posteriores a 03/2020, observar a(s) faixa(s) de remuneração já tributada(s) em outra(s) empresa(s) nas categorias empregado/avulso/agente público.</xs:documentation>
+                                                <xs:documentation>b) Se [TotalRemun] for inferior ao limite máximo do salário de contribuição:</xs:documentation>
+                                                <xs:documentation>b1) Para as categorias empregado/avulso/agente público: somar {vlrRemunOE} destas mesmas categorias com o somatório de {valor}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_valor) quando {tpValor}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_tpValor) = [11, 12, 13, 14, 19] e aplicar a(s) alíquota(s). Para os períodos de apuração iguais ou posteriores a 03/2020, observar a(s) faixa(s) de remuneração já tributada(s) em outra(s) empresa(s) nas categorias empregado/avulso/agente público.</xs:documentation>
+                                                <xs:documentation>b2) Para categoria contribuinte individual: aplicar a alíquota sobre a remuneração paga pelo declarante (somatório de {valor}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_valor) quando {tpValor}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_tpValor) = [11, 12, 13, 14, 19]).</xs:documentation>
+                                                <xs:documentation> </xs:documentation>
+                                                <xs:documentation>3. Se não for informado o grupo {infoMV} do S-1200/S-2299/S-2399:</xs:documentation>
+                                                <xs:documentation>a) Se o trabalhador presta serviço para a empresa declarante em apenas uma categoria ({codCateg}(5001_infoCp_ideEstabLot_infoCategIncid_codCateg)), efetuar o somatório de {valor}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_valor) quando {tpValor}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_tpValor) = [11, 12, 13, 14, 19] e aplicar a(s) alíquota(s) conforme a categoria.</xs:documentation>
+                                                <xs:documentation>b) Se o trabalhador presta serviço para a empresa declarante em mais de uma categoria ({codCateg}(5001_infoCp_ideEstabLot_infoCategIncid_codCateg)):</xs:documentation>
+                                                <xs:documentation>I. Efetuar o somatório de {valor}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_valor) quando {tpValor}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_tpValor) = [11, 12, 13, 14, 19] para todas as categorias de segurado empregado/avulso/agente público e aplicar a(s) alíquota(s) correta(s) conforme faixa salarial, observado o limite máximo do salário de contribuição.</xs:documentation>
+                                                <xs:documentation>II. Caso o somatório do item I não tenha atingido o limite máximo do salário de contribuição, efetuar o somatório de {valor}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_valor) quando {tpValor}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_tpValor) = [11, 12, 13, 14, 19] para todas as categorias diferentes de segurado empregado e aplicar a alíquota correta conforme a categoria, observado o limite máximo do salário de contribuição.</xs:documentation>
+                                                <xs:documentation> </xs:documentation>
+                                                <xs:documentation>OBS.: a) No caso de {indApuracao}(5001_ideEvento_indApuracao) = [1], o cálculo deve ser efetuado separadamente para {infoBaseCS/ind13}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_ind13) = [0] e {infoBaseCS/ind13}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_ind13) = [1]. A soma de ambos os cálculos deve corresponder ao valor de {vrCpSeg}(./vrCpSeg).</xs:documentation>
+                                                <xs:documentation>b) Aplica-se a alíquota de 20% para o cálculo da contribuição previdenciária a ser descontada de remuneração de trabalhador pertencente às categorias [731, 734], quando o empregador for cooperativa de trabalho ({indCoop}(1000_infoEmpregador_inclusao_infoCadastro_indCoop) em S-1000 = [1]), ou pertencente ao grupo "Contribuinte Individual", quando o Empregador tiver classificação tributária ({classTrib}(1000_infoEmpregador_inclusao_infoCadastro_classTrib) em S-1000) = [70, 80]). Caso o trabalhador receba remuneração da empresa em outra categoria do grupo "Contribuinte Individual", primeiro deve ser aplicado o desconto sobre essa categoria (7XX) e depois sobre a remuneração das categorias [731, 734], observado o limite máximo do salário de contribuição.</xs:documentation>
+                                                <xs:documentation>c) {vrCpSeg}(./vrCpSeg) deve ser igual a {vrDescSeg}(./vrDescSeg) nas seguintes situações:</xs:documentation>
+                                                <xs:documentation>c1) Se houver informações em {infoPerAnt} na composição de {valor}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_valor);</xs:documentation>
+                                                <xs:documentation>c2) Se houver informação de {procJudTrab} com {tpTrib} = [2] nos eventos que contenham informações de remuneração (S-1200, S-2299 e S-2399);</xs:documentation>
+                                                <xs:documentation>c3) Se houver processo do empregador informado em S-1010, contestando incidência de contribuição previdenciária em rubricas utilizadas na composição da remuneração do trabalhador;</xs:documentation>
+                                                <xs:documentation>c4) Se, no período de apuração mensal, houver remuneração referente a 13º salário ({codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [12, 14, 16, 22, 26, 32, 92, 94, 96, 98]). Nesse caso, o campo {vrCpSeg}(./vrCpSeg) será igual ao valor calculado sobre a remuneração mensal acrescido do desconto sobre a remuneração relativa a 13° salário informado pelo empregador;</xs:documentation>
+                                                <xs:documentation>c5) se {procEmi} do evento S-1200/S-2299/S-2399 for igual a [2, 4, 22].</xs:documentation>
+                                                <xs:documentation>d) No caso de trabalhador categoria = [102], utilizar somente a alíquota de 8%, observado o limite máximo do salário de contribuição.</xs:documentation>
+                                                <xs:documentation>e) No caso de empregador com {classTrib}(1000_infoEmpregador_inclusao_infoCadastro_classTrib) em S-1000 = [21, 60], não calcular para a categoria do grupo "Contribuinte Individual" (7XX). O valor deve ser zerado.</xs:documentation>
+                                                <xs:documentation>f) Não calcular quando a categoria do trabalhador for [741] (MEI). O valor deve ser zerado.</xs:documentation>
+                                                <xs:documentation>g) Não calcular quando a lotação tributária for [91]. O valor deve ser zerado.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="vrDescSeg" type="TS_valorMonetario">
+                                            <xs:annotation>
+                                                <xs:documentation>Valor efetivamente descontado do segurado, correspondente a {tpValor}(5001_infoCp_ideEstabLot_infoCategIncid_infoBaseCS_tpValor) = [21] do correspondente {infoCpCalc/tpCR}(./tpCR).</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="infoCp" minOccurs="0">
+                                <xs:annotation>
+                                    <xs:documentation>Informações sobre bases e valores das contribuições sociais</xs:documentation>
+                                    <xs:documentation>DESCRICAO_COMPLETA:Informações sobre bases de cálculo, descontos e deduções de contribuições sociais devidas à Previdência Social e a Outras Entidades e Fundos, referentes à remuneração do período de apuração e de períodos anteriores informada nos eventos S-1200, S-2299 e S-2399.</xs:documentation>
+                                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="ideEstabLot" maxOccurs="unbounded">
+                                            <xs:annotation>
+                                                <xs:documentation>Identificação do estabelecimento ou obra e da lotação tributária</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Identificação do estabelecimento ou obra de construção civil e da lotação tributária.</xs:documentation>
+                                                <xs:documentation>CHAVE_GRUPO: {tpInsc}, {nrInsc}, {codLotacao}</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="tpInsc" type="TS_tpInsc_1_2_3_4">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com o código correspondente ao tipo de inscrição, conforme Tabela 05.</xs:documentation>
+                                                            <xs:documentation>Evento de origem: S-1200, S-2299 ou S-2399.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="nrInsc" type="TS_nrInsc_11_12_14">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informar o número de inscrição do contribuinte de acordo com o tipo de inscrição indicado no campo {ideEstabLot/tpInsc}(./tpInsc).</xs:documentation>
+                                                            <xs:documentation>Evento de origem: S-1200, S-2299 ou S-2399.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="codLotacao" type="TS_codigo_esocial">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informar o código atribuído pelo empregador para a lotação tributária.</xs:documentation>
+                                                            <xs:documentation>Evento de origem: S-1200, S-2299 ou S-2399.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="infoCategIncid" maxOccurs="10">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informações relativas à matrícula e categoria do trabalhador e tipos de incidências.</xs:documentation>
+                                                            <xs:documentation>CHAVE_GRUPO: {matricula}, {codCateg}, {indSimples}</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="matricula" minOccurs="0" type="TS_codigo_esocial">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Matrícula atribuída ao trabalhador pela empresa ou, no caso de servidor público, a matrícula constante no Sistema de Administração de Recursos Humanos do órgão.</xs:documentation>
+                                                                        <xs:documentation>Evento de origem: S-1200, S-2299 ou S-2399.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="codCateg" type="TS_codCateg">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Preencher com o código da categoria do trabalhador, conforme Tabela 01.</xs:documentation>
+                                                                        <xs:documentation>Validação: Se o evento de origem for S-1200, retornar o código de categoria informado nesse evento. Se o evento de origem for S-2299 ou S-2399, retornar o código de categoria existente no Registro de Eventos Trabalhistas - RET.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="indSimples" minOccurs="0" type="TS_indSimples">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Indicador de contribuição substituída.</xs:documentation>
+                                                                        <xs:documentation>Evento de origem: S-1200, S-2299 ou S-2399.</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="infoBaseCS" minOccurs="0" maxOccurs="99">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informações sobre bases de cálculo, descontos e deduções de CS</xs:documentation>
+                                                                        <xs:documentation>DESCRICAO_COMPLETA:Informações sobre bases de cálculo, descontos e deduções de contribuições sociais devidas à Previdência Social e a Outras Entidades e Fundos.</xs:documentation>
+                                                                        <xs:documentation>Evento de origem: S-1200, S-2299 ou S-2399.</xs:documentation>
+                                                                        <xs:documentation>CHAVE_GRUPO: {ind13}, {tpValor}</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: N (se {classTrib}(1000_infoEmpregador_inclusao_infoCadastro_classTrib) em S-1000 = [10] e {codCateg}(../codCateg) = [202]); O (nos demais casos)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="ind13" type="TS_ind13" />
+                                                                            <xs:element name="tpValor">
+                                                                                <xs:simpleType>
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Tipo de valor que influi na apuração da contribuição devida.</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                    <xs:restriction base="xs:byte">
+                                                                                        <xs:enumeration value="11">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária normal</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="12">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 15 anos de contribuição</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="13">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 20 anos de contribuição</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="14">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 25 anos de contribuição</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="15">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária adicional normal - Exclusiva do empregador</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="16">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 15 anos de contribuição - Exclusiva do empregador</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="17">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 20 anos de contribuição - Exclusiva do empregador</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="18">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 25 anos de contribuição - Exclusiva do empregador</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="19">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária exclusiva do empregado</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="21">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Valor total descontado do trabalhador para recolhimento à Previdência Social</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="22">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Valor descontado do trabalhador para recolhimento ao SEST</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="23">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Valor descontado do trabalhador para recolhimento ao SENAT</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="31">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Valor pago ao trabalhador a título de salário-família</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="32">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Valor pago ao trabalhador a título de salário-maternidade</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="41">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária normal - Categorias 107 e 108</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="42">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 15 anos de contribuição - Categorias 107 e 108</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="43">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 20 anos de contribuição - Categorias 107 e 108</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="44">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 25 anos de contribuição - Categorias 107 e 108</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="45">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária adicional normal - Exclusiva do empregador - Categorias 107 e 108</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="46">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 15 anos de contribuição - Exclusiva do empregador - Categorias 107 e 108</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="47">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 20 anos de contribuição - Exclusiva do empregador - Categorias 107 e 108</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="48">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 25 anos de contribuição - Exclusiva do empregador - Categorias 107 e 108</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="49">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Base de cálculo da contribuição previdenciária exclusiva do empregado - Categorias 107 e 108</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="81">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Incidência suspensa em decorrência de decisão judicial - Base de cálculo - BC da Contribuição Previdenciária - CP normal - Categorias 107 e 108</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="82">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Incidência suspensa em decorrência de decisão judicial - BC CP aposentadoria especial aos 15 anos de trabalho - Categorias 107 e 108</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="83">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Incidência suspensa em decorrência de decisão judicial - BC CP aposentadoria especial aos 20 anos de trabalho - Categorias 107 e 108</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="84">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Incidência suspensa em decorrência de decisão judicial - BC CP aposentadoria especial aos 25 anos de trabalho - Categorias 107 e 108</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="85">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Incidência suspensa em decorrência de decisão judicial - BC CP normal - Exclusiva do empregador - Categorias 107 e 108</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="86">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Incidência suspensa em decorrência de decisão judicial - BC CP aposentadoria especial aos 15 anos de trabalho - Exclusiva do empregador - Categorias 107 e 108</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="87">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Incidência suspensa em decorrência de decisão judicial - BC CP aposentadoria especial aos 20 anos de trabalho - Exclusiva do empregador - Categorias 107 e 108</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="88">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Incidência suspensa em decorrência de decisão judicial - BC CP aposentadoria especial aos 25 anos de trabalho - Exclusiva do empregador - Categorias 107 e 108</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="91">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Incidência suspensa em decorrência de decisão judicial - BC CP normal</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="92">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Incidência suspensa em decorrência de decisão judicial - BC CP aposentadoria especial aos 15 anos de trabalho</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="93">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Incidência suspensa em decorrência de decisão judicial - BC CP aposentadoria especial aos 20 anos de trabalho</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="94">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Incidência suspensa em decorrência de decisão judicial - BC CP aposentadoria especial aos 25 anos de trabalho</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="95">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Incidência suspensa em decorrência de decisão judicial - BC CP normal - Exclusiva do empregador</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="96">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Incidência suspensa em decorrência de decisão judicial - BC CP aposentadoria especial aos 15 anos de trabalho - Exclusiva do empregador</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="97">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Incidência suspensa em decorrência de decisão judicial - BC CP aposentadoria especial aos 20 anos de trabalho - Exclusiva do empregador</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="98">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Incidência suspensa em decorrência de decisão judicial - BC CP aposentadoria especial aos 25 anos de trabalho - Exclusiva do empregador</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                    </xs:restriction>
+                                                                                </xs:simpleType>
+                                                                            </xs:element>
+                                                                            <xs:element name="valor" type="TS_valorMonetario_positivo">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Valor da base de cálculo, dedução ou desconto da contribuição social devida à Previdência Social ou a Outras Entidades e Fundos, conforme definido no campo {tpValor}(./tpValor).</xs:documentation>
+                                                                                    <xs:documentation>Validação: Deve ser maior que 0 (zero).</xs:documentation>
+                                                                                    <xs:documentation>Deve corresponder ao somatório dos valores informados no campo {vrRubr} em S-1200 e S-2299 (grupos {infoPerApur} e {infoPerAnt}), e também em S-2399, obedecendo ao que segue:</xs:documentation>
+                                                                                    <xs:documentation>a) Somar os valores das rubricas cujo {tpRubr}(1010_infoRubrica_inclusao_dadosRubrica_tpRubr) em S-1010 seja igual a [1, 3] e subtrair os valores das rubricas cujo {tpRubr}(1010_infoRubrica_inclusao_dadosRubrica_tpRubr) em S-1010 seja igual a [2, 4], observando a tabela de relacionamento abaixo:</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [11]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [11, 12] e ({grauExp} em S-1200/S-2299 = [1] ou não informado);</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [12]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [11, 12] e {grauExp} em S-1200/S-2299 = [2];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [13]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [11, 12] e {grauExp} em S-1200/S-2299 = [3];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [14]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [11, 12] e {grauExp} em S-1200/S-2299 = [4];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [15]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [13, 14] e ({grauExp} em S-1200/S-2299 = [1] ou não informado);</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [16]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [13, 14] e {grauExp} em S-1200/S-2299 = [2];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [17]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [13, 14] e {grauExp} em S-1200/S-2299 = [3];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [18]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [13, 14] e {grauExp} em S-1200/S-2299 = [4];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [19], {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [15, 16, 21, 22];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [31], {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [51];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [32], {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [21, 22] ou ({natRubr}(1010_infoRubrica_inclusao_dadosRubrica_natRubr) em S-1010 = [4050, 4051] com {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [9X]);</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [41]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [11, 12] e ({grauExp} em S-1200/S-2299 = [1] ou não informado), observado o limite para {codCateg}(../codCateg) = [107, 108];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [42]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [11, 12] e {grauExp} em S-1200/S-2299 = [2], observado o limite para {codCateg}(../codCateg) = [107, 108];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [43]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [11, 12] e {grauExp} em S-1200/S-2299 = [3], observado o limite para {codCateg}(../codCateg) = [107, 108];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [44]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [11, 12] e {grauExp} em S-1200/S-2299 = [4], observado o limite para {codCateg}(../codCateg) = [107, 108];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [45]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [13, 14] e ({grauExp} em S-1200/S-2299 = [1] ou não informado), observado o limite para {codCateg}(../codCateg) = [107, 108];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [46]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [13, 14] e {grauExp} em S-1200/S-2299 = [2], observado o limite para {codCateg}(../codCateg) = [107, 108];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [47]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [13, 14] e {grauExp} em S-1200/S-2299 = [3], observado o limite para {codCateg}(../codCateg) = [107, 108];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [48]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [13, 14] e {grauExp} em S-1200/S-2299 = [4], observado o limite para {codCateg}(../codCateg) = [107, 108];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [49], {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [15, 16, 21, 22], observado o limite para {codCateg}(../codCateg) = [107, 108];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [81]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [91, 92] e ({grauExp} em S-1200/S-2299 = [1] ou não informado), observado o limite para {codCateg}(../codCateg) = [107, 108];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [82]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [91, 92] e {grauExp} em S-1200/S-2299 = [2], observado o limite para {codCateg}(../codCateg) = [107, 108];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [83]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [91, 92] e {grauExp} em S-1200/S-2299 = [3], observado o limite para {codCateg}(../codCateg) = [107, 108];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [84]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [91, 92] e {grauExp} em S-1200/S-2299 = [4], observado o limite para {codCateg}(../codCateg) = [107, 108];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [85]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [95, 96] e ({grauExp} em S-1200/S-2299 = [1] ou não informado), observado o limite para {codCateg}(../codCateg) = [107, 108];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [86]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [95, 96] e {grauExp} em S-1200/S-2299 = [2], observado o limite para {codCateg}(../codCateg) = [107, 108];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [87]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [95, 96] e {grauExp} em S-1200/S-2299 = [3], observado o limite para {codCateg}(../codCateg) = [107, 108];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [88]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [95, 96] e {grauExp} em S-1200/S-2299 = [4], observado o limite para {codCateg}(../codCateg) = [107, 108];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [91]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [91, 92] e ({grauExp} em S-1200/S-2299 = [1] ou não informado);</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [92]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [91, 92] e {grauExp} em S-1200/S-2299 = [2];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [93]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [91, 92] e {grauExp} em S-1200/S-2299 = [3];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [94]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [91, 92] e {grauExp} em S-1200/S-2299 = [4];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [95]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [95, 96] e ({grauExp} em S-1200/S-2299 = [1] ou não informado);</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [96]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [95, 96] e {grauExp} em S-1200/S-2299 = [2];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [97]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [95, 96] e {grauExp} em S-1200/S-2299 = [3];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [98]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [95, 96] e {grauExp} em S-1200/S-2299 = [4].</xs:documentation>
+                                                                                    <xs:documentation> </xs:documentation>
+                                                                                    <xs:documentation>b) Somar os valores das rubricas cujo {tpRubr}(1010_infoRubrica_inclusao_dadosRubrica_tpRubr) em S-1010 seja igual a [2, 4] e subtrair os valores das rubricas cujo {tpRubr}(1010_infoRubrica_inclusao_dadosRubrica_tpRubr) em S-1010 seja igual a [1, 3], observando a tabela de relacionamento abaixo:</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [21], {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [31, 32];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [22], {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [34];</xs:documentation>
+                                                                                    <xs:documentation>{tpValor}(./tpValor) = [23], {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [35].</xs:documentation>
+                                                                                    <xs:documentation> </xs:documentation>
+                                                                                    <xs:documentation>* Caso {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) da rubrica em S-1010 seja igual a [91, 92, 93, 94] e {indSusp}(1070_infoProcesso_inclusao_dadosProc_infoSusp_indSusp) do respectivo processo em S-1070 seja diferente de [90] (decisão definitiva), o valor também deve ser computado na composição das bases do {tpValor}(./tpValor) = [11, 12, 13, 14, 41, 42, 43, 44].</xs:documentation>
+                                                                                    <xs:documentation>Se {codCateg}(../codCateg) = [107, 108], caso {tpValor}(./tpValor) = [11] seja maior que o limite do salário-base para essas categorias, então {tpValor}(./tpValor) = [81] é igual a {tpValor}=[41] – ({tpValor}=[11] – {tpValor}=[91]). Se {tpValor}(./tpValor) = [81] resultar negativo, informar 0 (zero). O mesmo se aplica para {tpValor}(./tpValor) = [82, 83, 84].</xs:documentation>
+                                                                                    <xs:documentation>** Caso {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) da rubrica em S-1010 seja igual a [95, 96, 97, 98] e {indSusp}(1070_infoProcesso_inclusao_dadosProc_infoSusp_indSusp) do respectivo processo em S-1070 seja diferente de [90] (decisão definitiva), o valor também deve ser computado na composição das bases do {tpValor}(./tpValor) = [15, 16, 17, 18, 45, 46, 47, 48].</xs:documentation>
+                                                                                    <xs:documentation>Se {codCateg}(../codCateg) = [107, 108], caso {tpValor}(./tpValor) = [15] seja maior que o limite do salário-base para essas categorias, então {tpValor}(./tpValor) = [85] é igual a {tpValor}=[45] – ({tpValor}=[15] – {tpValor}=[95]). Se {tpValor}(./tpValor) = [85] resultar negativo, informar 0 (zero). O mesmo se aplica para {tpValor}(./tpValor) = [86, 87, 88].</xs:documentation>
+                                                                                    <xs:documentation>*** Caso {indSusp}(1070_infoProcesso_inclusao_dadosProc_infoSusp_indSusp) do respectivo processo em S-1070 seja igual a [90] (decisão definitiva), o valor não deve ser computado.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                                <xs:element name="calcTerc" minOccurs="0" maxOccurs="2">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Cálculo das contribuições sociais devidas a Outras Entidades e Fundos.</xs:documentation>
+                                                                        <xs:documentation>CHAVE_GRUPO: {tpCR}</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="tpCR">
+                                                                                <xs:simpleType>
+                                                                                    <xs:annotation>
+                                                                                        <xs:documentation>Código de Receita - CR da contribuição descontada do trabalhador.</xs:documentation>
+                                                                                    </xs:annotation>
+                                                                                    <xs:restriction base="xs:integer">
+                                                                                        <xs:enumeration value="121802">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Contribuição ao SEST, descontada do transportador autônomo</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                        <xs:enumeration value="122102">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Contribuição ao SENAT, descontada do transportador autônomo</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:enumeration>
+                                                                                    </xs:restriction>
+                                                                                </xs:simpleType>
+                                                                            </xs:element>
+                                                                            <xs:element name="vrCsSegTerc" type="TS_valorMonetario">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Valor da contribuição social devida a Outras Entidades ou Fundos, calculada segundo a legislação em vigor, por CR.</xs:documentation>
+                                                                                    <xs:documentation>Validação: {calcTerc/tpCR}(./tpCR) = [121802] - Somatório de {valor}(../infoBaseCS_valor) quando {tpValor}(../infoBaseCS_tpValor) = [11, 12, 13, 14], multiplicado pela alíquota de 1,5%, se {codCateg}(../codCateg) = [711, 712, 734] (transportador autônomo);</xs:documentation>
+                                                                                    <xs:documentation>{calcTerc/tpCR}(./tpCR) = [122102] - Somatório de {valor}(../infoBaseCS_valor) quando {tpValor}(../infoBaseCS_tpValor) = [11, 12, 13, 14], multiplicado pela alíquota de 1,0%, se {codCateg}(../codCateg) = [711, 712, 734] (transportador autônomo).</xs:documentation>
+                                                                                    <xs:documentation>OBS.: No período de 04/2020 a 06/2020, as alíquotas devem ser 0,75% para o SEST e 0,5% para o SENAT.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="vrDescTerc" type="TS_valorMonetario">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Valor efetivamente descontado do segurado, correspondente a {tpValor}(../infoBaseCS_tpValor) = [22, 23], do correspondente {calcTerc/tpCR}(./tpCR).</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                                <xs:element name="infoPerRef" maxOccurs="unbounded">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informações de remuneração por período de referência.</xs:documentation>
+                                                                        <xs:documentation>CHAVE_GRUPO: {perRef}</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="perRef" type="TS_perApur">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Informar o período ao qual se refere a remuneração.</xs:documentation>
+                                                                                    <xs:documentation>Origem: {perApur}(5001_ideEvento_perApur) ou campo {perRef} de S-1200/S-2299.</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="ideADC" minOccurs="0" maxOccurs="unbounded">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Instrumento ou situação ensejadora da remuneração em períodos anteriores</xs:documentation>
+                                                                                    <xs:documentation>DESCRICAO_COMPLETA:Identificação do instrumento ou situação ensejadora da remuneração relativa a períodos de apuração anteriores.</xs:documentation>
+                                                                                    <xs:documentation>Evento de origem: S-1200 ou S-2299 (exceto {remunSuc}(./remunSuc), cujo evento de origem somente é S-1200).</xs:documentation>
+                                                                                    <xs:documentation>CHAVE_GRUPO: {dtAcConv}, {tpAcConv}</xs:documentation>
+                                                                                    <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                                                </xs:annotation>
+                                                                                <xs:complexType>
+                                                                                    <xs:sequence>
+                                                                                        <xs:element name="dtAcConv" minOccurs="0" type="xs:date">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Data da assinatura do acordo, convenção coletiva, sentença normativa ou da conversão da licença saúde em acidente de trabalho.</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:element>
+                                                                                        <xs:element name="tpAcConv" type="TS_tpAcConv" />
+                                                                                        <xs:element name="dsc" type="TS_dsc" />
+                                                                                        <xs:element name="remunSuc" minOccurs="0" type="TS_sim_nao">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Indicar se a remuneração é relativa a verbas de natureza salarial ou não salarial devidas pela empresa sucessora a empregados desligados ainda na sucedida.</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:element>
+                                                                                    </xs:sequence>
+                                                                                </xs:complexType>
+                                                                            </xs:element>
+                                                                            <xs:element name="detInfoPerRef" maxOccurs="99">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Detalhamento das informações de remuneração por período de referência</xs:documentation>
+                                                                                    <xs:documentation>DESCRICAO_COMPLETA:Detalhamento das informações de remuneração por período de referência. Deve ser preenchido com informações de {infoPerApur} e {infoPerAnt} do S-1200 e S-2299, e de {dmDev} do S-2399, quando houver.</xs:documentation>
+                                                                                    <xs:documentation>CHAVE_GRUPO: {ind13}, {tpVrPerRef}</xs:documentation>
+                                                                                </xs:annotation>
+                                                                                <xs:complexType>
+                                                                                    <xs:sequence>
+                                                                                        <xs:element name="ind13" type="TS_ind13" />
+                                                                                        <xs:element name="tpVrPerRef">
+                                                                                            <xs:simpleType>
+                                                                                                <xs:annotation>
+                                                                                                    <xs:documentation>Tipo de valor que influi na apuração da contribuição devida.</xs:documentation>
+                                                                                                </xs:annotation>
+                                                                                                <xs:restriction base="xs:byte">
+                                                                                                    <xs:enumeration value="11">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Base de cálculo da contribuição previdenciária normal</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="12">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 15 anos de contribuição</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="13">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 20 anos de contribuição</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="14">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 25 anos de contribuição</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="15">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Base de cálculo da contribuição previdenciária adicional normal - Exclusiva do empregador</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="16">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 15 anos de contribuição - Exclusiva do empregador</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="17">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 20 anos de contribuição - Exclusiva do empregador</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="18">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Base de cálculo da contribuição previdenciária adicional para o financiamento dos benefícios de aposentadoria especial após 25 anos de contribuição - Exclusiva do empregador</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="19">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Base de cálculo da contribuição previdenciária exclusiva do empregado</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="21">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Valor total descontado do trabalhador para recolhimento à Previdência Social</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="22">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Valor descontado do trabalhador para recolhimento ao SEST</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="23">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Valor descontado do trabalhador para recolhimento ao SENAT</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="31">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Valor pago ao trabalhador a título de salário-família</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="32">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Valor pago ao trabalhador a título de salário-maternidade</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                </xs:restriction>
+                                                                                            </xs:simpleType>
+                                                                                        </xs:element>
+                                                                                        <xs:element name="vrPerRef" type="TS_valorMonetario_positivo">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Valor da base de cálculo, dedução ou desconto da contribuição social, conforme definido no campo {tpVrPerRef}(./tpVrPerRef).</xs:documentation>
+                                                                                                <xs:documentation>Validação: Deve ser maior que 0 (zero).</xs:documentation>
+                                                                                                <xs:documentation>Deve corresponder ao somatório dos valores informados no campo {vrRubr} em S-1200 e S-2299 (grupos {infoPerApur} e {infoPerAnt}), e também em S-2399, obedecendo ao que segue:</xs:documentation>
+                                                                                                <xs:documentation>a) Somar os valores das rubricas cujo {tpRubr}(1010_infoRubrica_inclusao_dadosRubrica_tpRubr) em S-1010 seja igual a [1, 3] e subtrair os valores das rubricas cujo {tpRubr}(1010_infoRubrica_inclusao_dadosRubrica_tpRubr) em S-1010 seja igual a [2, 4], observando a tabela de relacionamento abaixo:</xs:documentation>
+                                                                                                <xs:documentation>{tpVrPerRef}(./tpVrPerRef) = [11]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [11, 12] e ({grauExp} em S-1200/S-2299 = [1] ou não informado);</xs:documentation>
+                                                                                                <xs:documentation>{tpVrPerRef}(./tpVrPerRef) = [12]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [11, 12] e {grauExp} em S-1200/S-2299 = [2];</xs:documentation>
+                                                                                                <xs:documentation>{tpVrPerRef}(./tpVrPerRef) = [13]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [11, 12] e {grauExp} em S-1200/S-2299 = [3];</xs:documentation>
+                                                                                                <xs:documentation>{tpVrPerRef}(./tpVrPerRef) = [14]*, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [11, 12] e {grauExp} em S-1200/S-2299 = [4];</xs:documentation>
+                                                                                                <xs:documentation>{tpVrPerRef}(./tpVrPerRef) = [15]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [13, 14] e ({grauExp} em S-1200/S-2299 = [1] ou não informado);</xs:documentation>
+                                                                                                <xs:documentation>{tpVrPerRef}(./tpVrPerRef) = [16]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [13, 14] e {grauExp} em S-1200/S-2299 = [2];</xs:documentation>
+                                                                                                <xs:documentation>{tpVrPerRef}(./tpVrPerRef) = [17]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [13, 14] e {grauExp} em S-1200/S-2299 = [3];</xs:documentation>
+                                                                                                <xs:documentation>{tpVrPerRef}(./tpVrPerRef) = [18]**, {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [13, 14] e {grauExp} em S-1200/S-2299 = [4];</xs:documentation>
+                                                                                                <xs:documentation>{tpVrPerRef}(./tpVrPerRef) = [19], {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [15, 16, 21, 22];</xs:documentation>
+                                                                                                <xs:documentation>{tpVrPerRef}(./tpVrPerRef) = [31], {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [51];</xs:documentation>
+                                                                                                <xs:documentation>{tpVrPerRef}(./tpVrPerRef) = [32], {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [21, 22] ou ({natRubr}(1010_infoRubrica_inclusao_dadosRubrica_natRubr) em S-1010 = [4050, 4051] com {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [9X]).</xs:documentation>
+                                                                                                <xs:documentation> </xs:documentation>
+                                                                                                <xs:documentation>b) Somar os valores das rubricas cujo {tpRubr}(1010_infoRubrica_inclusao_dadosRubrica_tpRubr) em S-1010 seja igual a [2, 4] e subtrair os valores das rubricas cujo {tpRubr}(1010_infoRubrica_inclusao_dadosRubrica_tpRubr) em S-1010 seja igual a [1, 3], observando a tabela de relacionamento abaixo:</xs:documentation>
+                                                                                                <xs:documentation>{tpVrPerRef}(./tpVrPerRef) = [21], {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [31, 32];</xs:documentation>
+                                                                                                <xs:documentation>{tpVrPerRef}(./tpVrPerRef) = [22], {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [34];</xs:documentation>
+                                                                                                <xs:documentation>{tpVrPerRef}(./tpVrPerRef) = [23], {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) em S-1010 = [35].</xs:documentation>
+                                                                                                <xs:documentation> </xs:documentation>
+                                                                                                <xs:documentation>* Caso {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) da rubrica em S-1010 seja igual a [91, 92, 93, 94] e {indSusp}(1070_infoProcesso_inclusao_dadosProc_infoSusp_indSusp) do respectivo processo em S-1070 seja diferente de [90] (decisão definitiva), o valor deve ser computado na composição das bases do {tpVrPerRef}(./tpVrPerRef) = [11, 12, 13, 14].</xs:documentation>
+                                                                                                <xs:documentation>** Caso {codIncCP}(1010_infoRubrica_inclusao_dadosRubrica_codIncCP) da rubrica em S-1010 seja igual a [95, 96, 97, 98] e {indSusp}(1070_infoProcesso_inclusao_dadosProc_infoSusp_indSusp) do respectivo processo em S-1070 seja diferente de [90] (decisão definitiva), o valor deve ser computado na composição das bases do {tpVrPerRef}(./tpVrPerRef) = [15, 16, 17, 18].</xs:documentation>
+                                                                                                <xs:documentation>*** Caso {indSusp}(1070_infoProcesso_inclusao_dadosProc_infoSusp_indSusp) do respectivo processo em S-1070 seja igual a [90] (decisão definitiva), o valor não deve ser computado.</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                        </xs:element>
+                                                                                    </xs:sequence>
+                                                                                </xs:complexType>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id_retorno" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

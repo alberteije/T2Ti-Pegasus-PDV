@@ -1,0 +1,450 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtDeslig/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtDeslig/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-2299 - Desligamento</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtDeslig">
+                    <xs:annotation>
+                        <xs:documentation>Evento Desligamento.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_DESLIG_EXCLUI_DESLIGAMENTO_REINTEG</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_DESLIG_EXCLUSAO_EVENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_DESLIG_EXISTE_EVENTO_POSTERIOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_DESLIG_JA_EXISTE_BAIXA</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_DESLIG_TRABALHADOR_AFASTADO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EMPREGADO_DOMESTICO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTO_IMPACTO_FOPAG</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVE_FOPAG_SIMPLIFICADO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXTEMP_DOMESTICO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXTEMP_REINTEGRACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_GERAL_VALIDA_DADOS_TABCONTRIB</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_MESMO_PROCEMI</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_MUDANCA_CPF</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_FGTS_ANTERIOR_ESOCIAL</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_IND_RETIFICACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_PERMITE_EXCLUSAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RETIFICA_MESMO_VINCULO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_RUBRICA_COMPATIVEL_CATEGORIA</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_PERIODO_APURACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VINCULO_ATIVO_NA_DTEVENTO</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_trab_indGuia" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="ideVinculo" type="T_ideVinculo" />
+                            <xs:element name="infoDeslig">
+                                <xs:annotation>
+                                    <xs:documentation>Informações relativas ao desligamento do vínculo.</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="mtvDeslig">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:documentation>Código de motivo do desligamento.</xs:documentation>
+                                                    <xs:documentation>Validação: Deve ser um código válido e existente na Tabela 19, bem como compatível com o código de categoria do trabalhador, conforme Tabela 19.</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:string">
+                                                    <xs:pattern value="\d{2}" />
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="dtDeslig" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Preencher com a data de desligamento do vínculo (último dia trabalhado).</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser uma data igual ou anterior à data atual acrescida de 10 (dez) dias. No caso de empregado reintegrado, também deve ser uma data igual ou posterior a {dtEfetRetorno}(2298_infoReintegr_dtEfetRetorno) do evento S-2298.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="dtAvPrv" minOccurs="0" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Data de concessão do aviso prévio.</xs:documentation>
+                                                <xs:documentation>Validação: Se informada, deve ser igual ou posterior à data de admissão e igual ou anterior a {dtDeslig}(./dtDeslig).</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="indPagtoAPI" type="TS_sim_nao">
+                                            <xs:annotation>
+                                                <xs:documentation>Indicativo de pagamento de aviso prévio indenizado pelo empregador, ao empregado.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="dtProjFimAPI" minOccurs="0" type="xs:date">
+                                            <xs:annotation>
+                                                <xs:documentation>Data projetada para o término do aviso prévio indenizado.</xs:documentation>
+                                                <xs:documentation>Validação: Obrigatório se {indPagtoAPI}(./indPagtoAPI) for igual a [S], devendo ser igual ou posterior a {dtDeslig}(./dtDeslig).</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="pensAlim" minOccurs="0" type="TS_pensAlim">
+                                            <xs:annotation>
+                                                <xs:documentation>Indicativo de pensão alimentícia para fins de retenção de FGTS.</xs:documentation>
+                                                <xs:documentation>Validação: Preenchimento obrigatório e exclusivo se o vínculo for celetista ({tpRegTrab}(2200_vinculo_tpRegTrab) em S-2200 = [1]).</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="percAliment" minOccurs="0" type="TS_percAliment" />
+                                        <xs:element name="vrAlim" minOccurs="0" type="TS_vrAlim" />
+                                        <xs:element name="nrProcTrab" minOccurs="0" type="TS_nrProcJud">
+                                            <xs:annotation>
+                                                <xs:documentation>Número que identifica o processo trabalhista, quando o desligamento se der por decisão judicial.</xs:documentation>
+                                                <xs:documentation>Validação: Se preenchido, deve ser um processo judicial válido, com 20 (vinte) algarismos.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="infoInterm" minOccurs="0" maxOccurs="31" type="T_infoInterm">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações relativas ao trabalho intermitente.</xs:documentation>
+                                                <xs:documentation>CHAVE_GRUPO: {dia}</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O (se o código de categoria no RET for igual a [111] no mês/ano de {dtDeslig}(2299_infoDeslig_dtDeslig); N (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="observacoes" minOccurs="0" maxOccurs="99">
+                                            <xs:annotation>
+                                                <xs:documentation>Observações sobre o desligamento.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="observacao" type="TS_observacao">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Observação relevante sobre o desligamento do trabalhador, que não esteja consignada em outros campos.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="sucessaoVinc" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Sucessão do vínculo trabalhista/estatutário</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Grupo preenchido exclusivamente nos casos de sucessão do vínculo trabalhista, com a identificação da empresa sucessora.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O (se {mtvDeslig}(2299_infoDeslig_mtvDeslig) = [11, 12, 13, 25, 28, 29, 30, 37]); N (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="tpInsc" type="TS_tpInsc_1_2" />
+                                                    <xs:element name="nrInsc" type="TS_nrInsc_11_14">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informar o número de inscrição do empregador sucessor, de acordo com o tipo de inscrição indicado no campo {sucessaoVinc/tpInsc}(./tpInsc).</xs:documentation>
+                                                            <xs:documentation>Validação: Deve ser um número de inscrição válido e diferente da inscrição do declarante, considerando as particularidades aplicadas à informação de CNPJ de órgão público em S-1000.</xs:documentation>
+                                                            <xs:documentation>Se {sucessaoVinc/tpInsc}(./tpInsc) = [1], deve possuir 14 (catorze) algarismos e ser diferente do CNPJ base do empregador (exceto se {ideEmpregador/nrInsc}(2299_ideEmpregador_nrInsc) tiver 14 (catorze) algarismos) e dos estabelecimentos informados através do evento S-1005.</xs:documentation>
+                                                            <xs:documentation>Se {sucessaoVinc/tpInsc}(./tpInsc) = [2], deve possuir 11 (onze) algarismos.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="transfTit" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Transferência de titularidade do empregado doméstico</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Transferência de titularidade do empregado doméstico para outro representante da mesma unidade familiar.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O (se {mtvDeslig}(2299_infoDeslig_mtvDeslig) = [34]); N (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="cpfSubstituto" type="TS_cpf">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com o CPF do novo titular.</xs:documentation>
+                                                            <xs:documentation>Validação: Deve ser um CPF válido e diferente do CPF do declarante e do empregado.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="dtNascto" type="xs:date">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com a data de nascimento do novo titular.</xs:documentation>
+                                                            <xs:documentation>Validação: Deve corresponder à data de nascimento cadastrada na base de dados do CPF do {cpfSubstituto}(./cpfSubstituto).</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="mudancaCPF" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informação do novo CPF do trabalhador.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: O (se {mtvDeslig}(2299_infoDeslig_mtvDeslig) = [36]); N (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="novoCPF" type="TS_cpf">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com o novo CPF do trabalhador.</xs:documentation>
+                                                            <xs:documentation>Validação: Deve ser um CPF válido e diferente do CPF do empregador e do antigo CPF do trabalhador.</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="verbasResc" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Verbas rescisórias</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Grupo onde são prestadas as informações relativas às verbas devidas ao trabalhador na rescisão contratual.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: N (se {mtvDeslig}(2299_infoDeslig_mtvDeslig) = [11, 12, 13, 25, 28, 29, 30, 34, 36] OU {dtDeslig}(2299_infoDeslig_dtDeslig) for anterior ao início de obrigatoriedade dos eventos periódicos para o empregador OU {tpRegTrab}(2200_vinculo_tpRegTrab) em S-2200 = [2]); OC (nos demais casos)</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="dmDev" maxOccurs="50">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Demonstrativo de valores devidos ao trabalhador</xs:documentation>
+                                                            <xs:documentation>DESCRICAO_COMPLETA:Identificação de cada um dos demonstrativos de valores devidos ao trabalhador.</xs:documentation>
+                                                            <xs:documentation>CHAVE_GRUPO: {ideDmDev}</xs:documentation>
+                                                            <xs:documentation>REGRA:REGRA_DEMONSTRATIVO</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="ideDmDev" type="TS_codigo_esocial">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Identificador atribuído pela empresa para o demonstrativo de valores devidos ao trabalhador relativo a verbas rescisórias.</xs:documentation>
+                                                                        <xs:documentation>Validação: Deve ser um identificador único dentro da mesma competência (mês/ano da data de desligamento) para cada um dos demonstrativos do trabalhador.</xs:documentation>
+                                                                        <xs:documentation>REGRA:REGRA_CARACTERE_ESPECIAL</xs:documentation>
+                                                                    </xs:annotation>
+                                                                </xs:element>
+                                                                <xs:element name="infoPerApur" minOccurs="0">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Verbas rescisórias relativas ao mês/ano da data do desligamento.</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: O (se não existir o grupo {infoPerAnt}(2299_infoDeslig_verbasResc_dmDev_infoPerAnt)); OC (nos demais casos)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="ideEstabLot" maxOccurs="24" type="T_ideEstabLot">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Identificação do estabelecimento e lotação</xs:documentation>
+                                                                                    <xs:documentation>DESCRICAO_COMPLETA:Identificação do estabelecimento e da lotação nos quais o trabalhador possui remuneração no período de apuração. O estabelecimento identificado no grupo pode ser: o número do CNPJ do estabelecimento da própria empresa (matriz/filial), o número da obra (própria) no CNO, ou o número do CAEPF (no caso de pessoa física obrigada a inscrição no Cadastro de Atividade Econômica da Pessoa Física).</xs:documentation>
+                                                                                    <xs:documentation>CHAVE_GRUPO: {tpInsc}, {nrInsc}, {codLotacao}</xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                                <xs:element name="infoPerAnt" minOccurs="0">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>Informações relativas a períodos anteriores</xs:documentation>
+                                                                        <xs:documentation>DESCRICAO_COMPLETA:Remuneração relativa a períodos anteriores, devida em função de acordos coletivos, legislação específica, convenção coletiva de trabalho, dissídio ou conversão de licença saúde em acidente de trabalho.</xs:documentation>
+                                                                        <xs:documentation>CONDICAO_GRUPO: O (se não existir o grupo {infoPerApur}(2299_infoDeslig_verbasResc_dmDev_infoPerApur)); OC (nos demais casos)</xs:documentation>
+                                                                    </xs:annotation>
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="ideADC" maxOccurs="8">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>Instrumento ou situação ensejadora da remuneração em períodos anteriores</xs:documentation>
+                                                                                    <xs:documentation>DESCRICAO_COMPLETA:Identificação do instrumento ou situação ensejadora da remuneração relativa a períodos de apuração anteriores.</xs:documentation>
+                                                                                    <xs:documentation>CHAVE_GRUPO: {dtAcConv}, {tpAcConv}</xs:documentation>
+                                                                                </xs:annotation>
+                                                                                <xs:complexType>
+                                                                                    <xs:sequence>
+                                                                                        <xs:element name="dtAcConv" minOccurs="0">
+                                                                                            <xs:simpleType>
+                                                                                                <xs:annotation>
+                                                                                                    <xs:documentation>Data da assinatura do acordo, convenção coletiva, sentença normativa ou da conversão da licença saúde em acidente de trabalho.</xs:documentation>
+                                                                                                    <xs:documentation>Validação: Informação obrigatória se {tpAcConv}(./tpAcConv) = [A, B, C, D, E]. Se preenchida, seu mês/ano deve ser igual ou anterior ao mês/ano da data de desligamento, em {dtDeslig}(2299_infoDeslig_dtDeslig). A data deve ser igual ou posterior a 01/01/1890.</xs:documentation>
+                                                                                                </xs:annotation>
+                                                                                                <xs:restriction base="xs:date">
+                                                                                                    <xs:minInclusive value="1890-01-01" />
+                                                                                                </xs:restriction>
+                                                                                            </xs:simpleType>
+                                                                                        </xs:element>
+                                                                                        <xs:element name="tpAcConv">
+                                                                                            <xs:simpleType>
+                                                                                                <xs:annotation>
+                                                                                                    <xs:documentation>Tipo do instrumento ou situação ensejadora da remuneração relativa a períodos de apuração anteriores.</xs:documentation>
+                                                                                                </xs:annotation>
+                                                                                                <xs:restriction base="xs:string">
+                                                                                                    <xs:enumeration value="A">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Acordo Coletivo de Trabalho</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="B">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Legislação federal, estadual, municipal ou distrital</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="C">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Convenção Coletiva de Trabalho</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="D">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Sentença normativa - Dissídio</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="E">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Conversão de licença saúde em acidente de trabalho</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="G">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Antecipação de diferenças de acordo, convenção ou dissídio coletivo</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                    <xs:enumeration value="H">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Recolhimento mensal de FGTS anterior ao início de obrigatoriedade dos eventos periódicos</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:enumeration>
+                                                                                                </xs:restriction>
+                                                                                            </xs:simpleType>
+                                                                                        </xs:element>
+                                                                                        <xs:element name="dsc" type="TS_dsc" />
+                                                                                        <xs:element name="idePeriodo" maxOccurs="180">
+                                                                                            <xs:annotation>
+                                                                                                <xs:documentation>Identificação do período de referência da remuneração</xs:documentation>
+                                                                                                <xs:documentation>DESCRICAO_COMPLETA:Identificação do período ao qual se referem as diferenças de remuneração.</xs:documentation>
+                                                                                                <xs:documentation>CHAVE_GRUPO: {perRef}</xs:documentation>
+                                                                                            </xs:annotation>
+                                                                                            <xs:complexType>
+                                                                                                <xs:sequence>
+                                                                                                    <xs:element name="perRef" type="TS_periodo_mensal">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Informar o período ao qual se refere o complemento de remuneração, no formato AAAA-MM.</xs:documentation>
+                                                                                                            <xs:documentation>Validação: Deve ser igual ou anterior ao mês/ano da data do desligamento, informada em {dtDeslig}(2299_infoDeslig_dtDeslig).</xs:documentation>
+                                                                                                            <xs:documentation>Deve ser informado no formato AAAA-MM.</xs:documentation>
+                                                                                                            <xs:documentation>Se {tpAcConv}(../tpAcConv) = [H], deve ser anterior ao início dos eventos periódicos para o empregador no eSocial.</xs:documentation>
+                                                                                                        </xs:annotation>
+                                                                                                    </xs:element>
+                                                                                                    <xs:element name="ideEstabLot" maxOccurs="24" type="T_ideEstabLot">
+                                                                                                        <xs:annotation>
+                                                                                                            <xs:documentation>Identificação do estabelecimento e lotação</xs:documentation>
+                                                                                                            <xs:documentation>DESCRICAO_COMPLETA:Identificação do estabelecimento e da lotação aos quais se referem as diferenças de remuneração do mês identificado no grupo superior.</xs:documentation>
+                                                                                                            <xs:documentation>CHAVE_GRUPO: {tpInsc}, {nrInsc}, {codLotacao}</xs:documentation>
+                                                                                                        </xs:annotation>                                               
+                                                                                                    </xs:element>
+                                                                                                </xs:sequence>
+                                                                                            </xs:complexType>
+                                                                                        </xs:element>
+                                                                                    </xs:sequence>
+                                                                                </xs:complexType>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="procJudTrab" minOccurs="0" maxOccurs="99" type="T_procJudTrab" />
+                                                    <xs:element name="infoMV" minOccurs="0" type="T_infoMV" />
+                                                    <xs:element name="procCS" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Informação sobre processo judicial que suspende a exigibilidade da Contribuição Social Rescisória.</xs:documentation>
+                                                            <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                                        </xs:annotation>
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="nrProcJud" type="TS_nrProcJud_1_7" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="quarentena" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações sobre a quarentena remunerada ou outra situação de desligamento com data anterior</xs:documentation>
+                                                <xs:documentation>DESCRICAO_COMPLETA:Informações sobre a "quarentena" remunerada de trabalhador desligado ou outra situação de desligamento com data anterior.</xs:documentation>
+                                                <xs:documentation>O grupo deve ser preenchido apenas no caso do trabalhador que recebe remuneração após o desligamento por estar impossibilitado de exercer atividade remunerada, no caso de desligamento reconhecido judicialmente com data anterior a competências com remunerações já informadas ou em caso de concessão de aposentadoria de servidor com data anterior a competências com remunerações já informadas no eSocial.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="dtFimQuar" type="xs:date">
+                                                        <xs:annotation>
+                                                            <xs:documentation>Preencher com a data final da quarentena a que está sujeito o trabalhador. No caso de desligamento reconhecido judicialmente ou de concessão de aposentadoria de servidor com data anterior a competências com remunerações já informadas no eSocial, informar o último dia trabalhado.</xs:documentation>
+                                                            <xs:documentation>Validação: Deve ser uma data posterior a {dtDeslig}(2299_infoDeslig_dtDeslig).</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="consigFGTS" minOccurs="0" maxOccurs="99">
+                                            <xs:annotation>
+                                                <xs:documentation>Informações sobre operação de crédito consignado com garantia de FGTS.</xs:documentation>
+                                                <xs:documentation>CONDICAO_GRUPO: OC</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="insConsig">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Matrícula da instituição consignatária, cadastrada na Caixa Econômica Federal.</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:string">
+                                                                <xs:minLength value="1" />
+                                                                <xs:maxLength value="5" />
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="nrContr">
+                                                        <xs:simpleType>
+                                                            <xs:annotation>
+                                                                <xs:documentation>Número do contrato de empréstimo consignado existente na instituição consignatária.</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:restriction base="xs:string">
+                                                                <xs:pattern value="\d{1,40}" />
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="T_ideEstabLot">
+        <xs:sequence>
+            <xs:element name="tpInsc" type="TS_tpInsc_EstabLot" />
+            <xs:element name="nrInsc" type="TS_nrInsc_EstabLot" />
+            <xs:element name="codLotacao" type="TS_codLotacao" />
+            <xs:element name="detVerbas" maxOccurs="200">
+                <xs:annotation>
+                    <xs:documentation>Detalhamento das verbas rescisórias</xs:documentation>
+                    <xs:documentation>DESCRICAO_COMPLETA:Detalhamento das verbas rescisórias devidas ao trabalhador. Deve haver pelo menos uma rubrica de folha, mesmo que o valor líquido a ser pago ao trabalhador seja 0 (zero) em função de descontos.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="codRubr" type="TS_codigo_esocial">
+                            <xs:annotation>
+                                <xs:documentation>Informar o código atribuído pelo empregador que identifica a rubrica em sua folha de pagamento ou o código da rubrica constante da Tabela de Rubricas Padrão.</xs:documentation>
+                                <xs:documentation>Validação: Não pode ser utilizada rubrica cuja {natRubr}(1010_infoRubrica_inclusao_dadosRubrica_natRubr) em S-1010 seja igual a [1801, 9209, 9210, 9220], desde que mês/ano de {dtDeslig}(2299_infoDeslig_dtDeslig) >= [2021-05].</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="ideTabRubr" type="TS_ideTabRubr" />
+                        <xs:element name="qtdRubr" minOccurs="0" type="TS_qtdRubr" />
+                        <xs:element name="fatorRubr" minOccurs="0" type="TS_fator" />
+                        <xs:element name="vrRubr" type="TS_vrRubr" />
+                        <xs:element name="indApurIR" minOccurs="0" type="TS_indApurIR">
+                            <xs:annotation>
+                                <xs:documentation>Indicativo de tipo de apuração de IR.</xs:documentation>
+                                <xs:documentation>Validação: Informação obrigatória e exclusiva se mês/ano de {dtDeslig}(2299_infoDeslig_dtDeslig) >= [2021-05].</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="infoAgNocivo" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Grau de exposição a agentes nocivos</xs:documentation>
+                    <xs:documentation>DESCRICAO_COMPLETA:Grupo referente ao detalhamento do grau de exposição do trabalhador aos agentes nocivos que ensejam a cobrança da contribuição adicional para financiamento dos benefícios de aposentadoria especial.</xs:documentation>
+                    <xs:documentation>CONDICAO_GRUPO: O (se o trabalhador estiver amparado pelo RGPS); N (nos demais casos)</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="grauExp" type="TS_grauExp" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="infoSimples" minOccurs="0" type="T_infoSimples" />
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

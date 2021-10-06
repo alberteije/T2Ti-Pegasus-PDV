@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 (http://www.altova.com) by sas.softwares@procergs.rs.gov.br (PROCERGS) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/one" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" targetNamespace="http://www.portalfiscal.inf.br/one" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="tiposGeralONE_v2.00.xsd"/>
+	<xs:simpleType name="TVersao">
+		<xs:annotation>
+			<xs:documentation> Tipo Versão</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="2\.00"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="TManEQP">
+		<xs:annotation>
+			<xs:documentation>Schema XML de validação da área de dados da mensagem de manutenção equipamentos</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tpAmb" type="TAmb">
+				<xs:annotation>
+					<xs:documentation>Identificação do Ambiente:  1 - Produção  2 - Homologação</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="verAplic" type="TVerAplic">
+				<xs:annotation>
+					<xs:documentation>Versão do Aplicativo solicitante</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tpMan">
+				<xs:annotation>
+					<xs:documentation>Informa o tipo de manutenção:
+1 - Cadastramento
+2 - Alteração
+3 - Desativação
+4 - Reativação</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="1"/>
+						<xs:enumeration value="2"/>
+						<xs:enumeration value="3"/>
+						<xs:enumeration value="4"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="dhReg" type="TDateTimeUTC">
+				<xs:annotation>
+					<xs:documentation>Data da informação cadastral no formato AAAA-MM-DDTHH:MM:SS TZD</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CNPJOper" type="TCnpj">
+				<xs:annotation>
+					<xs:documentation>CNPJ do Operador Credenciado</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cEQP" type="TNSU">
+				<xs:annotation>
+					<xs:documentation>Identificador do equipamento</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="xEQP">
+				<xs:annotation>
+					<xs:documentation>Nome amigável do Equipamento
+Recomenda-se que o nome possua alguma referência que auxilie na fácil identificação do local onde o equipamento está instalado.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="TString">
+						<xs:minLength value="2"/>
+						<xs:maxLength value="60"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="cUF" type="TCodUfIBGE">
+				<xs:annotation>
+					<xs:documentation>Código da UF de localização do equipamento</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tpSentido">
+				<xs:annotation>
+					<xs:documentation>Sentido do equipamento na via (em relação à UF / município onde está instalado):
+E-Entrada, S-Saida, I - Indeterminado</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="E"/>
+						<xs:enumeration value="S"/>
+						<xs:enumeration value="I"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="latitude" type="TLatitude">
+				<xs:annotation>
+					<xs:documentation>Latitude do ponto geográfico da localização do SLD</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="longitude" type="TLongitude">
+				<xs:annotation>
+					<xs:documentation>Latitude do ponto geográfico da localização do SLD</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tpEQP">
+				<xs:annotation>
+					<xs:documentation>Informa o tipo de equipamento:
+1 - SLD (Antena)
+2 - OCR (Camera)</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="1"/>
+						<xs:enumeration value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="xRefCompl" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Permite detalhar melhor a localização do equipamento, como ponto de referencia ou mesmo sentido de instalação do equipamento em relação a muncípios adjacentes</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="TString">
+						<xs:minLength value="2"/>
+						<xs:maxLength value="200"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="versao" type="TVersao" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="TRetManEQP">
+		<xs:annotation>
+			<xs:documentation>Schema XML de validação de retorno da mensagem de manutenção de equipamentos</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tpAmb" type="TAmb">
+				<xs:annotation>
+					<xs:documentation>Identificação do Ambiente:  1 - Produção  2 - Homologação</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="verAplic" type="TVerAplic">
+				<xs:annotation>
+					<xs:documentation>Versão do Aplicativo </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cStat" type="TStat">
+				<xs:annotation>
+					<xs:documentation>código do status da resposta</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="xMotivo" type="TMotivo">
+				<xs:annotation>
+					<xs:documentation>descrição literal do status</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dhResp" type="TDateTimeUTC">
+				<xs:annotation>
+					<xs:documentation>Data e hora da resposta no formato AAAA-MM-DDThh:mm:ss TZD</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NSUMovto" type="TNSU" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Número Sequencial Único da operação</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="versao" type="TVersao" use="required"/>
+	</xs:complexType>
+</xs:schema>

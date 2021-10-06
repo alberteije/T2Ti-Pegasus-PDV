@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esocial.gov.br/schema/evt/evtInfoComplPer/v_S_01_00_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtInfoComplPer/v_S_01_00_00" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="tipos.xsd" />
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
+    <xs:element name="eSocial">
+        <xs:annotation>
+            <xs:documentation>S-1280 - Informações Complementares aos Eventos Periódicos</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="evtInfoComplPer">
+                    <xs:annotation>
+                        <xs:documentation>Evento Informações Complementares</xs:documentation>
+                        <xs:documentation>DESCRICAO_COMPLETA:Evento Informações Complementares aos Eventos Periódicos.</xs:documentation>
+                        <xs:documentation>CHAVE_GRUPO: {Id}</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_ENVIO_PROC_FECHAMENTO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVENTOS_EXTEMP</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVE_FOPAG_IND_RETIFICACAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVE_FOPAG_INFO_COMPAT_CLASSTRIB</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVE_FOPAG_PERMITE_EXCLUSAO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EVE_FOPAG_SIMPLIFICADO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_EXISTE_INFO_EMPREGADOR</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_MESMO_PROCEMI</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_REMUN_ANUAL_DEZEMBRO</xs:documentation>
+                        <xs:documentation>REGRA:REGRA_VALIDA_EMPREGADOR</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ideEvento" type="T_ideEvento_folha" />
+                            <xs:element name="ideEmpregador" type="T_ideEmpregador" />
+                            <xs:element name="infoSubstPatr" minOccurs="0">
+                                <xs:annotation>
+                                    <xs:documentation>Inf. complementares - Empresas enquadradas nos arts. 7º a 9º da Lei 12.546/2011</xs:documentation>
+                                    <xs:documentation>DESCRICAO_COMPLETA:Grupo preenchido exclusivamente por empresa enquadrada nos arts. 7º a 9º da Lei 12.546/2011, conforme classificação tributária indicada no evento S-1000.</xs:documentation>
+                                    <xs:documentation>CONDICAO_GRUPO: O (se {indDesFolha}(1000_infoEmpregador_inclusao_infoCadastro_indDesFolha) em S-1000 = [1]); N (nos demais casos)</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="indSubstPatr" type="TS_indSubstPatr">
+                                            <xs:annotation>
+                                                <xs:documentation>Indicativo de substituição da contribuição previdenciária patronal.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="percRedContrib" type="TS_percentual">
+                                            <xs:annotation>
+                                                <xs:documentation>Percentual não substituído pela contribuição prevista na Lei 12.546/2011.</xs:documentation>
+                                                <xs:documentation>Informar 0 (zero) se {indSubstPatr}(./indSubstPatr) = [1]. Caso contrário, preencher com o percentual correspondente à razão entre a receita de atividades não relacionadas nos arts. 7º e 8º da Lei 12.546/2011 e a receita bruta total.</xs:documentation>
+                                                <xs:documentation>Validação: Se {indSubstPatr}(./indSubstPatr) = [1], informar 0 (zero).</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="infoSubstPatrOpPort" minOccurs="0" maxOccurs="9999">
+                                <xs:annotation>
+                                    <xs:documentation>Informação de substituição prevista na Lei 12.546/2011</xs:documentation>
+                                    <xs:documentation>DESCRICAO_COMPLETA:Grupo preenchido exclusivamente pelo Órgão Gestor de Mão de Obra - OGMO ({classTrib}(1000_infoEmpregador_inclusao_infoCadastro_classTrib) em S-1000 = [09]), listando apenas seus códigos de lotação com operadores portuários enquadrados nos arts. 7º a 9º da Lei 12.546/2011.</xs:documentation>
+                                    <xs:documentation>CHAVE_GRUPO: {codLotacao}</xs:documentation>
+                                    <xs:documentation>CONDICAO_GRUPO: OC (se {classTrib}(1000_infoEmpregador_inclusao_infoCadastro_classTrib) em S-1000 = [09]; N (nos demais casos)</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="codLotacao" type="TS_codigo_esocial">
+                                            <xs:annotation>
+                                                <xs:documentation>Informar o código atribuído pelo empregador para a lotação tributária.</xs:documentation>
+                                                <xs:documentation>Validação: Deve ser um código válido e existente na Tabela de Lotações Tributárias (S-1020), com {tpLotacao}(1020_infoLotacao_inclusao_dadosLotacao_tpLotacao) = [08].</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="infoAtivConcom" minOccurs="0">
+                                <xs:annotation>
+                                    <xs:documentation>Empresas enquadradas no Simples Nacional - Atividades concomitantes</xs:documentation>
+                                    <xs:documentation>DESCRICAO_COMPLETA:Grupo preenchido por empresa enquadrada no regime de tributação Simples Nacional com tributação previdenciária substituída e não substituída.</xs:documentation>
+                                    <xs:documentation>CONDICAO_GRUPO: O (se {classTrib}(1000_infoEmpregador_inclusao_infoCadastro_classTrib) em S-1000 = [03]); N (nos demais casos)</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="fatorMes" type="TS_percentual">
+                                            <xs:annotation>
+                                                <xs:documentation>Informe o fator a ser utilizado para cálculo da contribuição patronal do mês dos trabalhadores envolvidos na execução das atividades enquadradas no Anexo IV em conjunto com as dos Anexos I a III e V da Lei Complementar 123/2006.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="fator13" type="TS_percentual">
+                                            <xs:annotation>
+                                                <xs:documentation>Informe o fator a ser utilizado para cálculo da contribuição patronal do décimo terceiro dos trabalhadores envolvidos na execução das atividades enquadradas no Anexo IV em conjunto com as dos Anexos I a III e V da Lei Complementar 123/2006.</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Id" use="required" type="TS_Id" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

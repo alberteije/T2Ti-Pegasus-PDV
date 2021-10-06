@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema version="1.0.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:esocial="http://www.esocial.gov.br/schema/lote/eventos/envio/consulta/retornoProcessamento/v1_0_0"
+           targetNamespace="http://www.esocial.gov.br/schema/lote/eventos/envio/consulta/retornoProcessamento/v1_0_0"
+           elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="eSocial">
+    <xs:annotation>
+      <xs:documentation>Elemento raiz do eSocial.</xs:documentation>
+    </xs:annotation>
+
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="consultaLoteEventos">
+          <xs:annotation>
+            <xs:documentation>Define o(s) parâmetro(s) da consulta do resultado de processamento do lote.</xs:documentation>
+          </xs:annotation>
+
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="protocoloEnvio" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation>
+                    Código de retorno para localização do lote.
+                    Número sequencial único produzido no instante de recepção da mensagem originada no empregador.
+                    São válidos os seguintes intervalos, expressos na base decimal:
+                    A.B.NNNNNNNNNNNNNNNNNNN
+                    A = Agente de recepção: Serpro=1 ou Caixa=2 (1 posição)
+                    B = Ambiente de recepção: Produção=1; Pré-produção - dados reais=2; Pré-produção - dados fictícios=3; Homologação=6; Validação=7; Testes=8; Desenvolvimento=9
+                    N = Número sequencial (19 posições)
+                    Exemplo:
+                    SERPRO: 1.1.0000000000000000001
+                    Caixa:  2.1.0000000000000000001
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:sequence>
+
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

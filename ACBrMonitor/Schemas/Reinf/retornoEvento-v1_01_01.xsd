@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.reinf.esocial.gov.br/schemas/retornoEvento/v1_01_01" targetNamespace="http://www.reinf.esocial.gov.br/schemas/retornoEvento/v1_01_01" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="./xmldsig-core-schema.xsd"/>
+  <xs:element name="Reinf">
+    <xs:annotation>
+      <xs:documentation>Elemento raiz do Reinf.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="retornoEvento" minOccurs="1" maxOccurs="1">
+          <xs:annotation>
+            <xs:documentation>Define a estrutura do retorno do processamento de um evento.</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              
+              <xs:element name="ideContrib" type="TIdeContrib" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do contribuinte</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              
+              <xs:element name="dadosRecepcaoEvento" type="TDadosRecepcaoEvento" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Dados de recepção do evento.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              
+              <xs:element name="status" type="TStatus" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Status do processamento do Evento.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+
+              <xs:element name="dadosReciboEntrega" type="TDadosReciboEntrega" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Dados do recibo.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+			  
+            </xs:sequence>
+            <xs:attribute name="id" use="required" type="xs:ID">
+              <xs:annotation>
+                <xs:documentation>Identificação única do evento (chave de acesso).</xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="TIdeContrib">
+    <xs:annotation>
+      <xs:documentation>Informações de identificação do contribuinte</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="tpInsc" minOccurs="1" maxOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:integer">
+            <xs:totalDigits value="1"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrInsc" minOccurs="1" maxOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+            <xs:maxLength value="15" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TDadosRecepcaoEvento">
+    <xs:annotation>
+      <xs:documentation>Define os dados de processamento dos eventos</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="dhProcessamento" type="xs:dateTime" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Preencher com a data e hora do início do processamento do eventos</xs:documentation>
+        </xs:annotation>        
+      </xs:element>
+      <xs:element name="tipoEvento" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Preencher com o Tipo de Evento</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="3"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="idEvento" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Campo ID do Evento</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="20"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="hash" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Hash do arquivo processado.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="60"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrRecibo" minOccurs="0" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Contem o numero do recibo do evento excluido/cancelado</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="16"/>
+            <xs:maxLength value="52"/>
+          </xs:restriction>          
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TStatus">
+    <xs:annotation>
+      <xs:documentation>Contém o status atual do Evento(Código e Descrição).</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="cdRetorno" minOccurs="1" maxOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="6"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="descRetorno" minOccurs="1" maxOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="255"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="dadosRegistroOcorrenciaEvento" type="TRegistroOcorrencias"  minOccurs="0" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Informaçoes de ocorrências registradas.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="TRegistroOcorrencias">
+    <xs:annotation>
+      <xs:documentation>Define uma ocorrencia encontrada no processamento de um arquivo.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="ocorrencias" minOccurs="1" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="tipo" minOccurs="1" maxOccurs="1">
+              <xs:annotation>
+                <xs:documentation>Contém o tipo da ocorrencia: 1 - Aviso, 2 - Erro</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:integer">
+                  <xs:totalDigits value="1"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="localizacaoErroAviso" minOccurs="0" maxOccurs="1">
+              <xs:annotation>
+                <xs:documentation>Campo onde ocorreu o aviso/erro.</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:minLength value="1"/>
+                  <xs:maxLength value="100"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="codigo" minOccurs="1" maxOccurs="1">
+              <xs:annotation>
+                <xs:documentation>Codigo do status da resposta do processamento do evento</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:minLength value="1"/>
+                  <xs:maxLength value="6"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="descricao" minOccurs="1" maxOccurs="1">
+              <xs:annotation>
+                <xs:documentation>Descricao literal da resposta do processamento do evento</xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:minLength value="1"/>
+                  <xs:maxLength value="255"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="TDadosReciboEntrega">
+    <xs:annotation>
+      <xs:documentation>Recibo de entrega que so será gerado se o evento não contiver erros de validação e gerar uma alteração na base de dados do Ambiente Nacional</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="numeroRecibo" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Gerado apenas se o evento não possui erros de validação.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="50" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType> 
+</xs:schema>
+
+
+
+
+
+
+
+
+
+
+

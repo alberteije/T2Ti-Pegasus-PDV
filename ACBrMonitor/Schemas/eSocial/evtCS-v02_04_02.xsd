@@ -1,0 +1,1085 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.esocial.gov.br/schema/evt/evtCS/v02_04_02" targetNamespace="http://www.esocial.gov.br/schema/evt/evtCS/v02_04_02" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd"/>
+  <xs:element name="eSocial">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="evtCS">
+          <xs:annotation>
+            <xs:documentation>Evento demonstrativo das Contribuições Sociais devidas à Previdência Social e a Outras Entidades e Fundos e das suas bases de cálculo.</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEvento">
+                <xs:annotation>
+                  <xs:documentation>Identificação do evento de retorno</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="indApuracao">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Indicativo de período de apuração:
+                          1 - Mensal;
+                          2 - Anual (13° salário).</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:byte">
+                          <xs:pattern value="\d"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="perApur">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Período ao qual se referem as informações.</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="4"/>
+                          <xs:maxLength value="7"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="ideEmpregador" type="TEmpregador">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do empregador</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="infoCS">
+                <xs:annotation>
+                  <xs:documentation>Informações relativas às Contribuições Sociais devidas à Previdência Social e a Outras Entidades e Fundos.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="nrRecArqBase" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Recibo do arquivo de origem</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1"/>
+                          <xs:maxLength value="40"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="indExistInfo">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Existe Informações</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:byte">
+                          <xs:pattern value="\d"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="infoCPSeg" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Informações de contribuição previdenciária do Segurado</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="vrDescCP">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Valor da Contribuição Descontada</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:decimal">
+                                <xs:totalDigits value="14"/>
+                                <xs:fractionDigits value="2"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="vrCpSeg">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Valor da contribuição do segurado calculada segundo as regras da legislação em vigor, por CR.</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:decimal">
+                                <xs:totalDigits value="14"/>
+                                <xs:fractionDigits value="2"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="infoContrib">
+                      <xs:annotation>
+                        <xs:documentation>Informações gerais do contribuinte necessárias à apuração das contribuições sociais.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="classTrib">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Enquadramento do contribuinte</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:length value="2"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="infoPJ" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Informações complementares, exclusivas da Pessoa Jurídica.</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="indCoop" minOccurs="0">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Indicativo de Cooperativa</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:byte">
+                                      <xs:pattern value="\d"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="indConstr">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Indicativo de Construtora</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:byte">
+                                      <xs:pattern value="\d"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="indSubstPatr" minOccurs="0">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Substituição da CP patronal</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:byte">
+                                      <xs:pattern value="\d"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="percRedContrib" minOccurs="0">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Percentual de Redução da Contribuição</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="5"/>
+                                      <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="infoAtConc" minOccurs="0">
+                                  <xs:annotation>
+                                    <xs:documentation>Informações prestadas por empresa enquadrada no Regime de Tributação Simples Nacional com tributação previdenciária substituída e não substituída.</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="fatorMes">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Fator mês</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:decimal">
+                                            <xs:totalDigits value="5"/>
+                                            <xs:fractionDigits value="2"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="fator13">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Fator 13°</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:decimal">
+                                            <xs:totalDigits value="5"/>
+                                            <xs:fractionDigits value="2"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ideEstab" minOccurs="0" maxOccurs="9999">
+                      <xs:annotation>
+                        <xs:documentation>Informações de identificação do estabelecimento ou obra de construção civil.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="tpInsc">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Tipo de Inscrição, conforme tabela 5.</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:byte">
+                                <xs:pattern value="\d"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="nrInsc">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Número de Inscrição</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:string">
+                                <xs:pattern value="\d{8,15}"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="infoEstab" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Informações relativas a cada estabelecimento, necessárias à apuração das contribuições sociais.</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="cnaePrep">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Código do CNAE</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:integer">
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="aliqRat">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Alíquota RAT</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:nonNegativeInteger">
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="fap">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>FAP</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="5"/>
+                                      <xs:fractionDigits value="4"/>
+                                      <xs:minInclusive value="0.0"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="aliqRatAjust">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Alíquota do RAT ajustada pelo FAP</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="5"/>
+                                      <xs:fractionDigits value="4"/>
+                                      <xs:minInclusive value="0"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="infoComplObra" minOccurs="0">
+                                  <xs:annotation>
+                                    <xs:documentation>Informações complementares relativas a obras de construção civil</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="indSubstPatrObra">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Substituição da CP patronal de Obra</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:byte">
+                                            <xs:pattern value="\d"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="ideLotacao" minOccurs="0" maxOccurs="99">
+                            <xs:annotation>
+                              <xs:documentation>Identificação da lotação tributária.</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="codLotacao">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Código da Lotação</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:minLength value="1"/>
+                                      <xs:maxLength value="30"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="fpas">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Código do FPAS.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:integer">
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="codTercs">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Código de Terceiros</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:length value="4"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="codTercsSusp" minOccurs="0">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Código de Terceiros Suspenso</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:string">
+                                      <xs:length value="4"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="infoTercSusp" minOccurs="0" maxOccurs="15">
+                                  <xs:annotation>
+                                    <xs:documentation>Informações de suspensão de contribuições destinadas a Outras Entidades e Fundos (Terceiros).</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="codTerc">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Código de Terceiro</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:length value="4"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="infoEmprParcial" minOccurs="0">
+                                  <xs:annotation>
+                                    <xs:documentation>Informação complementar destinada à identificação do contratante e do proprietário de obra de construção civil contratada sob regime de empreitada parcial ou subempreitada. A informação é preenchida exclusivamente para lotações cujo {tpLotacao} seja igual a [2].</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="tpInscContrat">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Tipo de Inscrição do contratante</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:byte">
+                                            <xs:pattern value="\d"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="nrInscContrat">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Inscrição do Contratante</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:pattern value="\d{11,15}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="tpInscProp">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Tipo de Inscrição do proprietário do CNO</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:byte">
+                                            <xs:pattern value="\d"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="nrInscProp">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Inscrição do proprietário do CNO</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:pattern value="\d{11,15}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="dadosOpPort" minOccurs="0">
+                                  <xs:annotation>
+                                    <xs:documentation>Detalhamento das informações do Operador Portuário que está sendo incluído (origem S-1080).</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="cnpjOpPortuario">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>CNPJ do Operador Portuário</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:length value="14"/>
+                                            <xs:pattern value="\d{8,14}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="aliqRat">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Alíquota RAT</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:nonNegativeInteger">
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="fap">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>FAP</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:decimal">
+                                            <xs:totalDigits value="5"/>
+                                            <xs:fractionDigits value="4"/>
+                                            <xs:minInclusive value="0.0"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="aliqRatAjust">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Alíquota do RAT ajustada pelo FAP</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:decimal">
+                                            <xs:totalDigits value="5"/>
+                                            <xs:fractionDigits value="4"/>
+                                            <xs:minInclusive value="0"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="basesRemun" minOccurs="0" maxOccurs="99">
+                                  <xs:annotation>
+                                    <xs:documentation>Bases de cálculo da contribuição previdenciária incidente sobre remunerações, por categoria.</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="indIncid">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Tipo de Incidência</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:byte">
+                                            <xs:pattern value="\d"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="codCateg">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Código da Categoria</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:integer">
+                                            <xs:pattern value="\d{3}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="basesCp">
+                                        <xs:annotation>
+                                          <xs:documentation>Valores correspondentes às bases, contribuições do segurado e deduções da contribuição previdenciária.</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:complexType>
+                                          <xs:sequence>
+                                            <xs:element name="vrBcCp00">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Base de Cálculo da Contribuição Previdenciária</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="14"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vrBcCp15">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>BC CP 15</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="14"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vrBcCp20">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>BC CP 20</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="14"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vrBcCp25">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>BC CP 25</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="14"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vrSuspBcCp00">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Valor da BC com incidência suspensa em decorrência de decisão judicial.</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="14"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vrSuspBcCp15">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Valor CP Suspensa 15 anos.</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="14"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vrSuspBcCp20">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>BC 20 anos, suspensa</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="14"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vrSuspBcCp25">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Vr CP suspensa 25 anos</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="14"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vrDescSest">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Desconto Sest</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="14"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vrCalcSest">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Calc Sest</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="14"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vrDescSenat">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Desc Senat</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="14"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vrCalcSenat">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Calculo Senat</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="14"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vrSalFam">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Vr salário familia total por categoria.</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="14"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="vrSalMat">
+                                              <xs:simpleType>
+                                                <xs:annotation>
+                                                  <xs:documentation>Sal. maternidade</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="14"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                          </xs:sequence>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="basesAvNPort" minOccurs="0">
+                                  <xs:annotation>
+                                    <xs:documentation>Informações de bases de cálculo relativas à contratação de trabalhadores avulsos não portuários.
+Informações desse grupo conforme informado pelo contribuinte em S-1270.</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="vrBcCp00">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Base de Cálculo da Contribuição Previdenciária</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:decimal">
+                                            <xs:totalDigits value="14"/>
+                                            <xs:fractionDigits value="2"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vrBcCp15">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>BC CP 15</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:decimal">
+                                            <xs:totalDigits value="14"/>
+                                            <xs:fractionDigits value="2"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vrBcCp20">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>BC CP 20</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:decimal">
+                                            <xs:totalDigits value="14"/>
+                                            <xs:fractionDigits value="2"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vrBcCp25">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>BC CP 25</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:decimal">
+                                            <xs:totalDigits value="14"/>
+                                            <xs:fractionDigits value="2"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vrBcCp13">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>BC CP 13° sal</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:decimal">
+                                            <xs:totalDigits value="14"/>
+                                            <xs:fractionDigits value="2"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vrBcFgts">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>BC FGTS</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:decimal">
+                                            <xs:totalDigits value="14"/>
+                                            <xs:fractionDigits value="2"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                      <xs:element name="vrDescCP">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>Valor da Contribuição Descontada</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:decimal">
+                                            <xs:totalDigits value="14"/>
+                                            <xs:fractionDigits value="2"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="infoSubstPatrOpPort" minOccurs="0" maxOccurs="999">
+                                  <xs:annotation>
+                                    <xs:documentation>Registro preenchido exclusivamente pelo OGMO ({classTrib}=[09]) relativamente a seus Operadores Portuários enquadrados nos artigos 7 a 9 da Lei 12.546/2011.</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="cnpjOpPortuario">
+                                        <xs:simpleType>
+                                          <xs:annotation>
+                                            <xs:documentation>CNPJ do Operador Portuário</xs:documentation>
+                                          </xs:annotation>
+                                          <xs:restriction base="xs:string">
+                                            <xs:length value="14"/>
+                                            <xs:pattern value="\d{8,14}"/>
+                                          </xs:restriction>
+                                        </xs:simpleType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="basesAquis" minOccurs="0" maxOccurs="3">
+                            <xs:annotation>
+                              <xs:documentation>Informações de bases de cálculo relativas a aquisição de produção rural.
+Origem S-1250.</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="indAquis">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Indicativo da Aquisição</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:byte">
+                                      <xs:pattern value="\d"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vlrAquis">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor aquisição</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="14"/>
+                                      <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vrCPDescPR">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da Contribuição Previdenciária descontada pelo adquirente</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="14"/>
+                                      <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vrCPNRet">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da Contribuição Previdenciária que deixou de ser retida pelo declarante em decorrência de decisão/sentença judicial. </xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="14"/>
+                                      <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vrRatNRet">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Vr RAT não retido</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="14"/>
+                                      <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vrSenarNRet">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Vr Senar não retido</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="14"/>
+                                      <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vrCPCalcPR">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>CP Calc Prod Rural</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="14"/>
+                                      <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vrRatDescPR">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da GILRAT incidente sobre a aquisição de produção rural de produtor rural pessoa física.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="14"/>
+                                      <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vrRatCalcPR">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor calculado do RAT devido pelo Produtor Rural.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="14"/>
+                                      <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vrSenarDesc">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da contribuição destinada ao SENAR</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="14"/>
+                                      <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vrSenarCalc">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor calculado da contribuição devida pelo produtor rural ao Senar.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="14"/>
+                                      <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="basesComerc" minOccurs="0" maxOccurs="4">
+                            <xs:annotation>
+                              <xs:documentation>Informações de bases de cálculo relativas à comercialização da produção rural da Pessoa Física.
+Informações desse grupo conforme informado pelo contribuinte em S-1260.</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="indComerc">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Indicativo de Comercialização</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:byte">
+                                      <xs:pattern value="\d"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vrBcComPR">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>BC CP PR</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="14"/>
+                                      <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vrCPSusp" minOccurs="0">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da Contribuição Previdenciária com exigibilidade suspensa.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="14"/>
+                                      <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vrRatSusp" minOccurs="0">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da contribuição para Gilrat com exigibilidade suspensa.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="14"/>
+                                      <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vrSenarSusp" minOccurs="0">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor da contribuição para o Senar com exigibilidade suspensa.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="14"/>
+                                      <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="infoCREstab" minOccurs="0" maxOccurs="99">
+                            <xs:annotation>
+                              <xs:documentation>Informações das contribuições sociais devidas à Previdência Social e Outras Entidades e Fundos, consolidadas por estabelecimento e por código de Receita - CR.</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="tpCR">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Código de Receita - CR.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:integer">
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vrCR">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Valor relativo ao crédito tributário - CT apurado.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="14"/>
+                                      <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="vrSuspCR">
+                                  <xs:simpleType>
+                                    <xs:annotation>
+                                      <xs:documentation>Vr Suspenso relativo ao CR.</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:decimal">
+                                      <xs:totalDigits value="14"/>
+                                      <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="infoCRContrib" minOccurs="0" maxOccurs="99">
+                      <xs:annotation>
+                        <xs:documentation>Informações consolidadas das contribuições sociais devidas à Previdência Social e Outras Entidades e Fundos, por código de Receita - CR.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="tpCR">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Código de Receita - CR.</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:integer">
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="vrCR">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Valor relativo ao crédito tributário - CT apurado.</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:decimal">
+                                <xs:totalDigits value="14"/>
+                                <xs:fractionDigits value="2"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="vrCRSusp">
+                            <xs:simpleType>
+                              <xs:annotation>
+                                <xs:documentation>Valor do Crédito Tributário com exigibilidade suspensa.</xs:documentation>
+                              </xs:annotation>
+                              <xs:restriction base="xs:decimal">
+                                <xs:totalDigits value="14"/>
+                                <xs:fractionDigits value="2"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Id" type="xs:ID" use="required"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="TEmpregador">
+    <xs:sequence>
+      <xs:element name="tpInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Tipo de Inscrição, conforme tabela 5.</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Número de Inscrição</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d{8,15}"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

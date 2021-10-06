@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.esocial.gov.br/schema/evt/evtToxic/v02_05_00" targetNamespace="http://www.esocial.gov.br/schema/evt/evtToxic/v02_05_00" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd"/>
+  <xs:element name="eSocial">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="evtToxic">
+          <xs:annotation>
+            <xs:documentation>Evento Exame Toxicológico do Motorista Profissional</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ideEvento" type="TIdeEveTrab">
+                <xs:annotation>
+                  <xs:documentation>Informações de Identificação do Evento</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="ideEmpregador" type="TEmpregador">
+                <xs:annotation>
+                  <xs:documentation>Informações de identificação do empregador</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="ideVinculo" type="TIdeVinculoEstag">
+                <xs:annotation>
+                  <xs:documentation>Informações de Identificação do Trabalhador e do Vínculo</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="toxicologico">
+                <xs:annotation>
+                  <xs:documentation>Informações do exame toxicológico do motorista profissional</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="dtExame">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Data Exame</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:date">
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="cnpjLab" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>CNPJ Laboratório</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:pattern value="\d{14}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="codSeqExame" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Código do exame toxicológico</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:pattern value="\w{11}"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="nmMed" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Nome do médico</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="2"/>
+                          <xs:maxLength value="70"/>
+                          <xs:whiteSpace value="preserve"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="nrCRM" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>CRM do Médico</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1"/>
+                          <xs:maxLength value="8"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="ufCRM" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>UF CRM</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="AC"/>
+                          <xs:enumeration value="AL"/>
+                          <xs:enumeration value="AP"/>
+                          <xs:enumeration value="AM"/>
+                          <xs:enumeration value="BA"/>
+                          <xs:enumeration value="CE"/>
+                          <xs:enumeration value="DF"/>
+                          <xs:enumeration value="ES"/>
+                          <xs:enumeration value="GO"/>
+                          <xs:enumeration value="MA"/>
+                          <xs:enumeration value="MT"/>
+                          <xs:enumeration value="MS"/>
+                          <xs:enumeration value="MG"/>
+                          <xs:enumeration value="PA"/>
+                          <xs:enumeration value="PB"/>
+                          <xs:enumeration value="PR"/>
+                          <xs:enumeration value="PE"/>
+                          <xs:enumeration value="PI"/>
+                          <xs:enumeration value="RJ"/>
+                          <xs:enumeration value="RN"/>
+                          <xs:enumeration value="RS"/>
+                          <xs:enumeration value="RO"/>
+                          <xs:enumeration value="RR"/>
+                          <xs:enumeration value="SC"/>
+                          <xs:enumeration value="SP"/>
+                          <xs:enumeration value="SE"/>
+                          <xs:enumeration value="TO"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="indRecusa">
+                      <xs:simpleType>
+                        <xs:annotation>
+                          <xs:documentation>Indicar recusa à realização de exame toxicológico</xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="xs:string">
+                          <xs:pattern value="[N|S]"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Id" type="xs:ID" use="required"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="ds:Signature"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="TIdeEveTrab">
+    <xs:annotation>
+      <xs:documentation>Identificação do evento</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="indRetif">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Indicativo de Retificação</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrRecibo" minOccurs="0">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Número do recibo do arquivo a ser retificado</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="40"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="tpAmb">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Tipo de ambiente</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="procEmi">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Processo de emissão do evento</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="verProc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Versão do processo de emissão do evento</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="20"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TEmpregador">
+    <xs:sequence>
+      <xs:element name="tpInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Tipo de Inscrição, conforme Tabela 05</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:byte">
+            <xs:pattern value="\d"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nrInsc">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Número de Inscrição</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d{8,14}"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TIdeVinculoEstag">
+    <xs:annotation>
+      <xs:documentation>Informacoes do Vínculo trabalhista e estagiário</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="cpfTrab">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>CPF do trabalhador</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:length value="11"/>
+            <xs:pattern value="\d{11}"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="nisTrab" minOccurs="0">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>NIS</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="11"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="matricula" minOccurs="0">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Matricula</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="30"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="codCateg" minOccurs="0">
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:documentation>Código da Categoria</xs:documentation>
+          </xs:annotation>
+          <xs:restriction base="xs:integer">
+            <xs:pattern value="\d{3}"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

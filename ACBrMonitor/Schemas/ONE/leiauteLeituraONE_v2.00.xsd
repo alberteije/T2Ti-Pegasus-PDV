@@ -1,0 +1,749 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 (http://www.altova.com) by sas.softwares@procergs.rs.gov.br (PROCERGS) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/one" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" targetNamespace="http://www.portalfiscal.inf.br/one" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="tiposGeralONE_v2.00.xsd"/>
+	<xs:simpleType name="TVersao">
+		<xs:annotation>
+			<xs:documentation> Tipo Versão</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="2\.00"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="TRecepLeitura">
+		<xs:annotation>
+			<xs:documentation>Schema XML de validação da área de dados da mensagem de recepção leitura (todos tipos de operadores)</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tpAmb" type="TAmb">
+				<xs:annotation>
+					<xs:documentation>Identificação do Ambiente:  1 - Produção  2 - Homologação</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="verAplic" type="TVerAplic">
+				<xs:annotation>
+					<xs:documentation>Versão do Aplicativo solicitante</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tpTransm">
+				<xs:annotation>
+					<xs:documentation>Tipo de Transmissão: N – Normal; R – Retransmissão; A - Atraso Processamento</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:whiteSpace value="preserve"/>
+						<xs:enumeration value="N"/>
+						<xs:enumeration value="R"/>
+						<xs:enumeration value="A"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="dhTransm" type="TDateTimeUTC">
+				<xs:annotation>
+					<xs:documentation>Data e hora da transmissão da leitura no formato AAAA-MM-DDTHH:MM:SS TZD</xs:documentation>
+					<xs:documentation>Formato AAAA-MM-DDTHH:MM:DD</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="infLeitura" type="TinfLeitura">
+				<xs:annotation>
+					<xs:documentation>Informações da leitura</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="versao" type="TVersao" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="TDistLeitura">
+		<xs:annotation>
+			<xs:documentation>Schema XML de validação da área de dados da mensagem de distribuição leitura</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tpAmb" type="TAmb">
+				<xs:annotation>
+					<xs:documentation>Identificação do Ambiente:  1 - Produção  2 - Homologação</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="verAplic" type="TVerAplic">
+				<xs:annotation>
+					<xs:documentation>Versão do Aplicativo solicitante</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tpDist">
+				<xs:annotation>
+					<xs:documentation>Informa o tipo de distribuição:
+1- Distribuição por UF do MDF-e
+
+2- Distribuição por Equipamento
+
+3- Distribuição por Operador
+
+4- Distribuição por UF de captura </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:unsignedInt">
+						<xs:enumeration value="1"/>
+						<xs:enumeration value="2"/>
+						<xs:enumeration value="3"/>
+						<xs:enumeration value="4"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="ultNSU" type="TNSU">
+				<xs:annotation>
+					<xs:documentation>Ultimo NSU recebido, caso informado zero, o ambiente do ONE tentará localizar o primeiro NSU existente para o critério apresentado</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NSUFin" type="TNSU" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>NSU Final que poderá ser retornado nesta requisição.
+Campo opcional, se não for informado o serviço de distribuição irá retornar os próximos 50 NSU de busca disponíveis a partir do ultNSU informado
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice>
+				<xs:sequence>
+					<xs:element name="CNPJOper" type="TCnpj">
+						<xs:annotation>
+							<xs:documentation>CNPJ do Operador Credenciado, deve ser informado para tpDist=2 e 3</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="cEQP" type="TNSU" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Identificador do equipameno, deve ser informado para tpDist=2</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:element name="cUF" type="TCodUfIBGE">
+					<xs:annotation>
+						<xs:documentation>Códiigo da UF deve ser informado para tpDist = 1 e 4</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="indCompRet" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indicador para retornar o conteúdo compactado</xs:documentation>
+					<xs:documentation>0 - Retorna o lote apenas com dados de controle de cada DF-e (Substitui sincronismo de chaves)
+1 - Retorna o lote completo, contendo o proc do DF-e compactado.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:unsignedInt">
+						<xs:enumeration value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="indResumo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indicador para retornar o resumo da leitura sem a imagem</xs:documentation>
+					<xs:documentation>0 - Retorna o lote apenas com dados de controle de cada DF-e (Substitui sincronismo de chaves)
+1 - Retorna o lote completo, contendo o proc do DF-e compactado.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:unsignedInt">
+						<xs:enumeration value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="versao" type="TVersao" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="TConsFoto">
+		<xs:annotation>
+			<xs:documentation>Schema XML de validação da área de dados da mensagem de consulta foto</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tpAmb" type="TAmb">
+				<xs:annotation>
+					<xs:documentation>Identificação do Ambiente:  1 - Produção  2 - Homologação</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="verAplic" type="TVerAplic">
+				<xs:annotation>
+					<xs:documentation>Versão do Aplicativo solicitante</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NSULeitura" type="TNSU">
+				<xs:annotation>
+					<xs:documentation>NSU geral da leitura na base de dados do ONE</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="versao" type="TVersao" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="TRetRecepLeitura">
+		<xs:annotation>
+			<xs:documentation>Schema XML de validação de retorno da mensagem de recepção leitura (todos tipos de operadores)</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tpAmb" type="TAmb">
+				<xs:annotation>
+					<xs:documentation>Identificação do Ambiente:  1 - Produção  2 - Homologação</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="verAplic" type="TVerAplic">
+				<xs:annotation>
+					<xs:documentation>Versão do Aplicativo </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cStat" type="TStat">
+				<xs:annotation>
+					<xs:documentation>código do status da resposta</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="xMotivo" type="TMotivo">
+				<xs:annotation>
+					<xs:documentation>descrição literal do status</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dhResp" type="TDateTimeUTC">
+				<xs:annotation>
+					<xs:documentation>Data e hora da resposta no formato AAAA-MM-DDThh:mm:ss TZD</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NSU" type="TNSU" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Número Sequencial Único da operação</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="indMDFeAberto" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indicad se existe pelo menos um MDFe em situação autorizado e não encerrado para a placa e dhPass indicados na leitura</xs:documentation>
+					<xs:documentation>Informar valor 1 quando for Globalizado e não informar a tag quando não tratar de CT-e Globalizado</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="versao" type="TVersao" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="TRetDistLeitura">
+		<xs:annotation>
+			<xs:documentation>Schema XML de validação de retorno da mensagem de distribuição leitura</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tpAmb" type="TAmb">
+				<xs:annotation>
+					<xs:documentation>Identificação do Ambiente:  1 - Produção  2 - Homologação</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="verAplic" type="TVerAplic">
+				<xs:annotation>
+					<xs:documentation>Versão do Aplicativo</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cStat" type="TStat">
+				<xs:annotation>
+					<xs:documentation>código do status da resposta</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="xMotivo" type="TMotivo">
+				<xs:annotation>
+					<xs:documentation>descrição literal do status</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dhResp" type="TDateTimeUTC">
+				<xs:annotation>
+					<xs:documentation>Data e hora da resposta no formato AAAA-MM-DDThh:mm:ss TZD</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ultNSU" type="TNSU" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Último NSU pesquisado, deve ser informado pelo WS,
+sempre que realizar alguma pesquisa para que o
+solicitante possa atualizar o último NSU pesquisado.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ultNSUONE" type="TNSU" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>último NSU na base de dados para o tpDist informado</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="loteDistLeitura" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Lote de leituras retornadas na pesquisa</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence maxOccurs="50">
+						<xs:choice>
+							<xs:element name="leitura" type="TLeitura">
+								<xs:annotation>
+									<xs:documentation>Leitura do ONE</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="leituraResumo">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="infLeitura">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="tpTransm">
+														<xs:annotation>
+															<xs:documentation>Tipo de Transmissão: N – Normal; R – Retransmissão; A - Atraso Processamento</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:whiteSpace value="preserve"/>
+																<xs:enumeration value="N"/>
+																<xs:enumeration value="R"/>
+																<xs:enumeration value="A"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="dhTransm" type="TDateTimeUTC">
+														<xs:annotation>
+															<xs:documentation>Data e hora da transmissão da leitura no formato AAAA-MM-DDTHH:MM:SS TZD</xs:documentation>
+															<xs:documentation>Formato AAAA-MM-DDTHH:MM:DD</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="cUF" type="TCodUfIBGE">
+														<xs:annotation>
+															<xs:documentation>Código da UF da leitura</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="dhPass" type="TDateTimeUTC">
+														<xs:annotation>
+															<xs:documentation>Data e hora da captura da leitura no formato AAAA-MM-DDTHH:MM:SS TZD</xs:documentation>
+															<xs:documentation>Formato AAAA-MM-DDTHH:MM:DD</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="CNPJOper" type="TCnpj">
+														<xs:annotation>
+															<xs:documentation>CNPJ do Operador Credenciado</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="xOper" type="TString">
+														<xs:annotation>
+															<xs:documentation>Nome Operador</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="tpLeitura">
+														<xs:annotation>
+															<xs:documentation>Tipo da leitura:
+1-Leitura SLD
+2-Leitura OCR</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="TString">
+																<xs:enumeration value="1"/>
+																<xs:enumeration value="2"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="cEQP" type="TNSU">
+														<xs:annotation>
+															<xs:documentation>Identificador do equipamento </xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="xEQP" type="TString">
+														<xs:annotation>
+															<xs:documentation>Nome amigável do Equipamento</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="latitude" type="TLatitude">
+														<xs:annotation>
+															<xs:documentation>Latitude do ponto geográfico da localização da captura</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="longitude" type="TLongitude">
+														<xs:annotation>
+															<xs:documentation>Latitude do ponto geográfico da localização da captura</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="tpSentido">
+														<xs:annotation>
+															<xs:documentation>Sentido da leitura na via (em relação à UF / município onde está instalado):
+E-Entrada, S-Saida, I - Indeterminado</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:enumeration value="E"/>
+																<xs:enumeration value="S"/>
+																<xs:enumeration value="I"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="placa" type="TPlaca">
+														<xs:annotation>
+															<xs:documentation>Placa do veículo</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="tpVeiculo" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Tipo do veículo:
+1 - Carga
+2 - Passageiros
+3 - Passeio</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="TString">
+																<xs:length value="1"/>
+																<xs:enumeration value="1"/>
+																<xs:enumeration value="2"/>
+																<xs:enumeration value="3"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="velocidade" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Velocidade do veículo em KM/h</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="TDec_0302"/>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="pesoBrutoTotal" type="TDec_1104Opc" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Peso Bruto Total aferido no registro de pesagem</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="nroEixos" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Número de Eixos</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:whiteSpace value="preserve"/>
+																<xs:enumeration value="0"/>
+																<xs:enumeration value="1"/>
+																<xs:enumeration value="2"/>
+																<xs:enumeration value="3"/>
+																<xs:enumeration value="4"/>
+																<xs:enumeration value="5"/>
+																<xs:enumeration value="6"/>
+																<xs:enumeration value="7"/>
+																<xs:enumeration value="8"/>
+																<xs:enumeration value="9"/>
+																<xs:enumeration value="10"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="NSULeitura" type="TNSU">
+														<xs:annotation>
+															<xs:documentation>NSU geral da leitura na base de dados do ONE</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="infMDFe" minOccurs="0" maxOccurs="unbounded">
+											<xs:annotation>
+												<xs:documentation>Informações dos MDF-e transportados no momento da passagem</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="chMDFe" type="TChMDFe">
+														<xs:annotation>
+															<xs:documentation>Chave de Acesso do MDF-e</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="NSU" type="TNSU" use="required">
+										<xs:annotation>
+											<xs:documentation>NSU da leitura conforme critério de pesquisa utilizado</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="leituraCompacta">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="leituraComp" type="xs:base64Binary">
+											<xs:annotation>
+												<xs:documentation>Leitura Compactada (GZip)</xs:documentation>
+												<xs:documentation>Preenchido somente se órgão solicitar o XML indicando a tag indRetXML do pedido de distribuição.</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="infMDFe" minOccurs="0" maxOccurs="unbounded">
+											<xs:annotation>
+												<xs:documentation>Informações dos MDF-e transportados no momento da passagem</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="chMDFe" type="TChMDFe">
+														<xs:annotation>
+															<xs:documentation>Chave de Acesso do MDF-e</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="NSU" type="TNSU" use="required">
+										<xs:annotation>
+											<xs:documentation>NSU da leitura conforme critério de pesquisa utilizado</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+						</xs:choice>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="versao" type="TVersao" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="TRetConsFoto">
+		<xs:annotation>
+			<xs:documentation>Schema XML de validação de retorno da mensagem de Consulta Foto</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tpAmb" type="TAmb">
+				<xs:annotation>
+					<xs:documentation>Identificação do Ambiente:  1 - Produção  2 - Homologação</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="verAplic" type="TVerAplic">
+				<xs:annotation>
+					<xs:documentation>Versão do Aplicativo</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cStat" type="TStat">
+				<xs:annotation>
+					<xs:documentation>código do status da resposta</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="xMotivo" type="TMotivo">
+				<xs:annotation>
+					<xs:documentation>descrição literal do status</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dhResp" type="TDateTimeUTC">
+				<xs:annotation>
+					<xs:documentation>Data e hora da resposta no formato AAAA-MM-DDThh:mm:ss TZD</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="foto" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Foto capturada pelo equipamento</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:base64Binary">
+						<xs:minLength value="10"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="versao" type="TVersao" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="TinfLeitura">
+		<xs:sequence>
+			<xs:element name="cUF" type="TCodUfIBGE">
+				<xs:annotation>
+					<xs:documentation>Código da UF da leitura</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dhPass" type="TDateTimeUTC">
+				<xs:annotation>
+					<xs:documentation>Data e hora da captura da leitura no formato AAAA-MM-DDTHH:MM:SS TZD</xs:documentation>
+					<xs:documentation>Formato AAAA-MM-DDTHH:MM:DD</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CNPJOper" type="TCnpj">
+				<xs:annotation>
+					<xs:documentation>CNPJ do Operador Credenciado</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cEQP" type="TNSU">
+				<xs:annotation>
+					<xs:documentation>Identificador do equipamento </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:sequence minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Quando informados esses dados a localização utilizada será a indicada na leitura, desconsiderando a cadastrada no equipamento</xs:documentation>
+				</xs:annotation>
+				<xs:element name="latitude" type="TLatitude">
+					<xs:annotation>
+						<xs:documentation>Latitude do ponto geográfico da localização da captura</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="longitude" type="TLongitude">
+					<xs:annotation>
+						<xs:documentation>Latitude do ponto geográfico da localização da captura</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="tpSentido">
+					<xs:annotation>
+						<xs:documentation>Sentido da leitura na via (em relação à UF / município onde está instalado):
+E-Entrada, S-Saida, I - Indeterminado</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="E"/>
+							<xs:enumeration value="S"/>
+							<xs:enumeration value="I"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:sequence>
+			<xs:element name="placa" type="TPlaca">
+				<xs:annotation>
+					<xs:documentation>Placa do veículo</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tpVeiculo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Tipo do veículo:
+1 - Carga
+2 - Passageiros
+3 - Passeio</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="TString">
+						<xs:length value="1"/>
+						<xs:enumeration value="1"/>
+						<xs:enumeration value="2"/>
+						<xs:enumeration value="3"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="velocidade" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Velocidade do veículo em KM/h</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="TDec_0302"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="foto" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Foto capturada pelo equipamento</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:base64Binary">
+						<xs:minLength value="10"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="indiceConfianca" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indice de confiança da identificação do OCR (em percentual)</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:whiteSpace value="preserve"/>
+						<xs:pattern value="100|[0]?[0-9]?[0-9]"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="pesoBrutoTotal" type="TDec_1104Opc" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Peso Bruto Total aferido no registro de pesagem</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nroEixos" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Número de Eixos</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:whiteSpace value="preserve"/>
+						<xs:enumeration value="0"/>
+						<xs:enumeration value="1"/>
+						<xs:enumeration value="2"/>
+						<xs:enumeration value="3"/>
+						<xs:enumeration value="4"/>
+						<xs:enumeration value="5"/>
+						<xs:enumeration value="6"/>
+						<xs:enumeration value="7"/>
+						<xs:enumeration value="8"/>
+						<xs:enumeration value="9"/>
+						<xs:enumeration value="10"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TLeitura">
+		<xs:sequence>
+			<xs:any processContents="skip">
+				<xs:annotation>
+					<xs:documentation>Estrutura genérica, receberá o XML da leitura retornada na pesquisa</xs:documentation>
+				</xs:annotation>
+			</xs:any>
+			<xs:element name="infMDFe" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Informações dos MDF-e transportados no momento da passagem</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="chMDFe" type="TChMDFe">
+							<xs:annotation>
+								<xs:documentation>Chave de Acesso do MDF-e</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="infCompl">
+				<xs:annotation>
+					<xs:documentation>Informações complementares da leitura </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="tpLeitura">
+							<xs:annotation>
+								<xs:documentation>Tipo da leitura:
+1-Leitura SLD
+2-Leitura OCR</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="TString">
+									<xs:enumeration value="1"/>
+									<xs:enumeration value="2"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="xEQP" type="TString">
+							<xs:annotation>
+								<xs:documentation>Nome amigável do Equipamento</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="latitude" type="TLatitude">
+							<xs:annotation>
+								<xs:documentation>Latitude do ponto geográfico da localização da captura</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="longitude" type="TLongitude">
+							<xs:annotation>
+								<xs:documentation>Latitude do ponto geográfico da localização da captura</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="placa" type="TPlaca">
+							<xs:annotation>
+								<xs:documentation>Placa do veículo </xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="tpSentido">
+							<xs:annotation>
+								<xs:documentation>Sentido na via:
+E-Entrada, S-Saida, I - Indeterminado</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="E"/>
+									<xs:enumeration value="S"/>
+									<xs:enumeration value="I"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="NSULeitura" type="TNSU">
+							<xs:annotation>
+								<xs:documentation>NSU geral da leitura na base de dados do ONE</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="NSU" type="TNSU" use="required">
+			<xs:annotation>
+				<xs:documentation>NSU da leitura conforme critério de pesquisa utilizado</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>
