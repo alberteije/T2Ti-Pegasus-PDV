@@ -13,7 +13,10 @@
 Para compreender como implementar o Pegasus PDV com emissão de recibo para MEI e com emissão de documentos fiscais (NFC-e, SAT e MFE), faça o Curso T2Ti Pegasus PDV disponível no seguinte link <a href="http://t2ti.com/curso/video/pegasus-pdv-5000/?utm_source=GITHUB">http://t2ti.com/curso/video/pegasus-pdv-5000/</a>. O Pegasus PDV já está em produção em fase beta. Você pode baixar os fontes e alterar de acordo com sua vontade e pode também acompanhar o andamento do projeto no <a href="https://trello.com/b/xnlmJ1wc/t2ti-pegasus-pdv">Quadro Trello Público</a> criado para este fim. 	
                     <br /> <br /> 
 	Clique na imagem acima para acessar a página do Curso Pegasus PDV que contém <b>153 horas em vídeo aulas</b>. Após fazer este curso você estará apto para contruir o seu próprio PDV com a emissão de recibo, NFC-e, SAT ou MFE. Além disso, compreenderá plenamente como utilizar o código fonte aqui disponível.
-<hr />
+			<a href="http://t2ti.com/curso/video/pegasus-pdv-5000/?utm_source=GITHUB">
+			<img src="http://t2ti.com/images/erp3/pegasus-consome-acbr-monitor.jpg" />
+			</a>
+	<hr />
                     <h3>Características do Projeto</h3>
 Veja abaixo uma lista de características do projeto. Provavelmente existe alguma coisa que você, desenvolvedor, está procurando para o seu projeto e vai aproveitar daqui. É possível também que você já inicie seu negócio com essa aplicação. Desejamos tudo de bom e muito sucesso para você!
 	<br />
