@@ -14,7 +14,7 @@ Para compreender como implementar o Pegasus PDV com emissão de recibo para MEI 
                     <br /> <br /> 
 	Clique na imagem acima para acessar a página do Curso Pegasus PDV que contém <b>153 horas em vídeo aulas</b>. Após fazer este curso você estará apto para contruir o seu próprio PDV com a emissão de recibo, NFC-e, SAT ou MFE. Além disso, compreenderá plenamente como utilizar o código fonte aqui disponível.
 			<a href="http://t2ti.com/curso/video/pegasus-pdv-5000/?utm_source=GITHUB">
-			<img src="http://t2ti.com/images/erp3/pegasus-consome-acbr-monitor.jpg" />
+				<center><img src="http://t2ti.com/images/erp3/pegasus-consome-acbr-monitor.jpg" /></center>
 			</a>
 	<hr />
                     <h3>Características do Projeto</h3>
