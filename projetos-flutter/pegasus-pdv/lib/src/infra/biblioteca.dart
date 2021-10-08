@@ -281,6 +281,15 @@ class Biblioteca {
     );
   }
 
+  static Future<bool> hasNetwork() async {
+    try {
+      final result = await InternetAddress.lookup('t2ti.com');
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } on SocketException catch (_) {
+      return false;
+    }
+  }
+
   static int retornarCodigoIbgeUf(String uf) {
     int codigoUf = 0;
     switch (uf) {

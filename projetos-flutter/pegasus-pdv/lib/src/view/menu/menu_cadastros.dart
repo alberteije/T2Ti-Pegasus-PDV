@@ -212,6 +212,12 @@ class MenuCadastros extends StatelessWidget {
                         label: "Grupo Tributário",
                         circleColor: Colors.orange,
                         rota: "/tributGrupoTributarioLista"),
+                    terceiroBotao: null,
+                    quartoBotao: null,
+                  ),
+                  MenuInternoBotoes(
+                    primeiroBotao: null,
+                    segundoBotao: null,
                     terceiroBotao: BotaoMenu(
                         icon: FontAwesomeIcons.truckLoading,
                         label: "Configura Tributação",

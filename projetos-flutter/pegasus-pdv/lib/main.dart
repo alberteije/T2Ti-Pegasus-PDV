@@ -53,7 +53,7 @@ void main() async {
     localizationOptions: [
       LocalizationOptions.buildDefaultPortugueseOptions(),
     ],
-    customParameters: {"versao-atual": Constantes.versaoAtual}, 
+    customParameters: {"versao-atual": Constantes.versaoApp}, 
   );
 
   ///configuração para tratar erros em modo de release (produção)
@@ -74,7 +74,7 @@ void main() async {
     localizationOptions: [
       LocalizationOptions.buildDefaultPortugueseOptions(),
     ],
-    customParameters: {"versao-atual": Constantes.versaoAtual}, 
+    customParameters: {"versao-atual": Constantes.versaoApp}, 
   );
 
   ///Inicia o Catcher e então inicia a aplicação. 

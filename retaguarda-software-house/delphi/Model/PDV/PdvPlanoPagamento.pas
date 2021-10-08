@@ -50,13 +50,13 @@ type
     FIdPdvTipoPlano: Integer;
     FDataSolicitacao: TDateTime;
     FDataPagamento: TDateTime;
+    FDataPlanoExpira: TDateTime;
     FPlano: string;
     FValor: Extended;
     FStatusPagamento: string;
     FCodigoTransacao: string;
     FMetodoPagamento: string;
     FCodigoTipoPagamento: string;
-    FDataPlanoExpira: TDateTime;
     FEmailPagamento: string;
 
   public

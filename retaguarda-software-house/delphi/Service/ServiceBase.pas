@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, UDataModuleConexao, MVCFramework.Serializer.Commons,
-  FireDAC.Comp.Client, Rtti;
+  FireDAC.Comp.Client, Rtti, MVCFramework.Logger;
 
 type
 
@@ -46,6 +46,7 @@ begin
     Query := TFDQuery.Create(nil);
     Query.Connection := GetDataModuleConexao.Conexao;
     Query.Open(ASQL);
+    Log(ASQL);
     Result := Query;
   except
     on E: Exception do
@@ -135,7 +136,7 @@ begin
     begin
       ConsultaSQL := ConsultaSQL + ' RETURNING ID ';
     end;
-
+    Log(ConsultaSQL);
     Query := TFDQuery.Create(nil);
     try
       Query.Connection := GetDataModuleConexao.Conexao;
@@ -216,6 +217,13 @@ begin
                 else
                   CamposSQL := CamposSQL + (Atributo as MVCColumnAttribute).FieldName + ' = ' + QuotedStr(FormatFloat('0.000000', Propriedade.GetValue(AObjeto).AsExtended)) + ',';
               end
+              else if Propriedade.GetValue(AObjeto).AsExtended = 0 then
+              begin
+                NomeTipo := LowerCase(Propriedade.PropertyType.Name);
+                if NomeTipo = 'tdatetime' then
+                  CamposSQL := CamposSQL + (Atributo as MVCColumnAttribute).FieldName + ' = ' + 'null' + ','; // adicionado em 07102021 para passar uma data para nulo se ela vier zerada na aplicação
+              end;
+
             end
 
             else if Propriedade.GetValue(AObjeto).ToString <> '' then
@@ -235,6 +243,7 @@ begin
     Delete(CamposSQL, Length(CamposSQL), 1);
 
     ConsultaSQL := ConsultaSQL + CamposSQL + FiltroSQL;
+    Log(ConsultaSQL);
 
     Query := TFDQuery.Create(nil);
     Query.Connection := GetDataModuleConexao.Conexao;
@@ -255,6 +264,7 @@ begin
     ConsultaSQL := 'DELETE FROM ' + ATabela;
     FiltroSQL := ' WHERE ID = ' + AId.ToString;
     ConsultaSQL := ConsultaSQL + FiltroSQL;
+    Log(ConsultaSQL);
 
     Query := TFDQuery.Create(nil);
     Query.Connection := GetDataModuleConexao.Conexao;
@@ -274,6 +284,7 @@ begin
     ConsultaSQL := 'DELETE FROM ' + ATabela;
     FiltroSQL := ' WHERE ' + AFiltro;
     ConsultaSQL := ConsultaSQL + FiltroSQL;
+    Log(ConsultaSQL);
 
     Query := TFDQuery.Create(nil);
     Query.Connection := GetDataModuleConexao.Conexao;
@@ -293,6 +304,7 @@ begin
     ConsultaSQL := 'DELETE FROM ' + ATabela;
     FiltroSQL := ' WHERE ' + ACampo + ' = ' + AId.ToString;
     ConsultaSQL := ConsultaSQL + FiltroSQL;
+    Log(ConsultaSQL);
 
     Query := TFDQuery.Create(nil);
     Query.Connection := GetDataModuleConexao.Conexao;

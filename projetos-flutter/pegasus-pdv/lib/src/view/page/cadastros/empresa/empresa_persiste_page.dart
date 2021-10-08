@@ -47,6 +47,7 @@ import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 import 'package:pegasus_pdv/src/model/cadastros/empresa_model.dart';
 import 'package:pegasus_pdv/src/service/service.dart';
+import 'package:pegasus_pdv/src/view/login/registro_page.dart';
 
 import 'package:pegasus_pdv/src/view/shared/dropdown_lista.dart';
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
@@ -189,19 +190,21 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                 padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
                                 child: TextFormField(
                                   focusNode: _foco,
-                                  validator: ValidaCampoFormulario.validarObrigatorio,
-                                  maxLength: 150,
-                                  maxLines: 1,
-                                  controller: _razaoSocialController,
+                                  maxLength: 18,
+                                  validator: ValidaCampoFormulario.validarObrigatorioCNPJ,
+                                  keyboardType: TextInputType.number,
+                                  controller: _cnpjController,
                                   decoration: getInputDecoration(
-                                    'Conteúdo para o campo Razao Social',
-                                    'Razao Social',
+                                    'Conteúdo para o campo CNPJ',
+                                    'CNPJ',
                                     true,
                                     paddingVertical: 18),
                                   onSaved: (String value) {
                                   },
-                                  onChanged: (text) {
-                                    Sessao.empresa = Sessao.empresa.copyWith(razaoSocial: text);
+                                  onChanged: (text) async {
+                                    if (_cnpjController.text.length == 18) {
+                                      await _atualizarDadosPeloCnpj();
+                                    }
                                   },
                                 ),
                               ),
@@ -275,21 +278,19 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                               child: Padding(
                                 padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
                                 child: TextFormField(
-                                  maxLength: 18,
-                                  validator: ValidaCampoFormulario.validarObrigatorioCNPJ,
-                                  keyboardType: TextInputType.number,
-                                  controller: _cnpjController,
+                                  validator: ValidaCampoFormulario.validarObrigatorio,
+                                  maxLength: 150,
+                                  maxLines: 1,
+                                  controller: _razaoSocialController,
                                   decoration: getInputDecoration(
-                                    'Conteúdo para o campo CNPJ',
-                                    'CNPJ',
+                                    'Conteúdo para o campo Razao Social',
+                                    'Razao Social',
                                     true,
                                     paddingVertical: 15),
                                   onSaved: (String value) {
                                   },
-                                  onChanged: (text) async {
-                                    if (_cnpjController.text.length == 18) {
-                                      await _atualizarDadosPeloCnpj();
-                                    }
+                                  onChanged: (text) {
+                                    Sessao.empresa = Sessao.empresa.copyWith(razaoSocial: text);
                                   },
                                 ),
                               ),
@@ -696,7 +697,32 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             ),
                           ],
                         ),
-                        Divider(color: Colors.white,),
+                        Visibility(
+                          visible: Sessao.empresa.registrado ?? false,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 200,
+                                child: getBotaoGenericoPdv(
+                                  descricao: 'Alterar Opção MEI',
+                                  cor: Colors.green, 
+                                  onPressed: () async {
+                                    Navigator.of(context).pop();
+                                      showDialog(
+                                        context: context, 
+                                        builder: (BuildContext context){
+                                          return RegistroPage(title: 'Registro do Usuário');
+                                        })
+                                        .then((_) {
+                                        });
+                                  }
+                                ),
+                              ), 
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 50.0),
                       ],
                     ),
                   ),
@@ -712,27 +738,32 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
   Future _atualizarDadosPeloCnpj() async {
     EmpresaService servico = EmpresaService();
     final empresaModel = await servico.consultarObjetoPublico(Biblioteca.removerMascara(_cnpjController.text));
-    Sessao.empresa = 
-      Sessao.empresa.copyWith(
-        cnpj: Biblioteca.removerMascara(empresaModel.cnpj),
-        nomeFantasia: empresaModel.fantasia,
-        razaoSocial: empresaModel.nome,
-        dataConstituicao: DateTime.tryParse(empresaModel.abertura),
-        email: empresaModel.email,
-        cep: empresaModel.cep.replaceAll('.', ''),
-        uf: empresaModel.uf,
-        logradouro: empresaModel.logradouro,
-        numero: empresaModel.numero,
-        bairro: empresaModel.bairro,
-        complemento: empresaModel.complemento,
-        cidade: empresaModel.municipio,
-        tipo: empresaModel.tipo == 'MATRIZ' ? 'M' : 'F',
-        naturezaJuridica: empresaModel.naturezaJuridica,
-      );
-    await Sessao.db.empresaDao.alterar(Sessao.empresa, true);
-    Sessao.empresa = await Sessao.db.empresaDao.consultarObjeto(1);
-    setState(() {
-    });
+
+    if (empresaModel != null) {
+      Sessao.empresa = 
+        Sessao.empresa.copyWith(
+          cnpj: Biblioteca.removerMascara(empresaModel.cnpj),
+          nomeFantasia: empresaModel.fantasia,
+          razaoSocial: empresaModel.nome,
+          dataConstituicao: DateTime.tryParse(empresaModel.abertura),
+          // email: empresaModel.email,
+          cep: empresaModel.cep.replaceAll('.', ''),
+          uf: empresaModel.uf,
+          logradouro: empresaModel.logradouro,
+          numero: empresaModel.numero,
+          bairro: empresaModel.bairro,
+          complemento: empresaModel.complemento,
+          cidade: empresaModel.municipio,
+          tipo: empresaModel.tipo == 'MATRIZ' ? 'M' : 'F',
+          naturezaJuridica: empresaModel.naturezaJuridica,
+        );
+      await Sessao.db.empresaDao.alterar(Sessao.empresa, true);
+      Sessao.empresa = await Sessao.db.empresaDao.consultarObjeto(1);
+      setState(() {
+      });
+    } else {
+      showInSnackBar('Ocorreu um problema ao tentar consultar os dados da empresa no Servidor.', context, corFundo: Colors.red);
+    }
   }
 
   Future<void> _salvar() async {

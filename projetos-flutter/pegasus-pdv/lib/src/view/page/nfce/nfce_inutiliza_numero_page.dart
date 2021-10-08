@@ -158,12 +158,12 @@ class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
                   ),
                   Text(
                     _titulo,
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Biblioteca.isTelaPequena(context) ? Theme.of(context).textTheme.headline6 : Theme.of(context).textTheme.headline4,
                   ),
                   SizedBox(
                     height: 5.0,
                   ),
-                  Text(_subtitulo),
+                  Text(_subtitulo, textAlign: TextAlign.center,),
                   Divider(
                     indent: 10,
                     endIndent: 10,

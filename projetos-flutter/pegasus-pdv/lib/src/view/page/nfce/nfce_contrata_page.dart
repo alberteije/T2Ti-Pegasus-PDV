@@ -67,6 +67,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
 
   String _mensagemInformativa = 'Selecione um plano e aguarde o carregamento do PagSeguro.';
   bool _podeContratar = false;
+  bool _clicouBotaoVerificarPlano = false;
   final _codigoTransacaoController = TextEditingController();
 
   @override
@@ -153,7 +154,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
                   ),
                   Text(
                     'Contratação da NFC-e',
-                    style: Theme.of(context).textTheme.headline4,
+                    style: Biblioteca.isTelaPequena(context) ? Theme.of(context).textTheme.headline6 : Theme.of(context).textTheme.headline4,
                   ),
                   SizedBox(
                     height: 5.0,
@@ -161,7 +162,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
                   BootstrapContainer(                    
                     fluid: true,
                     decoration: BoxDecoration(color: Colors.white),
-                    padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
+                    padding: Biblioteca.isTelaPequena(context) ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                     children: <Widget>[			  			  
                       BootstrapRow(
                         height: 60,
@@ -188,6 +189,18 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
                                             color: Colors.black,
                                             fontWeight: FontWeight.w600,
                                             fontSize: Biblioteca.isTelaPequena(context) ? 13.0 : 15.0),
+                                          ),
+                                          getBotaoGenericoPdv(
+                                            descricao: Biblioteca.isTelaPequena(context) ? 'Checar' : 'Verificar se Foi Confirmado',
+                                            cor: Colors.green, 
+                                            onPressed: () async {
+                                              if (Sessao.nfcePlanoPagamento == null) {
+                                                _clicouBotaoVerificarPlano = true;
+                                                await _verificarPlano();
+                                              } else {
+                                                gerarDialogBoxInformacao(context, 'Seu plano está ativo.');
+                                              }
+                                            }
                                           ),
                                         ],
                                       ),
@@ -274,6 +287,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
                                           color: Colors.red, 
                                           fontStyle: FontStyle.italic
                                         ),
+                                        textAlign: TextAlign.center,
                                       ),
                                     ),
                                   ],
@@ -408,12 +422,20 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
               child: Icon(icone, color: Colors.white, size: 30.0),
             )),
           Padding(padding: EdgeInsets.only(bottom: 16.0)),
-          Text(descricao, style: TextStyle(color: Colors.black87)),
-          Text('R\$ ${Constantes.formatoDecimalValor.format(valor ?? 0)}', //valor
+          Text(descricao ?? '', style: 
+            TextStyle(
+              color: Colors.black87,
+              fontSize: Biblioteca.isTelaPequena(context) ? 12 : 14,
+            )
+          ),
+          Text(
+            Biblioteca.isTelaPequena(context) 
+            ? '${Constantes.formatoDecimalValor.format(valor ?? 0)}' //valor
+            : 'R\$ ${Constantes.formatoDecimalValor.format(valor ?? 0)}', //valor            
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.w600,
-              fontSize: Biblioteca.isTelaPequena(context) ? 16.00 : 24.0)),
+              fontSize: Biblioteca.isTelaPequena(context) ? 16 : 24)),
         ]
       ),
     );
@@ -560,6 +582,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
         case '1' : 
           _mensagemInformativa = 'Status: aguardando pagamento. Realize o pagamento ou inicie uma nova compra.'; 
           _bloquearDispositivoParaNfce(nfcePlanoPagamentoModel); 
+          _podeContratar = true;
           break;
         case '2' : 
           _mensagemInformativa = 'Status: compra com cartão - em análise.'; 
@@ -575,13 +598,16 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
         case '6' : 
           _mensagemInformativa = 'Status: valor devolvido ao comprador.'; 
           _bloquearDispositivoParaNfce(nfcePlanoPagamentoModel); 
+          _podeContratar = true;
           break;
         case '7' : 
           _mensagemInformativa = 'Status: compra cancelada.'; 
+          _podeContratar = true;
           _bloquearDispositivoParaNfce(nfcePlanoPagamentoModel); 
           break;
         case '8' : 
           _mensagemInformativa = 'Status: valor devolvido ao comprador.'; 
+          _podeContratar = true;
           _bloquearDispositivoParaNfce(nfcePlanoPagamentoModel); 
           break;
         case '9' : 
@@ -591,8 +617,13 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
         default:
       }
     } else {
+      if (_clicouBotaoVerificarPlano) {
+        _mensagemInformativa = 'Pagamento não localizado. Se pagou com outro e-mail, use a opção abaixo para confirmar a transação.';
+      }
       _podeContratar = true;
     }
+    setState(() {
+    });      
   }
 
   void _liberarDispositivoParaNfce(NfcePlanoPagamentoModel nfcePlanoPagamentoModel) async {

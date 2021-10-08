@@ -45,7 +45,6 @@ class ServiceBase {
 
   // Servidor ERP
   static String _endpoint = Constantes.enderecoServidor + ':' + Constantes.portaServidor + Constantes.complementoEnderecoServidor;
-  // static String _endpoint = 'http://localhost:8086';
   get endpoint => _endpoint;
   static var _url = '';
   get url => _url;

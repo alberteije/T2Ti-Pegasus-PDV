@@ -191,7 +191,10 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
                 color: Colors.blue,
               ),
               key: GlobalKey(),
-              title: Text('Formato da Página: ' + _formatoPagina),
+              title: 
+                Biblioteca.isTelaPequena(context) 
+                ? Text('Formato Página: ' + _formatoPagina)
+                : Text('Formato da Página: ' + _formatoPagina),                             
               backgroundColor: Theme.of(context).accentColor.withOpacity(0.025),
               children: <Widget>[
                 ListTile(

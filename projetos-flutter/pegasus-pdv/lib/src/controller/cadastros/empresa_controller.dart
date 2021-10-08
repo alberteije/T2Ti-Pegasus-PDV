@@ -40,9 +40,9 @@ import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
 class EmpresaController {
 
   static void obrigarCadastroCnpj(BuildContext context) {
-    if (Sessao.empresa.cnpj == null) {
+    if (Sessao.empresa.cnpj == null || (Sessao.empresa.registrado == null || Sessao.empresa.registrado == false)) {
       Navigator.pushNamed(context, '/empresaPersiste',);
-      gerarDialogBoxInformacao(context, 'Por favor, informe o CNPJ da empresa');
+      gerarDialogBoxInformacao(context, 'Por favor, informe o CNPJ e demais dados da empresa');
     }
   }
 

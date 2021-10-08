@@ -40,7 +40,7 @@ interface
 uses
   Empresa,
   System.Classes, System.SysUtils, System.Generics.Collections, ServiceBase,
-  MVCFramework.DataSet.Utils;
+  MVCFramework.DataSet.Utils, MVCFramework.Logger;
 
 type
 
@@ -74,6 +74,7 @@ uses
 
 class function TEmpresaService.ConsultarLista: TObjectList<TEmpresa>;
 begin
+  Log('== TEmpresaService.ConsultarLista [BEGIN]');
   sql := 'SELECT * FROM EMPRESA ORDER BY ID';
   try
     Result := GetQuery(sql).AsObjectList<TEmpresa>;
@@ -82,10 +83,12 @@ begin
     Query.Close;
     Query.Free;
   end;
+  Log('== TEmpresaService.ConsultarLista [END]');
 end;
 
 class function TEmpresaService.ConsultarListaFiltro(AWhere: string): TObjectList<TEmpresa>;
 begin
+  Log('== TEmpresaService.ConsultarListaFiltro [BEGIN]');
   sql := 'SELECT * FROM EMPRESA where ' + AWhere;
   try
     Result := GetQuery(sql).AsObjectList<TEmpresa>;
@@ -94,10 +97,12 @@ begin
     Query.Close;
     Query.Free;
   end;
+  Log('== TEmpresaService.ConsultarListaFiltro [END]');
 end;
 
 class function TEmpresaService.ConsultarObjeto(AId: Integer): TEmpresa;
 begin
+  Log('== TEmpresaService.ConsultarObjeto [BEGIN]');
   sql := 'SELECT * FROM EMPRESA WHERE ID = ' + IntToStr(AId);
   try
     GetQuery(sql);
@@ -112,10 +117,12 @@ begin
     Query.Close;
     Query.Free;
   end;
+  Log('== TEmpresaService.ConsultarObjeto [END]');
 end;
 
 class function TEmpresaService.ConsultarObjetoFiltro(AWhere: string): TEmpresa;
 begin
+  Log('== TEmpresaService.ConsultarObjetoFiltro [BEGIN]');
   sql := 'SELECT * FROM EMPRESA where ' + AWhere;
   try
     GetQuery(sql);
@@ -130,18 +137,23 @@ begin
     Query.Close;
     Query.Free;
   end;
+  Log('== TEmpresaService.ConsultarObjetoFiltro [END]');
 end;
 
 class procedure TEmpresaService.Inserir(AEmpresa: TEmpresa);
 begin
+  Log('== TEmpresaService.Inserir [BEGIN]');
   AEmpresa.ValidarInsercao;
   AEmpresa.Id := InserirBase(AEmpresa, 'EMPRESA');
+  Log('== TEmpresaService.Inserir [END]');
 end;
 
 class function TEmpresaService.Alterar(AEmpresa: TEmpresa): Integer;
 begin
+  Log('== TEmpresaService.Alterar [BEGIN]');
   AEmpresa.ValidarAlteracao;
   Result := AlterarBase(AEmpresa, 'EMPRESA');
+  Log('== TEmpresaService.Alterar [END]');
 end;
 
 
@@ -150,6 +162,7 @@ var
   Empresa: TEmpresa;
   Filtro: string;
 begin
+  Log('== TEmpresaService.Atualizar [BEGIN]');
   // TODO: salva a imagem em disco
   AEmpresa.Logotipo := '';
 
@@ -164,6 +177,7 @@ begin
   begin
     AEmpresa.Id := InserirBase(AEmpresa, 'EMPRESA');
   end;
+  Log('== TEmpresaService.Atualizar [END]');
 end;
 
 class procedure TEmpresaService.Registrar(AEmpresa: TEmpresa);
@@ -171,6 +185,7 @@ var
   Empresa: TEmpresa;
   Filtro: string;
 begin
+  Log('== TEmpresaService.Registrar [BEGIN]');
   AEmpresa.Logotipo := '';
 
   Filtro := 'CNPJ = "' + AEmpresa.Cnpj + '"';
@@ -186,6 +201,7 @@ begin
       EnviarEmailConfirmacao(AEmpresa);
     end;
   end;
+  Log('== TEmpresaService.Registrar [END]');
 end;
 
 class procedure TEmpresaService.EnviarEmailConfirmacao(AEmpresa: TEmpresa);
@@ -193,6 +209,7 @@ var
   Corpo: TStringList;
   Codigo: string;
 begin
+  Log('== TEmpresaService.EnviarEmailConfirmacao [BEGIN]');
   Codigo := Biblioteca.MD5String(AEmpresa.Cnpj + TConstantes.CHAVE);
   try
     Corpo := TStringList.Create;
@@ -210,6 +227,7 @@ begin
   finally
     FreeAndNil(Corpo);
   end;
+  Log('== TEmpresaService.EnviarEmailConfirmacao [END]');
 end;
 
 class procedure TEmpresaService.ConferirCodigoConfirmacao(AEmpresa: TEmpresa; CodigoConfirmacao: string);
@@ -217,28 +235,38 @@ var
   Empresa: TEmpresa;
   Codigo, Filtro: string;
 begin
+  Log('== TEmpresaService.ConferirCodigoConfirmacao [BEGIN]');
   Codigo := Biblioteca.MD5String(AEmpresa.Cnpj + TConstantes.CHAVE);
+  Log('CNPJ = ' + AEmpresa.Cnpj);
+  Log('Codigo Gerado = ' + Codigo);
+  Log('Codigo Enviado = ' + CodigoConfirmacao);
   if Codigo = CodigoConfirmacao then
   begin
+    Log('O código bateu, vamos procurar a empresa');
     Filtro := 'CNPJ = "' + AEmpresa.Cnpj + '"';
     Empresa := ConsultarObjetoFiltro(filtro);
     if Assigned(Empresa) then
     begin
+      Log('Encontrou a empresa, vamos registrar');
       AEmpresa.Id := Empresa.Id;
       AEmpresa.Logotipo := '';
       AEmpresa.DataRegistro := now;
       AEmpresa.HoraRegistro := FormatDateTime('hh:mm:ss', now);
       AEmpresa.Registrado := 'S';
       AlterarBase(AEmpresa, 'EMPRESA');
+      Log('Alterou os dados da empresa');
     end;
   end;
+  Log('== TEmpresaService.ConferirCodigoConfirmacao [END]');
 end;
 
 class function TEmpresaService.Excluir(AEmpresa: TEmpresa): Integer;
 begin
+  Log('== TEmpresaService.Excluir [BEGIN]');
   AEmpresa.ValidarExclusao;
-  
+
   Result := ExcluirBase(AEmpresa.Id, 'EMPRESA');
+  Log('== TEmpresaService.Excluir [END]');
 end;
 
 

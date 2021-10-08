@@ -76,12 +76,10 @@ class _ConfiguracaoAbaCadastroState extends State<ConfiguracaoAbaCadastro> {
                             'a emissão da NFC-e a partir do Pegasus PDV, informe seus dados abaixo.';        
         break;
       case 'SAT':
-        _textoInformativo = 'Em breve você poderá emitir SAT a partir deste sistema. Se quiser receber informações sobre '
-                            'a emissão do SAT a partir do Pegasus PDV, informe seus dados abaixo.';        
+        _textoInformativo = 'Após a contratação do plano SAT, você poderá configurar os dados do SAT aqui';
         break;
       case 'MFE':
-        _textoInformativo = 'Em breve você poderá emitir MFE (CE) a partir deste sistema. Se quiser receber informações sobre '
-                            'a emissão do MFE (CE) a partir do Pegasus PDV, informe seus dados abaixo.';        
+        _textoInformativo = 'Após a contratação do plano MFE (CE), você poderá configurar os dados do MFE aqui';
         break;
       default:
     }
@@ -95,7 +93,7 @@ class _ConfiguracaoAbaCadastroState extends State<ConfiguracaoAbaCadastro> {
   
   contentBox(context) {
     return ListView(
-      padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
+      // padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
       children: <Widget>[
         Form(
           key: _formKey,
@@ -104,7 +102,7 @@ class _ConfiguracaoAbaCadastroState extends State<ConfiguracaoAbaCadastro> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               cabecalhoTela(context),
-              conteudoTela(context),
+              //conteudoTela(context),              
             ],
           ),
         ),
@@ -112,57 +110,60 @@ class _ConfiguracaoAbaCadastroState extends State<ConfiguracaoAbaCadastro> {
     );
   }
 
-  Container cabecalhoTela(BuildContext context) {
-    return Container(
-      child: Stack(
-        children: <Widget>[
-          Container(
-            child: Material(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-              elevation: 5.0,
-              color: Colors.blueGrey.shade100,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    height: 10.0,
+  Padding cabecalhoTela(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Container(
+          child: Stack(
+            children: <Widget>[
+              Container(
+                child: Material(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                  elevation: 5.0,
+                  color: Colors.blueGrey.shade100,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Text(
+                        widget.title,
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text(_textoInformativo, textAlign: TextAlign.center,),                
+                      ),
+                      Visibility(
+                        visible: _textoAgradecimento != '',
+                        child: Padding(
+                          padding: EdgeInsets.all(2),
+                          child: Text(
+                            _textoAgradecimento, 
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0, color: Colors.red),
+                            ),                
+                        ),
+                      ),
+                      Divider(
+                        indent: 10,
+                        endIndent: 10,
+                        thickness: 2,
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                    ],
                   ),
-                  Text(
-                    widget.title,
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text(_textoInformativo, textAlign: TextAlign.center,),                
-                  ),
-                  Visibility(
-                    visible: _textoAgradecimento != '',
-                    child: Padding(
-                      padding: EdgeInsets.all(2),
-                      child: Text(
-                        _textoAgradecimento, 
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0, color: Colors.red),
-                        ),                
-                    ),
-                  ),
-                  Divider(
-                    indent: 10,
-                    endIndent: 10,
-                    thickness: 2,
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        ),        
     );
   }
 

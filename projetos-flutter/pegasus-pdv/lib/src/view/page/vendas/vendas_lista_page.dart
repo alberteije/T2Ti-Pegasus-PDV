@@ -411,16 +411,21 @@ class _VendasListaPageState extends State<VendasListaPage> {
     final retorno = await servicoNfce.baixarArquivosXml(periodo);
     final diretorio = await getApplicationDocumentsDirectory();
 
-    final caminhoArquivo = '${diretorio.path}\\notasFiscais_$periodo.zip';
-    final arquivoZip = File(caminhoArquivo);
-    arquivoZip.writeAsBytesSync(retorno);
-    Sessao.fecharDialogBoxEspera(context); 
+    if (retorno != null) {
+      final caminhoArquivo = '${diretorio.path}\\notasFiscais_$periodo.zip';
+      final arquivoZip = File(caminhoArquivo);
+      arquivoZip.writeAsBytesSync(retorno);
+      Sessao.fecharDialogBoxEspera(context); 
 
-    if (Platform.isWindows) {
-      gerarDialogBoxInformacao(context, 'Arquivo salvo em: ' + caminhoArquivo + '.');
+      if (Platform.isWindows) {
+        gerarDialogBoxInformacao(context, 'Arquivo salvo em: ' + caminhoArquivo + '.');
+      } else {
+        Share.shareFiles([caminhoArquivo], subject: 'Arquivos XML do mês - Notas Fiscais', text: 'Seguem os arquivos das notas para o movimento $periodo');
+      }
     } else {
-      Share.shareFiles([caminhoArquivo], subject: 'Arquivos XML do mês - Notas Fiscais', text: 'Seguem os arquivos das notas para o movimento $periodo');
+      showInSnackBar('Ocorreu um erro ao tentar baixar os arquivos.', context);
     }
+
   }
 
   Future _refrescarTela() async {

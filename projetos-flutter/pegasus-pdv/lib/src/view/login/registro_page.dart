@@ -394,7 +394,7 @@ class _RegistroPageState extends State<RegistroPage> {
       );
       listaBotoes.add(
         Container(
-          width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+          width: 200,
           child: getBotaoGenericoPdv(
             descricao: 'Reenviar Email',
             cor: Colors.blue, 
@@ -471,9 +471,21 @@ class _RegistroPageState extends State<RegistroPage> {
               _pendenteDeConfirmacao = true;
               _textoInformativo = 'Pegue o código que foi enviado para o seu e-mail e cole na caixa "Código de Confirmação" [verifique a caixa de SPAM / Lixo Eletrônico]. Dessa forma, seu cadastro será concluído.';
             });
+          } else if (empresa.registrado == 'S') {
+            // normalmente só entrará aqui na versão release para testes
+            Sessao.empresa = Sessao.empresa.copyWith(
+              registrado: true, 
+              simei: empresa.simei == 'S' ? true : false,
+              dataRegistro: DateTime.now(),
+              horaRegistro: Biblioteca.formatarHora(DateTime.now()),
+            );
+            await Sessao.db.empresaDao.alterar(Sessao.empresa, Sessao.configuracaoPdv.modulo != 'G');
+            Sessao.empresa = await Sessao.db.empresaDao.consultarObjeto(1);
+            Navigator.of(context).pop();
+            showInSnackBar('Registro realizado com sucesso.', context, corFundo: Colors.blue);
           }
         } else {
-          showInSnackBar('Ocorreu um problema ao tentar salvar os dados da empresa no Servidor.', context, corFundo: Colors.red);
+          showInSnackBar('Ocorreu um problema ao tentar salvar os dados no Servidor.', context, corFundo: Colors.red);
         }        
       }      
     } else {
@@ -592,7 +604,10 @@ const htmlData = r"""
    <div>1.1.12. <b>Módulo Gratuito - Lite - Free:</b> 
       Trata-se da versão do SOFTWARE em que o USUÁRIO não paga nada para utilizá-lo. Nessa versão o USUÁRIO poderá realizar todos os controles oferecidos
       pelo SOFTWARE, sendo que o comprovante emitido é um RECIBO sem valor fiscal. Este módulo deve ser utilizado apenas por MEI devidamente cadastrado
-      no SIMEI.
+      no SIMEI. É de responsabilidade exclusiva do usuário a emissão do recibo sem valor fiscal. Caso a empresa inscrita no SIMEI venha a não 
+      mais ser enquadrada como MEI por conta de seu faturamento, o usuário deverá emitir o respectivo comprovante fiscal de acordo com a legislação.
+      A T2Ti não se responsabiliza pelo fato de o usuário estar emitindo Recibos quando na verdade deveria emitir comprovantes fiscais (NFC-e, SAT ou MFE).
+      O usuário é ciente de suas responsabilidades perante o fisco e deve responder pelos seus atos.
    </div>
    <div><br></div>
    <div>1.1.13. <b>Módulo Fiscal - Professional:</b> 

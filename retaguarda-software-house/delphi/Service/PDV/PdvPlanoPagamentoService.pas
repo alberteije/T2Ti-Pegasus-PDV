@@ -134,6 +134,7 @@ var
   Filtro: string;
   Empresa: TEmpresa;
 begin
+  Result := nil;
   Filtro := 'CNPJ = "' + ACnpj + '"';
   Empresa := TEmpresaService.ConsultarObjetoFiltro(Filtro);
   if Assigned(Empresa) then
@@ -230,6 +231,11 @@ begin
         1 : PdvPlanoPagamentoDB.DataPlanoExpira := now + 180;
         2 : PdvPlanoPagamentoDB.DataPlanoExpira := now + 365;
       end;
+    end
+    else
+    begin
+      PdvPlanoPagamentoDB.DataPagamento := 0;
+      PdvPlanoPagamentoDB.DataPlanoExpira := 0;
     end;
 
     AlterarBase(PdvPlanoPagamentoDB, 'PDV_PLANO_PAGAMENTO');

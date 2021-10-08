@@ -1177,7 +1177,43 @@ class _CaixaPageState extends State<CaixaPage> {
         if (dias <= 5) {
           gerarDialogBoxInformacao(context, 'Faltam $dias dia(s) para que seu plano NFC-e expire.');
         }
+        // verifica se o plano está ativo no servidor, pois o usuário pode cancelar o plano a qualquer tempo
+        // TODO: essa verificação deve ser feita também randomicamente no momento da emissão da NFC-e
+        if (await Biblioteca.hasNetwork()) {
+          NfceService servicoNfce = NfceService();
+          final nfcePlanoPagamentoModel = await servicoNfce.verificarPlano();          
+          if (nfcePlanoPagamentoModel == null || nfcePlanoPagamentoModel.statusPagamento != '3') {
+            Sessao.configuracaoPdv = 
+            Sessao.configuracaoPdv.copyWith(
+              modulo: 'G',
+              moduloFiscalPrincipal: '',
+              planoSituacao: 'B',
+              planoValor: 0,
+              plano: '',
+            );
+            await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv);                 
+            Sessao.db.nfcePlanoPagamentoDao.excluir(Sessao.nfcePlanoPagamento);
+            Navigator.of(context)
+              .push(MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      NfceContrataPage()))
+              .then((_) {
+              });       
+          }  
+        }
       }
+    } else {
+      Sessao.configuracaoPdv = 
+      Sessao.configuracaoPdv.copyWith(
+        modulo: 'G',
+        moduloFiscalPrincipal: '',
+        planoSituacao: 'B',
+        planoValor: 0,
+        plano: '',
+      );
+      await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv);    
+      setState(() {
+      });
     }
   }
 // #endregion métodos Caixa

@@ -1,6 +1,6 @@
 /*
 Title: T2Ti ERP 3.0
-Description: Service utilizado para pesquisar os dados da empresa em https://www.receitaws.com.br/
+Description: Service utilizado para consumir os webservices referentes à EMPRESA
                                                                                 
 The MIT License                                                                 
                                                                                 
@@ -44,19 +44,24 @@ class EmpresaService extends ServiceBase {
   var clienteHTTP = Client();
 
   Future<EmpresaConsultaPublica> consultarObjetoPublico(String cnpj) async {
-    final _url = 'https://www.receitaws.com.br/v1/cnpj/$cnpj';
-    final response = await clienteHTTP.get(Uri.tryParse(_url));
+    try {
+      final _url = 'https://www.receitaws.com.br/v1/cnpj/$cnpj';
+      final response = await clienteHTTP.get(Uri.tryParse(_url));
 
-    if (response.statusCode == 200) {
-      if (response.headers["content-type"].contains("html")) {
+      if (response.statusCode == 200) {
+        if (response.headers["content-type"].contains("html")) {
+          tratarRetornoErro(response.body, response.headers);
+          return null;
+        } else {
+          var empresaJson = json.decode(response.body);
+          return EmpresaConsultaPublica.fromJson(empresaJson);
+      }
+      } else {
         tratarRetornoErro(response.body, response.headers);
         return null;
-      } else {
-        var empresaJson = json.decode(response.body);
-        return EmpresaConsultaPublica.fromJson(empresaJson);
-    }
-    } else {
-      tratarRetornoErro(response.body, response.headers);
+      }
+    } on Exception catch (e) {
+      tratarRetornoErro(null, null, exception: e);
       return null;
     }
   }
@@ -115,6 +120,10 @@ class EmpresaService extends ServiceBase {
       tratarRetornoErro(null, null, exception: e);
       return null;
     }
+    /* use para uma release de testes
+    empresa.registrado = "S";
+    return empresa;
+    */
   }
 
   Future<bool> reenviarEmail(EmpresaModel empresa) async {
@@ -174,6 +183,10 @@ class EmpresaService extends ServiceBase {
       tratarRetornoErro(null, null, exception: e);
       return null;
     }
-  }
+     /* use para uma release de testes
+    empresa.registrado = "S";
+    return empresa;
+    */
+ }
 
 }

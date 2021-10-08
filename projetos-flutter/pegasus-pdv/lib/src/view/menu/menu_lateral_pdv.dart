@@ -405,15 +405,25 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
               ),
             ),
             ListTile(
-              onTap:  () { 
-                final Uri _emailLaunchUri = Uri(
-                  scheme: 'mailto',
-                  path: 't2ti.com@gmail.com',
-                  queryParameters: {
-                    'subject': 'T2Ti ERP Pegasus - Dúvidas'
-                  }
-                );
-                launch(_emailLaunchUri.toString());
+              onTap: () async { 
+                // final Uri _emailLaunchUri = Uri(
+                //   scheme: 'mailto',
+                //   path: 't2ti.com@gmail.com',
+                //   queryParameters: {
+                //     'subject': 'T2Ti ERP Pegasus - Dúvidas'
+                //   }
+                // );
+                // launch(_emailLaunchUri.toString());
+                // Navigator.pop(context); 
+
+                // %0D - serve para inserir uma quebra de linha
+                final _url = 'https://t2tisistemas.com/contact.php?'
+                'nome=' + Sessao.empresa.nomeFantasia + 
+                '&email=' + Sessao.empresa.email + 
+                '&assunto=Contato Pegasus PDV&mensagem='
+                'Olá Equipe T2Ti,'
+                '%0DEstou usando o T2Ti Pegasus PDV e preciso do seguinte auxílio: ';
+                await canLaunch(_url) ? await launch(_url) : throw 'URL não pode ser carregada: $_url';
                 Navigator.pop(context); 
               },
               title: Text(

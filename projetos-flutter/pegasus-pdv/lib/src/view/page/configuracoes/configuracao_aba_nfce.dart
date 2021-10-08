@@ -133,9 +133,9 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
     }    
 
     if (Sessao.configuracaoPdv.moduloFiscalPrincipal != 'NFC') {
-      _textoInformativo = 'Após contratação do plano NFC-e, você poderá configurar os dados da NFC-e aqui';
+      _textoInformativo = 'Após a contratação do plano NFC-e, você poderá configurar os dados da NFC-e aqui';
     } else {
-      _textoInformativo = 'Utilize esse espaço para configurar a NFC-e';        
+      _textoInformativo = 'Utilize esse espaço para configurar a Nota Fiscal de Consumidor Eletrônica - NFC-e';        
     }
 
     return Scaffold(
@@ -209,7 +209,7 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
 
   List<Widget> _pegarConteudoPagina() {
     List<Widget> listaConteudo = [];
-    if (Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC') {
+    if (Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC') {      
       listaConteudo.add(
         // Certificado Digital
         Padding(
@@ -323,6 +323,7 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
           )
         ),
       );
+
       listaConteudo.add(
         Card(
           color: Colors.white,
@@ -335,7 +336,10 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                   color: Colors.blue,
                 ),
                 key: GlobalKey(),
-                title: Text('Formato da Página: ' + _formatoPagina),
+                title: 
+                Biblioteca.isTelaPequena(context) 
+                ? Text('Formato Página: ' + _formatoPagina)
+                : Text('Formato da Página: ' + _formatoPagina),                             
                 backgroundColor: Theme.of(context).accentColor.withOpacity(0.025),
                 children: <Widget>[
                   ListTile(
@@ -363,7 +367,7 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                     },              
                   ),
                 ]
-              ),                    
+              ),   
               Visibility(
                 visible: _formatoPagina != Constantes.impressaoFormularioA4,
                 child: ListTile(
@@ -378,13 +382,22 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                       ),
                     ]
                   ),
-                  title: Text("Resolução Impressão"),                    
+                  title: Text("Resolução Impressão",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                          ),
+                        ),                    
                   trailing:
                   Container(
-                    width: Biblioteca.isTelaPequena(context) ? 200 : 200,
+                    width: Biblioteca.isTelaPequena(context) ? 140 : 200,
                     child: SliderTheme(
                       data: ViewUtilLib.sliderThemeData(context),
                       child: SpinBox( 
+                        textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                        ),
                         max: 310.0,
                         min: 1,
                         value: _resolucaoPagina.toDouble(),
@@ -410,13 +423,22 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                       ),
                     ]
                   ),
-                  title: Text("Margem Esquerda"),                    
+                  title: Text("Margem Esquerda",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                          ),
+                        ),                    
                   trailing:
                   Container(
-                    width: Biblioteca.isTelaPequena(context) ? 200 : 200,
+                    width: Biblioteca.isTelaPequena(context) ? 120 : 200,
                     child: SliderTheme(
                       data: ViewUtilLib.sliderThemeData(context),
                       child: SpinBox( 
+                        textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                        ),
                         max: 5.0,
                         min: 0.1,
                         value: _margemEsquerda,
@@ -442,13 +464,22 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                       ),
                     ]
                   ),
-                  title: Text("Margem Direita"),                    
+                  title: Text("Margem Direita",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                          ),
+                        ),                    
                   trailing:
                   Container(
-                    width: Biblioteca.isTelaPequena(context) ? 200 : 200,
+                    width: Biblioteca.isTelaPequena(context) ? 120 : 200,
                     child: SliderTheme(
                       data: ViewUtilLib.sliderThemeData(context),
                       child: SpinBox( 
+                        textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                        ),
                         max: 5.0,
                         min: 0.1,
                         value: _margemDireita,
@@ -474,13 +505,22 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                       ),
                     ]
                   ),
-                  title: Text("Margem Superior"),                    
+                  title: Text("Margem Superior",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                          ),
+                        ),                    
                   trailing:
                   Container(
-                    width: Biblioteca.isTelaPequena(context) ? 200 : 200,
+                    width: Biblioteca.isTelaPequena(context) ? 120 : 200,
                     child: SliderTheme(
                       data: ViewUtilLib.sliderThemeData(context),
                       child: SpinBox( 
+                        textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                        ),
                         max: 5.0,
                         min: 0.1,
                         value: _margemSuperior,
@@ -506,13 +546,22 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                       ),
                     ]
                   ),
-                  title: Text("Margem Inferior"),                    
+                  title: Text("Margem Inferior",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                          ),
+                        ),                    
                   trailing:
                   Container(
-                    width: Biblioteca.isTelaPequena(context) ? 200 : 200,
+                    width: Biblioteca.isTelaPequena(context) ? 120 : 200,
                     child: SliderTheme(
                       data: ViewUtilLib.sliderThemeData(context),
                       child: SpinBox( 
+                        textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                        ),
                         max: 5.0,
                         min: 0.1,
                         value: _margemInferior,
@@ -536,13 +585,22 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                     ),
                   ]
                 ),
-                title: Text("Tamanho da Fonte do Item"),                    
+                title: Text("Tamanho da Fonte do Item",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                        ),
+                      ),                    
                 trailing:
                 Container(
-                  width: Biblioteca.isTelaPequena(context) ? 200 : 200,
+                  width: Biblioteca.isTelaPequena(context) ? 120 : 200,
                   child: SliderTheme(
                     data: ViewUtilLib.sliderThemeData(context),
                     child: SpinBox( 
+                      textStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                      ),
                       max: 10,
                       min: 5,
                       value: _tamanhoFonteItem.toDouble(),
@@ -558,7 +616,12 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                   Icons.ad_units,
                   color: Colors.blueGrey,
                 ),
-                title: Text("Imprimir Itens Somente em Uma Linha"),
+                title: Text("Imprimir Itens Somente em Uma Linha",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                        ),
+                      ),                    
                 trailing: CupertinoSwitch(
                   value: _imprimirItensUmaLinha,
                   onChanged: (val) {
@@ -572,7 +635,12 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                   Icons.ad_units_outlined,
                   color: Colors.blueGrey,
                 ),
-                title: Text("Imprimir Desconto por Item"),
+                title: Text("Imprimir Desconto por Item",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                        ),
+                      ),                    
                 trailing: CupertinoSwitch(
                   value: _imprimirDescontoPorItem,
                   onChanged: (val) {
@@ -586,7 +654,12 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                   Icons.qr_code_2,
                   color: Colors.blueGrey,
                 ),
-                title: Text("Imprimir QRCode na Lateral"),
+                title: Text("Imprimir QRCode na Lateral",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                        ),
+                      ),                    
                 trailing: CupertinoSwitch(
                   value: _imprimirQRCodeNaLateral,
                   onChanged: (val) {
@@ -600,7 +673,12 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                   Icons.read_more,
                   color: Colors.blueGrey,
                 ),
-                title: Text("Imprimir GTIN"),
+                title: Text("Imprimir GTIN",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                        ),
+                      ),                    
                 trailing: CupertinoSwitch(
                   value: _imprimirGtin,
                   onChanged: (val) {
@@ -614,7 +692,12 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                   Icons.receipt_long_outlined,
                   color: Colors.blueGrey,
                 ),
-                title: Text("Imprimir Nome Fantasia"),
+                title: Text("Imprimir Nome Fantasia",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                        ),
+                      ),                    
                 trailing: CupertinoSwitch(
                   value: _imprimirNomeFantasia,
                   onChanged: (val) {
@@ -628,9 +711,14 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                   Icons.receipt_long_outlined,
                   color: Colors.blueGrey,
                 ),
-                title: Text("Formato DANFE"),
+                title: Text("Formato DANFE",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                  ),
+                ),                   
                 trailing: Container(
-                  width: 300,
+                  width: Biblioteca.isTelaPequena(context) ? 180 : 300,
                   padding: EdgeInsets.all(0),
                   child: CustomRadioButton(
                     buttonLables: [
@@ -644,18 +732,18 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                     buttonTextStyle: ButtonTextStyle(
                       selectedColor: Colors.white,
                       unSelectedColor: Colors.black,
-                      textStyle: TextStyle(fontSize: 16)),
+                      textStyle: TextStyle(fontSize: Biblioteca.isTelaPequena(context) ? 10 : 16)),
                     radioButtonValue: (value) {
                       _formatoImpressaoDanfe = value;
                     },
                     enableShape: true,
                     defaultSelected: _formatoImpressaoDanfe,
-                    elevation: 0,
-                    absoluteZeroSpacing: false,
+                    elevation: 2,
+                    absoluteZeroSpacing: Biblioteca.isTelaPequena(context) ? true : false,
                     unSelectedColor: Theme.of(context).canvasColor,
                     selectedColor: Theme.of(context).accentColor,
                     enableButtonWrap: false,
-                    width: 140,
+                    width: Biblioteca.isTelaPequena(context) ? 85 : 140,
                   ),
                 ),
               ),
@@ -664,9 +752,14 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                   Icons.computer,
                   color: Colors.blueGrey,
                 ),
-                title: Text("Ambiente"),
+                title: Text("Ambiente",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: Biblioteca.isTelaPequena(context) ? 14.0 : 16.0
+                  ),
+                ),                   
                 trailing: Container(
-                  width: 300,
+                  width: Biblioteca.isTelaPequena(context) ? 175 : 300,
                   padding: EdgeInsets.all(0),
                   child: CustomRadioButton(
                     buttonLables: [
@@ -680,26 +773,26 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                     buttonTextStyle: ButtonTextStyle(
                       selectedColor: Colors.white,
                       unSelectedColor: Colors.black,
-                      textStyle: TextStyle(fontSize: 16)),
+                      textStyle: TextStyle(fontSize: Biblioteca.isTelaPequena(context) ? 10 : 16)),
                     radioButtonValue: (value) {
                       _ambiente = value;
                     },
                     enableShape: true,
                     defaultSelected: _ambiente,
-                    elevation: 0,
-                    absoluteZeroSpacing: false,
+                    elevation: 2,
+                    absoluteZeroSpacing: Biblioteca.isTelaPequena(context) ? true : false,
                     unSelectedColor: Theme.of(context).canvasColor,
                     selectedColor: Theme.of(context).accentColor,
                     enableButtonWrap: false,
-                    width: 140,
+                    width: Biblioteca.isTelaPequena(context) ? 85 : 140,
                   ),
                 ),
               ),
-              SizedBox(height: 10,),                
             ],
           ),
         ),
       );
+
       listaConteudo.add(
         // Numeração e Série
         Padding(
@@ -957,7 +1050,7 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
             ],
           )
         ),
-      );		        
+      );	      	        
     }
     return listaConteudo;
   }
@@ -966,7 +1059,7 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
     List<Widget> listaBotoes = [];
     listaBotoes.add(
        Container(
-        width: 200,
+        width: 220,
         child: getBotaoGenericoPdv(
           descricao: 'Atualizar Número e Série',
           cor: Colors.green, 
@@ -1017,7 +1110,7 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
     List<Widget> listaBotoes = [];
     listaBotoes.add(
        Container(
-        width: 200,
+        width: 220,
         child: getBotaoGenericoPdv(
           descricao: 'Enviar Certificado Digital',
           cor: Colors.green, 
@@ -1108,6 +1201,8 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
   }
 
   Future _enviarCertificado() async {
+    // use para uma release de testes
+    // showInSnackBar('Essa é uma versão de Testes para desenvolvedores. Configure o ACBrMonitor manualmente.', context, corFundo: Colors.blue);
     NfceService nfceService = NfceService();
     final retorno = await nfceService.atualizarCertificadoDigital(_arquivoCertificadoBase64, _senhaCertificadoController.text);        
     if (retorno) {

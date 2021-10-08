@@ -49,7 +49,7 @@ class NfceService extends ServiceBase {
 
   Future<List<PdvTipoPlanoModel>> consultarListaTipoPlanoNfce({Filtro filtro}) async {
     List<PdvTipoPlanoModel> listaNfceTipoPlanoModel = [];
-
+    
     try {
       tratarFiltro(filtro, '/pdv-tipo-plano/');
 	  	
@@ -76,10 +76,35 @@ class NfceService extends ServiceBase {
     } on Exception catch (e) {
       tratarRetornoErro(null, null, exception: e);
       return null;
-    }
+    }    
+    /* use para uma release de testes
+    List<PdvTipoPlanoModel> listaNfceTipoPlanoModel = [];
+    PdvTipoPlanoModel plano1 = PdvTipoPlanoModel();
+    plano1.id = 1;
+    plano1.modulo = 'F';
+    plano1.plano = 'Mensal';
+    plano1.moduloFiscal = 'NFC';
+    plano1.valor = 15;
+    listaNfceTipoPlanoModel.add(plano1);
+    PdvTipoPlanoModel plano2 = PdvTipoPlanoModel();
+    plano2.id = 2;
+    plano2.modulo = 'F';
+    plano2.plano = 'Semestral';
+    plano2.moduloFiscal = 'NFC';
+    plano2.valor = 75;
+    listaNfceTipoPlanoModel.add(plano2);
+    PdvTipoPlanoModel plano3 = PdvTipoPlanoModel();
+    plano3.id = 3;
+    plano3.modulo = 'F';
+    plano3.plano = 'Anual';
+    plano3.moduloFiscal = 'NFC';
+    plano3.valor = 120;
+    listaNfceTipoPlanoModel.add(plano3);
+    return listaNfceTipoPlanoModel;
+    */
   }
 
-  Future<NfcePlanoPagamentoModel> verificarPlano() async {    
+  Future<NfcePlanoPagamentoModel> verificarPlano() async {  
     try {
       ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
                             ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa.cnpj} 
@@ -104,9 +129,15 @@ class NfceService extends ServiceBase {
       tratarRetornoErro(null, null, exception: e);
       return null;
     }
+    /* use para uma release de testes
+    NfcePlanoPagamentoModel plano = NfcePlanoPagamentoModel();
+    plano.statusPagamento = '3';
+    plano.dataPlanoExpira = DateTime(2036, 4, 24);
+    return plano;
+    */  
   }  
 
-  Future<Uint8List> baixarArquivosXml(String periodo) async {    
+  Future<Uint8List> baixarArquivosXml(String periodo) async { 
     try {
       ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
                             ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa.cnpj, "periodo": periodo} 
@@ -165,6 +196,16 @@ class NfceService extends ServiceBase {
       tratarRetornoErro(null, null, exception: e);
       return null;
     }
+    /* use para uma release de testes
+    final enderecoMonitor = '127.0.0.1';
+    final portaMonitor = '3434';
+    Sessao.configuracaoPdv = Sessao.configuracaoPdv.copyWith(
+      acbrMonitorEndereco: enderecoMonitor,
+      acbrMonitorPorta: int.tryParse(portaMonitor),
+    );
+    await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv);    
+    return nfeConfiguracao;
+    */
   }
 
   Future<int> confirmarTransacao(String codigoTransacao) async {
@@ -183,6 +224,9 @@ class NfceService extends ServiceBase {
       tratarRetornoErro(null, null, exception: e);
       return null;
     }
+    /* use para uma release de testes
+    return 200;
+    */
   }
 
   Future<bool> atualizarCertificadoDigital(String arquivoBase64, String senha) async {
