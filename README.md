@@ -97,7 +97,7 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
                     <br />  
 	Pronto! Está tudo certo para usar a aplicação. Abra o projeto no VS Code ou no Android Studio e execute ou então execute a aplicação com o seguinte comando 'flutter run -d windows'.
   	<br /><br />
-	<hr />
+	<hr style="width:50%;text-align:left;margin-left:0" />
 Se tiver alguma dificuldade para rodar o projeto, siga o passo a passo abaixo. Lembrando que não estamos usando a última versão do Flutter ainda. O projeto deve rodar na versão 2.2.2.<br />
 <br />1: faça um downgrade para o fluter v2.2.2 canal beta
 <br />2: crie um projeto novo, com o mesmo nome pegasus_pdv
