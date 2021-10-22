@@ -117,13 +117,20 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
 
     if (campo != null && campo != '') {      
       final coluna = produtos.$columns.where(((coluna) => coluna.$name == campo)).first;
-      if (coluna is GeneratedTextColumn) {
-        consulta.where(coluna.like('%'  + valor + '%'));
-      } else if (coluna is GeneratedIntColumn) {
+      if (coluna is TextColumn) {
+        consulta.where((coluna as TextColumn).like('%'  + valor + '%'));
+      } else if (coluna is IntColumn) {
         consulta.where(coluna.equals(int.tryParse(valor)));
-      } else if (coluna is GeneratedRealColumn) {
+      } else if (coluna is RealColumn) {
         consulta.where(coluna.equals(double.tryParse(valor)));
       }
+      // if (coluna is GeneratedTextColumn) {
+      //   consulta.where(coluna.like('%'  + valor + '%'));
+      // } else if (coluna is GeneratedIntColumn) {
+      //   consulta.where(coluna.equals(int.tryParse(valor)));
+      // } else if (coluna is GeneratedRealColumn) {
+      //   consulta.where(coluna.equals(double.tryParse(valor)));
+      // }
     }
 
     if (status != null) {

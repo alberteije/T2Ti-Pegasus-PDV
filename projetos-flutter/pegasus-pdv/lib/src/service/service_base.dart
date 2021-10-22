@@ -44,7 +44,7 @@ class ServiceBase {
                               : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT};
 
   // Servidor ERP
-  static String _endpoint = Constantes.enderecoServidor + ':' + Constantes.portaServidor + Constantes.complementoEnderecoServidor;
+  static String _endpoint = Constantes.enderecoServidor + ':' + Constantes.portaServidor;// + Constantes.complementoEnderecoServidor;
   get endpoint => _endpoint;
   static var _url = '';
   get url => _url;
@@ -111,7 +111,7 @@ class ServiceBase {
   }
 
   Future tratarRetornoErro(String corpo, Map<String, String> headers, {Exception exception}) async {
-    throw ('Erro: ' + DateTime.now().toIso8601String() + ' - ' + exception.toString());
+    throw ('Erro: ' + DateTime.now().toIso8601String() + ' - Exceção: ' + (exception?.toString() ?? '') + ' - Mensagem: ' + (corpo?.toString() ?? ''));
   }
 
 }

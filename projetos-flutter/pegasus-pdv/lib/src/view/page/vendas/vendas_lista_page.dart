@@ -423,6 +423,7 @@ class _VendasListaPageState extends State<VendasListaPage> {
         Share.shareFiles([caminhoArquivo], subject: 'Arquivos XML do mês - Notas Fiscais', text: 'Seguem os arquivos das notas para o movimento $periodo');
       }
     } else {
+      Sessao.fecharDialogBoxEspera(context); 
       showInSnackBar('Ocorreu um erro ao tentar baixar os arquivos.', context);
     }
 

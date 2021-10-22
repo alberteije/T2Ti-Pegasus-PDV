@@ -71,6 +71,8 @@ class NfceAcbrService {
   bool _contemEndOfText; // verifica se a resposta do servidor contém o caractere de final de linha
   bool _rejeicaoServidorFora; // controla se o servidor da sefaz está fora do ar: rejeições 109 e 999
 
+  bool _aguardaFimRetornoPDF = false; // em alguns momentos no Android o PDF (string base64) não é 'recebido' completo - vamos testar essa condição e concatenar o retorno
+
   final enderecoServidor = InternetAddress(Sessao.configuracaoPdv.acbrMonitorEndereco);
   final portaServidor = Sessao.configuracaoPdv.acbrMonitorPorta;
 
@@ -93,7 +95,17 @@ class NfceAcbrService {
   }
 
   void _tratarRetornoSocket(Uint8List data) async {
-    _respostaServidor = String.fromCharCodes(data).trim();                  
+    //_respostaServidor = String.fromCharCodes(data).trim();                  
+
+    if (_aguardaFimRetornoPDF) {
+      if (data != null && String.fromCharCodes(data) != null) {
+        _respostaServidor = _respostaServidor + String.fromCharCodes(data).trim();
+        //log('Resposta Servidor: ' + _respostaServidor);
+      }
+    } else {
+      _respostaServidor = String.fromCharCodes(data).trim();
+    }
+
     final caractereFinal = _respostaServidor.substring(_respostaServidor.length - 1, _respostaServidor.length);
     _contemEndOfText = (caractereFinal.codeUnitAt(0) == $etx);
     _rejeicaoServidorFora = false;
@@ -145,7 +157,13 @@ class NfceAcbrService {
       await _tratarRetornoCancelamento();
     } else if (_respostaServidor.length > 10000) {                                                                      // RETORNOU ARQUIVO PDF DO SERVIDOR - MOSTRAR NA TELA
       print('=== DESCEU O PDF - EXIBIR NA TELA');
-      _exibirDanfeNaTela();
+      //_exibirDanfeNaTela();
+      if (_contemEndOfText) {
+        _aguardaFimRetornoPDF = false;
+        _exibirDanfeNaTela();
+      } else {
+        _aguardaFimRetornoPDF = true;
+      }      
     } else if (_respostaServidor.codeUnitAt(0) == $etx) {                                                               // VOLTOU APENAS O CARACTERE DE FINAL DE LINHA
       print('=== VOLTOU APENAS O CARACTERE DE FINAL DE LINHA');
     } else {                                                                                                            // INÍCIO DO PROCEDIMENTO - ABRE JANELA DE ESPERA

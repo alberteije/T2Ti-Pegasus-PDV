@@ -52,7 +52,7 @@ class Constantes {
   static Constantes _this;
   Constantes._() : super();
 
-  static const String versaoApp =  'versão 1.0.8 - Julho/2021';
+  static const String versaoApp =  'versão 1.0.9 - Outubro/2021';
 
 // #region Arquivo ENV
   static String chave = '#Sua-Chave-de-32-caracteres-aqui'; // #Sua-Chave-de-32-caracteres-aqui tem que alterar para produção e gerar os valores do ENV com a chave correta
