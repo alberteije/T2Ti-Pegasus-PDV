@@ -23,7 +23,7 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
 	<br />
                                     <ul>
                                         <li>
-                                            <b> <a href="https://flutter.dev/">Flutter:</a></b> O T2Ti Pegasus PDV é desenvolvido em Flutter e, dessa maneira, poderá rodar em diversas plataformas: Windows, Linux, MacOS, Android, iOS e para Web. Nessa fase Beta estamos fazendo testes no Windows e no Android. Com o lançamento do projeto no github sabemos que contaremos com testes realizados por desenvolvedores em outras plataformas. Em breve a T2Ti também iniciará testes nas demais plataformas. Para compilar o projeto use a versão 2.2.2 do Flutter.
+                                            <b> <a href="https://flutter.dev/">Flutter:</a></b> O T2Ti Pegasus PDV é desenvolvido em Flutter e, dessa maneira, poderá rodar em diversas plataformas: Windows, Linux, MacOS, Android, iOS e para Web. Nessa fase Beta estamos fazendo testes no Windows e no Android. Com o lançamento do projeto no github sabemos que contaremos com testes realizados por desenvolvedores em outras plataformas. Em breve a T2Ti também iniciará testes nas demais plataformas.
                                         </li>
                                         <li>
 						<b> <a href="https://www.sqlite.org/index.html">SQLite:</a> </b> A versão Lite do T2Ti Pegasus PDV é monousuário e funciona com banco de dados local. O banco de dados escolhido para este fim foi o SQLite. A versão Premium funcionará com o SQLite como banco de dados local, mas contará com o recurso de sincronização com o banco de dados da retaguarda.
@@ -96,17 +96,7 @@ Veja abaixo uma lista de características do projeto. Provavelmente existe algum
                     <br />  
                     <br />  
 	Pronto! Está tudo certo para usar a aplicação. Abra o projeto no VS Code ou no Android Studio e execute ou então execute a aplicação com o seguinte comando 'flutter run -d windows'.
-  	<br /><br />
-	<hr width="20%" />
-Se tiver alguma dificuldade para rodar o projeto, siga o passo a passo abaixo. Lembrando que não estamos usando a última versão do Flutter ainda. O projeto deve rodar na versão 2.2.2.<br />
-<br />1: faça um downgrade para o fluter v2.2.2 canal beta
-<br />2: crie um projeto novo, com o mesmo nome pegasus_pdv
-<br />3: copie os arquivos .env, sqlite.dll e as pastas lib e assets do pegasus
-<br />4: no pubspec.yaml e pubspec.lock (se existir) deixe a versão do moor em 4.3.2
-<br />5: em C:\Users\SEU_USUARIO\AppData\Local\Pub\Cache\hosted\pub.dartlang.org -> deixe a pasta do moor 4.3.2 (verifique a pasta onde seus pacotes são armazenados)
-<br />6: execute o comando: flutter clean
-<br />7: execute o comando: flutter update-packages
-<br />8: execute o  comando: flutter pub get	
+  	<br /><br />		
 	<hr />
 	Assista ao vídeo de apresentação no Youtube.
 	<br /><br />
