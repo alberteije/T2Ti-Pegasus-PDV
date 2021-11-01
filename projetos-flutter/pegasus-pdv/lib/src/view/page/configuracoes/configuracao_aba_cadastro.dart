@@ -37,7 +37,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 Based on: Flutter UI Challenges by Many - https://github.com/lohanidamodar/flutter_ui_challenges
 *******************************************************************************/
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/model/model.dart';
@@ -46,17 +46,17 @@ import 'package:pegasus_pdv/src/view/shared/botoes.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 class ConfiguracaoAbaCadastro extends StatefulWidget {
-  final String title;
-  final String modulo;
+  final String? title;
+  final String? modulo;
   
-  const ConfiguracaoAbaCadastro({Key key, this.title, this.modulo}): super(key: key);
+  const ConfiguracaoAbaCadastro({Key? key, this.title, this.modulo}): super(key: key);
 
   @override
   _ConfiguracaoAbaCadastroState createState() => _ConfiguracaoAbaCadastroState();
 }
 
 class _ConfiguracaoAbaCadastroState extends State<ConfiguracaoAbaCadastro> {
-  final _emailController = TextEditingController(text: Sessao.empresa.email ?? '');
+  final _emailController = TextEditingController(text: Sessao.empresa!.email ?? '');
   final _whatsappController = MaskedTextController(
     mask: Constantes.mascaraTELEFONE,
   );
@@ -113,10 +113,10 @@ class _ConfiguracaoAbaCadastroState extends State<ConfiguracaoAbaCadastro> {
   Padding cabecalhoTela(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Container(
+        child: SizedBox(
           child: Stack(
             children: <Widget>[
-              Container(
+              SizedBox(
                 child: Material(
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                   elevation: 5.0,
@@ -124,37 +124,37 @@ class _ConfiguracaoAbaCadastroState extends State<ConfiguracaoAbaCadastro> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      SizedBox(
+                      const SizedBox(
                         height: 10.0,
                       ),
                       Text(
-                        widget.title,
+                        widget.title!,
                         style: Theme.of(context).textTheme.headline5,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 5.0,
                       ),
                       Padding(
-                        padding: EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(10),
                         child: Text(_textoInformativo, textAlign: TextAlign.center,),                
                       ),
                       Visibility(
                         visible: _textoAgradecimento != '',
                         child: Padding(
-                          padding: EdgeInsets.all(2),
+                          padding: const EdgeInsets.all(2),
                           child: Text(
                             _textoAgradecimento, 
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0, color: Colors.red),
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0, color: Colors.red),
                             ),                
                         ),
                       ),
-                      Divider(
+                      const Divider(
                         indent: 10,
                         endIndent: 10,
                         thickness: 2,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10.0,
                       ),
                     ],
@@ -167,13 +167,13 @@ class _ConfiguracaoAbaCadastroState extends State<ConfiguracaoAbaCadastro> {
     );
   }
 
-  Container conteudoTela(BuildContext context) {
-    return Container(
+  SizedBox conteudoTela(BuildContext context) {
+    return SizedBox(
       child: Stack(
         alignment: AlignmentDirectional.center,
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 10.0, left: 0.0, right: 0.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 10.0, left: 0.0, right: 0.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
@@ -195,7 +195,7 @@ class _ConfiguracaoAbaCadastroState extends State<ConfiguracaoAbaCadastro> {
                         'Informe o EMail',
                         'EMail *',
                         false),
-                      onSaved: (String value) {
+                      onSaved: (String? value) {
                       },
                       onChanged: (text) {
                       },
@@ -208,7 +208,7 @@ class _ConfiguracaoAbaCadastroState extends State<ConfiguracaoAbaCadastro> {
                         'Conteúdo para o campo WhatsApp',
                         'WhatsApp',
                         false),
-                      onSaved: (String value) {
+                      onSaved: (String? value) {
                       },
                       onChanged: (text) {
                       },
@@ -228,10 +228,10 @@ class _ConfiguracaoAbaCadastroState extends State<ConfiguracaoAbaCadastro> {
     );
   }
 
-  List<Widget> _getBotoesRodape({BuildContext context}) {
+  List<Widget> _getBotoesRodape({BuildContext? context}) {
     List<Widget> listaBotoes = [];
     listaBotoes.add(
-       Container(
+       SizedBox(
         width: 200,
         child: getBotaoGenericoPdv(
           descricao: 'Confirmar',
@@ -246,21 +246,21 @@ class _ConfiguracaoAbaCadastroState extends State<ConfiguracaoAbaCadastro> {
   }
 
   void _confirmar() async {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (!form.validate()) {
       _autoValidate = AutovalidateMode.always;
       _valorFoco.requestFocus();        
     } else {
       UsuarioService servico = UsuarioService();
       // novo usuário
-      UsuarioModel usuario = UsuarioModel(
+      UsuarioModel? usuario = UsuarioModel(
         email: _emailController.text,
         whatsapp: _whatsappController.text,
         modulo: widget.modulo,
         news: 'S',
       );
       // grava o usuário no servidor
-      usuario = await servico.gravarDadosInformacao(usuario);
+      usuario = await (servico.gravarDadosInformacao(usuario));
       if (usuario != null) {
         setState(() {
           _textoAgradecimento = 'Obrigado, seu cadastro foi realizado com sucesso. Entraremos em contato quando tivermos novidades.';

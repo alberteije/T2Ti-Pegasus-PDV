@@ -50,20 +50,22 @@ import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
 import 'package:pegasus_pdv/src/view/shared/page/filtro_page.dart';
 
 class EmpresaListaPage extends StatefulWidget {
+  const EmpresaListaPage({Key? key}) : super(key: key);
+
   @override
   _EmpresaListaPageState createState() => _EmpresaListaPageState();
 }
 
 class _EmpresaListaPageState extends State<EmpresaListaPage> {
-  int _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
-  int _sortColumnIndex;
+  int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
+  int? _sortColumnIndex;
   bool _sortAscending = true;
-  var _filtro = Filtro();
+  Filtro? _filtro = Filtro();
   final _colunas = EmpresaDao.colunas;
   final _campos = EmpresaDao.campos;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -76,7 +78,7 @@ class _EmpresaListaPageState extends State<EmpresaListaPage> {
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -101,7 +103,7 @@ class _EmpresaListaPageState extends State<EmpresaListaPage> {
 
     final _EmpresaDataSource _empresaDataSource = _EmpresaDataSource(_listaEmpresa, context, _refrescarTela);
 
-    void _sort<T>(Comparable<T> getField(Empresa empresa), int columnIndex, bool ascending) {
+    void _sort<T>(Comparable<T>? Function(Empresa empresa) getField, int columnIndex, bool ascending) {
       _empresaDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
@@ -117,7 +119,7 @@ class _EmpresaListaPageState extends State<EmpresaListaPage> {
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Cadastro - Empresa'),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           ),
           floatingActionButton: FloatingActionButton(
             focusColor: ViewUtilLib.getBotaoFocusColor(),
@@ -130,7 +132,7 @@ class _EmpresaListaPageState extends State<EmpresaListaPage> {
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: BottomAppBar(
             color: ViewUtilLib.getBottomAppBarColor(),          
-            shape: CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),
             child: Row(
               children: getBotoesNavigationBarListaPage(
                 context: context, 
@@ -143,14 +145,14 @@ class _EmpresaListaPageState extends State<EmpresaListaPage> {
             onRefresh: _refrescarTela,
             child: Scrollbar(
               child: _listaEmpresa == null
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : ListView(
-                padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
+                padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                 children: <Widget>[
                   PaginatedDataTable(                        
                     header: const Text('Relação - Empresa'),
-                    rowsPerPage: _rowsPerPage,
-                    onRowsPerPageChanged: (int value) {
+                    rowsPerPage: _rowsPerPage!,
+                    onRowsPerPageChanged: (int? value) {
                       setState(() {
                         _rowsPerPage = value;
                       });
@@ -303,9 +305,9 @@ class _EmpresaListaPageState extends State<EmpresaListaPage> {
           fullscreenDialog: true,
         ));
     if (_filtro != null) {
-      if (_filtro.campo != null) {
-        _filtro.campo = _campos[int.parse(_filtro.campo)];
-        await Sessao.db.empresaDao.consultarListaFiltro(_filtro.campo, _filtro.valor);
+      if (_filtro!.campo != null) {
+        _filtro!.campo = _campos[int.parse(_filtro!.campo!)];
+        await Sessao.db.empresaDao.consultarListaFiltro(_filtro!.campo!, _filtro!.valor!);
         setState(() {
         });
       }
@@ -327,91 +329,91 @@ class _EmpresaListaPageState extends State<EmpresaListaPage> {
 
 /// codigo referente a fonte de dados
 class _EmpresaDataSource extends DataTableSource {
-  final List<Empresa> listaEmpresa;
+  final List<Empresa>? listaEmpresa;
   final BuildContext context;
   final Function refrescarTela;
  
   _EmpresaDataSource(this.listaEmpresa, this.context, this.refrescarTela);
 
-  void _sort<T>(Comparable<T> getField(Empresa empresa), bool ascending) {
-    listaEmpresa.sort((Empresa a, Empresa b) {
+  void _sort<T>(Comparable<T>? Function(Empresa empresa) getField, bool ascending) {
+    listaEmpresa!.sort((Empresa a, Empresa b) {
       if (!ascending) {
         final Empresa c = a;
         a = b;
         b = c;
       }
-      Comparable<T> aValue = getField(a);
-      Comparable<T> bValue = getField(b);
+      Comparable<T>? aValue = getField(a);
+      Comparable<T>? bValue = getField(b);
 
-      if (aValue == null) aValue = '' as Comparable<T>;
-      if (bValue == null) bValue = '' as Comparable<T>;
+      aValue ??= '' as Comparable<T>;
+      bValue ??= '' as Comparable<T>;
 
       return Comparable.compare(aValue, bValue);
     });
   }
 
-  int _selectedCount = 0;
+  final int _selectedCount = 0;
 
   @override
-  DataRow getRow(int index) {
+  DataRow? getRow(int index) {
     assert(index >= 0);
-    if (index >= listaEmpresa.length) return null;
-    final Empresa empresa = listaEmpresa[index];
+    if (index >= listaEmpresa!.length) return null;
+    final Empresa empresa = listaEmpresa![index];
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
         DataCell(Text('${empresa.id ?? ''}'), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
-        DataCell(Text('${empresa.razaoSocial ?? ''}'), onTap: () {
+        DataCell(Text(empresa.razaoSocial ?? ''), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
-        DataCell(Text('${empresa.nomeFantasia ?? ''}'), onTap: () {
+        DataCell(Text(empresa.nomeFantasia ?? ''), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
-        DataCell(Text('${empresa.cnpj ?? ''}'), onTap: () {
+        DataCell(Text(empresa.cnpj ?? ''), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
-        DataCell(Text('${empresa.inscricaoEstadual ?? ''}'), onTap: () {
+        DataCell(Text(empresa.inscricaoEstadual ?? ''), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
-        DataCell(Text('${empresa.inscricaoMunicipal ?? ''}'), onTap: () {
+        DataCell(Text(empresa.inscricaoMunicipal ?? ''), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
-        DataCell(Text('${empresa.dataConstituicao != null ? DateFormat('dd/MM/yyyy').format(empresa.dataConstituicao) : ''}'), onTap: () {
+        DataCell(Text(empresa.dataConstituicao != null ? DateFormat('dd/MM/yyyy').format(empresa.dataConstituicao!) : ''), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
-        DataCell(Text('${empresa.tipo ?? ''}'), onTap: () {
+        DataCell(Text(empresa.tipo ?? ''), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
-        DataCell(Text('${empresa.email ?? ''}'), onTap: () {
+        DataCell(Text(empresa.email ?? ''), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
-        DataCell(Text('${empresa.logradouro ?? ''}'), onTap: () {
+        DataCell(Text(empresa.logradouro ?? ''), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
-        DataCell(Text('${empresa.numero ?? ''}'), onTap: () {
+        DataCell(Text(empresa.numero ?? ''), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
-        DataCell(Text('${empresa.complemento ?? ''}'), onTap: () {
+        DataCell(Text(empresa.complemento ?? ''), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
-        DataCell(Text('${empresa.cep ?? ''}'), onTap: () {
+        DataCell(Text(empresa.cep ?? ''), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
-        DataCell(Text('${empresa.bairro ?? ''}'), onTap: () {
+        DataCell(Text(empresa.bairro ?? ''), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
-        DataCell(Text('${empresa.cidade ?? ''}'), onTap: () {
+        DataCell(Text(empresa.cidade ?? ''), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
-        DataCell(Text('${empresa.uf ?? ''}'), onTap: () {
+        DataCell(Text(empresa.uf ?? ''), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
-        DataCell(Text('${empresa.fone ?? ''}'), onTap: () {
+        DataCell(Text(empresa.fone ?? ''), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
-        DataCell(Text('${empresa.contato ?? ''}'), onTap: () {
+        DataCell(Text(empresa.contato ?? ''), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
       ],
@@ -419,7 +421,7 @@ class _EmpresaDataSource extends DataTableSource {
   }
 
   @override
-  int get rowCount => listaEmpresa.length ?? 0;
+  int get rowCount => listaEmpresa!.length;
 
   @override
   bool get isRowCountApproximate => false;

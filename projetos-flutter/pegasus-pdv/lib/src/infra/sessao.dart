@@ -55,9 +55,9 @@ class Sessao {
   /// singleton
   factory Sessao() {
     _this ??= Sessao._();
-    return _this;
+    return _this!;
   }
-  static Sessao _this;
+  static Sessao? _this;
   Sessao._() : super();
 
 
@@ -66,27 +66,27 @@ class Sessao {
   static String tokenJWT = '';
 
   // objetos PDV
-  static AppDatabase db;
+  static late AppDatabase db;
 
-  static var statusCaixa; 
+  static dynamic statusCaixa; 
   static bool abriuDialogBoxEspera = false;
-  static String retornoJsonLookup; // será usado para popular a grid da janela de lookup
-  static String retornoJsonNfce; //objeto retornado pelo ACBrMonitor
-  static String caminhoBancoDados; // guarda o caminho para o banco de dados
-  static String ultimoIniNfceEnviado; // guarda a string do último arquivo INI de NFC-e enviado para o ACBrMonitor
+  static late String retornoJsonLookup; // será usado para popular a grid da janela de lookup
+  static String? retornoJsonNfce; //objeto retornado pelo ACBrMonitor
+  static late String caminhoBancoDados; // guarda o caminho para o banco de dados
+  static late String ultimoIniNfceEnviado; // guarda a string do último arquivo INI de NFC-e enviado para o ACBrMonitor
 
-  static PdvMovimento movimento;
-  static Empresa empresa;
-  static PdvConfiguracao configuracaoPdv;
-  static NfeConfiguracao configuracaoNfce;
-  static NfeNumero numeroNfce;
-  static NfcePlanoPagamento nfcePlanoPagamento;
-  static PdvVendaCabecalho vendaAtual = PdvVendaCabecalho(id: null);
+  static PdvMovimento? movimento;
+  static Empresa? empresa;
+  static PdvConfiguracao? configuracaoPdv;
+  static NfeConfiguracao? configuracaoNfce;
+  static NfeNumero? numeroNfce;
+  static NfcePlanoPagamento? nfcePlanoPagamento;
+  static PdvVendaCabecalho? vendaAtual = PdvVendaCabecalho(id: null);
   static List<VendaDetalhe> listaVendaAtualDetalhe = [];
-  static List<PdvTipoPagamento> listaTipoPagamento = [];
+  static List<PdvTipoPagamento>? listaTipoPagamento = [];
   static List<PdvTotalTipoPagamento> listaDadosPagamento = [];
   static List<ContasReceberMontado> listaParcelamento = []; // guarda o parcelamento atual da venda para ser impresso no recibo
-  static RetornoJsonErro objetoJsonErro; // objeto de erro estático que armazena o último erro ocorrido na aplicação
+  static RetornoJsonErro? objetoJsonErro; // objeto de erro estático que armazena o último erro ocorrido na aplicação
   
   /*
    [0] = codigo
@@ -103,7 +103,7 @@ class Sessao {
    [11] = versao
    [12] = fonte
   */ 
-  static List<List<dynamic>> tabelaIbpt; // vamos carregar os dados do arquivo CSV
+  static late List<List<dynamic>> tabelaIbpt; // vamos carregar os dados do arquivo CSV
 
 // #endregion objetos globais
 
@@ -115,9 +115,9 @@ class Sessao {
     }    
     empresa = await db.empresaDao.consultarObjeto(1); // pega a empresa - deve ter apenas um registro no banco de dados
     // se o logo estiver nulo, insere um logo padrão e o usuário poderá alterar depois na tela de cadastro da empresa
-    if (empresa.logotipo == null) {
+    if (empresa!.logotipo == null) {
       final logotipo = (await rootBundle.load('assets/images/sua_logo.png')).buffer.asUint8List();
-      empresa = empresa.copyWith(
+      empresa = empresa!.copyWith(
         logotipo: logotipo,
       );
       await db.empresaDao.alterar(Sessao.empresa, false);
@@ -153,7 +153,7 @@ class Sessao {
       movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.formatarHora(DateTime.now()), statusMovimento: 'A');
       movimento = await db.pdvMovimentoDao.iniciarMovimento(movimento);
     } else {
-      if (Biblioteca.formatarData(movimento.dataAbertura) != Biblioteca.formatarData(DateTime.now())) {
+      if (Biblioteca.formatarData(movimento!.dataAbertura) != Biblioteca.formatarData(DateTime.now())) {
         await db.pdvMovimentoDao.encerrarMovimento(movimento);
         movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.formatarHora(DateTime.now()), statusMovimento: 'A');
         movimento = await db.pdvMovimentoDao.iniciarMovimento(movimento);
@@ -164,15 +164,15 @@ class Sessao {
   static Future _gerarArquivoEnvProtegido() async {
     var conteudoEnvProtegido = '';
 
-    conteudoEnvProtegido += 'SENTRY_DNS=' + Constantes.encrypter.encrypt(Constantes.sentryDns, iv: Constantes.iv).base64 + '\n';
-    conteudoEnvProtegido += 'LINGUAGEM_SERVIDOR=' + Constantes.encrypter.encrypt(Constantes.linguagemServidor, iv: Constantes.iv).base64 + '\n';
-    conteudoEnvProtegido += 'ENDERECO_SERVIDOR=' + Constantes.encrypter.encrypt(Constantes.enderecoServidor, iv: Constantes.iv).base64 + '\n';
-    if (Constantes.complementoEnderecoServidor.isEmpty) {
-      conteudoEnvProtegido += 'COMPLEMENTO_ENDERECO_SERVIDOR=' + '\n';
+    conteudoEnvProtegido += 'SENTRY_DNS=' + Constantes.encrypter.encrypt(Constantes.sentryDns!, iv: Constantes.iv).base64 + '\n';
+    conteudoEnvProtegido += 'LINGUAGEM_SERVIDOR=' + Constantes.encrypter.encrypt(Constantes.linguagemServidor!, iv: Constantes.iv).base64 + '\n';
+    conteudoEnvProtegido += 'ENDERECO_SERVIDOR=' + Constantes.encrypter.encrypt(Constantes.enderecoServidor!, iv: Constantes.iv).base64 + '\n';
+    if (Constantes.complementoEnderecoServidor!.isEmpty) {
+      conteudoEnvProtegido += 'COMPLEMENTO_ENDERECO_SERVIDOR=\n';
     } else {
-      conteudoEnvProtegido += 'COMPLEMENTO_ENDERECO_SERVIDOR=' + Constantes.encrypter.encrypt(Constantes.complementoEnderecoServidor, iv: Constantes.iv).base64 + '\n';
+      conteudoEnvProtegido += 'COMPLEMENTO_ENDERECO_SERVIDOR=' + Constantes.encrypter.encrypt(Constantes.complementoEnderecoServidor!, iv: Constantes.iv).base64 + '\n';
     }
-    conteudoEnvProtegido += 'PORTA_SERVIDOR=' + Constantes.encrypter.encrypt(Constantes.portaServidor, iv: Constantes.iv).base64;
+    conteudoEnvProtegido += 'PORTA_SERVIDOR=' + Constantes.encrypter.encrypt(Constantes.portaServidor!, iv: Constantes.iv).base64;
 
     final File file = File('.env-cifrado');
     await file.writeAsString(conteudoEnvProtegido);

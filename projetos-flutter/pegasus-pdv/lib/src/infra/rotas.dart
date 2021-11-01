@@ -42,11 +42,11 @@ class Rotas {
       
       // Login
       case '/':
-        return MaterialPageRoute(builder: (_) => CaixaPage());//LoginPage());//HomePage());//LoginPage());
+        return MaterialPageRoute(builder: (_) => const CaixaPage());//LoginPage());//HomePage());//LoginPage());
 
 			// Dashboard
 			case '/dashboard':
-			  return MaterialPageRoute(builder: (_) => DashboardPage());
+			  return MaterialPageRoute(builder: (_) => const DashboardPage());
 
       ////////////////////////////////////////////////////////// 
       /// CADASTROS
@@ -54,57 +54,57 @@ class Rotas {
 
 			// Cliente
 			case '/clienteLista':
-			  return MaterialPageRoute(builder: (_) => ClienteListaPage());
+			  return MaterialPageRoute(builder: (_) => const ClienteListaPage());
 
 			// Fornecedor
 			case '/fornecedorLista':
-			  return MaterialPageRoute(builder: (_) => FornecedorListaPage());
+			  return MaterialPageRoute(builder: (_) => const FornecedorListaPage());
 
 			// Colaborador
 			case '/colaboradorLista':
-			  return MaterialPageRoute(builder: (_) => ColaboradorListaPage());
+			  return MaterialPageRoute(builder: (_) => const ColaboradorListaPage());
 
 			// Empresa
 			case '/empresaLista':
-			  return MaterialPageRoute(builder: (_) => EmpresaListaPage());
+			  return MaterialPageRoute(builder: (_) => const EmpresaListaPage());
 			case '/empresaPersiste':
-			  return MaterialPageRoute(builder: (_) => EmpresaPersistePage());
+			  return MaterialPageRoute(builder: (_) => const EmpresaPersistePage());
 
 			// Tipo Pagamento
 			case '/pdvTipoPagamentoLista':
-			  return MaterialPageRoute(builder: (_) => PdvTipoPagamentoListaPage());
+			  return MaterialPageRoute(builder: (_) => const PdvTipoPagamentoListaPage());
 
 			// Unidade
 			case '/produtoUnidadeLista':
-			  return MaterialPageRoute(builder: (_) => ProdutoUnidadeListaPage());
+			  return MaterialPageRoute(builder: (_) => const ProdutoUnidadeListaPage());
 
 			// Produto
 			case '/produtoLista':
-			  return MaterialPageRoute(builder: (_) => ProdutoListaPage());
+			  return MaterialPageRoute(builder: (_) => const ProdutoListaPage());
 
       ////////////////////////////////////////////////////////// 
       /// COMPRAS
       //////////////////////////////////////////////////////////
 
 			case '/compraPedidoLista':
-			  return MaterialPageRoute(builder: (_) => CompraPedidoCabecalhoListaPage());
+			  return MaterialPageRoute(builder: (_) => const CompraPedidoCabecalhoListaPage());
 
       ////////////////////////////////////////////////////////// 
       /// FINANCEIRO
       //////////////////////////////////////////////////////////
 
 			case '/contasPagarLista':
-			  return MaterialPageRoute(builder: (_) => ContasPagarListaPage());
+			  return MaterialPageRoute(builder: (_) => const ContasPagarListaPage());
 
 			case '/contasReceberLista':
-			  return MaterialPageRoute(builder: (_) => ContasReceberListaPage());
+			  return MaterialPageRoute(builder: (_) => const ContasReceberListaPage());
 
       ////////////////////////////////////////////////////////// 
       /// ESTOQUE
       //////////////////////////////////////////////////////////
 
 			case '/estoqueLista':
-			  return MaterialPageRoute(builder: (_) => EstoqueListaPage());
+			  return MaterialPageRoute(builder: (_) => const EstoqueListaPage());
 
 
       ////////////////////////////////////////////////////////// 
@@ -113,21 +113,21 @@ class Rotas {
 
 			// TributConfiguraOfGt
 			case '/tributConfiguraOfGtLista':
-			  return MaterialPageRoute(builder: (_) => TributConfiguraOfGtListaPage());
+			  return MaterialPageRoute(builder: (_) => const TributConfiguraOfGtListaPage());
 			case '/tributConfiguraOfGtPersiste':
-			  return MaterialPageRoute(builder: (_) => TributConfiguraOfGtPersistePage());
+			  return MaterialPageRoute(builder: (_) => const TributConfiguraOfGtPersistePage());
 			
 			// TributGrupoTributario
 			case '/tributGrupoTributarioLista':
-			  return MaterialPageRoute(builder: (_) => TributGrupoTributarioListaPage());
+			  return MaterialPageRoute(builder: (_) => const TributGrupoTributarioListaPage());
 			case '/tributGrupoTributarioPersiste':
-			  return MaterialPageRoute(builder: (_) => TributGrupoTributarioPersistePage());
+			  return MaterialPageRoute(builder: (_) => const TributGrupoTributarioPersistePage());
 			
 			// TributOperacaoFiscal
 			case '/tributOperacaoFiscalLista':
-			  return MaterialPageRoute(builder: (_) => TributOperacaoFiscalListaPage());
+			  return MaterialPageRoute(builder: (_) => const TributOperacaoFiscalListaPage());
 			case '/tributOperacaoFiscalPersiste':
-			  return MaterialPageRoute(builder: (_) => TributOperacaoFiscalPersistePage());
+			  return MaterialPageRoute(builder: (_) => const TributOperacaoFiscalPersistePage());
 
 
       ////////////////////////////////////////////////////////// 
@@ -135,10 +135,10 @@ class Rotas {
       //////////////////////////////////////////////////////////
 
 			case '/nfceContingenciadas':
-			  return MaterialPageRoute(builder: (_) => NfeCabecalhoListaPage());
+			  return MaterialPageRoute(builder: (_) => const NfeCabecalhoListaPage());
 
 			case '/nfceInutilizaNumero':
-			  return MaterialPageRoute(builder: (_) => NfceInutilizaNumeroPage());
+			  return MaterialPageRoute(builder: (_) => const NfceInutilizaNumeroPage());
 
       // Home
 //      case '/home':

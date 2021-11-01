@@ -37,16 +37,17 @@ import 'package:moor/moor.dart';
 
 @DataClassName("EcfLogTotais")
 class EcfLogTotaiss extends Table {
+  @override
   String get tableName => 'ECF_LOG_TOTAIS';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get tipoPagamento => integer().named('TIPO_PAGAMENTO').nullable()();
-  IntColumn get produto => integer().named('PRODUTO').nullable()();
-  IntColumn get r01 => integer().named('R01').nullable()();
-  IntColumn get r02 => integer().named('R02').nullable()();
-  IntColumn get r03 => integer().named('R03').nullable()();
-  IntColumn get r04 => integer().named('R04').nullable()();
-  IntColumn get r05 => integer().named('R05').nullable()();
-  IntColumn get r06 => integer().named('R06').nullable()();
-  IntColumn get r07 => integer().named('R07').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get tipoPagamento => integer().named('TIPO_PAGAMENTO').nullable()() as Column<int>?;
+  IntColumn? get produto => integer().named('PRODUTO').nullable()() as Column<int>?;
+  IntColumn? get r01 => integer().named('R01').nullable()() as Column<int>?;
+  IntColumn? get r02 => integer().named('R02').nullable()() as Column<int>?;
+  IntColumn? get r03 => integer().named('R03').nullable()() as Column<int>?;
+  IntColumn? get r04 => integer().named('R04').nullable()() as Column<int>?;
+  IntColumn? get r05 => integer().named('R05').nullable()() as Column<int>?;
+  IntColumn? get r06 => integer().named('R06').nullable()() as Column<int>?;
+  IntColumn? get r07 => integer().named('R07').nullable()() as Column<int>?;
 }

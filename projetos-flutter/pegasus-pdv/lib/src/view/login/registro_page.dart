@@ -48,9 +48,9 @@ import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 class RegistroPage extends StatefulWidget {
-  final String title;
+  final String? title;
   
-  const RegistroPage({Key key, this.title}): super(key: key);
+  const RegistroPage({Key? key, this.title}): super(key: key);
 
   @override
   _RegistroPageState createState() => _RegistroPageState();
@@ -64,7 +64,7 @@ class _RegistroPageState extends State<RegistroPage> {
   final _codigoConfirmacaoController = TextEditingController();
 
   bool _aceitaTermosDeUso = false;
-  bool _empresaMEI = Sessao.empresa.simei ?? false;
+  bool _empresaMEI = Sessao.empresa!.simei ?? false;
 
   String _textoInformativo = 'Leia com atenção os Termos de Uso da aplicação. Caso concorde com os termos, marque a caixa '
                              'correspondente e informe seu e-mail para realizar seu cadastro. Se você for MEI, devidamente '
@@ -105,34 +105,34 @@ class _RegistroPageState extends State<RegistroPage> {
     if (index == 0) return _cabecalhoTela(context);
     if (index == 1) return _termoDeUso(context);
     if (index == 2) return _conteudoTela(context);
-    return null;
+    return const SizedBox();
   }
   
   Container _cabecalhoTela(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 20.0),
+      margin: const EdgeInsets.only(top: 20.0),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
               color: Colors.white,
               child: Column(
                 children: <Widget>[
-                  SizedBox(
+                  const SizedBox(
                     height: 50.0,
                   ),
                   Text(
-                    widget.title,
+                    widget.title!,
                     style: Theme.of(context).textTheme.headline5,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5.0,
                   ),
                   Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     child: Text(
                       _textoInformativo, textAlign: TextAlign.center,
                       style: TextStyle(
@@ -141,12 +141,12 @@ class _RegistroPageState extends State<RegistroPage> {
                       ),
                     ),                
                   ),
-                  Divider(
+                  const Divider(
                     indent: 10,
                     endIndent: 10,
                     thickness: 2,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10.0,
                   ),
                 ],
@@ -155,7 +155,7 @@ class _RegistroPageState extends State<RegistroPage> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: const <Widget>[
               Material(
                 elevation: 5.0,
                 shape: CircleBorder(),
@@ -174,11 +174,11 @@ class _RegistroPageState extends State<RegistroPage> {
 
   Container _termoDeUso(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 0.0),
+      margin: const EdgeInsets.only(top: 0.0),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
@@ -195,29 +195,29 @@ class _RegistroPageState extends State<RegistroPage> {
                             listStyleType: ListStyleType.SQUARE,
                           ),
                           "table": Style(
-                            backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                            backgroundColor: const Color.fromARGB(0x50, 0xee, 0xee, 0xee),
                           ),
                           "tr": Style(
-                            border: Border(bottom: BorderSide(color: Colors.grey)),
+                            border: const Border(bottom: BorderSide(color: Colors.grey)),
                           ),
                           "th": Style(
-                            padding: EdgeInsets.all(6),
+                            padding: const EdgeInsets.all(6),
                             backgroundColor: Colors.grey,
                           ),
                           "td": Style(
-                            padding: EdgeInsets.all(6),
+                            padding: const EdgeInsets.all(6),
                             alignment: Alignment.topLeft,
                           ),
                           'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
                         },
                         onLinkTap: (url, _, __, ___) {
-                          print("Opening $url...");
+                          debugPrint("Opening $url...");
                         },
                         onImageTap: (src, _, __, ___) {
-                          print(src);
+                          debugPrint(src);
                         },
                         onImageError: (exception, stackTrace) {
-                          print(exception);
+                          debugPrint(exception as String?);
                         },
                       ),
                     ),                    
@@ -233,14 +233,14 @@ class _RegistroPageState extends State<RegistroPage> {
 
   Container _conteudoTela(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 0.0),
+      margin: const EdgeInsets.only(top: 0.0),
       child: Form(
         key: _formKey,
         autovalidateMode: _autoValidate,
         child: Stack(
           children: <Widget>[
             Container(
-              padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 40.0),
+              padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 40.0),
               child: Material(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                 elevation: 5.0,
@@ -251,7 +251,7 @@ class _RegistroPageState extends State<RegistroPage> {
                     children: <Widget>[
                       Visibility(
                         visible: !_pendenteDeConfirmacao,
-                        child: SizedBox(height: 10.0),
+                        child: const SizedBox(height: 10.0),
                       ),
                       /*
                       Visibility(
@@ -281,11 +281,11 @@ class _RegistroPageState extends State<RegistroPage> {
                       Visibility(
                         visible: !_pendenteDeConfirmacao,
                         child: ListTile(
-                          leading: Icon(
+                          leading: const Icon(
                             Icons.account_balance_outlined,
                             color: Colors.blue,
                           ),
-                          title: Text("Informo que sou MEI devidamente cadastrado no SIMEI"),
+                          title: const Text("Informo que sou MEI devidamente cadastrado no SIMEI"),
                           trailing: CupertinoSwitch(
                             value: _empresaMEI,
                             onChanged: (val) {
@@ -297,16 +297,16 @@ class _RegistroPageState extends State<RegistroPage> {
                       ),
                       Visibility(
                         visible: !_pendenteDeConfirmacao,
-                        child: SizedBox(height: 10.0),
+                        child: const SizedBox(height: 10.0),
                       ),
                       Visibility(
                         visible: !_pendenteDeConfirmacao,
                         child: ListTile(
-                          leading: Icon(
+                          leading: const Icon(
                             Icons.fact_check_outlined ,
                             color: Colors.green,
                           ),
-                          title: Text("Aceito e Concordo com os Termos de Uso"),
+                          title: const Text("Aceito e Concordo com os Termos de Uso"),
                           trailing: CupertinoSwitch(
                             value: _aceitaTermosDeUso,
                             onChanged: (val) {
@@ -318,12 +318,12 @@ class _RegistroPageState extends State<RegistroPage> {
                       ),
                       Visibility(
                         visible: _pendenteDeConfirmacao,
-                        child: SizedBox(height: 10.0),
+                        child: const SizedBox(height: 10.0),
                       ),
                       Visibility(
                         visible: _pendenteDeConfirmacao,
                         child: Padding(
-                          padding: EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(10),
                           child: Text(
                             _textoInformativo, textAlign: TextAlign.center,
                             style: TextStyle(
@@ -335,7 +335,7 @@ class _RegistroPageState extends State<RegistroPage> {
                       ),
                       Visibility(
                         visible: _pendenteDeConfirmacao,
-                        child: SizedBox(height: 10.0),
+                        child: const SizedBox(height: 10.0),
                       ),
                       Visibility(
                         visible: _pendenteDeConfirmacao,
@@ -347,7 +347,7 @@ class _RegistroPageState extends State<RegistroPage> {
                             'Informe o Código de Confirmação Enviado para o seu E-mail',
                             'Código de Confirmação',
                             false),
-                          onSaved: (String value) {
+                          onSaved: (String? value) {
                           },
                           onChanged: (text) async {
                             if (_codigoConfirmacaoController.text.length == 32) {
@@ -372,11 +372,11 @@ class _RegistroPageState extends State<RegistroPage> {
     );
   }
 
-  List<Widget> _getBotoesRodape({BuildContext context}) {
+  List<Widget> _getBotoesRodape({BuildContext? context}) {
     List<Widget> listaBotoes = [];
     if (!_pendenteDeConfirmacao) {
       listaBotoes.add(
-        Container(
+        SizedBox(
           width: 200,
           child: getBotaoGenericoPdv(
             descricao: 'Confirmar',
@@ -390,16 +390,16 @@ class _RegistroPageState extends State<RegistroPage> {
     }
     if (_pendenteDeConfirmacao) {
       listaBotoes.add(
-        SizedBox(width: 10.0),
+        const SizedBox(width: 10.0),
       );
       listaBotoes.add(
-        Container(
+        SizedBox(
           width: 200,
           child: getBotaoGenericoPdv(
             descricao: 'Reenviar Email',
             cor: Colors.blue, 
             onPressed: () async {
-              gerarDialogBoxEspera(context);
+              gerarDialogBoxEspera(context!);
               await _reenviarEmail();
               Sessao.fecharDialogBoxEspera(context);
             }
@@ -414,17 +414,17 @@ class _RegistroPageState extends State<RegistroPage> {
   Future _conferirCodigoConfirmacao() async {
     gerarDialogBoxEspera(context);
     EmpresaService servico = EmpresaService();
-    EmpresaModel empresa = EmpresaModel.fromDB(Sessao.empresa);
-    empresa = await servico.conferirCodigoConfirmacao(empresa, _codigoConfirmacaoController.text);
+    EmpresaModel? empresa = EmpresaModel.fromDB(Sessao.empresa!);
+    empresa = await (servico.conferirCodigoConfirmacao(empresa, _codigoConfirmacaoController.text));
     if (empresa != null) {
       if (empresa.registrado == 'S') {
-        Sessao.empresa = Sessao.empresa.copyWith(
+        Sessao.empresa = Sessao.empresa!.copyWith(
           registrado: true, 
           simei: empresa.simei == 'S' ? true : false,
           dataRegistro: empresa.dataRegistro,
           horaRegistro: empresa.horaRegistro,
         );
-        await Sessao.db.empresaDao.alterar(Sessao.empresa, Sessao.configuracaoPdv.modulo != 'G');
+        await Sessao.db.empresaDao.alterar(Sessao.empresa, Sessao.configuracaoPdv!.modulo != 'G');
         Sessao.empresa = await Sessao.db.empresaDao.consultarObjeto(1);
         Sessao.fecharDialogBoxEspera(context);
         gerarDialogBoxInformacao(context, 'Código confirmado com sucesso. Sistema liberado.', 
@@ -441,7 +441,7 @@ class _RegistroPageState extends State<RegistroPage> {
 
   Future _reenviarEmail() async {
     EmpresaService servico = EmpresaService();
-    EmpresaModel empresa = EmpresaModel.fromDB(Sessao.empresa);
+    EmpresaModel empresa = EmpresaModel.fromDB(Sessao.empresa!);
     final retorno = await servico.reenviarEmail(empresa);
     if (retorno) {
       showInSnackBar('E-Mail reenviado com sucesso.', context, corFundo: Colors.blue);    
@@ -452,16 +452,16 @@ class _RegistroPageState extends State<RegistroPage> {
 
   Future _confirmar() async {
     if (_aceitaTermosDeUso) {
-      final FormState form = _formKey.currentState;
+      final FormState form = _formKey.currentState!;
       if (!form.validate()) {
         _autoValidate = AutovalidateMode.always;
         _valorFoco.requestFocus();        
       } else {
         gerarDialogBoxEspera(context);
-        Sessao.empresa = Sessao.empresa.copyWith(
+        Sessao.empresa = Sessao.empresa!.copyWith(
           simei: _empresaMEI, 
         );
-        EmpresaModel empresa = EmpresaModel.fromDB(Sessao.empresa);
+        EmpresaModel? empresa = EmpresaModel.fromDB(Sessao.empresa!);
         EmpresaService servico = EmpresaService();
         empresa = await servico.registrar(empresa);        
         Sessao.fecharDialogBoxEspera(context);
@@ -473,13 +473,13 @@ class _RegistroPageState extends State<RegistroPage> {
             });
           } else if (empresa.registrado == 'S') {
             // normalmente só entrará aqui na versão release para testes
-            Sessao.empresa = Sessao.empresa.copyWith(
+            Sessao.empresa = Sessao.empresa!.copyWith(
               registrado: true, 
               simei: empresa.simei == 'S' ? true : false,
               dataRegistro: DateTime.now(),
               horaRegistro: Biblioteca.formatarHora(DateTime.now()),
             );
-            await Sessao.db.empresaDao.alterar(Sessao.empresa, Sessao.configuracaoPdv.modulo != 'G');
+            await Sessao.db.empresaDao.alterar(Sessao.empresa, Sessao.configuracaoPdv!.modulo != 'G');
             Sessao.empresa = await Sessao.db.empresaDao.consultarObjeto(1);
             Navigator.of(context).pop();
             showInSnackBar('Registro realizado com sucesso.', context, corFundo: Colors.blue);

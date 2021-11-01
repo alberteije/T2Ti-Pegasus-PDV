@@ -47,11 +47,13 @@ import 'package:pegasus_pdv/src/view/menu/menu_interno_botoes.dart';
 import 'package:pegasus_pdv/src/view/menu/menu_titulo_grupo_menu_interno.dart';
 
 class MenuFiscal extends StatelessWidget {
+  const MenuFiscal({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("T2Ti Pegasus PDV - Fiscal"),
+        title: const Text("T2Ti Pegasus PDV - Fiscal"),
         backgroundColor: Colors.black87,
       ),
       // drawer: CommonDrawer(),
@@ -71,9 +73,9 @@ class MenuFiscal extends StatelessWidget {
         child: Column(
           children: <Widget>[
             appBarColumn(context),
-            SizedBox(height: 10,),
-            Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC' ? actionMenuGrupoNfce() : SizedBox(height: 1,), 
-            Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC' ? SizedBox(height: 20,) : SizedBox(height: 1,),
+            const SizedBox(height: 10,),
+            Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC' ? actionMenuGrupoNfce() : const SizedBox(height: 1,), 
+            Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC' ? const SizedBox(height: 20,) : const SizedBox(height: 1,),
           ],
         ),
       );
@@ -85,7 +87,7 @@ class MenuFiscal extends StatelessWidget {
             children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
+                children: const <Widget>[
                   ProfileTile(
                     title: "T2Ti Pegasus PDV",
                     subtitle: "Módulo Fiscal",
@@ -109,7 +111,7 @@ class MenuFiscal extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  MenuTituloGrupoMenuInterno(titulo: "Grupo NFC-e"),
+                  const MenuTituloGrupoMenuInterno(titulo: "Grupo NFC-e"),
                   MenuInternoBotoes(
                     primeiroBotao: BotaoMenu(
                         icon: FontAwesomeIcons.stackOverflow,

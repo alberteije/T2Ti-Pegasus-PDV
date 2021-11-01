@@ -47,16 +47,16 @@ import 'package:pegasus_pdv/src/model/model.dart';
 class NfceService extends ServiceBase {
   var clienteHTTP = Client();
 
-  Future<List<PdvTipoPlanoModel>> consultarListaTipoPlanoNfce({Filtro filtro}) async {
+  Future<List<PdvTipoPlanoModel>?> consultarListaTipoPlanoNfce({Filtro? filtro}) async {
     List<PdvTipoPlanoModel> listaNfceTipoPlanoModel = [];
     
     try {
       tratarFiltro(filtro, '/pdv-tipo-plano/');
 	  	
-      final response = await clienteHTTP.get(Uri.tryParse(url), headers: ServiceBase.cabecalhoRequisicao);
+      final response = await clienteHTTP.get(Uri.tryParse(url)!, headers: ServiceBase.cabecalhoRequisicao);
 
       if (response.statusCode == 200) {
-        if (response.headers["content-type"].contains("html")) {
+        if (response.headers["content-type"]!.contains("html")) {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
@@ -104,15 +104,15 @@ class NfceService extends ServiceBase {
     */
   }
 
-  Future<NfcePlanoPagamentoModel> verificarPlano() async {  
+  Future<NfcePlanoPagamentoModel?> verificarPlano() async {  
     try {
       ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
-                            ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa.cnpj} 
-                            : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa.cnpj};      
-      final response = await clienteHTTP.get(Uri.tryParse('$endpoint/pdv-plano-pagamento/'+Sessao.empresa.cnpj), headers: ServiceBase.cabecalhoRequisicao);
+                            ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa!.cnpj!} 
+                            : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa!.cnpj!};      
+      final response = await clienteHTTP.get(Uri.tryParse('$endpoint/pdv-plano-pagamento/'+Sessao.empresa!.cnpj!)!, headers: ServiceBase.cabecalhoRequisicao);
 
       if (response.statusCode == 200) {
-        if (response.headers["content-type"].contains("html")) {
+        if (response.headers["content-type"]!.contains("html")) {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
@@ -137,15 +137,15 @@ class NfceService extends ServiceBase {
     */  
   }  
 
-  Future<Uint8List> baixarArquivosXml(String periodo) async { 
+  Future<Uint8List?> baixarArquivosXml(String periodo) async { 
     try {
       ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
-                            ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa.cnpj, "periodo": periodo} 
-                            : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa.cnpj, "periodo": periodo};      
-      final response = await clienteHTTP.get(Uri.tryParse('$endpoint/nfe-configuracao'), headers: ServiceBase.cabecalhoRequisicao);
+                            ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa!.cnpj!, "periodo": periodo} 
+                            : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa!.cnpj!, "periodo": periodo};      
+      final response = await clienteHTTP.get(Uri.tryParse('$endpoint/nfe-configuracao')!, headers: ServiceBase.cabecalhoRequisicao);
 
       if (response.statusCode == 200) {
-        if (response.headers["content-type"].contains("html")) {
+        if (response.headers["content-type"]!.contains("html")) {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
@@ -162,26 +162,26 @@ class NfceService extends ServiceBase {
     }
   }  
 
-  Future<NfeConfiguracaoModel> atualizarConfiguracoesMonitor(NfeConfiguracaoModel nfeConfiguracao, String cnpj) async {
+  Future<NfeConfiguracaoModel?> atualizarConfiguracoesMonitor(NfeConfiguracaoModel nfeConfiguracao, String? cnpj) async {
     try {
       ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
                             ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "pdv-configuracao": json.encode(Sessao.configuracaoPdv)} 
                             : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "pdv-configuracao": json.encode(Sessao.configuracaoPdv)};      
       final response = await clienteHTTP.post(
-        Uri.tryParse('$endpoint/nfe-configuracao/$cnpj'),
+        Uri.tryParse('$endpoint/nfe-configuracao/$cnpj')!,
         headers: ServiceBase.cabecalhoRequisicao,
         body: nfeConfiguracao.objetoEncodeJson(nfeConfiguracao),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        if (response.headers["content-type"].contains("html")) {
+        if (response.headers["content-type"]!.contains("html")) {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
           var configuracaoJson = json.decode(response.body);
           final enderecoMonitor = response.headers["endereco-monitor"];
-          final portaMonitor = response.headers["porta-monitor"];
-          Sessao.configuracaoPdv = Sessao.configuracaoPdv.copyWith(
+          final portaMonitor = response.headers["porta-monitor"]!;
+          Sessao.configuracaoPdv = Sessao.configuracaoPdv!.copyWith(
             acbrMonitorEndereco: enderecoMonitor,
             acbrMonitorPorta: int.tryParse(portaMonitor),
           );
@@ -208,13 +208,13 @@ class NfceService extends ServiceBase {
     */
   }
 
-  Future<int> confirmarTransacao(String codigoTransacao) async {
+  Future<int?> confirmarTransacao(String codigoTransacao) async {
     try {
       ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
-                            ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa.cnpj} 
-                            : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa.cnpj};      
+                            ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa!.cnpj!} 
+                            : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa!.cnpj!};      
       final response = await clienteHTTP.post(
-        Uri.tryParse('$endpoint/pdv-plano-pagamento/$codigoTransacao'),
+        Uri.tryParse('$endpoint/pdv-plano-pagamento/$codigoTransacao')!,
         headers: ServiceBase.cabecalhoRequisicao,
         // body: {"vazio": "vazio"} ,
       );
@@ -229,19 +229,19 @@ class NfceService extends ServiceBase {
     */
   }
 
-  Future<bool> atualizarCertificadoDigital(String arquivoBase64, String senha) async {
+  Future<bool> atualizarCertificadoDigital(String? arquivoBase64, String senha) async {
     try {
       ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
-                            ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "hash-registro": senha, "cnpj": Sessao.empresa.cnpj} 
-                            : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "hash-registro": senha, "cnpj": Sessao.empresa.cnpj};      
+                            ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "hash-registro": senha, "cnpj": Sessao.empresa!.cnpj!} 
+                            : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "hash-registro": senha, "cnpj": Sessao.empresa!.cnpj!};      
       final response = await clienteHTTP.post(
-        Uri.tryParse('$endpoint/nfe-configuracao'),
+        Uri.tryParse('$endpoint/nfe-configuracao')!,
         headers: ServiceBase.cabecalhoRequisicao,
         body: arquivoBase64,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        if (response.headers["content-type"].contains("html")) {
+        if (response.headers["content-type"]!.contains("html")) {
           tratarRetornoErro(response.body, response.headers);
           return false;
         } else {

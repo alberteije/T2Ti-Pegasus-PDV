@@ -40,12 +40,12 @@ import 'package:pegasus_pdv/src/model/filtro.dart';
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 
 class FiltroPage extends StatefulWidget {
-  final String title;
-  final String campoPesquisaPadrao;
-  final List<String> colunas;
-  final bool filtroPadrao;
+  final String? title;
+  final String? campoPesquisaPadrao;
+  final List<String?>? colunas;
+  final bool? filtroPadrao;
 
-  const FiltroPage({Key key, 
+  const FiltroPage({Key? key, 
                   this.title, 
                   this.campoPesquisaPadrao,
                   this.colunas, 
@@ -68,7 +68,7 @@ class FiltroPageState extends State<FiltroPage> {
   @override
   void initState() {
     super.initState();
-    filtro.campo = widget.campoPesquisaPadrao != null ? widget.colunas.indexOf(widget.campoPesquisaPadrao).toString() : "0";
+    filtro.campo = widget.campoPesquisaPadrao != null ? widget.colunas!.indexOf(widget.campoPesquisaPadrao).toString() : "0";
     _focusNode.requestFocus();
   }
 
@@ -77,7 +77,7 @@ class FiltroPageState extends State<FiltroPage> {
     filtro.dataInicial = DateFormat('yyyy-MM-dd').format(_dataInicial);
     filtro.dataFinal = DateFormat('yyyy-MM-dd').format(_dataFinal);
 
-    if (widget.filtroPadrao) {
+    if (widget.filtroPadrao!) {
       filtro.condicao = 'cont';
     } else {
       filtro.condicao = 'between';
@@ -87,7 +87,7 @@ class FiltroPageState extends State<FiltroPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title!),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.search, color: Colors.white),
@@ -113,16 +113,16 @@ class FiltroPageState extends State<FiltroPage> {
                 child: DropdownButton<String>(
                   isExpanded: true,
                   value: filtro.campo,
-                  onChanged: (String newValue) {
+                  onChanged: (String? newValue) {
                     setState(() {
                       filtro.campo = newValue;
                     });
                   },
-                  items: widget.colunas
-                      .map<DropdownMenuItem<String>>((String value) {
+                  items: widget.colunas!
+                      .map<DropdownMenuItem<String>>((String? value) {
                     return DropdownMenuItem<String>(
-                      value: widget.colunas.indexOf(value).toString(),
-                      child: Text(value),
+                      value: widget.colunas!.indexOf(value).toString(),
+                      child: Text(value!),
                     );
                   }).toList(),
                 ),
@@ -144,7 +144,7 @@ class FiltroPageState extends State<FiltroPage> {
                       hintText: 'Informe o valor para o filtro',
                       filled: true,
                     ),
-                    onSaved: (String value) {
+                    onSaved: (String? value) {
                       filtro.valor = value;
                     },
                   ),
@@ -152,17 +152,17 @@ class FiltroPageState extends State<FiltroPage> {
               ),
               const SizedBox(height: 20.0),
               Visibility(
-                visible: !widget.filtroPadrao ?? false,
+                visible: widget.filtroPadrao ?? false,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text('Data Inicial', style: theme.textTheme.caption),
                     DatePickerItem(
                       dateTime: _dataInicial,
-                      onChanged: (DateTime value) {
+                      onChanged: (DateTime? value) {
                         filtro.dataInicial = value.toString();
                         setState(() {
-                          _dataInicial = value;
+                          _dataInicial = value!;
                         });
                       },
                     ),
@@ -171,17 +171,17 @@ class FiltroPageState extends State<FiltroPage> {
               ),
               const SizedBox(height: 20.0),
               Visibility(
-                visible: !widget.filtroPadrao ?? false,
+                visible: widget.filtroPadrao ?? false,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text('Data Final', style: theme.textTheme.caption),
                     DatePickerItem(
                       dateTime: _dataFinal,
-                      onChanged: (DateTime value) {
+                      onChanged: (DateTime? value) {
                         filtro.dataFinal = value.toString();
                         setState(() {
-                          _dataFinal = value;
+                          _dataFinal = value!;
                         });
                       },
                     ),
@@ -196,7 +196,7 @@ class FiltroPageState extends State<FiltroPage> {
   }
 
   _confirmar() {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     form.save();
     Navigator.pop(context, filtro);
   }

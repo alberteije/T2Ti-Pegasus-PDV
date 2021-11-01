@@ -33,6 +33,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' show Client;
 
@@ -44,14 +45,14 @@ import 'package:pegasus_pdv/src/model/model.dart';
 class UsuarioService extends ServiceBase {
   var clienteHTTP = Client();
 
-  Future<List<UsuarioModel>> consultarLista({Filtro filtro}) async {
-    var listaUsuarioModel = [];
+  Future<List<UsuarioModel>?> consultarLista({Filtro? filtro}) async {
+    List<UsuarioModel> listaUsuarioModel = [];
 
     tratarFiltro(filtro, '/usuario/');
-    final response = await clienteHTTP.get(Uri.tryParse(url));
+    final response = await clienteHTTP.get(Uri.tryParse(url)!);
 
     if (response.statusCode == 200) {
-      if (response.headers["content-type"].contains("html")) {
+      if (response.headers["content-type"]!.contains("html")) {
         tratarRetornoErro(response.body, response.headers);
         return null;
       } else {
@@ -67,11 +68,11 @@ class UsuarioService extends ServiceBase {
     }
   }
 
-  Future<UsuarioModel> consultarObjeto(int id) async {
+  Future<UsuarioModel?> consultarObjeto(int id) async {
     final response = await clienteHTTP.get(Uri.http(endpoint, 'usuario/$id'));
 
     if (response.statusCode == 200) {
-      if (response.headers["content-type"].contains("html")) {
+      if (response.headers["content-type"]!.contains("html")) {
         tratarRetornoErro(response.body, response.headers);
         return null;
       } else {
@@ -84,15 +85,15 @@ class UsuarioService extends ServiceBase {
     }
   }
 
-  Future<UsuarioModel> inserir(UsuarioModel usuario) async {
+  Future<UsuarioModel?> inserir(UsuarioModel usuario) async {
     final response = await clienteHTTP.post(
-      Uri.tryParse('$endpoint/usuario'),
+      Uri.tryParse('$endpoint/usuario')!,
       headers: {"content-type": "application/json"},
       body: usuario.objetoEncodeJson(usuario),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      if (response.headers["content-type"].contains("html")) {
+      if (response.headers["content-type"]!.contains("html")) {
         tratarRetornoErro(response.body, response.headers);
         return null;
       } else {
@@ -105,16 +106,16 @@ class UsuarioService extends ServiceBase {
     }
   }
 
-  Future<UsuarioModel> alterar(UsuarioModel usuario) async {
+  Future<UsuarioModel?> alterar(UsuarioModel usuario) async {
     var id = usuario.id;
     final response = await clienteHTTP.put(
-      Uri.tryParse('$endpoint/usuario/$id'),
+      Uri.tryParse('$endpoint/usuario/$id')!,
       headers: {"content-type": "application/json"},
       body: usuario.objetoEncodeJson(usuario),
     );
 
     if (response.statusCode == 200) {
-      if (response.headers["content-type"].contains("html")) {
+      if (response.headers["content-type"]!.contains("html")) {
         tratarRetornoErro(response.body, response.headers);
         return null;
       } else {
@@ -127,9 +128,9 @@ class UsuarioService extends ServiceBase {
     }
   }
 
-  Future<bool> excluir(int id) async {
+  Future<bool?> excluir(int id) async {
     final response = await clienteHTTP.delete(
-      Uri.tryParse('$endpoint/usuario/$id'),
+      Uri.tryParse('$endpoint/usuario/$id')!,
       headers: {"content-type": "application/json"},
     );
 
@@ -141,9 +142,9 @@ class UsuarioService extends ServiceBase {
     }
   }  
 
-  Future<UsuarioModel> registrar(UsuarioModel usuario) async {
+  Future<UsuarioModel?> registrar(UsuarioModel usuario) async {
     final response = await clienteHTTP.post(
-      Uri.tryParse('$endpoint/usuario/registro'),
+      Uri.tryParse('$endpoint/usuario/registro')!,
       headers: {
         "content-type": "application/json",
         },
@@ -151,7 +152,7 @@ class UsuarioService extends ServiceBase {
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      if (response.headers["content-type"].contains("html")) {
+      if (response.headers["content-type"]!.contains("html")) {
         tratarRetornoErro(response.body, response.headers);
         return null;
       } else {
@@ -164,9 +165,9 @@ class UsuarioService extends ServiceBase {
     }
   } 
 
-  Future<UsuarioModel> gravarDadosInformacao(UsuarioModel usuario) async {
+  Future<UsuarioModel?> gravarDadosInformacao(UsuarioModel usuario) async {
     final response = await clienteHTTP.post(
-      Uri.tryParse('$endpoint/usuario/grava-dados-informacao'),
+      Uri.tryParse('$endpoint/usuario/grava-dados-informacao')!,
       headers: {
         "content-type": "application/json",
         },
@@ -174,7 +175,7 @@ class UsuarioService extends ServiceBase {
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      if (response.headers["content-type"].contains("html")) {
+      if (response.headers["content-type"]!.contains("html")) {
         tratarRetornoErro(response.body, response.headers);
         return null;
       } else {

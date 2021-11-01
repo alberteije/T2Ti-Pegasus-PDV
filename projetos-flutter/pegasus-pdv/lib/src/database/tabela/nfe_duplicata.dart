@@ -37,11 +37,12 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeDuplicata")
 class NfeDuplicatas extends Table {
+  @override
   String get tableName => 'NFE_DUPLICATA';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeFatura => integer().named('ID_NFE_FATURA').nullable().customConstraint('NULLABLE REFERENCES NFE_FATURA(ID)')();
-  TextColumn get numero => text().named('NUMERO').withLength(min: 0, max: 60).nullable()();
-  DateTimeColumn get dataVencimento => dateTime().named('DATA_VENCIMENTO').nullable()();
-  RealColumn get valor => real().named('VALOR').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeFatura => integer().named('ID_NFE_FATURA').nullable().customConstraint('NULLABLE REFERENCES NFE_FATURA(ID)')() as Column<int>?;
+  TextColumn? get numero => text().named('NUMERO').withLength(min: 0, max: 60).nullable()() as Column<String>?;
+  DateTimeColumn? get dataVencimento => dateTime().named('DATA_VENCIMENTO').nullable()() as Column<DateTime>?;
+  RealColumn? get valor => real().named('VALOR').nullable()() as Column<double>?;
 }

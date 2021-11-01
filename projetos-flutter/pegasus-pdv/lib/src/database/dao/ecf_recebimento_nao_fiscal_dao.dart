@@ -59,7 +59,7 @@ class EcfRecebimentoNaoFiscalDao extends DatabaseAccessor<AppDatabase> with _$Ec
 
   Stream<List<EcfRecebimentoNaoFiscal>> observarLista() => select(ecfRecebimentoNaoFiscals).watch();
 
-  Future<EcfRecebimentoNaoFiscal> consultarObjeto(int pId) {
+  Future<EcfRecebimentoNaoFiscal?> consultarObjeto(int pId) {
     return (select(ecfRecebimentoNaoFiscals)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

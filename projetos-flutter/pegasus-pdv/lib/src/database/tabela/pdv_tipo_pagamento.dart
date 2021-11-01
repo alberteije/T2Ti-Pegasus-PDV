@@ -37,15 +37,16 @@ import 'package:moor/moor.dart';
 
 @DataClassName("PdvTipoPagamento")
 class PdvTipoPagamentos extends Table {
+  @override
   String get tableName => 'PDV_TIPO_PAGAMENTO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get codigo => text().named('CODIGO').withLength(min: 0, max: 3).nullable()();
-  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 0, max: 20).nullable()();
-  TextColumn get tef => text().named('TEF').withLength(min: 0, max: 1).nullable()();
-  TextColumn get imprimeVinculado => text().named('IMPRIME_VINCULADO').withLength(min: 0, max: 1).nullable()();
-  TextColumn get permiteTroco => text().named('PERMITE_TROCO').withLength(min: 0, max: 1).nullable()();
-  TextColumn get tefTipoGp => text().named('TEF_TIPO_GP').withLength(min: 0, max: 1).nullable()();
-  TextColumn get geraParcelas => text().named('GERA_PARCELAS').withLength(min: 0, max: 1).nullable()();
-  TextColumn get codigoPagamentoNfce => text().named('CODIGO_PAGAMENTO_NFCE').withLength(min: 0, max: 2).nullable()(); // conforme tag tPag da NFe
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  TextColumn? get codigo => text().named('CODIGO').withLength(min: 0, max: 3).nullable()() as Column<String>?;
+  TextColumn? get descricao => text().named('DESCRICAO').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  TextColumn? get tef => text().named('TEF').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get imprimeVinculado => text().named('IMPRIME_VINCULADO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get permiteTroco => text().named('PERMITE_TROCO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get tefTipoGp => text().named('TEF_TIPO_GP').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get geraParcelas => text().named('GERA_PARCELAS').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get codigoPagamentoNfce => text().named('CODIGO_PAGAMENTO_NFCE').withLength(min: 0, max: 2).nullable()() as Column<String>?; // conforme tag tPag da NFe
 }

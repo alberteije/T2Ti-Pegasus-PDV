@@ -37,11 +37,12 @@ import 'package:moor/moor.dart';
 
 @DataClassName("ProdutoFichaTecnica")
 class ProdutoFichaTecnicas extends Table {
+  @override
   String get tableName => 'PRODUTO_FICHA_TECNICA';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idProduto => integer().named('ID_PRODUTO').nullable().customConstraint('NULLABLE REFERENCES PRODUTO(ID)')();
-  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 0, max: 50).nullable()();
-  IntColumn get idProdutoFilho => integer().named('ID_PRODUTO_FILHO').nullable().customConstraint('NULLABLE REFERENCES PRODUTO_FILHO(ID)')();
-  RealColumn get quantidade => real().named('QUANTIDADE').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idProduto => integer().named('ID_PRODUTO').nullable().customConstraint('NULLABLE REFERENCES PRODUTO(ID)')() as Column<int>?;
+  TextColumn? get descricao => text().named('DESCRICAO').withLength(min: 0, max: 50).nullable()() as Column<String>?;
+  IntColumn? get idProdutoFilho => integer().named('ID_PRODUTO_FILHO').nullable().customConstraint('NULLABLE REFERENCES PRODUTO_FILHO(ID)')() as Column<int>?;
+  RealColumn? get quantidade => real().named('QUANTIDADE').nullable()() as Column<double>?;
 }

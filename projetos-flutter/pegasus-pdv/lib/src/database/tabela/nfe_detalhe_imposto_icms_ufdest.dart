@@ -37,17 +37,18 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeDetalheImpostoIcmsUfdest")
 class NfeDetalheImpostoIcmsUfdests extends Table {
+  @override
   String get tableName => 'NFE_DETALHE_IMPOSTO_ICMS_UFDEST';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')();
-  RealColumn get valorBcIcmsUfDestino => real().named('VALOR_BC_ICMS_UF_DESTINO').nullable()();
-  RealColumn get valorBcFcpUfDestino => real().named('VALOR_BC_FCP_UF_DESTINO').nullable()();
-  RealColumn get percentualFcpUfDestino => real().named('PERCENTUAL_FCP_UF_DESTINO').nullable()();
-  RealColumn get aliquotaInternaUfDestino => real().named('ALIQUOTA_INTERNA_UF_DESTINO').nullable()();
-  RealColumn get aliquotaInteresdatualUfEnvolvidas => real().named('ALIQUOTA_INTERESDATUAL_UF_ENVOLVIDAS').nullable()();
-  RealColumn get percentualProvisorioPartilhaIcms => real().named('PERCENTUAL_PROVISORIO_PARTILHA_ICMS').nullable()();
-  RealColumn get valorIcmsFcpUfDestino => real().named('VALOR_ICMS_FCP_UF_DESTINO').nullable()();
-  RealColumn get valorInterestadualUfDestino => real().named('VALOR_INTERESTADUAL_UF_DESTINO').nullable()();
-  RealColumn get valorInterestadualUfRemetente => real().named('VALOR_INTERESTADUAL_UF_REMETENTE').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')() as Column<int>?;
+  RealColumn? get valorBcIcmsUfDestino => real().named('VALOR_BC_ICMS_UF_DESTINO').nullable()() as Column<double>?;
+  RealColumn? get valorBcFcpUfDestino => real().named('VALOR_BC_FCP_UF_DESTINO').nullable()() as Column<double>?;
+  RealColumn? get percentualFcpUfDestino => real().named('PERCENTUAL_FCP_UF_DESTINO').nullable()() as Column<double>?;
+  RealColumn? get aliquotaInternaUfDestino => real().named('ALIQUOTA_INTERNA_UF_DESTINO').nullable()() as Column<double>?;
+  RealColumn? get aliquotaInteresdatualUfEnvolvidas => real().named('ALIQUOTA_INTERESDATUAL_UF_ENVOLVIDAS').nullable()() as Column<double>?;
+  RealColumn? get percentualProvisorioPartilhaIcms => real().named('PERCENTUAL_PROVISORIO_PARTILHA_ICMS').nullable()() as Column<double>?;
+  RealColumn? get valorIcmsFcpUfDestino => real().named('VALOR_ICMS_FCP_UF_DESTINO').nullable()() as Column<double>?;
+  RealColumn? get valorInterestadualUfDestino => real().named('VALOR_INTERESTADUAL_UF_DESTINO').nullable()() as Column<double>?;
+  RealColumn? get valorInterestadualUfRemetente => real().named('VALOR_INTERESTADUAL_UF_REMETENTE').nullable()() as Column<double>?;
 }

@@ -37,10 +37,11 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeAcessoXml")
 class NfeAcessoXmls extends Table {
+  @override
   String get tableName => 'NFE_ACESSO_XML';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')();
-  TextColumn get cnpj => text().named('CNPJ').withLength(min: 0, max: 14).nullable()();
-  TextColumn get cpf => text().named('CPF').withLength(min: 0, max: 11).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')() as Column<int>?;
+  TextColumn? get cnpj => text().named('CNPJ').withLength(min: 0, max: 14).nullable()() as Column<String>?;
+  TextColumn? get cpf => text().named('CPF').withLength(min: 0, max: 11).nullable()() as Column<String>?;
 }

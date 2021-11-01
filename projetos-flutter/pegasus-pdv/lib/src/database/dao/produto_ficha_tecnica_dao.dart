@@ -59,7 +59,7 @@ class ProdutoFichaTecnicaDao extends DatabaseAccessor<AppDatabase> with _$Produt
 
   Stream<List<ProdutoFichaTecnica>> observarLista() => select(produtoFichaTecnicas).watch();
 
-  Future<ProdutoFichaTecnica> consultarObjeto(int pId) {
+  Future<ProdutoFichaTecnica?> consultarObjeto(int pId) {
     return (select(produtoFichaTecnicas)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

@@ -41,9 +41,9 @@ class VendaController {
   // busca as taxas no arquivo do IBTP e calcula o imposto do item, armazenando ainda o imposto total da nota
   static void calcularImpostosTransparencia(VendaDetalhe vendaDetalhe) async {
     bool produtoImportado = false;
-    final produtoMontado = await Sessao.db.produtoDao.consultarObjetoMontado(vendaDetalhe.produto.id);
+    final produtoMontado = await Sessao.db.produtoDao.consultarObjetoMontado(vendaDetalhe.produto!.id);
 
-    switch (produtoMontado.tributGrupoTributario?.origemMercadoria ?? 0) {
+    switch (produtoMontado?.tributGrupoTributario?.origemMercadoria ?? 0) {
       case '0' : produtoImportado = false; break;             // 0 - Nacional, exceto as indicadas nos códigos 3, 4, 5 e 8
       case '1' : produtoImportado = true; break;              // 1 - Estrangeira - Importação direta, exceto a indicada no código 6
       case '2' : produtoImportado = true; break;              // 2 - Estrangeira - Adquirida no mercado interno, exceto a indicada no código 7
@@ -59,18 +59,18 @@ class VendaController {
     double valorTributoEstadual = 0;
     double valorTributoMunicipal = 0;
     for (var i = 0; i < Sessao.tabelaIbpt.length; i++) {
-      if (Sessao.tabelaIbpt[i][0] == int.tryParse(vendaDetalhe.produto.codigoNcm)) {
+      if (Sessao.tabelaIbpt[i][0] == int.tryParse(vendaDetalhe.produto!.codigoNcm!)) {
         if(produtoImportado) {
-          valorTributoFederal = Biblioteca.multiplicarMonetario((Sessao.tabelaIbpt[i][5] / 100), vendaDetalhe.pdvVendaDetalhe.valorTotal); 
+          valorTributoFederal = Biblioteca.multiplicarMonetario((Sessao.tabelaIbpt[i][5] / 100), vendaDetalhe.pdvVendaDetalhe!.valorTotal); 
         } else {
-          valorTributoFederal = Biblioteca.multiplicarMonetario((Sessao.tabelaIbpt[i][4] / 100), vendaDetalhe.pdvVendaDetalhe.valorTotal); 
+          valorTributoFederal = Biblioteca.multiplicarMonetario((Sessao.tabelaIbpt[i][4] / 100), vendaDetalhe.pdvVendaDetalhe!.valorTotal); 
         }
-        valorTributoEstadual = Biblioteca.multiplicarMonetario((Sessao.tabelaIbpt[i][6] / 100), vendaDetalhe.pdvVendaDetalhe.valorTotal); 
-        valorTributoMunicipal = Biblioteca.multiplicarMonetario((Sessao.tabelaIbpt[i][7] / 100), vendaDetalhe.pdvVendaDetalhe.valorTotal); 
+        valorTributoEstadual = Biblioteca.multiplicarMonetario((Sessao.tabelaIbpt[i][6] / 100), vendaDetalhe.pdvVendaDetalhe!.valorTotal); 
+        valorTributoMunicipal = Biblioteca.multiplicarMonetario((Sessao.tabelaIbpt[i][7] / 100), vendaDetalhe.pdvVendaDetalhe!.valorTotal); 
       }
     }        
     vendaDetalhe.pdvVendaDetalhe = 
-      vendaDetalhe.pdvVendaDetalhe.copyWith(
+      vendaDetalhe.pdvVendaDetalhe!.copyWith(
         valorImpostoMunicipal: valorTributoMunicipal,
         valorImpostoEstadual: valorTributoEstadual,
         valorImpostoFederal: valorTributoFederal,

@@ -37,9 +37,9 @@ class DropdownLista {
   /// singleton
   factory DropdownLista() {
     _this ??= DropdownLista._();
-    return _this;
+    return _this!;
   }
-  static DropdownLista _this;
+  static DropdownLista? _this;
   DropdownLista._() : super();
 
   static const List<String> listaUF = <String>[

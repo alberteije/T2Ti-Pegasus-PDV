@@ -39,23 +39,25 @@ import 'package:flutter/material.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 
 class MyAboutTile extends StatelessWidget {
+  const MyAboutTile({Key? key}) : super(key: key);
+
   @override  
   Widget build(BuildContext context) {
     return AboutListTile(
-      child: Text("Sobre o " + Constantes.nomeApp),
+      child: const Text("Sobre o " + Constantes.nomeApp),
       dense: true,
-      applicationIcon: CircleAvatar(
+      applicationIcon: const CircleAvatar(
         minRadius: 30,
         maxRadius: 30,
         backgroundImage: AssetImage(Constantes.profileImage),
       ),
-      icon: CircleAvatar(
+      icon: const CircleAvatar(
         minRadius: 15,
         maxRadius: 15,
         backgroundImage: AssetImage(Constantes.t2tiLogo),
       ),
       aboutBoxChildren: <Widget>[
-        SizedBox(
+        const SizedBox(
           height: 10.0,
         ),
         Text(

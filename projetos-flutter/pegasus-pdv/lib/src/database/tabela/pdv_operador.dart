@@ -37,10 +37,11 @@ import 'package:moor/moor.dart';
 
 @DataClassName("PdvOperador")
 class PdvOperadors extends Table {
+  @override
   String get tableName => 'PDV_OPERADOR';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idColaborador => integer().named('ID_COLABORADOR').nullable().customConstraint('NULLABLE REFERENCES COLABORADOR(ID)')();
-  TextColumn get login => text().named('LOGIN').withLength(min: 0, max: 20).nullable()();
-  TextColumn get senha => text().named('SENHA').withLength(min: 0, max: 20).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idColaborador => integer().named('ID_COLABORADOR').nullable().customConstraint('NULLABLE REFERENCES COLABORADOR(ID)')() as Column<int>?;
+  TextColumn? get login => text().named('LOGIN').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  TextColumn? get senha => text().named('SENHA').withLength(min: 0, max: 20).nullable()() as Column<String>?;
 }

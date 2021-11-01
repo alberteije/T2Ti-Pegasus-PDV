@@ -43,13 +43,13 @@ import 'package:pegasus_pdv/src/model/model.dart';
 class EmpresaService extends ServiceBase {
   var clienteHTTP = Client();
 
-  Future<EmpresaConsultaPublica> consultarObjetoPublico(String cnpj) async {
+  Future<EmpresaConsultaPublica?> consultarObjetoPublico(String? cnpj) async {
     try {
       final _url = 'https://www.receitaws.com.br/v1/cnpj/$cnpj';
-      final response = await clienteHTTP.get(Uri.tryParse(_url));
+      final response = await clienteHTTP.get(Uri.tryParse(_url)!);
 
       if (response.statusCode == 200) {
-        if (response.headers["content-type"].contains("html")) {
+        if (response.headers["content-type"]!.contains("html")) {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
@@ -66,16 +66,16 @@ class EmpresaService extends ServiceBase {
     }
   }
 
-  Future<EmpresaModel> atualizar(EmpresaModel empresa) async {
+  Future<EmpresaModel?> atualizar(EmpresaModel empresa) async {
     try {
       final response = await clienteHTTP.post(
-        Uri.tryParse('$endpoint/empresa'),
+        Uri.tryParse('$endpoint/empresa')!,
         headers: ServiceBase.cabecalhoRequisicao,
         body: empresa.objetoEncodeJson(empresa),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        if (response.headers["content-type"].contains("html")) {
+        if (response.headers["content-type"]!.contains("html")) {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
@@ -92,20 +92,20 @@ class EmpresaService extends ServiceBase {
     }
   }
   
-  Future<EmpresaModel> registrar(EmpresaModel empresa) async {
+  Future<EmpresaModel?> registrar(EmpresaModel empresa) async {
     try {
       ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
                             ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "operacao": "registrar"} 
                             : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "operacao": "registrar"};      
 
       final response = await clienteHTTP.post(
-        Uri.tryParse('$endpoint/empresa/' + empresa.cnpj),
+        Uri.tryParse('$endpoint/empresa/' + empresa.cnpj!)!,
         headers: ServiceBase.cabecalhoRequisicao,
         body: empresa.objetoEncodeJson(empresa),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        if (response.headers["content-type"].contains("html")) {
+        if (response.headers["content-type"]!.contains("html")) {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
@@ -133,13 +133,13 @@ class EmpresaService extends ServiceBase {
                             : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "operacao": "reenviar-email"};      
 
       final response = await clienteHTTP.post(
-        Uri.tryParse('$endpoint/empresa/' + empresa.cnpj),
+        Uri.tryParse('$endpoint/empresa/' + empresa.cnpj!)!,
         headers: ServiceBase.cabecalhoRequisicao,
         body: empresa.objetoEncodeJson(empresa),
       );
 
       if (response.statusCode == 200) {
-        if (response.headers["content-type"].contains("html")) {
+        if (response.headers["content-type"]!.contains("html")) {
           tratarRetornoErro(response.body, response.headers);
           return false;
         } else {
@@ -155,20 +155,20 @@ class EmpresaService extends ServiceBase {
     }
   }
 
-  Future<EmpresaModel> conferirCodigoConfirmacao(EmpresaModel empresa, String codigoConfirmacao) async {
+  Future<EmpresaModel?> conferirCodigoConfirmacao(EmpresaModel empresa, String codigoConfirmacao) async {
     try {
       ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
                             ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "operacao": "confirmar-codigo", "codigo-confirmacao": codigoConfirmacao} 
                             : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "operacao": "confirmar-codigo", "codigo-confirmacao": codigoConfirmacao};      
 
       final response = await clienteHTTP.post(
-        Uri.tryParse('$endpoint/empresa/' + empresa.cnpj),
+        Uri.tryParse('$endpoint/empresa/' + empresa.cnpj!)!,
         headers: ServiceBase.cabecalhoRequisicao,
         body: empresa.objetoEncodeJson(empresa),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        if (response.headers["content-type"].contains("html")) {
+        if (response.headers["content-type"]!.contains("html")) {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {

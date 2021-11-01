@@ -20,8 +20,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.9+9
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
-#  sdk: ">=2.15.0-178.1.beta <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
+  #sdk: ">=2.15.0-178.1.beta <3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -39,13 +39,14 @@ dependencies:
   font_awesome_flutter: any
   backdrop: any
   http: any
-  flutter_masked_text: any
+  #flutter_masked_text: any
+  extended_masked_text: any
   cpf_cnpj_validator: any
   flutter_html: any
   bottomreveal: any
   flutter_barcode_scanner: any
   flutter_bootstrap: any
-  flutter_sparkline: any
+  #flutter_sparkline: any
   printing: any
   moor: any
   sqlite3_flutter_libs: any
@@ -58,7 +59,7 @@ dependencies:
   desktop_window: any
   url_launcher: any
   email_validator: any
-  flutter_dotenv: ^3.1.0
+  flutter_dotenv: any
   encrypt: any
   bottom_navy_bar: any
   flutter_spinbox: any
@@ -68,6 +69,7 @@ dependencies:
   file_picker: any
   crypto: any
   share_plus: any
+  sparkline: any
 
 
   # The following adds the Cupertino Icons font to your application.

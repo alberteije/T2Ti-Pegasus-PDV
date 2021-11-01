@@ -37,20 +37,21 @@ import 'package:moor/moor.dart';
 
 @DataClassName("Ibpt")
 class Ibpts extends Table {
+  @override
   String get tableName => 'IBPT';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get ncm => text().named('NCM').withLength(min: 0, max: 8).nullable()();
-  TextColumn get ex => text().named('EX').withLength(min: 0, max: 2).nullable()();
-  TextColumn get tipo => text().named('TIPO').withLength(min: 0, max: 1).nullable()();
-  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 0, max: 250).nullable()();
-  RealColumn get nacionalFederal => real().named('NACIONAL_FEDERAL').nullable()();
-  RealColumn get importadosFederal => real().named('IMPORTADOS_FEDERAL').nullable()();
-  RealColumn get estadual => real().named('ESTADUAL').nullable()();
-  RealColumn get municipal => real().named('MUNICIPAL').nullable()();
-  DateTimeColumn get vigenciaInicio => dateTime().named('VIGENCIA_INICIO').nullable()();
-  DateTimeColumn get vigenciaFim => dateTime().named('VIGENCIA_FIM').nullable()();
-  TextColumn get chave => text().named('CHAVE').withLength(min: 0, max: 6).nullable()();
-  TextColumn get versao => text().named('VERSAO').withLength(min: 0, max: 6).nullable()();
-  TextColumn get fonte => text().named('FONTE').withLength(min: 0, max: 34).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  TextColumn? get ncm => text().named('NCM').withLength(min: 0, max: 8).nullable()() as Column<String>?;
+  TextColumn? get ex => text().named('EX').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  TextColumn? get tipo => text().named('TIPO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get descricao => text().named('DESCRICAO').withLength(min: 0, max: 250).nullable()() as Column<String>?;
+  RealColumn? get nacionalFederal => real().named('NACIONAL_FEDERAL').nullable()() as Column<double>?;
+  RealColumn? get importadosFederal => real().named('IMPORTADOS_FEDERAL').nullable()() as Column<double>?;
+  RealColumn? get estadual => real().named('ESTADUAL').nullable()() as Column<double>?;
+  RealColumn? get municipal => real().named('MUNICIPAL').nullable()() as Column<double>?;
+  DateTimeColumn? get vigenciaInicio => dateTime().named('VIGENCIA_INICIO').nullable()() as Column<DateTime>?;
+  DateTimeColumn? get vigenciaFim => dateTime().named('VIGENCIA_FIM').nullable()() as Column<DateTime>?;
+  TextColumn? get chave => text().named('CHAVE').withLength(min: 0, max: 6).nullable()() as Column<String>?;
+  TextColumn? get versao => text().named('VERSAO').withLength(min: 0, max: 6).nullable()() as Column<String>?;
+  TextColumn? get fonte => text().named('FONTE').withLength(min: 0, max: 34).nullable()() as Column<String>?;
 }

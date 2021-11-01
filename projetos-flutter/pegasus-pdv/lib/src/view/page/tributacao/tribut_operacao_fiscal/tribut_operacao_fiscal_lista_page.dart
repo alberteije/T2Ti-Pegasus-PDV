@@ -51,20 +51,22 @@ import 'package:pegasus_pdv/src/view/shared/page/filtro_page.dart';
 import 'tribut_operacao_fiscal_persiste_page.dart';
 
 class TributOperacaoFiscalListaPage extends StatefulWidget {
+  const TributOperacaoFiscalListaPage({Key? key}) : super(key: key);
+
   @override
   _TributOperacaoFiscalListaPageState createState() => _TributOperacaoFiscalListaPageState();
 }
 
 class _TributOperacaoFiscalListaPageState extends State<TributOperacaoFiscalListaPage> {
-  int _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
-  int _sortColumnIndex;
+  int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
+  int? _sortColumnIndex;
   bool _sortAscending = true;
-  var _filtro = Filtro();
+  Filtro? _filtro = Filtro();
   final _colunas = TributOperacaoFiscalDao.colunas;
   final _campos = TributOperacaoFiscalDao.campos;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -77,7 +79,7 @@ class _TributOperacaoFiscalListaPageState extends State<TributOperacaoFiscalList
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
   }
   
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -102,7 +104,7 @@ class _TributOperacaoFiscalListaPageState extends State<TributOperacaoFiscalList
   
     final _TributOperacaoFiscalDataSource _tributOperacaoFiscalDataSource = _TributOperacaoFiscalDataSource(_listaTributOperacaoFiscal, context, _refrescarTela);
 
-    void _sort<T>(Comparable<T> getField(TributOperacaoFiscal tributOperacaoFiscal), int columnIndex, bool ascending) {
+    void _sort<T>(Comparable<T>? Function(TributOperacaoFiscal tributOperacaoFiscal) getField, int columnIndex, bool ascending) {
       _tributOperacaoFiscalDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
@@ -118,7 +120,7 @@ class _TributOperacaoFiscalListaPageState extends State<TributOperacaoFiscalList
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Cadastro - Operação Fiscal'),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           ),
           floatingActionButton: FloatingActionButton(
             focusColor: ViewUtilLib.getBotaoFocusColor(),
@@ -131,7 +133,7 @@ class _TributOperacaoFiscalListaPageState extends State<TributOperacaoFiscalList
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: BottomAppBar(
             color: ViewUtilLib.getBottomAppBarColor(),          
-            shape: CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),
             child: Row(
               children: getBotoesNavigationBarListaPage(
                 context: context, 
@@ -144,14 +146,14 @@ class _TributOperacaoFiscalListaPageState extends State<TributOperacaoFiscalList
             onRefresh: _refrescarTela,
             child: Scrollbar(
               child: _listaTributOperacaoFiscal == null
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : ListView(
-                padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
+                padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                 children: <Widget>[
                   PaginatedDataTable(                        
                     header: const Text('Relação - Operação Fiscal'),
-                    rowsPerPage: _rowsPerPage,
-                    onRowsPerPageChanged: (int value) {
+                    rowsPerPage: _rowsPerPage!,
+                    onRowsPerPageChanged: (int? value) {
                       setState(() {
                         _rowsPerPage = value;
                       });
@@ -213,9 +215,9 @@ class _TributOperacaoFiscalListaPageState extends State<TributOperacaoFiscalList
           fullscreenDialog: true,
         ));
     if (_filtro != null) {
-      if (_filtro.campo != null) {
-        _filtro.campo = _campos[int.parse(_filtro.campo)];
-        await Sessao.db.tributOperacaoFiscalDao.consultarListaFiltro(_filtro.campo, _filtro.valor);
+      if (_filtro!.campo != null) {
+        _filtro!.campo = _campos[int.parse(_filtro!.campo!)];
+        await Sessao.db.tributOperacaoFiscalDao.consultarListaFiltro(_filtro!.campo!, _filtro!.valor!);
         setState(() {
         });
       }
@@ -235,46 +237,46 @@ class _TributOperacaoFiscalListaPageState extends State<TributOperacaoFiscalList
 
 /// codigo referente a fonte de dados
 class _TributOperacaoFiscalDataSource extends DataTableSource {
-  final List<TributOperacaoFiscal> listaTributOperacaoFiscal;
+  final List<TributOperacaoFiscal>? listaTributOperacaoFiscal;
   final BuildContext context;
   final Function refrescarTela;
 
   _TributOperacaoFiscalDataSource(this.listaTributOperacaoFiscal, this.context, this.refrescarTela);
 
-  void _sort<T>(Comparable<T> getField(TributOperacaoFiscal tributOperacaoFiscal), bool ascending) {
-    listaTributOperacaoFiscal.sort((TributOperacaoFiscal a, TributOperacaoFiscal b) {
+  void _sort<T>(Comparable<T>? Function(TributOperacaoFiscal tributOperacaoFiscal) getField, bool ascending) {
+    listaTributOperacaoFiscal!.sort((TributOperacaoFiscal a, TributOperacaoFiscal b) {
       if (!ascending) {
         final TributOperacaoFiscal c = a;
         a = b;
         b = c;
       }
-      Comparable<T> aValue = getField(a);
-      Comparable<T> bValue = getField(b);
+      Comparable<T>? aValue = getField(a);
+      Comparable<T>? bValue = getField(b);
 
-      if (aValue == null) aValue = '' as Comparable<T>;
-      if (bValue == null) bValue = '' as Comparable<T>;
+      aValue ??= '' as Comparable<T>;
+      bValue ??= '' as Comparable<T>;
 
       return Comparable.compare(aValue, bValue);
     });
   }
 
-  int _selectedCount = 0;
+  final int _selectedCount = 0;
 
   @override
-  DataRow getRow(int index) {
+  DataRow? getRow(int index) {
     assert(index >= 0);
-    if (index >= listaTributOperacaoFiscal.length) return null;
-    final TributOperacaoFiscal tributOperacaoFiscal = listaTributOperacaoFiscal[index];
+    if (index >= listaTributOperacaoFiscal!.length) return null;
+    final TributOperacaoFiscal tributOperacaoFiscal = listaTributOperacaoFiscal![index];
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
         DataCell(Text('${tributOperacaoFiscal.id ?? ''}'), onTap: () {
           _detalharTributOperacaoFiscal(tributOperacaoFiscal, context, refrescarTela);
         }),
-        DataCell(Text('${tributOperacaoFiscal.descricao ?? ''}'), onTap: () {
+        DataCell(Text(tributOperacaoFiscal.descricao ?? ''), onTap: () {
           _detalharTributOperacaoFiscal(tributOperacaoFiscal, context, refrescarTela);
         }),
-        DataCell(Text('${tributOperacaoFiscal.observacao ?? ''}'), onTap: () {
+        DataCell(Text(tributOperacaoFiscal.observacao ?? ''), onTap: () {
           _detalharTributOperacaoFiscal(tributOperacaoFiscal, context, refrescarTela);
         }),
       ],
@@ -282,7 +284,7 @@ class _TributOperacaoFiscalDataSource extends DataTableSource {
   }
 
   @override
-  int get rowCount => listaTributOperacaoFiscal.length ?? 0;
+  int get rowCount => listaTributOperacaoFiscal!.length;
 
   @override
   bool get isRowCountApproximate => false;

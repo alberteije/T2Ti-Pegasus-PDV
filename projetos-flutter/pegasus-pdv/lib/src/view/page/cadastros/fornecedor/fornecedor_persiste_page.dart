@@ -33,10 +33,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 
@@ -51,11 +53,11 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 
 class FornecedorPersistePage extends StatefulWidget {
-  final Fornecedor fornecedor;
-  final String title;
-  final String operacao;
+  final Fornecedor? fornecedor;
+  final String? title;
+  final String? operacao;
 
-  const FornecedorPersistePage({Key key, this.fornecedor, this.title, this.operacao})
+  const FornecedorPersistePage({Key? key, this.fornecedor, this.title, this.operacao})
       : super(key: key);
 
   @override
@@ -68,11 +70,11 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   bool _formFoiAlterado = false;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
 
-  Fornecedor fornecedor;
+  Fornecedor? fornecedor;
 
   @override
   void initState() {
@@ -137,7 +139,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
         child: Scaffold(drawerDragStartBehavior: DragStartBehavior.down,
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text(widget.title), 
+            title: Text(widget.title!), 
             actions: widget.operacao == 'I' 
               ? getBotoesAppBarPersistePage(context: context, salvar: _salvar,)
               : getBotoesAppBarPersistePageComExclusao(context: context, salvar: _salvar, excluir: _excluir),
@@ -154,27 +156,27 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                   dragStartBehavior: DragStartBehavior.down,
                   child: BootstrapContainer(
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,                    // children: [
                     children: <Widget>[			  			  
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: InputDecorator(
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Tipo Pessoa',
                                   'Tipo Pessoa',
                                   true),
-                                isEmpty: fornecedor.tipoPessoa == null,
-                                child: getDropDownButton(fornecedor.tipoPessoa,
-                                  (String newValue) {
+                                isEmpty: fornecedor!.tipoPessoa == null,
+                                child: getDropDownButton(fornecedor!.tipoPessoa,
+                                  (String? newValue) {
                                     setState(() {
-                                      fornecedor = fornecedor.copyWith(tipoPessoa: newValue);
+                                      fornecedor = fornecedor!.copyWith(tipoPessoa: newValue);
                                     });
                                 }, <String>[
                                   'Física',
@@ -188,7 +190,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-8',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 focusNode: _foco,
                                 validator: ValidaCampoFormulario.validarObrigatorio,
@@ -200,10 +202,10 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                   'Nome',
                                   true,
                                   paddingVertical: 18),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  fornecedor = fornecedor.copyWith(nome: text);
+                                  fornecedor = fornecedor!.copyWith(nome: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -213,7 +215,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                       ),
                       Visibility(
                         visible: fornecedor?.tipoPessoa == 'Jurídica',
-                        child: Divider(color: Colors.white,),
+                        child: const Divider(color: Colors.white,),
                       ),
                       Visibility(
                         visible: fornecedor?.tipoPessoa == 'Jurídica',
@@ -230,10 +232,10 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                   'Conteúdo para o campo Fantasia',
                                   'Fantasia',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  fornecedor = fornecedor.copyWith(fantasia: text);
+                                  fornecedor = fornecedor!.copyWith(fantasia: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -241,14 +243,14 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                           ],
                         ),
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 validator: ValidaCampoFormulario.validarEmail,
                                 maxLength: 250,
@@ -258,10 +260,10 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                   'Conteúdo para o campo Email',
                                   'Email',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  fornecedor = fornecedor.copyWith(email: text);
+                                  fornecedor = fornecedor!.copyWith(email: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -270,7 +272,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 250,
                                 maxLines: 3,
@@ -279,10 +281,10 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                   'Conteúdo para o campo Url',
                                   'Url',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  fornecedor = fornecedor.copyWith(url: text);
+                                  fornecedor = fornecedor!.copyWith(url: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -290,14 +292,14 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: fornecedor?.tipoPessoa == 'Física' ? 14 : 18,
                                 keyboardType: TextInputType.number,
@@ -307,10 +309,10 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                   'Cpf / Cnpj',
                                   true,
                                   paddingVertical: 15),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  fornecedor = fornecedor.copyWith(cpfCnpj: Biblioteca.removerMascara(text));
+                                  fornecedor = fornecedor!.copyWith(cpfCnpj: Biblioteca.removerMascara(text));
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -319,21 +321,21 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: InputDecorator(
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Data Cadastro',
                                   'Data Cadastro',
                                   true),
-                                isEmpty: fornecedor.dataCadastro == null,
+                                isEmpty: fornecedor!.dataCadastro == null,
                                 child: DatePickerItem(
                                   mascara: 'dd/MM/yyyy',
-                                  dateTime: fornecedor.dataCadastro,
+                                  dateTime: fornecedor!.dataCadastro,
                                   firstDate: DateTime.parse('1900-01-01'),
                                   lastDate: DateTime.now(),
-                                  onChanged: (DateTime value) {
+                                  onChanged: (DateTime? value) {
                                     setState(() {
-                                      fornecedor = fornecedor.copyWith(dataCadastro: value);
+                                      fornecedor = fornecedor!.copyWith(dataCadastro: value);
                                     });
                                   },
                                 ),
@@ -344,7 +346,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                       ),
                       Visibility(
                         visible: fornecedor?.tipoPessoa == 'Física',
-                        child: Divider(color: Colors.white,),
+                        child: const Divider(color: Colors.white,),
                       ),
                       Visibility(
                         visible: fornecedor?.tipoPessoa == 'Física',
@@ -354,17 +356,17 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: InputDecorator(
                                   decoration: getInputDecoration(
                                     'Conteúdo para o campo Sexo',
                                     'Sexo',
                                     true),
-                                  isEmpty: fornecedor.sexo == null,
-                                  child: getDropDownButton(fornecedor.sexo,
-                                    (String newValue) {
+                                  isEmpty: fornecedor!.sexo == null,
+                                  child: getDropDownButton(fornecedor!.sexo,
+                                    (String? newValue) {
                                       setState(() {
-                                        fornecedor = fornecedor.copyWith(sexo: newValue);
+                                        fornecedor = fornecedor!.copyWith(sexo: newValue);
                                       });
                                   }, <String>[
                                     'M',
@@ -375,7 +377,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
                                   maxLength: 20,
                                   maxLines: 1,
@@ -384,10 +386,10 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                     'Conteúdo para o campo Rg',
                                     'Rg',
                                     false),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    fornecedor = fornecedor.copyWith(rg: text);
+                                    fornecedor = fornecedor!.copyWith(rg: text);
                                     _formFoiAlterado = true;
                                   },
                                 ),
@@ -398,7 +400,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                       ),
                       Visibility(
                         visible: fornecedor?.tipoPessoa == 'Física',
-                        child: Divider(color: Colors.white,),
+                        child: const Divider(color: Colors.white,),
                       ),
                       Visibility(
                         visible: fornecedor?.tipoPessoa == 'Física',
@@ -408,7 +410,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
                                   maxLength: 20,
                                   maxLines: 1,
@@ -417,10 +419,10 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                     'Conteúdo para o campo Orgao Rg',
                                     'Orgao Rg',
                                     false),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    fornecedor = fornecedor.copyWith(orgaoRg: text);
+                                    fornecedor = fornecedor!.copyWith(orgaoRg: text);
                                     _formFoiAlterado = true;
                                   },
                                 ),
@@ -429,21 +431,21 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: InputDecorator(
                                   decoration: getInputDecoration(
                                     'Conteúdo para o campo Data Emissao Rg',
                                     'Data Emissao Rg',
                                     true),
-                                  isEmpty: fornecedor.dataEmissaoRg == null,
+                                  isEmpty: fornecedor!.dataEmissaoRg == null,
                                   child: DatePickerItem(
                                     mascara: 'dd/MM/yyyy',
-                                    dateTime: fornecedor.dataEmissaoRg,
+                                    dateTime: fornecedor!.dataEmissaoRg,
                                     firstDate: DateTime.parse('1900-01-01'),
                                     lastDate: DateTime.now(),
-                                    onChanged: (DateTime value) {
+                                    onChanged: (DateTime? value) {
                                       setState(() {
-                                        fornecedor = fornecedor.copyWith(dataEmissaoRg: value);
+                                        fornecedor = fornecedor!.copyWith(dataEmissaoRg: value);
                                       });
                                     },
                                   ),
@@ -455,7 +457,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                       ),
                       Visibility(
                         visible: fornecedor?.tipoPessoa == 'Jurídica',
-                        child: Divider(color: Colors.white,),
+                        child: const Divider(color: Colors.white,),
                       ),
                       Visibility(
                         visible: fornecedor?.tipoPessoa == 'Jurídica',
@@ -465,7 +467,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
                                   maxLength: 30,
                                   maxLines: 1,
@@ -474,10 +476,10 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                     'Conteúdo para o campo Inscricao Estadual',
                                     'Inscricao Estadual',
                                     false),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    fornecedor = fornecedor.copyWith(inscricaoEstadual: text);
+                                    fornecedor = fornecedor!.copyWith(inscricaoEstadual: text);
                                     _formFoiAlterado = true;
                                   },
                                 ),
@@ -486,7 +488,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
                                   maxLength: 30,
                                   maxLines: 1,
@@ -495,10 +497,10 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                     'Conteúdo para o campo Inscricao Municipal',
                                     'Inscricao Municipal',
                                     false),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    fornecedor = fornecedor.copyWith(inscricaoMunicipal: text);
+                                    fornecedor = fornecedor!.copyWith(inscricaoMunicipal: text);
                                     _formFoiAlterado = true;
                                   },
                                 ),
@@ -507,7 +509,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                           ],
                         ),
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -521,34 +523,34 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                 'Conteúdo para o campo Logradouro',
                                 'Logradouro',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                fornecedor = fornecedor.copyWith(logradouro: text);
+                                fornecedor = fornecedor!.copyWith(logradouro: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: InputDecorator(
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Uf',
                                   'Uf',
                                   true),
                                 isEmpty: fornecedor?.uf == null,
-                                child: getDropDownButton(fornecedor.uf,
-                                  (String newValue) {
+                                child: getDropDownButton(fornecedor!.uf,
+                                  (String? newValue) {
                                 setState(() {
-                                  fornecedor = fornecedor.copyWith(uf: newValue);
+                                  fornecedor = fornecedor!.copyWith(uf: newValue);
                                 });
                                 }, DropdownLista.listaUF)),                                                      
                             ),
@@ -556,7 +558,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 9,
                                 keyboardType: TextInputType.number,
@@ -566,10 +568,10 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                   'Cep',
                                   true,
                                   paddingVertical: 18),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  fornecedor = fornecedor.copyWith(cep: Biblioteca.removerMascara(text));
+                                  fornecedor = fornecedor!.copyWith(cep: Biblioteca.removerMascara(text));
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -578,7 +580,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 10,
                                 maxLines: 1,
@@ -588,10 +590,10 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                   'Numero',
                                   true,
                                   paddingVertical: 18),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  fornecedor = fornecedor.copyWith(numero: text);
+                                  fornecedor = fornecedor!.copyWith(numero: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -599,7 +601,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -613,24 +615,24 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                 'Conteúdo para o campo Complemento',
                                 'Complemento',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                fornecedor = fornecedor.copyWith(complemento: text);
+                                fornecedor = fornecedor!.copyWith(complemento: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 100,
                                 maxLines: 1,
@@ -639,10 +641,10 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                   'Conteúdo para o campo Bairro',
                                   'Bairro',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  fornecedor = fornecedor.copyWith(bairro: text);
+                                  fornecedor = fornecedor!.copyWith(bairro: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -651,7 +653,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 100,
                                 maxLines: 1,
@@ -660,10 +662,10 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                   'Conteúdo para o campo Cidade',
                                   'Cidade',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  fornecedor = fornecedor.copyWith(cidade: text);
+                                  fornecedor = fornecedor!.copyWith(cidade: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -671,14 +673,14 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 14,
                                 keyboardType: TextInputType.number,
@@ -687,10 +689,10 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                   'Conteúdo para o campo Telefone',
                                   'Telefone',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  fornecedor = fornecedor.copyWith(telefone: Biblioteca.removerMascara(text));
+                                  fornecedor = fornecedor!.copyWith(telefone: Biblioteca.removerMascara(text));
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -699,7 +701,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 14,
                                 keyboardType: TextInputType.number,
@@ -708,10 +710,10 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                   'Conteúdo para o campo Celular',
                                   'Celular',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  fornecedor = fornecedor.copyWith(celular: Biblioteca.removerMascara(text));
+                                  fornecedor = fornecedor!.copyWith(celular: Biblioteca.removerMascara(text));
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -719,7 +721,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -733,17 +735,17 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                                 'Conteúdo para o campo Contato',
                                 'Contato',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                fornecedor = fornecedor.copyWith(contato: text);
+                                fornecedor = fornecedor!.copyWith(contato: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -757,7 +759,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                     ],        
                   ),
                 ),
@@ -770,7 +772,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
   }
 
   Future<void> _salvar() async {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (!form.validate()) {
       _autoValidate = AutovalidateMode.always;
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
@@ -788,10 +790,13 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
   }
 
   Future<bool> _avisarUsuarioFormAlterado() async {
-    final FormState form = _formKey.currentState;
-    if (form == null || !_formFoiAlterado) return true;
-
-    return await gerarDialogBoxFormAlterado(context);
+    final FormState? form = _formKey.currentState;
+    if (form == null || !_formFoiAlterado) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
   }
 
   void _excluir() {

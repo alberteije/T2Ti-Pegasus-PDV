@@ -45,20 +45,20 @@ import 'package:pegasus_pdv/src/model/filtro.dart';
 import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
 
 class LookupLocalPage extends StatefulWidget {
-  final String title;
-  final List<String> colunas;
-  final List<String> campos;
-  final String rota;
-  final String campoPesquisaPadrao;
-  final String valorPesquisaPadrao;
-  final String filtroAdicional;
-  final Function metodoConsultaCallBack;
-  final Function metodoCadastroCallBack;
+  final String? title;
+  final List<String?>? colunas;
+  final List<String>? campos;
+  final String? rota;
+  final String? campoPesquisaPadrao;
+  final String? valorPesquisaPadrao;
+  final String? filtroAdicional;
+  final Function? metodoConsultaCallBack;
+  final Function? metodoCadastroCallBack;
   final bool permiteCadastro;
 
   // TODO: limitar a quantidade de registros para não deixar a consulta lenta
   const LookupLocalPage(
-      {Key key,
+      {Key? key,
       this.title,
       this.colunas,
       this.campos,
@@ -79,13 +79,13 @@ class _LookupLocalPageState extends State<LookupLocalPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   static Map<String, dynamic> _resultadoFiltro = {};
   static bool _dadosCarregados = true;
-  String _campoFiltro;
-  List<DataRow> _rowList = [];
+  String? _campoFiltro;
+  final List<DataRow> _rowList = [];
   final _valorFiltroController = TextEditingController();
   final _focusNode = FocusNode();
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -97,11 +97,11 @@ class _LookupLocalPageState extends State<LookupLocalPage> {
       ),
     };
     if (widget.campoPesquisaPadrao != null) {
-      _campoFiltro = widget.colunas[widget.campos.indexOf(widget.campoPesquisaPadrao.constantCase)];
+      _campoFiltro = widget.colunas![widget.campos!.indexOf(widget.campoPesquisaPadrao!.constantCase)];
     }
     if (widget.valorPesquisaPadrao != null) {
-      _valorFiltroController.text = widget.valorPesquisaPadrao; 
-      WidgetsBinding.instance.addPostFrameCallback((_) => _efetuarConsulta());
+      _valorFiltroController.text = widget.valorPesquisaPadrao!; 
+      WidgetsBinding.instance!.addPostFrameCallback((_) => _efetuarConsulta());
     }
     _focusNode.requestFocus();
   }
@@ -126,7 +126,7 @@ class _LookupLocalPageState extends State<LookupLocalPage> {
         child: Scaffold(
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text(widget.title),
+            title: Text(widget.title!),
             actions: _getActions(),
           ),
           body: SafeArea(
@@ -143,16 +143,16 @@ class _LookupLocalPageState extends State<LookupLocalPage> {
                   child: DropdownButton<String>(
                     isExpanded: true,
                     value: _campoFiltro,
-                    onChanged: (String newValue) {
+                    onChanged: (String? newValue) {
                       setState(() {
                         _campoFiltro = newValue;
                       });
                     },
-                    items: widget.colunas
-                        .map<DropdownMenuItem<String>>((String value) {
+                    items: widget.colunas!
+                        .map<DropdownMenuItem<String>>((String? value) {
                       return DropdownMenuItem<String>(
                         value: value,
-                        child: Text(value),
+                        child: Text(value!),
                       );
                     }).toList(),
                   ),
@@ -180,7 +180,7 @@ class _LookupLocalPageState extends State<LookupLocalPage> {
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.all(8.0),
                   child: _dadosCarregados == false
-                      ? Center(child: CircularProgressIndicator())
+                      ? const Center(child: CircularProgressIndicator())
                       : DataTable(columns: _getColumns(), rows: _rowList),
                 ),
               ],
@@ -206,11 +206,11 @@ class _LookupLocalPageState extends State<LookupLocalPage> {
         });
         _rowList.clear();
         var filtro = Filtro();
-        filtro.campo = widget.campos[widget.colunas.indexOf(_campoFiltro)];
+        filtro.campo = widget.campos![widget.colunas!.indexOf(_campoFiltro)];
         filtro.valor = _valorFiltroController.text;
         filtro.condicao = 'cont';
         filtro.where = widget.filtroAdicional;
-        await widget.metodoConsultaCallBack(filtro.campo, filtro.valor);
+        await widget.metodoConsultaCallBack!(filtro.campo, filtro.valor);
         await _carregarDados(filtro);
       }
     }
@@ -226,8 +226,8 @@ class _LookupLocalPageState extends State<LookupLocalPage> {
 
       /// compara os campos do objeto Json com as colunas desejadas para a datatable e
       /// preenche os campos de acordo
-      for (var i = 0; i < widget.campos.length; i++) {
-        var nomeCampoTabela = widget.campos[i].camelCase;
+      for (var i = 0; i < widget.campos!.length; i++) {
+        var nomeCampoTabela = widget.campos![i].camelCase;
         for (var j = 0; j < objetoJson.length; j++) {
           var nomeCampoJson = objetoJson.keys.toList()[j];
           if (nomeCampoJson == nomeCampoTabela) {
@@ -252,8 +252,8 @@ class _LookupLocalPageState extends State<LookupLocalPage> {
 
   List<DataColumn> _getColumns() {
     List<DataColumn> lista = [];
-    for (var i = 0; i < widget.colunas.length; i++) {
-      lista.add(DataColumn(label: Text(widget.colunas[i])));
+    for (var i = 0; i < widget.colunas!.length; i++) {
+      lista.add(DataColumn(label: Text(widget.colunas![i]!)));
     }
     return lista;
   }
@@ -273,7 +273,7 @@ class _LookupLocalPageState extends State<LookupLocalPage> {
       botoes.add(
         IconButton(
           icon: const Icon(Icons.add, color: Colors.white),
-          onPressed: widget.metodoCadastroCallBack,
+          onPressed: widget.metodoCadastroCallBack as void Function()?,
         ),
       );
     }

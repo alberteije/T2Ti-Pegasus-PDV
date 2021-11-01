@@ -55,21 +55,26 @@ import 'package:pegasus_pdv/src/view/shared/about_tile.dart';
 import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
 
 class MenuLateralPDV extends StatefulWidget {
+  const MenuLateralPDV({Key? key}) : super(key: key);
+
 
   @override
   _MenuLateralPDVState createState() => _MenuLateralPDVState();
 }
 
 class _MenuLateralPDVState extends State<MenuLateralPDV> {  
+
+  final ScrollController controllerScroll = ScrollController();
+
   @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _verificarCnpjEmpresa());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _verificarCnpjEmpresa());
   }
   
   void _verificarCnpjEmpresa() {
-    if (Sessao.empresa.cnpj == null) {
+    if (Sessao.empresa!.cnpj == null) {
       EmpresaController.obrigarCadastroCnpj(context);
     }
   }
@@ -80,6 +85,7 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
       child: AbsorbPointer(
         absorbing: (Sessao.statusCaixa == StatusCaixa.vendaEmAndamento), // se houver uma venda em andamento, desabilita as opções do menu
         child: ListView(
+          controller: controllerScroll,
           padding: EdgeInsets.zero,
           children: <Widget>[
 
@@ -87,26 +93,26 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
             /// Cabeçalho
             /// 
             UserAccountsDrawerHeader(  
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFF3366FF),
-                    const Color(0xFF00CCFF),
+                    Color(0xFF3366FF),
+                    Color(0xFF00CCFF),
                   ],
-                  begin: const FractionalOffset(0.0, 0.0),
-                  end: const FractionalOffset(1.0, 0.0),
+                  begin: FractionalOffset(0.0, 0.0),
+                  end: FractionalOffset(1.0, 0.0),
                   stops: [0.0, 1.0],
                   tileMode: TileMode.clamp
                 ),
               ),                      
-              accountName: Text(
+              accountName: const Text(
                 "Opções Gerenciais",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),              
               ),
               accountEmail: Text(
-                Sessao.empresa.nomeFantasia ?? 'Cadastre o nome da empresa',
+                Sessao.empresa!.nomeFantasia ?? 'Cadastre o nome da empresa',
               ),
-              currentAccountPicture: CircleAvatar(
+              currentAccountPicture: const CircleAvatar(
                 backgroundImage: AssetImage(Constantes.profileImage),
               ),
             ),
@@ -114,15 +120,15 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
             ///
             /// Contratação NFC-e
             /// 
-            ((Sessao.configuracaoPdv.modulo == 'G' || Sessao.nfcePlanoPagamento == null) && NfceController.ufPermiteSistemaNfce(Sessao.empresa.uf))
+            ((Sessao.configuracaoPdv!.modulo == 'G' || Sessao.nfcePlanoPagamento == null) && NfceController.ufPermiteSistemaNfce(Sessao.empresa!.uf))
             ?
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Container(
-                    padding: EdgeInsets.only(top: 0, left: 20, right: 0),
-                    child: Text(
+                    padding: const EdgeInsets.only(top: 0, left: 20, right: 0),
+                    child: const Text(
                       "Contrate o Módulo NFC-e",
                       style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12.0, fontStyle: FontStyle.italic),              
                     ),
@@ -130,7 +136,7 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       elevation: 2,
-                      padding: EdgeInsets.all(0),
+                      padding: const EdgeInsets.all(0),
                       primary: Colors.white, 
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
                     ),                    
@@ -138,13 +144,13 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
                       Navigator.of(context)
                         .push(MaterialPageRoute(
                             builder: (BuildContext context) =>
-                                NfceContrataPage()))
+                                const NfceContrataPage()))
                         .then((_) {
                         });
                       },
                     child: Container(
                       height: 120.0,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage(Constantes.nfceBanner),
                           fit: BoxFit.fill,
@@ -152,17 +158,17 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                 ],
               )
-            : SizedBox(height: 1,),
+            : const SizedBox(height: 1,),
 
             ///
             /// Opções Caixa
             /// 
             Container(
-              padding: EdgeInsets.only(top: 0, left: 20, right: 0),
-              child: Text(
+              padding: const EdgeInsets.only(top: 0, left: 20, right: 0),
+              child: const Text(
                 "Opções Caixa",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12.0, fontStyle: FontStyle.italic),              
               ),
@@ -172,22 +178,22 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
                 Navigator.of(context)
                   .push(MaterialPageRoute(
                       builder: (BuildContext context) =>
-                          MovimentoEncerraPage(title: 'Encerra Movimento')))
+                          const MovimentoEncerraPage(title: 'Encerra Movimento')))
                   .then((_) {
                   });
                 },
-              title: Text(
+              title: const Text(
                 "Movimento",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
-              leading: Icon(
+              leading: const Icon(
                 FontAwesomeIcons.cashRegister,
                 color: Colors.green,
               ),
             ),
             ListTile(
               onTap: () => _efetuarSuprimento(context),
-              title: Text(
+              title: const Text(
                 "Suprimento",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
@@ -198,7 +204,7 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
             ),
             ListTile(
               onTap:  ()  => _efetuarSangria(context),
-              title: Text(
+              title: const Text(
                 "Sangria",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
@@ -208,14 +214,14 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
               ),
             ),
 
-            Divider(),
+            const Divider(),
 
             ///
             /// Módulos
             /// 
             Container(
-              padding: EdgeInsets.only(top: 0, left: 20, right: 0),
-              child: Text(
+              padding: const EdgeInsets.only(top: 0, left: 20, right: 0),
+              child: const Text(
                 "Módulos",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12.0, fontStyle: FontStyle.italic),              
               ),
@@ -224,12 +230,12 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
               onTap: () { 
                 Navigator.of(context)
                   .push(MaterialPageRoute(
-                    builder: (BuildContext context) => MenuCadastros()))
+                    builder: (BuildContext context) => const MenuCadastros()))
                   .then((_) {
                     //Provider.of<BancoViewModel>(context).consultarLista();
                   });
                 },
-              title: Text(
+              title: const Text(
                 "Cadastros",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
@@ -243,12 +249,12 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
               onTap: () { 
                 Navigator.of(context)
                   .push(MaterialPageRoute(
-                    builder: (BuildContext context) => CompraPedidoCabecalhoListaPage()))
+                    builder: (BuildContext context) => const CompraPedidoCabecalhoListaPage()))
                   .then((_) {
                     //Provider.of<BancoViewModel>(context).consultarLista();
                   });
                 },
-              title: Text(
+              title: const Text(
                 "Compras",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
@@ -262,12 +268,12 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
               onTap: () { 
                 Navigator.of(context)
                   .push(MaterialPageRoute(
-                    builder: (BuildContext context) => EstoqueListaPage()))
+                    builder: (BuildContext context) => const EstoqueListaPage()))
                   .then((_) {
                     //Provider.of<BancoViewModel>(context).consultarLista();
                   });
                 },
-              title: Text(
+              title: const Text(
                 "Estoque",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
@@ -281,12 +287,12 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
               onTap: () { 
                 Navigator.of(context)
                   .push(MaterialPageRoute(
-                    builder: (BuildContext context) => MenuFinanceiro()))
+                    builder: (BuildContext context) => const MenuFinanceiro()))
                   .then((_) {
                     //Provider.of<BancoViewModel>(context).consultarLista();
                   });
                 },
-              title: Text(
+              title: const Text(
                 "Financeiro",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
@@ -301,12 +307,12 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
               onTap: () { 
                 Navigator.of(context)
                   .push(MaterialPageRoute(
-                    builder: (BuildContext context) => DashboardPage()))
+                    builder: (BuildContext context) => const DashboardPage()))
                   .then((_) {
                     //Provider.of<BancoViewModel>(context).consultarLista();
                   });
                 },
-              title: Text(
+              title: const Text(
                 "Dashboard",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
@@ -320,12 +326,12 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
               onTap: () { 
                 Navigator.of(context)
                   .push(MaterialPageRoute(
-                    builder: (BuildContext context) => VendasListaPage()))
+                    builder: (BuildContext context) => const VendasListaPage()))
                   .then((_) {
                     //Provider.of<BancoViewModel>(context).consultarLista();
                   });
                 },
-              title: Text(
+              title: const Text(
                 "Vendas",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
@@ -336,18 +342,18 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
               ),
             ),
 
-            Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC' 
+            Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC' 
             ? 
               ListTile(
                 onTap: () { 
                   Navigator.of(context)
                     .push(MaterialPageRoute(
-                      builder: (BuildContext context) => MenuFiscal()))
+                      builder: (BuildContext context) => const MenuFiscal()))
                     .then((_) {
                       //Provider.of<BancoViewModel>(context).consultarLista();
                     });
                   },
-                title: Text(
+                title: const Text(
                   "NFC-e",
                   style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
                 ),
@@ -357,16 +363,16 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
                   // color: Colors.deepOrange.shade700,
                 ),
               )
-            : SizedBox(height: 1,),
+            : const SizedBox(height: 1,),
 
-            Divider(),
+            const Divider(),
 
             ///
             /// Preferências
             /// 
             Container(
-              padding: EdgeInsets.only(top: 0, left: 20, right: 0),
-              child: Text(
+              padding: const EdgeInsets.only(top: 0, left: 20, right: 0),
+              child: const Text(
                 "Outros",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12.0, fontStyle: FontStyle.italic),              
               ),
@@ -375,27 +381,27 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
               onTap:  () {    
                 Navigator.of(context)
                   .push(MaterialPageRoute(
-                    builder: (BuildContext context) => ConfiguracaoPage()))
+                    builder: (BuildContext context) => const ConfiguracaoPage()))
                   .then((_) {
                     //Provider.of<BancoViewModel>(context).consultarLista();
                   });
               },
-              title: Text(
+              title: const Text(
                 "Configurações",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
-              leading: Icon(
+              leading: const Icon(
                 FontAwesomeIcons.cog,
                 color: Colors.brown,
               ),
             ),
             ListTile(
               onTap: () async { 
-                final _url = 'https://www.youtube.com/playlist?list=PLMqoOoxxICPfegpWl8Mj2mthn5QocLGuL';
+                const _url = 'https://www.youtube.com/playlist?list=PLMqoOoxxICPfegpWl8Mj2mthn5QocLGuL';
                 await canLaunch(_url) ? await launch(_url) : throw 'URL não pode ser carregada: $_url';
                 Navigator.pop(context); 
               },
-              title: Text(
+              title: const Text(
                 "Ajuda",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
@@ -418,15 +424,15 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
 
                 // %0D - serve para inserir uma quebra de linha
                 final _url = 'https://t2tisistemas.com/contact.php?'
-                'nome=' + Sessao.empresa.nomeFantasia + 
-                '&email=' + Sessao.empresa.email + 
+                'nome=' + Sessao.empresa!.nomeFantasia! + 
+                '&email=' + Sessao.empresa!.email! + 
                 '&assunto=Contato Pegasus PDV&mensagem='
                 'Olá Equipe T2Ti,'
                 '%0DEstou usando o T2Ti Pegasus PDV e preciso do seguinte auxílio: ';
                 await canLaunch(_url) ? await launch(_url) : throw 'URL não pode ser carregada: $_url';
                 Navigator.pop(context); 
               },
-              title: Text(
+              title: const Text(
                 "Contato",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
@@ -436,7 +442,7 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
               ),
             ),
 
-            Divider(),
+            const Divider(),
             ListTile(
               onTap: () async { 
                 if (Biblioteca.isDesktop()) {
@@ -447,7 +453,7 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
                   });                  
                 }
               },
-              title: Text(
+              title: const Text(
                 "Sair",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
@@ -460,7 +466,7 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
             ///
             /// About
             /// 
-            MyAboutTile()
+            const MyAboutTile()
           ],
         ),
       ),
@@ -468,9 +474,9 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
   }
 
   void _efetuarSuprimento(BuildContext context) async {
-      bool gravouSuprimento = await showDialog(context: context, 
+      bool? gravouSuprimento = await showDialog(context: context, 
         builder: (BuildContext context){
-          return InformaValorPage(title: 'Suprimento', operacao: 'SUPRIMENTO', );
+          return const InformaValorPage(title: 'Suprimento', operacao: 'SUPRIMENTO', );
         });
 
       if (gravouSuprimento ?? false) {
@@ -479,9 +485,9 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
   }
 
   void _efetuarSangria(BuildContext context) async {
-      bool gravouSangria = await showDialog(context: context, 
+      bool? gravouSangria = await showDialog(context: context, 
         builder: (BuildContext context){
-          return InformaValorPage(title: 'Sangria', operacao: 'SANGRIA', );
+          return const InformaValorPage(title: 'Sangria', operacao: 'SANGRIA', );
         });
 
       if (gravouSangria ?? false) {

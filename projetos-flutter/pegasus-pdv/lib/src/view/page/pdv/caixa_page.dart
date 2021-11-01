@@ -33,6 +33,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -65,6 +66,8 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 
 class CaixaPage extends StatefulWidget {
+  const CaixaPage({Key? key}) : super(key: key);
+
   @override
   _CaixaPageState createState() => _CaixaPageState();
 }
@@ -74,19 +77,19 @@ class _CaixaPageState extends State<CaixaPage> {
   final _pesquisaProdutoController = TextEditingController();
   final _focusNode = FocusNode();
 
-  String _codigoDeBarras;
-  double _quantidadeInformada = 1;
+  String? _codigoDeBarras;
+  double? _quantidadeInformada = 1;
   bool _fornecidoDescontoNoItem = false;
   String _tituloJanela = Constantes.tituloCaixaAberto;
   String _modulo = "Pegasus PDV";
   bool _emitindoNota = false;
 
-  Produto _produto = Produto(id: null);
+  Produto? _produto = Produto(id: null);
 
-  GlobalKey<ScaffoldState> _keyScaffold = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _keyScaffold = GlobalKey<ScaffoldState>();
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -98,9 +101,9 @@ class _CaixaPageState extends State<CaixaPage> {
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _verificarRegistro());
-    WidgetsBinding.instance.addPostFrameCallback((_) => _verificarNotasPendentesContingencia());
-    WidgetsBinding.instance.addPostFrameCallback((_) => _verificarPlanoNfcePertoExpirar());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _verificarRegistro());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _verificarNotasPendentesContingencia());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _verificarPlanoNfcePertoExpirar());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -152,13 +155,13 @@ class _CaixaPageState extends State<CaixaPage> {
           absorbing: _emitindoNota, // desabilita os controles se tiver emitindo nota
           child: Scaffold(
             key: _keyScaffold,
-            endDrawer: MenuLateralPDV(),
+            endDrawer: const MenuLateralPDV(),
             appBar: AppBar(
               title: Column(
                 children: [
                   Text(_tituloJanela),
                   Text(_modulo,
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 9.0, color: Colors.white, fontStyle: FontStyle.italic)
+                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 9.0, color: Colors.white, fontStyle: FontStyle.italic)
                   ),
                 ],
               ),
@@ -167,8 +170,8 @@ class _CaixaPageState extends State<CaixaPage> {
             body: BottomReveal(
               openIcon: Icons.menu,
               closeIcon: Icons.close,
-              revealWidth: Biblioteca.isTelaPequena(context) ? 90 : 100,
-              revealHeight: Biblioteca.isTelaPequena(context) ? 120 : 100,
+              revealWidth: Biblioteca.isTelaPequena(context)! ? 90 : 100,
+              revealHeight: Biblioteca.isTelaPequena(context)! ? 120 : 100,
               backColor: Colors.grey.shade600,
               frontColor: Colors.grey.shade300,
               rightContent: menuInternoDireita(context),
@@ -177,12 +180,12 @@ class _CaixaPageState extends State<CaixaPage> {
               body: Column(
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(top: 10, bottom: 5, left: 10, right: 10),
+                    padding: const EdgeInsets.only(top: 10, bottom: 5, left: 10, right: 10),
                     child: Row(
                       children: <Widget>[
                         Expanded(
                           flex: 1,
-                          child: Container(
+                          child: SizedBox(
                             child: TextField(
                               readOnly: _emitindoNota, // deixa somente leitura se tiver emitindo nota
                               focusNode: _focusNode,
@@ -240,17 +243,17 @@ class _CaixaPageState extends State<CaixaPage> {
 
 // #region widgets Caixa
 
-  Widget itensDaVenda(BuildContext context, int index, {Function onDelete}) {
+  Widget itensDaVenda(BuildContext context, int index, {Function? onDelete}) {
     var _item = index + 1;
     return Card(child:
       ListTile(
-        minLeadingWidth: Biblioteca.isTelaPequena(context) ? 0 : 20,
+        minLeadingWidth: Biblioteca.isTelaPequena(context)! ? 0 : 20,
         onTap: () {
           Navigator.of(context)
             .push(MaterialPageRoute(
                 builder: (BuildContext context) => ProdutoDetalhePage(title: 'Detalhe do Produto', item: Sessao.listaVendaAtualDetalhe[index])))
             .then((_) {
-              if (Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe.quantidade <= 0) {
+              if (Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe!.quantidade! <= 0) {
                 _excluirProduto(index: index, perguntaAntes: false);
               }
               else {
@@ -263,40 +266,40 @@ class _CaixaPageState extends State<CaixaPage> {
         title: 
         Text(montarDescricaoItem(index),
           style: 
-          (Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe.valorDesconto ?? 0) > 0 
-          ? TextStyle(fontWeight: FontWeight.w600, fontSize: 18.0, color: Colors.red, fontStyle: FontStyle.italic)
-          : TextStyle(fontWeight: FontWeight.w600, fontSize: 18.0),
+          (Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe!.valorDesconto ?? 0) > 0 
+          ? const TextStyle(fontWeight: FontWeight.w600, fontSize: 18.0, color: Colors.red, fontStyle: FontStyle.italic)
+          : const TextStyle(fontWeight: FontWeight.w600, fontSize: 18.0),
         ),
         leading: Text(
           _item.toString(),
-          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13.0),
+          style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13.0),
         ),
         subtitle: Row(          
-          mainAxisAlignment: Biblioteca.isTelaPequena(context) ? MainAxisAlignment.center : MainAxisAlignment.end,
+          mainAxisAlignment: Biblioteca.isTelaPequena(context)! ? MainAxisAlignment.center : MainAxisAlignment.end,
           children: <Widget>[
             // valor unitário
-            getCardValorUnitario(context: context, valorUnitario: Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe.valorUnitario),
-            SizedBox(
+            getCardValorUnitario(context: context, valorUnitario: Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe!.valorUnitario),
+            const SizedBox(
               width: 8,
             ),
             getBotaoDecrementaCaixa(decrementar: () {_decrementarItem(item: Sessao.listaVendaAtualDetalhe[index]);} ),
             // quantidade e unidade
-            getCardQuantidade(context: context, quantidade: Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe.quantidade),
+            getCardQuantidade(context: context, quantidade: Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe!.quantidade),
             getBotaoIncrementaCaixa(incrementar: () {_incrementarItem(item: Sessao.listaVendaAtualDetalhe[index]);} ),
-            SizedBox(
+            const SizedBox(
               width: 8,
             ),
             // valor total
-            getCardValorTotal(context: context, valorTotal: Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe.valorTotal),
+            getCardValorTotal(context: context, valorTotal: Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe!.valorTotal),
           ],
         ),
         trailing: 
-          Biblioteca.isTelaPequena(context)
+          Biblioteca.isTelaPequena(context)!
           ? null
           : IconButton(
-            onPressed: onDelete,
+            onPressed: onDelete as void Function()?,
             color: Colors.red,
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
             iconSize: 20,
           ),
       ),
@@ -304,20 +307,20 @@ class _CaixaPageState extends State<CaixaPage> {
   }
 
   String montarDescricaoItem(int index) {
-    if ((Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe.valorDesconto ?? 0) > 0 ) {
-      String retorno = Sessao.listaVendaAtualDetalhe[index].produto.gtin + ' - ' + Sessao.listaVendaAtualDetalhe[index].produto.nome;
+    if ((Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe!.valorDesconto ?? 0) > 0 ) {
+      String retorno = Sessao.listaVendaAtualDetalhe[index].produto!.gtin! + ' - ' + Sessao.listaVendaAtualDetalhe[index].produto!.nome!;
       retorno = retorno + ' [desconto: (' + 
-      Constantes.formatoDecimalValor.format(Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe.taxaDesconto ?? 0) + '%) R\$ ' + 
-      Constantes.formatoDecimalValor.format(Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe.valorDesconto ?? 0) + ']';
+      Constantes.formatoDecimalValor.format(Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe!.taxaDesconto ?? 0) + '%) R\$ ' + 
+      Constantes.formatoDecimalValor.format(Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe!.valorDesconto ?? 0) + ']';
       return retorno;
     } else {
-      return Sessao.listaVendaAtualDetalhe[index].produto.gtin + ' - ' + Sessao.listaVendaAtualDetalhe[index].produto.nome;
+      return Sessao.listaVendaAtualDetalhe[index].produto!.gtin! + ' - ' + Sessao.listaVendaAtualDetalhe[index].produto!.nome!;
     }
   }
 
   Widget clienteSelecionado(BuildContext context) {
-    if ((Sessao.vendaAtual.nomeCliente != null && Sessao.vendaAtual.nomeCliente != '') 
-    ||  (Sessao.vendaAtual.cpfCnpjCliente != null && Sessao.vendaAtual.cpfCnpjCliente != '')) {
+    if ((Sessao.vendaAtual!.nomeCliente != null && Sessao.vendaAtual!.nomeCliente != '') 
+    ||  (Sessao.vendaAtual!.cpfCnpjCliente != null && Sessao.vendaAtual!.cpfCnpjCliente != '')) {
       return Material(
         color: Colors.blueGrey,
         child: Row(
@@ -326,8 +329,8 @@ class _CaixaPageState extends State<CaixaPage> {
             Padding(
               padding: const EdgeInsets.only(top: 5, bottom: 5, left: 0, right: 0),
               child: Text(
-                "Cliente: " + (Sessao.vendaAtual.nomeCliente ?? '') + ' - CPF: ' + (Sessao.vendaAtual.cpfCnpjCliente ?? ''),
-                style: TextStyle(
+                "Cliente: " + (Sessao.vendaAtual!.nomeCliente ?? '') + ' - CPF: ' + (Sessao.vendaAtual!.cpfCnpjCliente ?? ''),
+                style: const TextStyle(
                   fontSize: 12,
                   color: Colors.white),
               ),
@@ -336,12 +339,12 @@ class _CaixaPageState extends State<CaixaPage> {
         ),
       );
     } else {
-      return Material();
+      return const Material();
     }
   }
 
   Widget vendedorSelecionado(BuildContext context) {
-    if (Sessao.vendaAtual.idColaborador != null) {
+    if (Sessao.vendaAtual!.idColaborador != null) {
       return Material(
         color: Colors.blueGrey.shade900,
         child: Row(
@@ -350,8 +353,8 @@ class _CaixaPageState extends State<CaixaPage> {
             Padding(
               padding: const EdgeInsets.only(top: 5, bottom: 5, left: 0, right: 0),
               child: Text(
-                "Vendedor: " + Sessao.vendaAtual.idColaborador.toString(),
-                style: TextStyle(
+                "Vendedor: " + Sessao.vendaAtual!.idColaborador.toString(),
+                style: const TextStyle(
                   fontSize: 12,
                   color: Colors.white),
               ),
@@ -360,7 +363,7 @@ class _CaixaPageState extends State<CaixaPage> {
         ),
       );
     } else {
-      return Material();
+      return const Material();
     }
   }
 
@@ -378,7 +381,7 @@ class _CaixaPageState extends State<CaixaPage> {
                 padding: const EdgeInsets.only(top: 30, bottom: 0, left: 10, right: 10),
                     child: Text(
                       "Itens: " + Sessao.listaVendaAtualDetalhe.length.toString(), 
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
                           color: Colors.white),
@@ -387,11 +390,11 @@ class _CaixaPageState extends State<CaixaPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 0, bottom: 15, left: 10, right: 10),
                 child: Text(
-                  Constantes.formatoDecimalValor.format(Sessao.vendaAtual.valorFinal ?? 0),
+                  Constantes.formatoDecimalValor.format(Sessao.vendaAtual!.valorFinal ?? 0),
                   style: 
-                  (Sessao.vendaAtual.valorDesconto ?? 0) > 0 
-                  ? TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0, color: Colors.amberAccent, fontStyle: FontStyle.italic)
-                  : TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0, color: Colors.yellow),
+                  (Sessao.vendaAtual!.valorDesconto ?? 0) > 0 
+                  ? const TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0, color: Colors.amberAccent, fontStyle: FontStyle.italic)
+                  : const TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0, color: Colors.yellow),
                 ),
               ),
             ],
@@ -402,15 +405,15 @@ class _CaixaPageState extends State<CaixaPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SizedBox(
-                  width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+                  width: Biblioteca.isTelaPequena(context)! ? 130 : 150,
                   child: ElevatedButton(
                     child: Text("Encerrar Venda", 
-                      style: Biblioteca.isTelaPequena(context) ? TextStyle(fontSize: 15) : TextStyle(fontSize: 18)),
+                      style: Biblioteca.isTelaPequena(context)! ? const TextStyle(fontSize: 15) : const TextStyle(fontSize: 18)),
                     style: ElevatedButton.styleFrom(
                       elevation: 4,
-                      padding: Biblioteca.isTelaPequena(context) 
-                                ? EdgeInsets.only(left: 6.0, right: 6.0, top: 12.0, bottom: 12.0) 
-                                : EdgeInsets.all(15.0),
+                      padding: Biblioteca.isTelaPequena(context)! 
+                                ? const EdgeInsets.only(left: 6.0, right: 6.0, top: 12.0, bottom: 12.0) 
+                                : const EdgeInsets.all(15.0),
                       primary: Colors.green.shade700, 
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
                     ),
@@ -516,7 +519,7 @@ class _CaixaPageState extends State<CaixaPage> {
     );
   }
 
-  List<Widget> _getBotoesAppBar({BuildContext context}) {
+  List<Widget> _getBotoesAppBar({BuildContext? context}) {
     List<Widget> listaBotoes = [];
     listaBotoes.add(
       IconButton(
@@ -529,10 +532,10 @@ class _CaixaPageState extends State<CaixaPage> {
     );
 
     // só adiciona o botão para reimpressão do recibo se estiver no módulo gratuito
-    if (Sessao.configuracaoPdv.modulo == 'G') {
+    if (Sessao.configuracaoPdv!.modulo == 'G') {
       listaBotoes.add(
         IconButton(
-          icon: FaIcon(FontAwesomeIcons.fileInvoice),
+          icon: const FaIcon(FontAwesomeIcons.fileInvoice),
           tooltip: 'Reimpressão de Recibo',
           onPressed: () async {
             _reimprimirRecibo();
@@ -545,7 +548,7 @@ class _CaixaPageState extends State<CaixaPage> {
     if (Biblioteca.isMobile()) {
       listaBotoes.add(
         IconButton(
-          icon: FaIcon(FontAwesomeIcons.barcode),
+          icon: const FaIcon(FontAwesomeIcons.barcode),
           tooltip: "Ler código de barras",
           onPressed: () async {
             try {
@@ -571,13 +574,13 @@ class _CaixaPageState extends State<CaixaPage> {
     if (Sessao.statusCaixa == StatusCaixa.vendaEmAndamento) {
       _exibirMensagemExisteVendaEmAndamento();
     } else {
-      _keyScaffold.currentState.openEndDrawer();
+      _keyScaffold.currentState!.openEndDrawer();
     }
   }
 
   void _salvarVenda() {
     if (Sessao.statusCaixa == StatusCaixa.vendaEmAndamento) {
-      if (Sessao.listaVendaAtualDetalhe.length > 0) {
+      if (Sessao.listaVendaAtualDetalhe.isNotEmpty) {
         gerarDialogBoxConfirmacao(context, 'Deseja salvar a venda e iniciar uma nova?', () async {
           await Sessao.db.pdvVendaCabecalhoDao.alterar(Sessao.vendaAtual, Sessao.listaVendaAtualDetalhe);
           // Navigator.of(context).pop();
@@ -596,7 +599,7 @@ class _CaixaPageState extends State<CaixaPage> {
       gerarDialogBoxConfirmacao(context, 'Deseja cancelar o processo e iniciar novamente?', () async {
         // no caso de um cancelamento, vamos apenas salvar a venda com o status "A - Aberto", pois ela pode estar vinculada a uma NFC-e
         Sessao.vendaAtual = 
-        Sessao.vendaAtual.copyWith(
+        Sessao.vendaAtual!.copyWith(
           statusVenda: 'A',
         );        
         await Sessao.db.pdvVendaCabecalhoDao.alterar(Sessao.vendaAtual, Sessao.listaVendaAtualDetalhe);
@@ -609,17 +612,17 @@ class _CaixaPageState extends State<CaixaPage> {
 
   void _encerrarVenda() async {
     if (Sessao.statusCaixa == StatusCaixa.vendaEmAndamento) {
-      if (Sessao.listaVendaAtualDetalhe.length > 0) {
+      if (Sessao.listaVendaAtualDetalhe.isNotEmpty) {
         _emitindoNota = true;
-        bool encerrouVenda = await Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => EfetuaPagamentoPage(title: 'Encerramento da Venda')));
+        bool? encerrouVenda = await Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => const EfetuaPagamentoPage(title: 'Encerramento da Venda')));
           if (encerrouVenda ?? false) {
             Sessao.vendaAtual = 
-            Sessao.vendaAtual.copyWith(
+            Sessao.vendaAtual!.copyWith(
               statusVenda: 'F'
             );
             await Sessao.db.pdvVendaCabecalhoDao.alterar(Sessao.vendaAtual, Sessao.listaVendaAtualDetalhe, listaDadosPagamento: Sessao.listaDadosPagamento);
-            if (Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC') {
+            if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
               await _encerrarVendaComNfce();
             } else {
               _imprimirRecibo();
@@ -637,7 +640,7 @@ class _CaixaPageState extends State<CaixaPage> {
 
   Future _encerrarVendaComNfce() async {
     NfceAcbrService servicoNfce = NfceAcbrService();
-    Socket socket;
+    Socket? socket;
     try {
       // ignore: close_sinks
       socket = await servicoNfce.conectar(
@@ -649,7 +652,7 @@ class _CaixaPageState extends State<CaixaPage> {
       final gerouDadosOK = await NfceController.gerarDadosNfce();
       if (gerouDadosOK) {
         Sessao.ultimoIniNfceEnviado = await NfceController.montarNfce();
-        socket.write('NFE.SetFormaEmissao(1)")\r\n.\r\n'); // 1=normal
+        socket!.write('NFE.SetFormaEmissao(1)")\r\n.\r\n'); // 1=normal
       } else {
         gerarDialogBoxErro(context, 'Ocorreu um problema na geração da NFC-e');
       }
@@ -666,12 +669,12 @@ class _CaixaPageState extends State<CaixaPage> {
     Navigator.of(context)
       .push(MaterialPageRoute(
         builder: (BuildContext context) { 
-          if (Sessao.configuracaoPdv.reciboFormatoPagina == 'A4') {
-            return ReciboRelatorioA4(); 
-          } else if (Sessao.configuracaoPdv.reciboFormatoPagina == '80') {
-            return ReciboRelatorio80(); 
+          if (Sessao.configuracaoPdv!.reciboFormatoPagina == 'A4') {
+            return const ReciboRelatorioA4(); 
+          } else if (Sessao.configuracaoPdv!.reciboFormatoPagina == '80') {
+            return const ReciboRelatorio80(); 
           } else {
-            return ReciboRelatorio57(); 
+            return const ReciboRelatorio57(); 
           }
         }))
       .then((_) {
@@ -698,7 +701,7 @@ class _CaixaPageState extends State<CaixaPage> {
     if (Sessao.statusCaixa == StatusCaixa.vendaEmAndamento) {
       _exibirMensagemExisteVendaEmAndamento();
     } else {
-      Map<String, dynamic> objetoJsonRetorno = await Navigator.push(
+      Map<String, dynamic>? objetoJsonRetorno = await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (BuildContext context) => LookupLocalPage(
@@ -723,7 +726,7 @@ class _CaixaPageState extends State<CaixaPage> {
     if (Sessao.statusCaixa == StatusCaixa.vendaEmAndamento) {
       _exibirMensagemExisteVendaEmAndamento();
     } else {
-      Map<String, dynamic> objetoJsonRetorno = await Navigator.push(
+      Map<String, dynamic>? objetoJsonRetorno = await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (BuildContext context) => LookupLocalPage(
@@ -741,7 +744,7 @@ class _CaixaPageState extends State<CaixaPage> {
         Sessao.listaVendaAtualDetalhe = await Sessao.db.pdvVendaDetalheDao.consultarListaComProduto(objetoJsonRetorno['id']);
         // atualiza data e hora
         Sessao.vendaAtual = 
-        Sessao.vendaAtual.copyWith(
+        Sessao.vendaAtual!.copyWith(
           dataVenda: DateTime.now(),
           horaVenda: Biblioteca.formatarHora(DateTime.now()),
         );
@@ -753,13 +756,13 @@ class _CaixaPageState extends State<CaixaPage> {
   }
 
   void _filtrarVendaLookup(String campo, String valor) async {
-    final filtroAdicional = "STATUS_VENDA='A'";
+    const filtroAdicional = "STATUS_VENDA='A'";
     var listaFiltrada = await Sessao.db.pdvVendaCabecalhoDao.consultarListaFiltro(campo, valor, filtroAdicional: filtroAdicional);
     Sessao.retornoJsonLookup = jsonEncode(listaFiltrada);
   }
 
   void _filtrarVendaFechadaLookup(String campo, String valor) async {
-    final filtroAdicional = "STATUS_VENDA='F'";
+    const filtroAdicional = "STATUS_VENDA='F'";
     var listaFiltrada = await Sessao.db.pdvVendaCabecalhoDao.consultarListaFiltro(campo, valor, filtroAdicional: filtroAdicional);
     Sessao.retornoJsonLookup = jsonEncode(listaFiltrada);
   }
@@ -769,10 +772,10 @@ class _CaixaPageState extends State<CaixaPage> {
       if (_fornecidoDescontoNoItem) {
         gerarDialogBoxInformacao(context, 'Não é possível fornecer desconto nos itens e no total da venda.');
       } else {
-        if (Sessao.listaVendaAtualDetalhe.length > 0) {
+        if (Sessao.listaVendaAtualDetalhe.isNotEmpty) {
           Navigator.of(context)
             .push(MaterialPageRoute(
-                builder: (BuildContext context) => InformaValorPage(title: 'Desconto na Venda', operacao: 'DESCONTO', )))
+                builder: (BuildContext context) => const InformaValorPage(title: 'Desconto na Venda', operacao: 'DESCONTO', )))
             .then((_) {
               setState(() {
                 _atualizarTotais();
@@ -787,30 +790,30 @@ class _CaixaPageState extends State<CaixaPage> {
     }
   }
 
-  void _incrementarItem({VendaDetalhe item}) {
+  void _incrementarItem({VendaDetalhe? item}) {
     setState(() {
       _removerDescontoVenda();
-      item.pdvVendaDetalhe = item.pdvVendaDetalhe.copyWith(
+      item!.pdvVendaDetalhe = item.pdvVendaDetalhe!.copyWith(
         taxaDesconto: 0,
         valorDesconto: 0,
-        quantidade: item.pdvVendaDetalhe.quantidade + 1,
-        valorTotalItem: (item.pdvVendaDetalhe.quantidade + 1) * item.pdvVendaDetalhe.valorUnitario,
-        valorTotal: (item.pdvVendaDetalhe.quantidade + 1) * item.pdvVendaDetalhe.valorUnitario,
+        quantidade: item.pdvVendaDetalhe!.quantidade! + 1,
+        valorTotalItem: (item.pdvVendaDetalhe!.quantidade! + 1) * item.pdvVendaDetalhe!.valorUnitario!,
+        valorTotal: (item.pdvVendaDetalhe!.quantidade! + 1) * item.pdvVendaDetalhe!.valorUnitario!,
       );
       _atualizarTotais();
     });
   }
 
-  void _decrementarItem({VendaDetalhe item}) {
-    if (item.pdvVendaDetalhe.quantidade > 1) {
+  void _decrementarItem({required VendaDetalhe item}) {
+    if (item.pdvVendaDetalhe!.quantidade! > 1) {
       setState(() {
         _removerDescontoVenda();
-        item.pdvVendaDetalhe = item.pdvVendaDetalhe.copyWith(
+        item.pdvVendaDetalhe = item.pdvVendaDetalhe!.copyWith(
           taxaDesconto: 0,
           valorDesconto: 0,
-          quantidade: item.pdvVendaDetalhe.quantidade - 1,
-          valorTotalItem: (item.pdvVendaDetalhe.quantidade - 1) * item.pdvVendaDetalhe.valorUnitario,
-          valorTotal: (item.pdvVendaDetalhe.quantidade - 1) * item.pdvVendaDetalhe.valorUnitario,
+          quantidade: item.pdvVendaDetalhe!.quantidade! - 1,
+          valorTotalItem: (item.pdvVendaDetalhe!.quantidade! - 1) * item.pdvVendaDetalhe!.valorUnitario!,
+          valorTotal: (item.pdvVendaDetalhe!.quantidade! - 1) * item.pdvVendaDetalhe!.valorUnitario!,
         );
         _atualizarTotais();
       });
@@ -819,17 +822,17 @@ class _CaixaPageState extends State<CaixaPage> {
 
   void _removerDescontoVenda() {
     Sessao.vendaAtual = 
-      Sessao.vendaAtual.copyWith(
+      Sessao.vendaAtual!.copyWith(
         taxaDesconto: 0,
         valorDesconto: 0,
       );
   }
 
-  void _excluirProduto({int index, bool perguntaAntes}) {
+  void _excluirProduto({int? index, required bool perguntaAntes}) {
     if (perguntaAntes) {
       gerarDialogBoxExclusao(context, () async {
         setState(() {
-          Sessao.listaVendaAtualDetalhe = List.from(Sessao.listaVendaAtualDetalhe)..removeAt(index);
+          Sessao.listaVendaAtualDetalhe = List.from(Sessao.listaVendaAtualDetalhe)..removeAt(index!);
           _removerDescontoVenda();
           _atualizarTotais();
         });
@@ -837,7 +840,7 @@ class _CaixaPageState extends State<CaixaPage> {
       });
     } else {
       setState(() {
-        Sessao.listaVendaAtualDetalhe = List.from(Sessao.listaVendaAtualDetalhe)..removeAt(index);
+        Sessao.listaVendaAtualDetalhe = List.from(Sessao.listaVendaAtualDetalhe)..removeAt(index!);
         _removerDescontoVenda();
         _atualizarTotais();
       });
@@ -847,17 +850,17 @@ class _CaixaPageState extends State<CaixaPage> {
 
   void _configurarDadosTelaPadrao() {
     _fecharMenus();
-    final tipoOperacao = Sessao.configuracaoPdv.moduloFiscalPrincipal == null ? 'REC' : Sessao.configuracaoPdv.moduloFiscalPrincipal;
+    final tipoOperacao = Sessao.configuracaoPdv!.moduloFiscalPrincipal ?? 'REC';
     setState(() {
-      if (Sessao.configuracaoPdv.modulo == 'G') {
+      if (Sessao.configuracaoPdv!.modulo == 'G') {
         _modulo = 'Pegasus PDV Lite - Gratuito';
       } else {
-        if (Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC') {
+        if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
           _modulo = 'Pegasus PDV - Versão NFC-e';
         }
       }
       
-      Sessao.vendaAtual = PdvVendaCabecalho(id: null, idPdvMovimento: Sessao.movimento.id, tipoOperacao: tipoOperacao);
+      Sessao.vendaAtual = PdvVendaCabecalho(id: null, idPdvMovimento: Sessao.movimento!.id, tipoOperacao: tipoOperacao);
       Sessao.listaVendaAtualDetalhe = [];
       Sessao.listaDadosPagamento = [];
       Sessao.listaParcelamento = [];
@@ -874,10 +877,10 @@ class _CaixaPageState extends State<CaixaPage> {
   }
   
   Future<void> _instanciarVendaAtual() async {
-    if (Sessao.vendaAtual.id == null) {
+    if (Sessao.vendaAtual!.id == null) {
       Sessao.vendaAtual = 
-      Sessao.vendaAtual.copyWith(
-        idPdvMovimento: Sessao.movimento.id,
+      Sessao.vendaAtual!.copyWith(
+        idPdvMovimento: Sessao.movimento!.id,
         dataVenda: DateTime.now(),
         horaVenda: Biblioteca.formatarHora(DateTime.now()),
         statusVenda: 'A'
@@ -892,10 +895,10 @@ class _CaixaPageState extends State<CaixaPage> {
     }
   }
 
-  void _localizarProduto(String dadoInformado) async {
+  void _localizarProduto(String? dadoInformado) async {
     bool podeRealizarVenda = false;
-    if (Sessao.configuracaoPdv.modulo != 'G') {
-      if (Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC') {
+    if (Sessao.configuracaoPdv!.modulo != 'G') {
+      if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
         String mensagemRetorno = await NfceController.verificarSeAptoParaEmitirNfce();
         if (mensagemRetorno.isNotEmpty) {
           gerarDialogBoxInformacao(context, mensagemRetorno);
@@ -914,14 +917,14 @@ class _CaixaPageState extends State<CaixaPage> {
     if (podeRealizarVenda) {
       await _instanciarVendaAtual();
       _quantidadeInformada = 1;
-      final digitouQuantidade = dadoInformado.split('*');
+      final digitouQuantidade = dadoInformado!.split('*');
       if (digitouQuantidade.length > 1) {
         _quantidadeInformada = double.tryParse(digitouQuantidade[0].replaceAll(',', '.'));
         dadoInformado = digitouQuantidade[1];
       }
 
       var campoParaConsulta = '';
-      int dadoNumerico = int.tryParse(dadoInformado);
+      int? dadoNumerico = int.tryParse(dadoInformado);
       if (dadoNumerico != null) {
         if (dadoInformado.length == 13 || dadoInformado.length == 14) {
           campoParaConsulta = 'GTIN';
@@ -935,11 +938,11 @@ class _CaixaPageState extends State<CaixaPage> {
 
       if (_produto != null) {
         bool podeComporItemParaVenda = true;
-        if (Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC') {
+        if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
           // verifica se a tributação para o produto está OK antes mesmo de incluí-lo na venda
-          final produtoMontado = await Sessao.db.produtoDao.consultarObjetoMontado(_produto.id);
+          final produtoMontado = await Sessao.db.produtoDao.consultarObjetoMontado(_produto!.id);
           final tributacao = await Sessao.db.tributConfiguraOfGtDao.consultarObjetoMontado(
-            Sessao.configuracaoPdv.idTributOperacaoFiscalPadrao, produtoMontado.tributGrupoTributario.id
+            Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao, produtoMontado?.tributGrupoTributario!.id
           ); 
           if (tributacao == null) {
             podeComporItemParaVenda = false;
@@ -959,24 +962,24 @@ class _CaixaPageState extends State<CaixaPage> {
   }
 
   void _comporItemParaVenda() {
-    final _quantidadeFutura = (_produto.quantidadeEstoque ?? 0) - _quantidadeInformada;
+    final _quantidadeFutura = (_produto!.quantidadeEstoque ?? 0) - _quantidadeInformada!;
 
-    if(Sessao.configuracaoPdv.modulo != 'G' && _produto.idTributGrupoTributario == null) {
+    if(Sessao.configuracaoPdv!.modulo != 'G' && _produto!.idTributGrupoTributario == null) {
       _exibirMensagemGrupoTributario();
-    } else if ((Sessao.configuracaoPdv.permiteEstoqueNegativo ?? 'S') == 'N' && _quantidadeFutura < 0) {
+    } else if ((Sessao.configuracaoPdv!.permiteEstoqueNegativo ?? 'S') == 'N' && _quantidadeFutura < 0) {
       _exibirMensagemEstoqueNegativo();
     } else {
       PdvVendaDetalhe pdvVendaDetalhe = 
       PdvVendaDetalhe(
         id: null, 
-        idProduto: _produto.id,
-        gtin: _produto.gtin == '' ? _produto.id.toString() : _produto.gtin,
-        cst: _produto.cst,
-        movimentaEstoque: _produto.ippt == 'T' ? 'S' : 'N',
+        idProduto: _produto!.id,
+        gtin: _produto!.gtin == '' ? _produto!.id.toString() : _produto!.gtin,
+        cst: _produto!.cst,
+        movimentaEstoque: _produto!.ippt == 'T' ? 'S' : 'N',
         quantidade: _quantidadeInformada,
-        valorUnitario: _produto.valorVenda,
-        valorTotalItem: _quantidadeInformada * _produto.valorVenda,
-        valorTotal: _quantidadeInformada * _produto.valorVenda,
+        valorUnitario: _produto!.valorVenda,
+        valorTotalItem: _quantidadeInformada! * _produto!.valorVenda!,
+        valorTotal: _quantidadeInformada! * _produto!.valorVenda!,
       );
 
       VendaDetalhe vendaDetalhe = VendaDetalhe(pdvVendaDetalhe: pdvVendaDetalhe, produto: _produto);
@@ -992,34 +995,34 @@ class _CaixaPageState extends State<CaixaPage> {
     double subTotal = 0;        
     double totalDescontosItens = 0;
     for (var item in Sessao.listaVendaAtualDetalhe) {
-      totalGeral = totalGeral + item.pdvVendaDetalhe.valorTotalItem;
-      subTotal = subTotal + item.pdvVendaDetalhe.valorTotal;
-      totalDescontosItens = totalDescontosItens + (item.pdvVendaDetalhe.valorDesconto ?? 0);
+      totalGeral = totalGeral + item.pdvVendaDetalhe!.valorTotalItem!;
+      subTotal = subTotal + item.pdvVendaDetalhe!.valorTotal!;
+      totalDescontosItens = totalDescontosItens + (item.pdvVendaDetalhe!.valorDesconto ?? 0);
       VendaController.calcularImpostosTransparencia(item);
     }
-    double taxaDesconto = 0;
+    double? taxaDesconto = 0;
     double valorDesconto = 0;
     if (totalDescontosItens > 0) {
       valorDesconto = totalDescontosItens;
       taxaDesconto = valorDesconto / totalGeral * 100;
-      taxaDesconto = num.parse(taxaDesconto.toStringAsFixed(Constantes.decimaisValor));
+      taxaDesconto = num.parse(taxaDesconto.toStringAsFixed(Constantes.decimaisValor)) as double?;
       _fornecidoDescontoNoItem = true;
     } else {
-      taxaDesconto = Sessao.vendaAtual.taxaDesconto;
-      valorDesconto = Biblioteca.calcularDesconto(subTotal, Sessao.vendaAtual.taxaDesconto);
+      taxaDesconto = Sessao.vendaAtual!.taxaDesconto;
+      valorDesconto = Biblioteca.calcularDesconto(subTotal, Sessao.vendaAtual!.taxaDesconto);
       // distribui o desconto nos itens
       for (var item in Sessao.listaVendaAtualDetalhe) {
-        var valorDescontoPorItem = Biblioteca.calcularDesconto(item.pdvVendaDetalhe.valorTotalItem, Sessao.vendaAtual.taxaDesconto);
-        item.pdvVendaDetalhe = item.pdvVendaDetalhe.copyWith(
+        var valorDescontoPorItem = Biblioteca.calcularDesconto(item.pdvVendaDetalhe!.valorTotalItem, Sessao.vendaAtual!.taxaDesconto);
+        item.pdvVendaDetalhe = item.pdvVendaDetalhe!.copyWith(
           valorDesconto: valorDescontoPorItem,
           taxaDesconto: taxaDesconto,
-          valorTotal: item.pdvVendaDetalhe.valorTotalItem - valorDescontoPorItem,
+          valorTotal: item.pdvVendaDetalhe!.valorTotalItem! - valorDescontoPorItem,
         );
       }      
       _fornecidoDescontoNoItem = false;
     }
     Sessao.vendaAtual = 
-    Sessao.vendaAtual.copyWith(
+    Sessao.vendaAtual!.copyWith(
       valorVenda: totalGeral,
       taxaDesconto: taxaDesconto,
       valorDesconto: valorDesconto,
@@ -1029,15 +1032,15 @@ class _CaixaPageState extends State<CaixaPage> {
   }
 
   void _fecharMenus() {
-    _menuController.close();
-    if (_keyScaffold.currentState.isEndDrawerOpen) {
+    _menuController.close!();
+    if (_keyScaffold.currentState!.isEndDrawerOpen) {
       Navigator.pop(context);
     }
   }
 
   void _identificarVendedor() async {  
     if (Sessao.statusCaixa == StatusCaixa.vendaEmAndamento) {
-      Map<String, dynamic> objetoJsonRetorno = await Navigator.push(
+      Map<String, dynamic>? objetoJsonRetorno = await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (BuildContext context) => LookupLocalPage(
@@ -1053,7 +1056,7 @@ class _CaixaPageState extends State<CaixaPage> {
       if (objetoJsonRetorno != null) {
         setState(() {
           Sessao.vendaAtual = 
-          Sessao.vendaAtual.copyWith(
+          Sessao.vendaAtual!.copyWith(
             idColaborador: objetoJsonRetorno['id'],
           );
         });
@@ -1073,7 +1076,7 @@ class _CaixaPageState extends State<CaixaPage> {
     if (Sessao.statusCaixa == StatusCaixa.vendaEmAndamento) {
       Navigator.of(context)
         .push(MaterialPageRoute(
-            builder: (BuildContext context) => IdentificaClientePage(title: 'Identifica Cliente')))
+            builder: (BuildContext context) => const IdentificaClientePage(title: 'Identifica Cliente')))
         .then((_) {
           setState(() {
           });
@@ -1084,8 +1087,8 @@ class _CaixaPageState extends State<CaixaPage> {
     }
   }
 
-  void _importarProduto({String criterioPesquisa}) async {
-    Map<String, dynamic> objetoJsonRetorno = await Navigator.push(
+  void _importarProduto({String? criterioPesquisa}) async {
+    Map<String, dynamic>? objetoJsonRetorno = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (BuildContext context) => LookupLocalPage(
@@ -1132,11 +1135,11 @@ class _CaixaPageState extends State<CaixaPage> {
 
   Future _verificarRegistro() async {
     // se a empresa não está registrada ainda no banco de dados da SH, verifica se chegou a hora do registro
-    if (Sessao.empresa.registrado == null || Sessao.empresa.registrado == false) {
+    if (Sessao.empresa!.registrado == null || Sessao.empresa!.registrado == false) {
       showDialog(
         context: context, 
         builder: (BuildContext context){
-          return RegistroPage(title: 'Registro do Usuário');
+          return const RegistroPage(title: 'Registro do Usuário');
         })
         .then((_) {
         });
@@ -1145,15 +1148,15 @@ class _CaixaPageState extends State<CaixaPage> {
   }
 
   Future _verificarNotasPendentesContingencia() async {
-    if (Sessao.configuracaoPdv.modulo == 'F' && Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC') {
+    if (Sessao.configuracaoPdv!.modulo == 'F' && Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
       final notasEmContingencia = await Sessao.db.nfeCabecalhoDao.consultarListaFiltro('STATUS_NOTA', '6');
-      if (notasEmContingencia != null && notasEmContingencia.length > 0) {
+      if (notasEmContingencia != null && notasEmContingencia.isNotEmpty) {
         gerarDialogBoxConfirmacao(context, 
           'Existem ' + notasEmContingencia.length.toString() + ' notas impressas em contingência. Deseja transmiti-las agora?', 
           () {
             Navigator.of(context)
               .push(MaterialPageRoute(
-                builder: (BuildContext context) => NfeCabecalhoListaPage()))
+                builder: (BuildContext context) => const NfeCabecalhoListaPage()))
               .then((_) {
               });            
           },
@@ -1166,14 +1169,14 @@ class _CaixaPageState extends State<CaixaPage> {
 
    Future _verificarPlanoNfcePertoExpirar() async {
     if (Sessao.nfcePlanoPagamento != null) {
-      final dataPlanoExpiraFormatada = Biblioteca.formatarData(Sessao.nfcePlanoPagamento.dataPlanoExpira);
+      final dataPlanoExpiraFormatada = Biblioteca.formatarData(Sessao.nfcePlanoPagamento!.dataPlanoExpira);
       final hashDataExpira = md5.convert(utf8.encode(dataPlanoExpiraFormatada + Constantes.chave)).toString();
-      if (hashDataExpira != Sessao.nfcePlanoPagamento.hashRegistro) {
+      if (hashDataExpira != Sessao.nfcePlanoPagamento!.hashRegistro) {
         Sessao.abriuDialogBoxEspera = true;
         gerarDialogBoxEspera(context);
         gerarDialogBoxInformacao(context, 'Banco de dados corrompido. Não é permitido realizar alterações no banco de dados.');
       } else {
-        final dias = Sessao.nfcePlanoPagamento.dataPlanoExpira.difference(DateTime.now()).inDays;
+        final dias = Sessao.nfcePlanoPagamento!.dataPlanoExpira!.difference(DateTime.now()).inDays;
         if (dias <= 5) {
           gerarDialogBoxInformacao(context, 'Faltam $dias dia(s) para que seu plano NFC-e expire.');
         }
@@ -1184,7 +1187,7 @@ class _CaixaPageState extends State<CaixaPage> {
           final nfcePlanoPagamentoModel = await servicoNfce.verificarPlano();          
           if (nfcePlanoPagamentoModel == null || nfcePlanoPagamentoModel.statusPagamento != '3') {
             Sessao.configuracaoPdv = 
-            Sessao.configuracaoPdv.copyWith(
+            Sessao.configuracaoPdv!.copyWith(
               modulo: 'G',
               moduloFiscalPrincipal: '',
               planoSituacao: 'B',
@@ -1196,7 +1199,7 @@ class _CaixaPageState extends State<CaixaPage> {
             Navigator.of(context)
               .push(MaterialPageRoute(
                   builder: (BuildContext context) =>
-                      NfceContrataPage()))
+                      const NfceContrataPage()))
               .then((_) {
               });       
           }  
@@ -1204,7 +1207,7 @@ class _CaixaPageState extends State<CaixaPage> {
       }
     } else {
       Sessao.configuracaoPdv = 
-      Sessao.configuracaoPdv.copyWith(
+      Sessao.configuracaoPdv!.copyWith(
         modulo: 'G',
         moduloFiscalPrincipal: '',
         planoSituacao: 'B',

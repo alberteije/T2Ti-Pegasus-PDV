@@ -46,17 +46,17 @@ part 'empresa_dao.g.dart';
 class EmpresaDao extends DatabaseAccessor<AppDatabase> with _$EmpresaDaoMixin {
   final AppDatabase db;
 
-  List<Empresa> listaEmpresa; // será usada para popular a grid na janela do empresa
-  Empresa objetoDaSessao;
+  List<Empresa>? listaEmpresa; // será usada para popular a grid na janela do empresa
+  Empresa? objetoDaSessao;
 
   EmpresaDao(this.db) : super(db);
 
-  Future<List<Empresa>> consultarLista() async {
+  Future<List<Empresa>?> consultarLista() async {
     listaEmpresa = await select(empresas).get();
     return listaEmpresa;
   }
 
-  Future<List<Empresa>> consultarListaFiltro(String campo, String valor) async {
+  Future<List<Empresa>?> consultarListaFiltro(String campo, String valor) async {
     listaEmpresa = await (customSelect("SELECT * FROM EMPRESA WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { empresas }).map((row) {
                                   return Empresa.fromData(row.data, db);  
@@ -66,7 +66,7 @@ class EmpresaDao extends DatabaseAccessor<AppDatabase> with _$EmpresaDaoMixin {
 
   Stream<List<Empresa>> observarLista() => select(empresas).watch();
 
-  Future<Empresa> consultarObjeto(int pId) async {
+  Future<Empresa?> consultarObjeto(int pId) async {
     objetoDaSessao = await (select(empresas)..where((t) => t.id.equals(pId))).getSingleOrNull();
     aplicarDomains();
     return objetoDaSessao;
@@ -74,18 +74,18 @@ class EmpresaDao extends DatabaseAccessor<AppDatabase> with _$EmpresaDaoMixin {
 
   Future<int> inserir(Insertable<Empresa> pObjeto) {
     return transaction(() async {
-      final empresa = removerDomains(pObjeto);
+      final empresa = removerDomains(pObjeto as Empresa);
       final idInserido = await into(empresas).insert(empresa);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Empresa> pObjeto, bool atualizarUfTributacao) {
+  Future<bool> alterar(Insertable<Empresa>? pObjeto, bool atualizarUfTributacao) {
     return transaction(() async {
-      final empresa = removerDomains(pObjeto);
+      final empresa = removerDomains(pObjeto as Empresa);
       // atualizar a UF da tributação
       if (atualizarUfTributacao) {
-        await db.tributIcmsUfDao.atualizarUf((pObjeto as Empresa).uf);
+        await db.tributIcmsUfDao.atualizarUf(pObjeto.uf!);
       }
       return update(empresas).replace(empresa);
     });    
@@ -100,36 +100,36 @@ class EmpresaDao extends DatabaseAccessor<AppDatabase> with _$EmpresaDaoMixin {
   Empresa removerDomains(Empresa empresa) {
     if (empresa.crt != null) {
       empresa = empresa.copyWith(
-        crt: empresa.crt.substring(0,1)
+        crt: empresa.crt!.substring(0,1)
       );
     }
     if (empresa.tipo != null) {
       empresa = empresa.copyWith(
-        tipo: empresa.tipo.substring(0,1)
+        tipo: empresa.tipo!.substring(0,1)
       );
     }
     return empresa;
   }
 
   void aplicarDomains() {
-    switch (objetoDaSessao.crt) {
+    switch (objetoDaSessao!.crt) {
       case '1' :
-        objetoDaSessao = objetoDaSessao.copyWith(crt: '1-Simples Nacional',);
+        objetoDaSessao = objetoDaSessao!.copyWith(crt: '1-Simples Nacional',);
         break;
       case '2' :
-        objetoDaSessao = objetoDaSessao.copyWith(crt: '2-Simples Nacional - excesso de sublimite da receita bruta',);
+        objetoDaSessao = objetoDaSessao!.copyWith(crt: '2-Simples Nacional - excesso de sublimite da receita bruta',);
         break;
       case '3' :
-        objetoDaSessao = objetoDaSessao.copyWith(crt: '3-Regime Normal',);
+        objetoDaSessao = objetoDaSessao!.copyWith(crt: '3-Regime Normal',);
         break;
       default:
     }      
-    switch (objetoDaSessao.tipo) {
+    switch (objetoDaSessao!.tipo) {
       case 'M' :
-        objetoDaSessao = objetoDaSessao.copyWith(tipo: 'Matriz',);
+        objetoDaSessao = objetoDaSessao!.copyWith(tipo: 'Matriz',);
         break;
       case 'F' :
-        objetoDaSessao = objetoDaSessao.copyWith(tipo: 'Filial',);
+        objetoDaSessao = objetoDaSessao!.copyWith(tipo: 'Filial',);
         break;
       default:
     }      

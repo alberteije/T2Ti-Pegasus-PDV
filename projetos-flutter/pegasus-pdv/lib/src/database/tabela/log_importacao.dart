@@ -37,11 +37,12 @@ import 'package:moor/moor.dart';
 
 @DataClassName("LogImportacao")
 class LogImportacaos extends Table {
+  @override
   String get tableName => 'LOG_IMPORTACAO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  DateTimeColumn get dataImportacao => dateTime().named('DATA_IMPORTACAO').nullable()();
-  TextColumn get horaImportacao => text().named('HORA_IMPORTACAO').withLength(min: 0, max: 8).nullable()();
-  TextColumn get erro => text().named('ERRO').withLength(min: 0, max: 250).nullable()();
-  TextColumn get registro => text().named('REGISTRO').withLength(min: 0, max: 250).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  DateTimeColumn? get dataImportacao => dateTime().named('DATA_IMPORTACAO').nullable()() as Column<DateTime>?;
+  TextColumn? get horaImportacao => text().named('HORA_IMPORTACAO').withLength(min: 0, max: 8).nullable()() as Column<String>?;
+  TextColumn? get erro => text().named('ERRO').withLength(min: 0, max: 250).nullable()() as Column<String>?;
+  TextColumn? get registro => text().named('REGISTRO').withLength(min: 0, max: 250).nullable()() as Column<String>?;
 }

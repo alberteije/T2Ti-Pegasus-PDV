@@ -37,11 +37,12 @@ import 'package:moor/moor.dart';
 
 @DataClassName("TributOperacaoFiscal")
 class TributOperacaoFiscals extends Table {
+  @override
   String get tableName => 'TRIBUT_OPERACAO_FISCAL';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 0, max: 100).nullable()();
-  TextColumn get descricaoNaNf => text().named('DESCRICAO_NA_NF').withLength(min: 0, max: 100).nullable()();
-  IntColumn get cfop => integer().named('CFOP').nullable()();
-  TextColumn get observacao => text().named('OBSERVACAO').withLength(min: 0, max: 250).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  TextColumn? get descricao => text().named('DESCRICAO').withLength(min: 0, max: 100).nullable()() as Column<String>?;
+  TextColumn? get descricaoNaNf => text().named('DESCRICAO_NA_NF').withLength(min: 0, max: 100).nullable()() as Column<String>?;
+  IntColumn? get cfop => integer().named('CFOP').nullable()() as Column<int>?;
+  TextColumn? get observacao => text().named('OBSERVACAO').withLength(min: 0, max: 250).nullable()() as Column<String>?;
 }

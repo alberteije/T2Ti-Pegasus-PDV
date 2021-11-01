@@ -46,16 +46,16 @@ part 'fornecedor_dao.g.dart';
 class FornecedorDao extends DatabaseAccessor<AppDatabase> with _$FornecedorDaoMixin {
   final AppDatabase db;
 
-  List<Fornecedor> listaFornecedor; // será usada para popular a grid na janela do fornecedor
+  List<Fornecedor>? listaFornecedor; // será usada para popular a grid na janela do fornecedor
 
   FornecedorDao(this.db) : super(db);
 
-  Future<List<Fornecedor>> consultarLista() async {
+  Future<List<Fornecedor>?> consultarLista() async {
     listaFornecedor = await select(fornecedors).get();
     return listaFornecedor;
   }
 
-  Future<List<Fornecedor>> consultarListaFiltro(String campo, String valor) async {
+  Future<List<Fornecedor>?> consultarListaFiltro(String campo, String valor) async {
     listaFornecedor = await (customSelect("SELECT * FROM FORNECEDOR WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { fornecedors }).map((row) {
                                   return Fornecedor.fromData(row.data, db);  
@@ -65,26 +65,26 @@ class FornecedorDao extends DatabaseAccessor<AppDatabase> with _$FornecedorDaoMi
 
   Stream<List<Fornecedor>> observarLista() => select(fornecedors).watch();
 
-  Future<Fornecedor> consultarObjeto(int pId) {
+  Future<Fornecedor?> consultarObjeto(int pId) {
     return (select(fornecedors)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<Fornecedor> pObjeto) {
+  Future<int> inserir(Insertable<Fornecedor>? pObjeto) {
     return transaction(() async {
-      final idInserido = await into(fornecedors).insert(pObjeto);
+      final idInserido = await into(fornecedors).insert(pObjeto!);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Fornecedor> pObjeto) {
+  Future<bool> alterar(Insertable<Fornecedor>? pObjeto) {
     return transaction(() async {
-      return update(fornecedors).replace(pObjeto);
+      return update(fornecedors).replace(pObjeto!);
     });    
   } 
 
-  Future<int> excluir(Insertable<Fornecedor> pObjeto) {
+  Future<int> excluir(Insertable<Fornecedor>? pObjeto) {
     return transaction(() async {
-      return delete(fornecedors).delete(pObjeto);
+      return delete(fornecedors).delete(pObjeto!);
     });    
   }
 

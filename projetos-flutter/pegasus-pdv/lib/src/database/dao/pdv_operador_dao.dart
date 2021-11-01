@@ -59,7 +59,7 @@ class PdvOperadorDao extends DatabaseAccessor<AppDatabase> with _$PdvOperadorDao
 
   Stream<List<PdvOperador>> observarLista() => select(pdvOperadors).watch();
 
-  Future<PdvOperador> consultarObjeto(int pId) {
+  Future<PdvOperador?> consultarObjeto(int pId) {
     return (select(pdvOperadors)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

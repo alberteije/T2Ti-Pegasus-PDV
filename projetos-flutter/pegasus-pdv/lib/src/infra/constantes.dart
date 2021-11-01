@@ -36,20 +36,18 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:flutter/material.dart' hide Key;
 import 'package:flutter/foundation.dart' hide Key;
 import 'package:intl/intl.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
-
-import 'biblioteca.dart';
 
 class Constantes {
 
   /// singleton
   factory Constantes() {
     _this ??= Constantes._();
-    return _this;
+    return _this!;
   }
-  static Constantes _this;
+  static Constantes? _this;
   Constantes._() : super();
 
   static const String versaoApp =  'versão 1.0.9 - Outubro/2021';
@@ -60,11 +58,11 @@ class Constantes {
   static IV iv = IV.fromUtf8('');
   static Encrypter encrypter = Encrypter(AES(key, mode: AESMode.ecb));
 
-  static String sentryDns = (kDebugMode && Biblioteca.isDesktop()) ? DotEnv.env['SENTRY_DNS'] : encrypter.decrypt64(DotEnv.env['SENTRY_DNS'], iv: iv);
-  static String linguagemServidor = (kDebugMode && Biblioteca.isDesktop()) ? DotEnv.env['LINGUAGEM_SERVIDOR'] : encrypter.decrypt64(DotEnv.env['LINGUAGEM_SERVIDOR'], iv: iv);
-  static String enderecoServidor = (kDebugMode && Biblioteca.isDesktop()) ? DotEnv.env['ENDERECO_SERVIDOR'] : encrypter.decrypt64(DotEnv.env['ENDERECO_SERVIDOR'], iv: iv);
-  static String complementoEnderecoServidor = (kDebugMode && Biblioteca.isDesktop()) ? DotEnv.env['COMPLEMENTO_ENDERECO_SERVIDOR'] : encrypter.decrypt64(DotEnv.env['COMPLEMENTO_ENDERECO_SERVIDOR'], iv: iv);
-  static String portaServidor = (kDebugMode && Biblioteca.isDesktop()) ? DotEnv.env['PORTA_SERVIDOR'] : encrypter.decrypt64(DotEnv.env['PORTA_SERVIDOR'], iv: iv);
+  static String? sentryDns = (kDebugMode && Biblioteca.isDesktop()) ? dotenv.env['SENTRY_DNS'] : encrypter.decrypt64(dotenv.env['SENTRY_DNS']!, iv: iv);
+  static String? linguagemServidor = (kDebugMode && Biblioteca.isDesktop()) ? dotenv.env['LINGUAGEM_SERVIDOR'] : encrypter.decrypt64(dotenv.env['LINGUAGEM_SERVIDOR']!, iv: iv);
+  static String? enderecoServidor = (kDebugMode && Biblioteca.isDesktop()) ? dotenv.env['ENDERECO_SERVIDOR'] : encrypter.decrypt64(dotenv.env['ENDERECO_SERVIDOR']!, iv: iv);
+  static String? complementoEnderecoServidor = (kDebugMode && Biblioteca.isDesktop()) ? dotenv.env['COMPLEMENTO_ENDERECO_SERVIDOR'] : encrypter.decrypt64(dotenv.env['COMPLEMENTO_ENDERECO_SERVIDOR']!, iv: iv);
+  static String? portaServidor = (kDebugMode && Biblioteca.isDesktop()) ? dotenv.env['PORTA_SERVIDOR'] : encrypter.decrypt64(dotenv.env['PORTA_SERVIDOR']!, iv: iv);
 
   // static String sentryDns = encrypter.decrypt64(DotEnv.env['SENTRY_DNS'], iv: iv);
   // static String linguagemServidor = encrypter.decrypt64(DotEnv.env['LINGUAGEM_SERVIDOR'], iv: iv);
@@ -81,16 +79,16 @@ class Constantes {
 
 
 // #region Inteiros
-  static final int decimaisTaxa = 2;
-  static final int decimaisValor = Sessao.configuracaoPdv.decimaisValor ?? 2;
-  static final int decimaisQuantidade = Sessao.configuracaoPdv.decimaisQuantidade ?? 3;
+  static const int decimaisTaxa = 2;
+  static final int decimaisValor = Sessao.configuracaoPdv!.decimaisValor ?? 2;
+  static final int decimaisQuantidade = Sessao.configuracaoPdv!.decimaisQuantidade ?? 3;
   static final int paginatedDataTableLinhasPorPagina = PaginatedDataTable.defaultRowsPerPage;
 // #endregion Inteiros  
 
 
 // #region Double
-  static final double paddingListViewListaPage = 8.0;
-  static final double flutterBootstrapGutterSize = 10.0;
+  static const double paddingListViewListaPage = 8.0;
+  static const double flutterBootstrapGutterSize = 10.0;
 // #region Double
 
 
@@ -98,7 +96,7 @@ class Constantes {
   static final formatoDecimalTaxa = NumberFormat('#,##0.00', 'pt_BR');
   static final formatoDecimalValor = NumberFormat('#,##0.00', 'pt_BR');
   static final formatoDecimalQuantidade = 
-    NumberFormat((Sessao.configuracaoPdv.decimaisQuantidade == 2 ? '#,##0.00' : '#,##0.000'), 'pt_BR');
+    NumberFormat((Sessao.configuracaoPdv!.decimaisQuantidade == 2 ? '#,##0.00' : '#,##0.000'), 'pt_BR');
 // #endregion Decimais
 
 
@@ -166,10 +164,12 @@ class Constantes {
   static const String mascaraCNPJ = '00.000.000/0000-00';
   static const String mascaraCEP = '00000-000';
   static const String mascaraTELEFONE = '(00)00000-0000';
+  // ignore: constant_identifier_names
   static const String mascaraMES_ANO = '00/0000';
   static const String mascaraHORA = '00:00:00';
   static const String mascaraDIA = '00';
   static const String mascaraANO = '0000';
+  // ignore: constant_identifier_names
   static const String mascaraQUANTIDADE_INTEIRO = '00000';
 // #endregion Máscaras  
 

@@ -33,12 +33,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
@@ -54,11 +55,11 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 import 'package:pegasus_pdv/src/view/shared/page/lookup_local_page.dart';
 
 class ContasReceberPersistePage extends StatefulWidget {
-  final ContasReceberMontado contasReceberMontado;
-  final String title;
-  final String operacao;
+  final ContasReceberMontado? contasReceberMontado;
+  final String? title;
+  final String? operacao;
 
-  const ContasReceberPersistePage({Key key, this.contasReceberMontado, this.title, this.operacao})
+  const ContasReceberPersistePage({Key? key, this.contasReceberMontado, this.title, this.operacao})
       : super(key: key);
 
   @override
@@ -71,10 +72,10 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   bool _formFoiAlterado = false;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
-  ContasReceber _contasReceber;
+  ContasReceber? _contasReceber;
 
   @override
   void initState() {
@@ -90,10 +91,8 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
       ),
     };
 
-    _contasReceber = widget.contasReceberMontado.contasReceber;
-    if (_contasReceber == null) {
-      _contasReceber = ContasReceber(id: null,);
-    }
+    _contasReceber = widget.contasReceberMontado!.contasReceber;
+    _contasReceber ??= ContasReceber(id: null,);
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -113,7 +112,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
   Widget build(BuildContext context) {
     final _taxaJuroController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasReceber?.taxaJuro ?? 0);
     final _importaClienteController = TextEditingController();
-    _importaClienteController.text = widget.contasReceberMontado.cliente?.nome ?? '';
+    _importaClienteController.text = widget.contasReceberMontado!.cliente?.nome ?? '';
     final _taxaMultaController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasReceber?.taxaMulta ?? 0);
     final _taxaDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasReceber?.taxaDesconto ?? 0);
     final _valorJuroController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasReceber?.valorJuro ?? 0);
@@ -130,7 +129,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
         child: Scaffold(drawerDragStartBehavior: DragStartBehavior.down,
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text(widget.title), 
+            title: Text(widget.title!), 
             actions: widget.operacao == 'I' 
               ? getBotoesAppBarPersistePage(context: context, salvar: _salvar,)
               : getBotoesAppBarPersistePageComExclusao(context: context, salvar: _salvar, excluir: _excluir),
@@ -147,10 +146,10 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                   dragStartBehavior: DragStartBehavior.down,
                   child: BootstrapContainer(
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                     children: [
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -160,7 +159,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                               children: <Widget>[
                                 Expanded(
                                   flex: 1,
-                                  child: Container(
+                                  child: SizedBox(
                                     child: TextFormField(
                                       validator: ValidaCampoFormulario.validarObrigatorio,
                                       controller: _importaClienteController,
@@ -169,7 +168,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                         'Conteúdo para o campo Cliente',
                                         'Cliente *',
                                         false),
-                                      onSaved: (String value) {
+                                      onSaved: (String? value) {
                                       },
                                       onChanged: (text) {
                                         // _contasReceber?.cliente?.nome = text;
@@ -185,7 +184,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                     icon: ViewUtilLib.getIconBotaoLookup(),
                                     onPressed: () async {
                                       ///chamando o lookup
-                                      Map<String, dynamic> _objetoJsonRetorno =
+                                      Map<String, dynamic>? _objetoJsonRetorno =
                                         await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -205,8 +204,8 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                       if (_objetoJsonRetorno != null) {
                                         if (_objetoJsonRetorno['nome'] != null) {
                                           _importaClienteController.text = _objetoJsonRetorno['nome'];
-                                          _contasReceber = _contasReceber.copyWith(idCliente: _objetoJsonRetorno['id']);
-                                          widget.contasReceberMontado.cliente = widget.contasReceberMontado.cliente.copyWith(
+                                          _contasReceber = _contasReceber!.copyWith(idCliente: _objetoJsonRetorno['id']);
+                                          widget.contasReceberMontado!.cliente = widget.contasReceberMontado!.cliente!.copyWith(
                                             nome: _objetoJsonRetorno['nome'],
                                           );          
                                         }
@@ -219,28 +218,28 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: InputDecorator(                              
                                 decoration: getInputDecoration(
                                   '',
                                   'Data Lançamento',
                                   true),
-                                isEmpty: _contasReceber.dataLancamento == null,
+                                isEmpty: _contasReceber!.dataLancamento == null,
                                 child: DatePickerItem(
                                   mascara: 'dd/MM/yyyy',
-                                  dateTime: _contasReceber.dataLancamento,
+                                  dateTime: _contasReceber!.dataLancamento,
                                   firstDate: DateTime.parse('1900-01-01'),
                                   lastDate: DateTime.now(),
-                                  onChanged: (DateTime value) {
+                                  onChanged: (DateTime? value) {
                                     setState(() {
-                                      _contasReceber = _contasReceber.copyWith(dataLancamento: value);
+                                      _contasReceber = _contasReceber!.copyWith(dataLancamento: value);
                                     });
                                   },
                                 ),
@@ -250,21 +249,21 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: InputDecorator(                              
                                 decoration: getInputDecoration(
                                   '',
                                   'Data Vencimento',
                                   true),
-                                isEmpty: _contasReceber.dataVencimento == null,
+                                isEmpty: _contasReceber!.dataVencimento == null,
                                 child: DatePickerItem(
                                   mascara: 'dd/MM/yyyy',
-                                  dateTime:  _contasReceber.dataVencimento,
+                                  dateTime:  _contasReceber!.dataVencimento,
                                   firstDate: DateTime.parse('1900-01-01'),
                                   lastDate: DateTime.parse('2050-01-01'),
-                                  onChanged: (DateTime value) {
+                                  onChanged: (DateTime? value) {
                                     setState(() {
-                                      _contasReceber = _contasReceber.copyWith(dataVencimento: value);
+                                      _contasReceber = _contasReceber!.copyWith(dataVencimento: value);
                                     });
                                   },
                                 ),
@@ -274,21 +273,21 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: InputDecorator(                              
                                 decoration: getInputDecoration(
                                   '',
                                   'Data Recebimento',
                                   true,
                                   ),
-                                isEmpty: _contasReceber.dataRecebimento == null,
+                                isEmpty: _contasReceber!.dataRecebimento == null,
                                 child: DatePickerItem(                                  
                                   mascara: 'dd/MM/yyyy',
-                                  dateTime: _contasReceber.dataRecebimento,
+                                  dateTime: _contasReceber!.dataRecebimento,
                                   firstDate: DateTime.parse('1900-01-01'),
                                   lastDate: DateTime.parse('2050-01-01'),
-                                  onChanged: (DateTime value) {
-                                    _contasReceber = _contasReceber.copyWith(dataRecebimento: value);
+                                  onChanged: (DateTime? value) {
+                                    _contasReceber = _contasReceber!.copyWith(dataRecebimento: value);
                                     _atualizarTotais();
                                   },
                                 ),
@@ -298,7 +297,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
 
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -312,17 +311,17 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                 '',
                                 'Número do Documento',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                _contasReceber = _contasReceber.copyWith(numeroDocumento: text);
+                                _contasReceber = _contasReceber!.copyWith(numeroDocumento: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -336,24 +335,24 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                 '',
                                 'Histórico',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                _contasReceber = _contasReceber.copyWith(historico: text);
+                                _contasReceber = _contasReceber!.copyWith(historico: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -363,10 +362,10 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                   '',
                                   'Valor a Receber',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasReceber = _contasReceber.copyWith(valorAReceber: _valorAReceberController.numberValue);
+                                  _contasReceber = _contasReceber!.copyWith(valorAReceber: _valorAReceberController.numberValue);
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
                                 },
@@ -376,7 +375,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -386,13 +385,13 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                   '',
                                   'Taxa Desconto',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
                                   if (_taxaDescontoController.numberValue >= 100) {
                                     _taxaDescontoController.updateValue(99.9);
                                   }
-                                  _contasReceber = _contasReceber.copyWith(taxaDesconto: _taxaDescontoController.numberValue);
+                                  _contasReceber = _contasReceber!.copyWith(taxaDesconto: _taxaDescontoController.numberValue);
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
                                 },
@@ -402,7 +401,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -414,10 +413,10 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                   'Valor Desconto',
                                   false,
                                   cor: ViewUtilLib.getTextFieldReadOnlyColor()),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasReceber = _contasReceber.copyWith(valorDesconto: _valorDescontoController.numberValue);
+                                  _contasReceber = _contasReceber!.copyWith(valorDesconto: _valorDescontoController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -425,14 +424,14 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-3',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -442,10 +441,10 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                   '',
                                   'Taxa Juros',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasReceber = _contasReceber.copyWith(taxaJuro: _taxaJuroController.numberValue);
+                                  _contasReceber = _contasReceber!.copyWith(taxaJuro: _taxaJuroController.numberValue);
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
                                 },
@@ -455,7 +454,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-3',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -467,10 +466,10 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                   'Valor Juros',
                                   false,
                                   cor: ViewUtilLib.getTextFieldReadOnlyColor()),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasReceber = _contasReceber.copyWith(valorJuro: _valorJuroController.numberValue);
+                                  _contasReceber = _contasReceber!.copyWith(valorJuro: _valorJuroController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -479,7 +478,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-3',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -489,10 +488,10 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                   '',
                                   'Taxa Multa',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasReceber = _contasReceber.copyWith(taxaMulta: _taxaMultaController.numberValue);
+                                  _contasReceber = _contasReceber!.copyWith(taxaMulta: _taxaMultaController.numberValue);
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
                                 },
@@ -502,7 +501,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-3',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -514,10 +513,10 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                   'Valor Multa',
                                   false,
                                   cor: ViewUtilLib.getTextFieldReadOnlyColor()),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasReceber = _contasReceber.copyWith(valorMulta: _valorMultaController.numberValue);
+                                  _contasReceber = _contasReceber!.copyWith(valorMulta: _valorMultaController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -525,7 +524,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -542,17 +541,17 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                 'Valor Recebido',
                                 false,
                                 cor: ViewUtilLib.getTextFieldReadOnlyColor()),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                _contasReceber = _contasReceber.copyWith(valorRecebido: _valorRecebidoController.numberValue);
+                                _contasReceber = _contasReceber!.copyWith(valorRecebido: _valorRecebidoController.numberValue);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -566,7 +565,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                     ],
                   ),
                 ),
@@ -584,16 +583,16 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
   }
 
   Future<void> _salvar() async {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (!form.validate()) {
       _autoValidate = AutovalidateMode.always;
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
     } else {
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
-        _contasReceber = _contasReceber.copyWith(statusRecebimento: 'A');
+        _contasReceber = _contasReceber!.copyWith(statusRecebimento: 'A');
         form.save();
-        if (_contasReceber.dataRecebimento != null) {
-          _contasReceber = _contasReceber.copyWith(statusRecebimento: 'R');
+        if (_contasReceber!.dataRecebimento != null) {
+          _contasReceber = _contasReceber!.copyWith(statusRecebimento: 'R');
         }
         if (widget.operacao == 'A') {
           Sessao.db.contasReceberDao.alterar(_contasReceber);
@@ -607,10 +606,13 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
   }
 
   Future<bool> _avisarUsuarioFormAlterado() async {
-    final FormState form = _formKey.currentState;
-    if (form == null || !_formFoiAlterado) return true;
-
-    return await gerarDialogBoxFormAlterado(context);
+    final FormState? form = _formKey.currentState;
+    if (form == null || !_formFoiAlterado) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
   }
 
   void _excluir() {
@@ -621,15 +623,15 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
   }  
 
   _atualizarTotais() {
-    double valorDesconto = Biblioteca.calcularDesconto(_contasReceber.valorAReceber, _contasReceber.taxaDesconto);
-    double valorJuros = Biblioteca.calcularJuros(_contasReceber.valorAReceber, _contasReceber.taxaJuro, _contasReceber.dataVencimento);
-    double valorMulta = Biblioteca.calcularMulta(_contasReceber.valorAReceber, _contasReceber.taxaMulta);
-    double valorRecebido = (_contasReceber.valorAReceber ?? 0) + valorJuros + valorMulta - valorDesconto;
+    double valorDesconto = Biblioteca.calcularDesconto(_contasReceber!.valorAReceber, _contasReceber!.taxaDesconto);
+    double valorJuros = Biblioteca.calcularJuros(_contasReceber!.valorAReceber, _contasReceber!.taxaJuro, _contasReceber!.dataVencimento);
+    double valorMulta = Biblioteca.calcularMulta(_contasReceber!.valorAReceber, _contasReceber!.taxaMulta);
+    double valorRecebido = (_contasReceber!.valorAReceber ?? 0) + valorJuros + valorMulta - valorDesconto;
 
     // double subTotal = Biblioteca.multiplicarMonetario(widget.compraDetalhe.compraPedidoDetalhe.quantidade, widget.compraDetalhe.compraPedidoDetalhe.valorUnitario);
     setState(() {
       _contasReceber = 
-        _contasReceber.copyWith(
+        _contasReceber!.copyWith(
           valorJuro: valorJuros,
           valorMulta: valorMulta,
           valorDesconto: valorDesconto,

@@ -39,20 +39,21 @@ import '../database.dart';
 
 @DataClassName("TributConfiguraOfGt")
 class TributConfiguraOfGts extends Table {
+  @override
   String get tableName => 'TRIBUT_CONFIGURA_OF_GT';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idTributGrupoTributario => integer().named('ID_TRIBUT_GRUPO_TRIBUTARIO').nullable().customConstraint('NULLABLE REFERENCES TRIBUT_GRUPO_TRIBUTARIO(ID)')();
-  IntColumn get idTributOperacaoFiscal => integer().named('ID_TRIBUT_OPERACAO_FISCAL').nullable().customConstraint('NULLABLE REFERENCES TRIBUT_OPERACAO_FISCAL(ID)')();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idTributGrupoTributario => integer().named('ID_TRIBUT_GRUPO_TRIBUTARIO').nullable().customConstraint('NULLABLE REFERENCES TRIBUT_GRUPO_TRIBUTARIO(ID)')();
+  IntColumn? get idTributOperacaoFiscal => integer().named('ID_TRIBUT_OPERACAO_FISCAL').nullable().customConstraint('NULLABLE REFERENCES TRIBUT_OPERACAO_FISCAL(ID)')();
 }
 
 class TributConfiguraOfGtMontado {
-  TributConfiguraOfGt tributConfiguraOfGt;
-  TributIcmsUf tributIcmsUf;
-  TributCofins tributCofins;
-  TributPis tributPis;
-  TributGrupoTributario tributGrupoTributario;
-  TributOperacaoFiscal tributOperacaoFiscal;
+  TributConfiguraOfGt? tributConfiguraOfGt;
+  TributIcmsUf? tributIcmsUf;
+  TributCofins? tributCofins;
+  TributPis? tributPis;
+  TributGrupoTributario? tributGrupoTributario;
+  TributOperacaoFiscal? tributOperacaoFiscal;
 
   TributConfiguraOfGtMontado({
     this.tributConfiguraOfGt,

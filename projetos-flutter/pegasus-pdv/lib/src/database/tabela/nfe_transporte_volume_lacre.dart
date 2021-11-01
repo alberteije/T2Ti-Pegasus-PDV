@@ -37,9 +37,10 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeTransporteVolumeLacre")
 class NfeTransporteVolumeLacres extends Table {
+  @override
   String get tableName => 'NFE_TRANSPORTE_VOLUME_LACRE';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeTransporteVolume => integer().named('ID_NFE_TRANSPORTE_VOLUME').nullable().customConstraint('NULLABLE REFERENCES NFE_TRANSPORTE_VOLUME(ID)')();
-  TextColumn get numero => text().named('NUMERO').withLength(min: 0, max: 60).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeTransporteVolume => integer().named('ID_NFE_TRANSPORTE_VOLUME').nullable().customConstraint('NULLABLE REFERENCES NFE_TRANSPORTE_VOLUME(ID)')() as Column<int>?;
+  TextColumn? get numero => text().named('NUMERO').withLength(min: 0, max: 60).nullable()() as Column<String>?;
 }

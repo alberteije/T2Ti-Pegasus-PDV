@@ -37,10 +37,11 @@ import 'package:moor/moor.dart';
 
 @DataClassName("Cfop")
 class Cfops extends Table {
+  @override
   String get tableName => 'CFOP';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get codigo => integer().named('CODIGO').nullable()();
-  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 0, max: 250).nullable()();
-  TextColumn get aplicacao => text().named('APLICACAO').withLength(min: 0, max: 250).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get codigo => integer().named('CODIGO').nullable()() as Column<int>?;
+  TextColumn? get descricao => text().named('DESCRICAO').withLength(min: 0, max: 250).nullable()() as Column<String>?;
+  TextColumn? get aplicacao => text().named('APLICACAO').withLength(min: 0, max: 250).nullable()() as Column<String>?;
 }

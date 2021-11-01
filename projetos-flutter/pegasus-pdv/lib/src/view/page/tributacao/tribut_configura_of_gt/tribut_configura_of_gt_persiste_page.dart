@@ -53,15 +53,15 @@ import 'package:pegasus_pdv/src/view/shared/page/lookup_local_page.dart';
 
 
 class TributConfiguraOfGtPersistePage extends StatefulWidget {
-  final TributConfiguraOfGtMontado tributConfiguraOfGtMontado;
-  final GlobalKey<FormState> formKey;
-  final GlobalKey<ScaffoldState> scaffoldKey;
-  final FocusNode foco;
-  final Function salvarTributConfiguraOfGtCallBack;
-  final Function atualizarTributConfiguraOfGtCallBack;
+  final TributConfiguraOfGtMontado? tributConfiguraOfGtMontado;
+  final GlobalKey<FormState>? formKey;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
+  final FocusNode? foco;
+  final Function? salvarTributConfiguraOfGtCallBack;
+  final Function? atualizarTributConfiguraOfGtCallBack;
 
   const TributConfiguraOfGtPersistePage(
-      {Key key, this.formKey, this.scaffoldKey, this.tributConfiguraOfGtMontado, this.foco, this.salvarTributConfiguraOfGtCallBack, this.atualizarTributConfiguraOfGtCallBack})
+      {Key? key, this.formKey, this.scaffoldKey, this.tributConfiguraOfGtMontado, this.foco, this.salvarTributConfiguraOfGtCallBack, this.atualizarTributConfiguraOfGtCallBack})
       : super(key: key);
 
   @override
@@ -69,8 +69,8 @@ class TributConfiguraOfGtPersistePage extends StatefulWidget {
 }
 
 class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPersistePage> {
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
 
   @override
@@ -93,7 +93,7 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
     switch (intent.type) {
       case AtalhoTelaType.salvar:
-        widget.salvarTributConfiguraOfGtCallBack();
+        widget.salvarTributConfiguraOfGtCallBack!();
         break;
       default:
         break;
@@ -126,10 +126,10 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                   padding: ViewUtilLib.paddingAbaPersistePage,
                   child: BootstrapContainer(
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                     children: <Widget>[			  			  
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -139,7 +139,7 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                               children: <Widget>[
                                 Expanded(
                                   flex: 1,
-                                  child: Container(
+                                  child: SizedBox(
                                     child: TextFormField(
                                       focusNode: _foco,
                                       controller: _importaTributGrupoTributarioController,
@@ -148,7 +148,7 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                                         'Importe o Grupo Tributário Vinculado',
                                         'Grupo Tributário *',
                                         false),
-                                      onSaved: (String value) {
+                                      onSaved: (String? value) {
                                       },
                                       validator: ValidaCampoFormulario.validarObrigatorioAlfanumerico,
                                       onChanged: (text) {
@@ -163,7 +163,7 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                                     icon: ViewUtilLib.getIconBotaoLookup(),
                                     onPressed: () async {
                                       ///chamando o lookup
-                                      Map<String, dynamic> _objetoJsonRetorno =
+                                      Map<String, dynamic>? _objetoJsonRetorno =
                                         await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -181,12 +181,12 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                                       if (_objetoJsonRetorno != null) {
                                         if (_objetoJsonRetorno['descricao'] != null) {
                                           _importaTributGrupoTributarioController.text = _objetoJsonRetorno['descricao'];
-                                          widget.tributConfiguraOfGtMontado.tributGrupoTributario = TributGrupoTributario(
+                                          widget.tributConfiguraOfGtMontado!.tributGrupoTributario = TributGrupoTributario(
                                               id: _objetoJsonRetorno['id'],
                                               descricao: _objetoJsonRetorno['descricao']
                                           );
-                                          widget.tributConfiguraOfGtMontado.tributConfiguraOfGt = 
-                                            widget.tributConfiguraOfGtMontado.tributConfiguraOfGt.copyWith(
+                                          widget.tributConfiguraOfGtMontado!.tributConfiguraOfGt = 
+                                            widget.tributConfiguraOfGtMontado!.tributConfiguraOfGt!.copyWith(
                                               idTributGrupoTributario: _objetoJsonRetorno['id'],
                                             );
                                         }
@@ -199,7 +199,7 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -210,7 +210,7 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                               children: <Widget>[
                                 Expanded(
                                   flex: 1,
-                                  child: Container(
+                                  child: SizedBox(
                                     child: TextFormField(
                                       controller: _importaTributOperacaoFiscalController,
                                       readOnly: true,
@@ -218,7 +218,7 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                                         'Importe a Operação Fiscal Vinculada',
                                         'Operação Fiscal *',
                                         false),
-                                      onSaved: (String value) {
+                                      onSaved: (String? value) {
                                       },
                                       validator: ValidaCampoFormulario.validarObrigatorioAlfanumerico,
                                       onChanged: (text) {
@@ -233,7 +233,7 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                                     icon: ViewUtilLib.getIconBotaoLookup(),
                                     onPressed: () async {
                                       ///chamando o lookup
-                                      Map<String, dynamic> _objetoJsonRetorno =
+                                      Map<String, dynamic>? _objetoJsonRetorno =
                                         await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -251,12 +251,12 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                                       if (_objetoJsonRetorno != null) {
                                         if (_objetoJsonRetorno['descricao'] != null) {
                                           _importaTributOperacaoFiscalController.text = _objetoJsonRetorno['descricao'];
-                                          widget.tributConfiguraOfGtMontado.tributOperacaoFiscal = TributOperacaoFiscal(
+                                          widget.tributConfiguraOfGtMontado!.tributOperacaoFiscal = TributOperacaoFiscal(
                                               id: _objetoJsonRetorno['id'],
                                               descricao: _objetoJsonRetorno['descricao']
                                           );
-                                          widget.tributConfiguraOfGtMontado.tributConfiguraOfGt = 
-                                            widget.tributConfiguraOfGtMontado.tributConfiguraOfGt.copyWith(
+                                          widget.tributConfiguraOfGtMontado!.tributConfiguraOfGt = 
+                                            widget.tributConfiguraOfGtMontado!.tributConfiguraOfGt!.copyWith(
                                               idTributOperacaoFiscal: _objetoJsonRetorno['id'],
                                             );
                                         }
@@ -269,7 +269,7 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -283,7 +283,7 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                     ],
                   ),
                 ),

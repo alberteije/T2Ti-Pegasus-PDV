@@ -37,25 +37,26 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeDetEspecificoCombustivel")
 class NfeDetEspecificoCombustivels extends Table {
+  @override
   String get tableName => 'NFE_DET_ESPECIFICO_COMBUSTIVEL';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')();
-  IntColumn get codigoAnp => integer().named('CODIGO_ANP').nullable()();
-  TextColumn get descricaoAnp => text().named('DESCRICAO_ANP').withLength(min: 0, max: 95).nullable()();
-  RealColumn get percentualGlp => real().named('PERCENTUAL_GLP').nullable()();
-  RealColumn get percentualGasNacional => real().named('PERCENTUAL_GAS_NACIONAL').nullable()();
-  RealColumn get percentualGasImportado => real().named('PERCENTUAL_GAS_IMPORTADO').nullable()();
-  RealColumn get valorPartida => real().named('VALOR_PARTIDA').nullable()();
-  TextColumn get codif => text().named('CODIF').withLength(min: 0, max: 21).nullable()();
-  RealColumn get quantidadeTempAmbiente => real().named('QUANTIDADE_TEMP_AMBIENTE').nullable()();
-  TextColumn get ufConsumo => text().named('UF_CONSUMO').withLength(min: 0, max: 2).nullable()();
-  RealColumn get cideBaseCalculo => real().named('CIDE_BASE_CALCULO').nullable()();
-  RealColumn get cideAliquota => real().named('CIDE_ALIQUOTA').nullable()();
-  RealColumn get cideValor => real().named('CIDE_VALOR').nullable()();
-  IntColumn get encerranteBico => integer().named('ENCERRANTE_BICO').nullable()();
-  IntColumn get encerranteBomba => integer().named('ENCERRANTE_BOMBA').nullable()();
-  IntColumn get encerranteTanque => integer().named('ENCERRANTE_TANQUE').nullable()();
-  RealColumn get encerranteValorInicio => real().named('ENCERRANTE_VALOR_INICIO').nullable()();
-  RealColumn get encerranteValorFim => real().named('ENCERRANTE_VALOR_FIM').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')() as Column<int>?;
+  IntColumn? get codigoAnp => integer().named('CODIGO_ANP').nullable()() as Column<int>?;
+  TextColumn? get descricaoAnp => text().named('DESCRICAO_ANP').withLength(min: 0, max: 95).nullable()() as Column<String>?;
+  RealColumn? get percentualGlp => real().named('PERCENTUAL_GLP').nullable()() as Column<double>?;
+  RealColumn? get percentualGasNacional => real().named('PERCENTUAL_GAS_NACIONAL').nullable()() as Column<double>?;
+  RealColumn? get percentualGasImportado => real().named('PERCENTUAL_GAS_IMPORTADO').nullable()() as Column<double>?;
+  RealColumn? get valorPartida => real().named('VALOR_PARTIDA').nullable()() as Column<double>?;
+  TextColumn? get codif => text().named('CODIF').withLength(min: 0, max: 21).nullable()() as Column<String>?;
+  RealColumn? get quantidadeTempAmbiente => real().named('QUANTIDADE_TEMP_AMBIENTE').nullable()() as Column<double>?;
+  TextColumn? get ufConsumo => text().named('UF_CONSUMO').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  RealColumn? get cideBaseCalculo => real().named('CIDE_BASE_CALCULO').nullable()() as Column<double>?;
+  RealColumn? get cideAliquota => real().named('CIDE_ALIQUOTA').nullable()() as Column<double>?;
+  RealColumn? get cideValor => real().named('CIDE_VALOR').nullable()() as Column<double>?;
+  IntColumn? get encerranteBico => integer().named('ENCERRANTE_BICO').nullable()() as Column<int>?;
+  IntColumn? get encerranteBomba => integer().named('ENCERRANTE_BOMBA').nullable()() as Column<int>?;
+  IntColumn? get encerranteTanque => integer().named('ENCERRANTE_TANQUE').nullable()() as Column<int>?;
+  RealColumn? get encerranteValorInicio => real().named('ENCERRANTE_VALOR_INICIO').nullable()() as Column<double>?;
+  RealColumn? get encerranteValorFim => real().named('ENCERRANTE_VALOR_FIM').nullable()() as Column<double>?;
 }

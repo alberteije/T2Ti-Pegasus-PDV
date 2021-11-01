@@ -33,6 +33,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
+
 import 'package:moor/moor.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
@@ -48,16 +50,16 @@ part 'pdv_movimento_dao.g.dart';
 class PdvMovimentoDao extends DatabaseAccessor<AppDatabase> with _$PdvMovimentoDaoMixin {
   final AppDatabase db;
 
-  List<PdvMovimento> listaMovimento; // será usada para popular a grid na janela do movimento
+  List<PdvMovimento>? listaMovimento; // será usada para popular a grid na janela do movimento
 
   PdvMovimentoDao(this.db) : super(db);
 
-  Future<List<PdvMovimento>> consultarLista() async {
+  Future<List<PdvMovimento>?> consultarLista() async {
     listaMovimento = await select(pdvMovimentos).get();
     return listaMovimento;
   }
 
-  Future<List<PdvMovimento>> consultarListaFiltro(String campo, String valor) async {
+  Future<List<PdvMovimento>?> consultarListaFiltro(String campo, String valor) async {
     listaMovimento = await (customSelect("SELECT * FROM PDV_MOVIMENTO WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { pdvMovimentos }).map((row) {
                                   return PdvMovimento.fromData(row.data, db);  
@@ -65,7 +67,7 @@ class PdvMovimentoDao extends DatabaseAccessor<AppDatabase> with _$PdvMovimentoD
     return listaMovimento;
   }
 
-  Future<List<PdvMovimento>> consultarListaPeriodo({int mes, int ano}) async {
+  Future<List<PdvMovimento>?> consultarListaPeriodo({int? mes, int? ano}) async {
     listaMovimento = await (select(pdvMovimentos)
       ..where((t) => t.dataAbertura.month.equals(mes))
       ..where((t) => t.dataAbertura.year.equals(ano))
@@ -76,7 +78,7 @@ class PdvMovimentoDao extends DatabaseAccessor<AppDatabase> with _$PdvMovimentoD
 
   Stream<List<PdvMovimento>> observarLista() => select(pdvMovimentos).watch();
 
-  Future<PdvMovimento> consultarObjeto(String pStatus) {
+  Future<PdvMovimento?> consultarObjeto(String pStatus) {
     return (select(pdvMovimentos)..where((t) => t.statusMovimento.equals(pStatus))).getSingleOrNull();
   } 
 
@@ -87,9 +89,9 @@ class PdvMovimentoDao extends DatabaseAccessor<AppDatabase> with _$PdvMovimentoD
     });    
   } 
 
-  Future<bool> alterar(Insertable<PdvMovimento> pObjeto) {
+  Future<bool> alterar(Insertable<PdvMovimento>? pObjeto) {
     return transaction(() async {
-      return update(pdvMovimentos).replace(pObjeto);
+      return update(pdvMovimentos).replace(pObjeto!);
     });    
   } 
 
@@ -99,37 +101,38 @@ class PdvMovimentoDao extends DatabaseAccessor<AppDatabase> with _$PdvMovimentoD
     });    
   }
 
-  Future<PdvMovimento> iniciarMovimento(Insertable<PdvMovimento> pObjeto) {
+  Future<PdvMovimento?> iniciarMovimento(Insertable<PdvMovimento>? pObjeto) {
     return transaction(() async {
-      await into(pdvMovimentos).insert(pObjeto);
+      await into(pdvMovimentos).insert(pObjeto!);
       return await db.pdvMovimentoDao.consultarObjeto('A');
     });    
   } 
 
-  Future<PdvMovimento> encerrarMovimento(PdvMovimento pObjeto, {List<PdvFechamento> listaFechamento}) {
+  Future<PdvMovimento?> encerrarMovimento(PdvMovimento? pObjeto, {List<PdvFechamento>? listaFechamento}) {
     return transaction(() async {
-      PdvVendaCabecalho totaisVenda = await db.pdvVendaCabecalhoDao.consultarTotaisDia(pObjeto.id);
-      PdvSuprimento totaisSuprimento = await db.pdvSuprimentoDao.consultarTotaisDia(pObjeto.id);
-      PdvSangria totaisSangria = await db.pdvSangriaDao.consultarTotaisDia(pObjeto.id);
+      PdvVendaCabecalho? totaisVenda = await db.pdvVendaCabecalhoDao.consultarTotaisDia(pObjeto!.id);
+      PdvSuprimento? totaisSuprimento = await db.pdvSuprimentoDao.consultarTotaisDia(pObjeto!.id);
+      PdvSangria? totaisSangria = await db.pdvSangriaDao.consultarTotaisDia(pObjeto!.id);
       pObjeto = 
-      pObjeto.copyWith(
+      pObjeto!.copyWith(
         statusMovimento: 'F',
         dataFechamento: DateTime.now(),
         horaFechamento: Biblioteca.formatarHora(DateTime.now()),        
-        totalSuprimento: totaisSuprimento.valor,
-        totalSangria: totaisSangria.valor,
-        totalVenda: totaisVenda.valorVenda,
-        totalDesconto: totaisVenda.valorDesconto,
-        totalFinal: totaisVenda.valorFinal,
-        totalRecebido: totaisVenda.valorRecebido,
-        totalTroco: totaisVenda.valorTroco,
-        totalCancelado: totaisVenda.valorCancelado,
+        totalSuprimento: totaisSuprimento?.valor,
+        totalSangria: totaisSangria?.valor,
+        totalVenda: totaisVenda?.valorVenda,
+        totalDesconto: totaisVenda?.valorDesconto,
+        totalFinal: totaisVenda?.valorFinal,
+        totalRecebido: totaisVenda?.valorRecebido,
+        totalTroco: totaisVenda?.valorTroco,
+        totalCancelado: totaisVenda?.valorCancelado,
       ); 
-      await alterar(pObjeto);
+      // await update(pdvMovimentos).replace(pObjeto!);
+      await alterar(pObjeto); 
       // pagamentos
       if (listaFechamento != null) {
         for (var objeto in listaFechamento) {
-          into(pdvFechamentos).insert(objeto);  
+          await into(pdvFechamentos).insert(objeto);  
         }
       }
       return pObjeto;

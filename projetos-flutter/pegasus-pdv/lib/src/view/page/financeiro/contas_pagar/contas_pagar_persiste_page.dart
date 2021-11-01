@@ -33,12 +33,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
@@ -54,11 +55,11 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 import 'package:pegasus_pdv/src/view/shared/page/lookup_local_page.dart';
 
 class ContasPagarPersistePage extends StatefulWidget {
-  final ContasPagarMontado contasPagarMontado;
-  final String title;
-  final String operacao;
+  final ContasPagarMontado? contasPagarMontado;
+  final String? title;
+  final String? operacao;
 
-  const ContasPagarPersistePage({Key key, this.contasPagarMontado, this.title, this.operacao})
+  const ContasPagarPersistePage({Key? key, this.contasPagarMontado, this.title, this.operacao})
       : super(key: key);
 
   @override
@@ -71,10 +72,10 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   bool _formFoiAlterado = false;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
-  ContasPagar _contasPagar;
+  ContasPagar? _contasPagar;
 
   @override
   void initState() {
@@ -90,10 +91,8 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
       ),
     };
 
-    _contasPagar = widget.contasPagarMontado.contasPagar;
-    if (_contasPagar == null) {
-      _contasPagar = ContasPagar(id: null,);
-    }
+    _contasPagar = widget.contasPagarMontado!.contasPagar;
+    _contasPagar ??= ContasPagar(id: null,);
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -113,7 +112,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
   Widget build(BuildContext context) {
     final _taxaJuroController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasPagar?.taxaJuro ?? 0);
     final _importaFornecedorController = TextEditingController();
-    _importaFornecedorController.text = widget.contasPagarMontado.fornecedor?.nome ?? '';
+    _importaFornecedorController.text = widget.contasPagarMontado!.fornecedor?.nome ?? '';
     final _taxaMultaController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasPagar?.taxaMulta ?? 0);
     final _taxaDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasPagar?.taxaDesconto ?? 0);
     final _valorJuroController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasPagar?.valorJuro ?? 0);
@@ -130,7 +129,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
         child: Scaffold(drawerDragStartBehavior: DragStartBehavior.down,
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text(widget.title), 
+            title: Text(widget.title!), 
             actions: widget.operacao == 'I' 
               ? getBotoesAppBarPersistePage(context: context, salvar: _salvar,)
               : getBotoesAppBarPersistePageComExclusao(context: context, salvar: _salvar, excluir: _excluir),
@@ -147,10 +146,10 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                   dragStartBehavior: DragStartBehavior.down,
                   child: BootstrapContainer(
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                     children: [
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -160,7 +159,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                               children: <Widget>[
                                 Expanded(
                                   flex: 1,
-                                  child: Container(
+                                  child: SizedBox(
                                     child: TextFormField(
                                       validator: ValidaCampoFormulario.validarObrigatorio,
                                       controller: _importaFornecedorController,
@@ -169,7 +168,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                         'Conteúdo para o campo Fornecedor',
                                         'Fornecedor *',
                                         false),
-                                      onSaved: (String value) {
+                                      onSaved: (String? value) {
                                       },
                                       onChanged: (text) {
                                         // _contasPagar?.fornecedor?.nome = text;
@@ -185,7 +184,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                     icon: ViewUtilLib.getIconBotaoLookup(),
                                     onPressed: () async {
                                       ///chamando o lookup
-                                      Map<String, dynamic> _objetoJsonRetorno =
+                                      Map<String, dynamic>? _objetoJsonRetorno =
                                         await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -205,8 +204,8 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                       if (_objetoJsonRetorno != null) {
                                         if (_objetoJsonRetorno['nome'] != null) {
                                           _importaFornecedorController.text = _objetoJsonRetorno['nome'];
-                                          _contasPagar = _contasPagar.copyWith(idFornecedor: _objetoJsonRetorno['id']);
-                                          widget.contasPagarMontado.fornecedor = widget.contasPagarMontado.fornecedor.copyWith(
+                                          _contasPagar = _contasPagar!.copyWith(idFornecedor: _objetoJsonRetorno['id']);
+                                          widget.contasPagarMontado!.fornecedor = widget.contasPagarMontado!.fornecedor!.copyWith(
                                             nome: _objetoJsonRetorno['nome'],
                                           );          
                                         }
@@ -219,28 +218,28 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: InputDecorator(                              
                                 decoration: getInputDecoration(
                                   '',
                                   'Data Lançamento',
                                   true),
-                                isEmpty: _contasPagar.dataLancamento == null,
+                                isEmpty: _contasPagar!.dataLancamento == null,
                                 child: DatePickerItem(
                                   mascara: 'dd/MM/yyyy',
-                                  dateTime: _contasPagar.dataLancamento,
+                                  dateTime: _contasPagar!.dataLancamento,
                                   firstDate: DateTime.parse('1900-01-01'),
                                   lastDate: DateTime.now(),
-                                  onChanged: (DateTime value) {
+                                  onChanged: (DateTime? value) {
                                     setState(() {
-                                      _contasPagar = _contasPagar.copyWith(dataLancamento: value);
+                                      _contasPagar = _contasPagar!.copyWith(dataLancamento: value);
                                     });
                                   },
                                 ),
@@ -250,21 +249,21 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: InputDecorator(                              
                                 decoration: getInputDecoration(
                                   '',
                                   'Data Vencimento',
                                   true),
-                                isEmpty: _contasPagar.dataVencimento == null,
+                                isEmpty: _contasPagar!.dataVencimento == null,
                                 child: DatePickerItem(
                                   mascara: 'dd/MM/yyyy',
-                                  dateTime:  _contasPagar.dataVencimento,
+                                  dateTime:  _contasPagar!.dataVencimento,
                                   firstDate: DateTime.parse('1900-01-01'),
                                   lastDate: DateTime.parse('2050-01-01'),
-                                  onChanged: (DateTime value) {
+                                  onChanged: (DateTime? value) {
                                     setState(() {
-                                      _contasPagar = _contasPagar.copyWith(dataVencimento: value);
+                                      _contasPagar = _contasPagar!.copyWith(dataVencimento: value);
                                     });
                                   },
                                 ),
@@ -274,21 +273,21 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: InputDecorator(                              
                                 decoration: getInputDecoration(
                                   '',
                                   'Data Pagamento',
                                   true,
                                   ),
-                                isEmpty: _contasPagar.dataPagamento == null,
+                                isEmpty: _contasPagar!.dataPagamento == null,
                                 child: DatePickerItem(                                  
                                   mascara: 'dd/MM/yyyy',
-                                  dateTime: _contasPagar.dataPagamento,
+                                  dateTime: _contasPagar!.dataPagamento,
                                   firstDate: DateTime.parse('1900-01-01'),
                                   lastDate: DateTime.parse('2050-01-01'),
-                                  onChanged: (DateTime value) {
-                                    _contasPagar = _contasPagar.copyWith(dataPagamento: value);
+                                  onChanged: (DateTime? value) {
+                                    _contasPagar = _contasPagar!.copyWith(dataPagamento: value);
                                     _atualizarTotais();
                                   },
                                 ),
@@ -298,7 +297,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
 
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -312,17 +311,17 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                 '',
                                 'Número do Documento',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                _contasPagar = _contasPagar.copyWith(numeroDocumento: text);
+                                _contasPagar = _contasPagar!.copyWith(numeroDocumento: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -336,24 +335,24 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                 '',
                                 'Histórico',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                _contasPagar = _contasPagar.copyWith(historico: text);
+                                _contasPagar = _contasPagar!.copyWith(historico: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -363,10 +362,10 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                   '',
                                   'Valor a Pagar',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasPagar = _contasPagar.copyWith(valorAPagar: _valorAPagarController.numberValue);
+                                  _contasPagar = _contasPagar!.copyWith(valorAPagar: _valorAPagarController.numberValue);
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
                                 },
@@ -376,7 +375,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -386,13 +385,13 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                   '',
                                   'Taxa Desconto',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
                                   if (_taxaDescontoController.numberValue >= 100) {
                                     _taxaDescontoController.updateValue(99.9);
                                   }
-                                  _contasPagar = _contasPagar.copyWith(taxaDesconto: _taxaDescontoController.numberValue);
+                                  _contasPagar = _contasPagar!.copyWith(taxaDesconto: _taxaDescontoController.numberValue);
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
                                 },
@@ -402,7 +401,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -414,10 +413,10 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                   'Valor Desconto',
                                   false,
                                   cor: ViewUtilLib.getTextFieldReadOnlyColor()),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasPagar = _contasPagar.copyWith(valorDesconto: _valorDescontoController.numberValue);
+                                  _contasPagar = _contasPagar!.copyWith(valorDesconto: _valorDescontoController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -425,14 +424,14 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-3',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -442,10 +441,10 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                   '',
                                   'Taxa Juros',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasPagar = _contasPagar.copyWith(taxaJuro: _taxaJuroController.numberValue);
+                                  _contasPagar = _contasPagar!.copyWith(taxaJuro: _taxaJuroController.numberValue);
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
                                 },
@@ -455,7 +454,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-3',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -467,10 +466,10 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                   'Valor Juros',
                                   false,
                                   cor: ViewUtilLib.getTextFieldReadOnlyColor()),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasPagar = _contasPagar.copyWith(valorJuro: _valorJuroController.numberValue);
+                                  _contasPagar = _contasPagar!.copyWith(valorJuro: _valorJuroController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -479,7 +478,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-3',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -489,10 +488,10 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                   '',
                                   'Taxa Multa',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasPagar = _contasPagar.copyWith(taxaMulta: _taxaMultaController.numberValue);
+                                  _contasPagar = _contasPagar!.copyWith(taxaMulta: _taxaMultaController.numberValue);
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
                                 },
@@ -502,7 +501,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-3',
                             child: Padding(                              
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -514,10 +513,10 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                   'Valor Multa',
                                   false,
                                   cor: ViewUtilLib.getTextFieldReadOnlyColor()),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasPagar = _contasPagar.copyWith(valorMulta: _valorMultaController.numberValue);
+                                  _contasPagar = _contasPagar!.copyWith(valorMulta: _valorMultaController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -525,7 +524,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -542,17 +541,17 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                 'Valor Pago',
                                 false,
                                 cor: ViewUtilLib.getTextFieldReadOnlyColor()),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                _contasPagar = _contasPagar.copyWith(valorPago: _valorPagoController.numberValue);
+                                _contasPagar = _contasPagar!.copyWith(valorPago: _valorPagoController.numberValue);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -566,7 +565,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                     ],
                   ),
                 ),
@@ -584,16 +583,16 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
   }
 
   Future<void> _salvar() async {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (!form.validate()) {
       _autoValidate = AutovalidateMode.always;
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
     } else {
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
-        _contasPagar = _contasPagar.copyWith(statusPagamento: 'A');
+        _contasPagar = _contasPagar!.copyWith(statusPagamento: 'A');
         form.save();
-        if (_contasPagar.dataPagamento != null) {
-          _contasPagar = _contasPagar.copyWith(statusPagamento: 'P');
+        if (_contasPagar!.dataPagamento != null) {
+          _contasPagar = _contasPagar!.copyWith(statusPagamento: 'P');
         }
         if (widget.operacao == 'A') {
           Sessao.db.contasPagarDao.alterar(_contasPagar);
@@ -607,10 +606,13 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
   }
 
   Future<bool> _avisarUsuarioFormAlterado() async {
-    final FormState form = _formKey.currentState;
-    if (form == null || !_formFoiAlterado) return true;
-
-    return await gerarDialogBoxFormAlterado(context);
+    final FormState? form = _formKey.currentState;
+    if (form == null || !_formFoiAlterado) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
   }
 
   void _excluir() {
@@ -621,15 +623,15 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
   }  
 
   _atualizarTotais() {
-    double valorDesconto = Biblioteca.calcularDesconto(_contasPagar.valorAPagar, _contasPagar.taxaDesconto);
-    double valorJuros = Biblioteca.calcularJuros(_contasPagar.valorAPagar, _contasPagar.taxaJuro, _contasPagar.dataVencimento);
-    double valorMulta = Biblioteca.calcularMulta(_contasPagar.valorAPagar, _contasPagar.taxaMulta);
-    double valorPago = (_contasPagar.valorAPagar ?? 0) + valorJuros + valorMulta - valorDesconto;
+    double valorDesconto = Biblioteca.calcularDesconto(_contasPagar!.valorAPagar, _contasPagar!.taxaDesconto);
+    double valorJuros = Biblioteca.calcularJuros(_contasPagar!.valorAPagar, _contasPagar!.taxaJuro, _contasPagar!.dataVencimento);
+    double valorMulta = Biblioteca.calcularMulta(_contasPagar!.valorAPagar, _contasPagar!.taxaMulta);
+    double valorPago = (_contasPagar!.valorAPagar ?? 0) + valorJuros + valorMulta - valorDesconto;
 
     // double subTotal = Biblioteca.multiplicarMonetario(widget.compraDetalhe.compraPedidoDetalhe.quantidade, widget.compraDetalhe.compraPedidoDetalhe.valorUnitario);
     setState(() {
       _contasPagar = 
-        _contasPagar.copyWith(
+        _contasPagar!.copyWith(
           valorJuro: valorJuros,
           valorMulta: valorMulta,
           valorDesconto: valorDesconto,

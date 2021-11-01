@@ -37,13 +37,14 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeItemRastreado")
 class NfeItemRastreados extends Table {
+  @override
   String get tableName => 'NFE_ITEM_RASTREADO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')();
-  TextColumn get numeroLote => text().named('NUMERO_LOTE').withLength(min: 0, max: 20).nullable()();
-  RealColumn get quantidadeItens => real().named('QUANTIDADE_ITENS').nullable()();
-  DateTimeColumn get dataFabricacao => dateTime().named('DATA_FABRICACAO').nullable()();
-  DateTimeColumn get dataValidade => dateTime().named('DATA_VALIDADE').nullable()();
-  TextColumn get codigoAgregacao => text().named('CODIGO_AGREGACAO').withLength(min: 0, max: 20).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')() as Column<int>?;
+  TextColumn? get numeroLote => text().named('NUMERO_LOTE').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  RealColumn? get quantidadeItens => real().named('QUANTIDADE_ITENS').nullable()() as Column<double>?;
+  DateTimeColumn? get dataFabricacao => dateTime().named('DATA_FABRICACAO').nullable()() as Column<DateTime>?;
+  DateTimeColumn? get dataValidade => dateTime().named('DATA_VALIDADE').nullable()() as Column<DateTime>?;
+  TextColumn? get codigoAgregacao => text().named('CODIGO_AGREGACAO').withLength(min: 0, max: 20).nullable()() as Column<String>?;
 }

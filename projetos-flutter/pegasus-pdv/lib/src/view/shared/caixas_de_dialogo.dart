@@ -39,14 +39,14 @@ import 'package:pegasus_pdv/src/infra/infra.dart';
 
 
 /// Retorna a dialog box informando que o form foi alterado
-Future gerarDialogBoxFormAlterado(BuildContext context, {Function onOkPressed}) async {
+Future gerarDialogBoxFormAlterado(BuildContext context, {Function? onOkPressed}) async {
   if (Biblioteca.isMobile()) {
     AwesomeDialog(
       context: context,
       dialogType: DialogType.QUESTION,
-      borderSide: BorderSide(color: Colors.green, width: 2),
+      borderSide: const BorderSide(color: Colors.green, width: 2),
       width: 400,
-      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+      buttonsBorderRadius: const BorderRadius.all(Radius.circular(2)),
       headerAnimationLoop: false,
       animType: AnimType.BOTTOMSLIDE,
       title: 'Alterações não Concluídas',
@@ -61,7 +61,7 @@ Future gerarDialogBoxFormAlterado(BuildContext context, {Function onOkPressed}) 
       },
       btnOkText: 'Sim',
       btnCancelText: 'Não',
-    )..show();
+    ).show();
   } else {
     showDialogDesktop(
       context: context, 
@@ -78,50 +78,50 @@ Future gerarDialogBoxFormAlterado(BuildContext context, {Function onOkPressed}) 
 }
 
 /// Retorna um diálogo de exclusão
-gerarDialogBoxExclusao(BuildContext context, Function onOkPressed, {String mensagemPersonalizada}) {
+gerarDialogBoxExclusao(BuildContext context, Function onOkPressed, {String? mensagemPersonalizada}) {
   if (Biblioteca.isMobile()) {
     AwesomeDialog(
       context: context,
       dialogType: DialogType.QUESTION,
-      borderSide: BorderSide(color: Colors.green, width: 2),
+      borderSide: const BorderSide(color: Colors.green, width: 2),
       width: 400,
-      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+      buttonsBorderRadius: const BorderRadius.all(Radius.circular(2)),
       headerAnimationLoop: false,
       animType: AnimType.BOTTOMSLIDE,
       title: 'Exclusão de Registro',
-      desc: mensagemPersonalizada == null ? 'Deseja excluir esse registro?' : mensagemPersonalizada,
+      desc: mensagemPersonalizada ?? 'Deseja excluir esse registro?',
       showCloseIcon: true,
       btnCancelOnPress: () {},
       btnOkOnPress: onOkPressed,
       btnOkText: 'Sim',
       btnCancelText: 'Não',
-    )..show();
+    ).show();
   } else {
     showDialogDesktop(
       context: context, 
       titulo: 'Exclusão de Registro', 
-      mensagem: mensagemPersonalizada == null ? 'Deseja excluir esse registro?' : mensagemPersonalizada, 
+      mensagem: mensagemPersonalizada ?? 'Deseja excluir esse registro?', 
       tipo: DialogType.QUESTION, 
       onOkPressed: onOkPressed);
   }
 } 
 
 /// Retorna um diálogo de informação
-gerarDialogBoxInformacao(BuildContext context, String mensagem, {Function onOkPressed}) {
+gerarDialogBoxInformacao(BuildContext context, String mensagem, {Function? onOkPressed}) {
   if (Biblioteca.isMobile()) {
     AwesomeDialog(
       context: context,
       dialogType: DialogType.INFO,
-      borderSide: BorderSide(color: Colors.green, width: 2),
+      borderSide: const BorderSide(color: Colors.green, width: 2),
       width: 400,
-      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+      buttonsBorderRadius: const BorderRadius.all(Radius.circular(2)),
       headerAnimationLoop: false,
       animType: AnimType.BOTTOMSLIDE,
       title: 'Informação do Sistema',
       desc: mensagem,
       showCloseIcon: true,
-      btnOkOnPress: onOkPressed == null ? () {} : onOkPressed,
-    )..show();
+      btnOkOnPress: onOkPressed ?? () {},
+    ).show();
   } else {
     showDialogDesktop(
       context: context, 
@@ -133,14 +133,14 @@ gerarDialogBoxInformacao(BuildContext context, String mensagem, {Function onOkPr
 }
 
 /// Retorna um diálogo de confirmação
-gerarDialogBoxConfirmacao(BuildContext context, String mensagem, Function onOkPressed, {Function onCancelPressed}) {
+gerarDialogBoxConfirmacao(BuildContext? context, String mensagem, Function onOkPressed, {Function? onCancelPressed}) {
   if (Biblioteca.isMobile()) {
     AwesomeDialog(
-      context: context,
+      context: context!,
       dialogType: DialogType.QUESTION,
-      borderSide: BorderSide(color: Colors.green, width: 2),
+      borderSide: const BorderSide(color: Colors.green, width: 2),
       width: 400,
-      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+      buttonsBorderRadius: const BorderRadius.all(Radius.circular(2)),
       headerAnimationLoop: false,
       animType: AnimType.BOTTOMSLIDE,
       title: 'Pergunta do Sistema',
@@ -150,10 +150,10 @@ gerarDialogBoxConfirmacao(BuildContext context, String mensagem, Function onOkPr
       btnOkOnPress: onOkPressed,
       btnOkText: 'Sim',
       btnCancelText: 'Não',
-    )..show();
+    ).show();
   } else {
     showDialogDesktop(
-      context: context, 
+      context: context!, 
       titulo: 'Pergunta do Sistema', 
       mensagem: mensagem, 
       tipo: DialogType.QUESTION, 
@@ -162,24 +162,24 @@ gerarDialogBoxConfirmacao(BuildContext context, String mensagem, Function onOkPr
 }
 
 /// Retorna um diálogo de informação
-gerarDialogBoxErro(BuildContext context, String mensagem, {Function onOkPressed}) {
+gerarDialogBoxErro(BuildContext? context, String mensagem, {Function? onOkPressed}) {
   if (Biblioteca.isMobile()) {
     AwesomeDialog(
-      context: context,
+      context: context!,
       dialogType: DialogType.ERROR,
-      borderSide: BorderSide(color: Colors.red, width: 2),
+      borderSide: const BorderSide(color: Colors.red, width: 2),
       width: 400,
-      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+      buttonsBorderRadius: const BorderRadius.all(Radius.circular(2)),
       headerAnimationLoop: false,
       animType: AnimType.BOTTOMSLIDE,
       title: 'Erro no Sistema',
       desc: mensagem,
       showCloseIcon: true,
-      btnOkOnPress: onOkPressed == null ? () {} : onOkPressed,
-    )..show();
+      btnOkOnPress: onOkPressed ?? () {},
+    ).show();
   } else {
     showDialogDesktop(
-      context: context, 
+      context: context!, 
       titulo: 'Erro no Sistema', 
       mensagem: mensagem, 
       tipo: DialogType.ERROR, 
@@ -188,7 +188,7 @@ gerarDialogBoxErro(BuildContext context, String mensagem, {Function onOkPressed}
 }
 
 /// exibe uma caixa de diálogo no desktop com possibilidade de focar os botões
-showDialogDesktop({BuildContext context, String titulo, String mensagem, DialogType tipo, Function onOkPressed}) {
+showDialogDesktop({required BuildContext context, String? titulo, String? mensagem, DialogType? tipo, Function? onOkPressed}) {
   return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
@@ -198,24 +198,24 @@ showDialogDesktop({BuildContext context, String titulo, String mensagem, DialogT
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
-        child: _corpoDialogoDesktop(context: context, titulo: titulo, mensagem: mensagem, tipo: tipo, onOkPressed: onOkPressed),
+        child: _corpoDialogoDesktop(context: context, titulo: titulo!, mensagem: mensagem, tipo: tipo, onOkPressed: onOkPressed),
       );      
     },
   );
 }
 
-_corpoDialogoDesktop({BuildContext context, String titulo, String mensagem, DialogType tipo, Function onOkPressed}){
+_corpoDialogoDesktop({BuildContext? context, required String titulo, String? mensagem, DialogType? tipo, Function? onOkPressed}){
   return Stack(
     children: <Widget>[
       Container(
         width: 400,
-        padding: EdgeInsets.only(left: 20, top: 40, right: 20, bottom: 20),
-        margin: EdgeInsets.only(top: 45),
+        padding: const EdgeInsets.only(left: 20, top: 40, right: 20, bottom: 20),
+        margin: const EdgeInsets.only(top: 45),
         decoration: BoxDecoration(
           shape: BoxShape.rectangle,
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(color: Colors.black,offset: Offset(0,10),
             blurRadius: 10
             ),
@@ -224,21 +224,21 @@ _corpoDialogoDesktop({BuildContext context, String titulo, String mensagem, Dial
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text(titulo, style: TextStyle(fontSize: 22,fontWeight: FontWeight.w600),),
-            Divider(thickness: 1,),
-            SizedBox(height: 15,),
+            Text(titulo, style: const TextStyle(fontSize: 22,fontWeight: FontWeight.w600),),
+            const Divider(thickness: 1,),
+            const SizedBox(height: 15,),
             tipo == DialogType.ERROR            
             ? 
-              Container(
+              SizedBox(
                 height: 100,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
-                    child: Text(mensagem, style: TextStyle(fontSize: 14),textAlign: TextAlign.center,),
+                    child: Text(mensagem!, style: const TextStyle(fontSize: 14),textAlign: TextAlign.center,),
                 ),
               )
             :            
-              Text(mensagem, style: TextStyle(fontSize: 14),textAlign: TextAlign.center,),
-            SizedBox(height: 22,),
+              Text(mensagem!, style: const TextStyle(fontSize: 14),textAlign: TextAlign.center,),
+            const SizedBox(height: 22,),
             Align(
               alignment: Alignment.bottomRight,
               child: Padding(
@@ -263,7 +263,7 @@ _corpoDialogoDesktop({BuildContext context, String titulo, String mensagem, Dial
             backgroundColor: Colors.transparent,
             radius: 45,
             child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(45)),
+              borderRadius: const BorderRadius.all(Radius.circular(45)),
                 child: _definirImagemDialogo(tipo),
             ),
           ),
@@ -272,30 +272,26 @@ _corpoDialogoDesktop({BuildContext context, String titulo, String mensagem, Dial
   );
 }
 
-Widget _definirImagemDialogo(DialogType tipo) {
+Widget _definirImagemDialogo(DialogType? tipo) {
   switch (tipo) {
     case DialogType.QUESTION :
       return Image.asset(Constantes.dialogQuestionIcon);
-      break;
     case DialogType.INFO :
       return Image.asset(Constantes.dialogInfoIcon);
-      break;
     case DialogType.ERROR :
       return Image.asset(Constantes.dialogErrorIcon);
-      break;
     default:
       return Image.asset(Constantes.dialogInfoIcon);
-      break;
   }
 }
 
-List<Widget> _getBotoesRodapeDialogoDesktop({BuildContext context, DialogType tipo, Function onOkPressed}) {
+List<Widget> _getBotoesRodapeDialogoDesktop({BuildContext? context, DialogType? tipo, Function? onOkPressed}) {
   List<Widget> listaBotoes = [];
 
   if (tipo == DialogType.INFO || tipo == DialogType.ERROR) {
     listaBotoes.add(
-      Container(
-        width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+      SizedBox(
+        width: Biblioteca.isTelaPequena(context!)! ? 130 : 150,
         child: TextButton(
           autofocus: true,
           style: ButtonStyle(
@@ -303,15 +299,15 @@ List<Widget> _getBotoesRodapeDialogoDesktop({BuildContext context, DialogType ti
             backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
             overlayColor: MaterialStateProperty.all<Color>(Colors.transparent.withOpacity(0.3)),
           ),
-          child: Text('OK'),
-          onPressed: onOkPressed == null ? () { Navigator.pop(context); } : onOkPressed,
+          child: const Text('OK'),
+          onPressed: onOkPressed as void Function()? ?? () { Navigator.pop(context); },
         ),              
       ),
     );
   } else {
     listaBotoes.add(
-      Container(
-        width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+      SizedBox(
+        width: Biblioteca.isTelaPequena(context!)! ? 130 : 150,
         child: TextButton(
           autofocus: true,
           style: ButtonStyle(
@@ -319,17 +315,17 @@ List<Widget> _getBotoesRodapeDialogoDesktop({BuildContext context, DialogType ti
             backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
             overlayColor: MaterialStateProperty.all<Color>(Colors.transparent.withOpacity(0.3)),
           ),
-          child: Text('Sim'),
+          child: const Text('Sim'),
           onPressed: onOkPressed == null ? () { Navigator.pop(context); } : () { Navigator.pop(context); onOkPressed.call(); },
         ),             
       ),
     );
     listaBotoes.add(
-      SizedBox(width: 10.0),
+      const SizedBox(width: 10.0),
     );
     listaBotoes.add(
-      Container(
-        width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+      SizedBox(
+        width: Biblioteca.isTelaPequena(context)! ? 130 : 150,
         child: TextButton(
           autofocus: true,
           style: ButtonStyle(
@@ -337,7 +333,7 @@ List<Widget> _getBotoesRodapeDialogoDesktop({BuildContext context, DialogType ti
             backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
             overlayColor: MaterialStateProperty.all<Color>(Colors.transparent.withOpacity(0.3)),
           ),
-          child: Text('Não'),
+          child: const Text('Não'),
           onPressed: () {
               Navigator.of(context).pop();
             },
@@ -349,10 +345,10 @@ List<Widget> _getBotoesRodapeDialogoDesktop({BuildContext context, DialogType ti
 }
 
 /// Mostra uma snackbar com uma mensagem
-showInSnackBar(String value, BuildContext context, {Color corFundo}) {
+showInSnackBar(String value, BuildContext context, {Color? corFundo}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     content: Text(value),
-    backgroundColor: corFundo == null ? Colors.red : corFundo,
+    backgroundColor: corFundo ?? Colors.red,
   ));
 }
 
@@ -361,7 +357,7 @@ gerarDialogBoxEspera(BuildContext context) {
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(),
       );
     }

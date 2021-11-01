@@ -37,7 +37,7 @@ Based on: Flutter UI Challenges by Many - https://github.com/lohanidamodar/flutt
 *******************************************************************************/
 import 'package:flutter/material.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 
@@ -53,36 +53,37 @@ import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/page/pdv/parcelamento_receitas_page.dart';
 
 class EfetuaPagamentoPage extends StatefulWidget {
-  final String title;
+  final String? title;
 
-  const EfetuaPagamentoPage({Key key, this.title}) : super(key: key);
+  const EfetuaPagamentoPage({Key? key, this.title}) : super(key: key);
 
   @override
   _EfetuaPagamentoPageState createState() => _EfetuaPagamentoPageState();
 }
 
 class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
-  final _valorController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: Sessao.vendaAtual.valorFinal ?? 0);
+  final _valorController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: Sessao.vendaAtual!.valorFinal ?? 0);
   
   final _tipoPagamentoFoco = FocusNode();
   final _valorFoco = FocusNode();
 
   double _saldoRestante = 0;
   double _totalRecebido = 0;
-  PdvTipoPagamento _tipoPagamento = Sessao.listaTipoPagamento[0];
+  PdvTipoPagamento? _tipoPagamento = Sessao.listaTipoPagamento![0];
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
     super.initState();
 
-    _valorController.afterChange = (_, __) {
-      _valorController.selection = TextSelection.collapsed(
-        offset: _valorController.text.length,
-      );
-    };
+    // EIJE - 22102021 - comentado para observar o comportamento do novo widget
+    // _valorController.afterChange = (_, __) {
+    //   _valorController.selection = TextSelection.collapsed(
+    //     offset: _valorController.text.length,
+    //   );
+    // };
 
     _valorFoco.addListener(() {
       if(_valorFoco.hasFocus) {
@@ -102,7 +103,7 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
     Sessao.listaDadosPagamento.clear();
     _valorFoco.requestFocus();        
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _zerarTotalRecebido());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _zerarTotalRecebido());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -155,35 +156,35 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
     if (index == 0) return cabecalhoTela(context);
     // if (index == 1) return dadosFechamento(context);
     if (index == 1) return rodapeTela(context);
-    return null;
+    return const SizedBox();
   }
 
-  Container cabecalhoTela(BuildContext context) {
-    return Container(
+  SizedBox cabecalhoTela(BuildContext context) {
+    return SizedBox(
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
               color: Colors.white,
               child: Column(
                 children: <Widget>[
-                  SizedBox(
+                  const SizedBox(
                     height: 50.0,
                   ),
                   Text(
-                    widget.title,
+                    widget.title!,
                     style: Theme.of(context).textTheme.headline5,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5.0,
                   ),
 
                   BootstrapContainer(                    
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                     children: <Widget>[			  			  
                       BootstrapRow(
@@ -194,16 +195,16 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
                             child: Card(
                               elevation: 4,
                               child: Padding(
-                                padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
+                                padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
                                 child: Column(
                                   children: <Widget>[
-                                    Text("Informe os dados do pagamento"),
-                                    Divider(
+                                    const Text("Informe os dados do pagamento"),
+                                    const Divider(
                                       indent: 10,
                                       endIndent: 10,
                                       thickness: 2,
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 16.0,
                                     ),
                                     getBotaoGenericoPdv(
@@ -213,7 +214,7 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
                                         _fechamentoRapido();
                                       }
                                     ),                                         
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 16.0,
                                     ),
                                     InputDecorator(
@@ -227,20 +228,20 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
                                         focusNode: _tipoPagamentoFoco,
                                         isExpanded: true,
                                         value: _tipoPagamento,
-                                        onChanged: (PdvTipoPagamento newValue) {
+                                        onChanged: (PdvTipoPagamento? newValue) {
                                           setState(() {
                                             _tipoPagamento = newValue;
                                           });
                                         },
-                                        items: Sessao.listaTipoPagamento.map<DropdownMenuItem<PdvTipoPagamento>>((PdvTipoPagamento value) {
+                                        items: Sessao.listaTipoPagamento!.map<DropdownMenuItem<PdvTipoPagamento>>((PdvTipoPagamento value) {
                                           return DropdownMenuItem<PdvTipoPagamento>(
                                             value: value,
-                                            child: Text(value.descricao),
+                                            child: Text(value.descricao!),
                                           );
                                         }).toList(),
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 16.0,
                                     ),
                                     TextField(
@@ -260,15 +261,15 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
                                         // _formFoiAlterado = true;
                                       },
                                     ),                                    
-                                    Divider(
+                                    const Divider(
                                       indent: 0,
                                       endIndent: 0,
                                       thickness: 2,
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 16.0,
                                     ),
-                                    Container(
+                                    SizedBox(
                                       height: 170.0,
                                       child: Scrollbar(
                                         child: ListView(
@@ -288,10 +289,10 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
                                         ),
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 16.0,
                                     ),
-                                    Divider(
+                                    const Divider(
                                       indent: 0,
                                       endIndent: 0,
                                       thickness: 2,
@@ -307,23 +308,23 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
                               elevation: 4,
                               child: Column(
                                 children: <Widget>[                                        
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 5.0,
                                   ),
-                                  Text("Resumo da venda"),
-                                  Divider(
+                                  const Text("Resumo da venda"),
+                                  const Divider(
                                     indent: 10,
                                     endIndent: 10,
                                     thickness: 2,
                                   ),
                                   getItemResumoValor(
                                     descricao: 'Total Venda: ',
-                                    valor: 'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual.valorVenda ?? 0)}',
+                                    valor: 'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual!.valorVenda ?? 0)}',
                                     corFundo: Colors.blue.shade100,
                                   ),
                                   getItemResumoValor(
                                     descricao: 'Desconto: ',
-                                    valor: 'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual.valorDesconto ?? 0)}',
+                                    valor: 'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual!.valorDesconto ?? 0)}',
                                     corFundo: Colors.red.shade100,
                                   ),
                                   // getItemResumoValor(
@@ -333,25 +334,25 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
                                   // ),
                                   getItemResumoValor(
                                     descricao: 'Total a Receber: ',
-                                    valor: 'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual.valorFinal ?? 0)}',
+                                    valor: 'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual!.valorFinal ?? 0)}',
                                     corFundo: Colors.blue.shade100,
                                   ),
                                   getItemResumoValor(
                                     descricao: 'Total Recebido: ',
-                                    valor: 'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual.valorRecebido ?? 0)}',
+                                    valor: 'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual!.valorRecebido ?? 0)}',
                                     corFundo: Colors.green.shade100,
                                   ),
                                   getItemResumoValor(
                                     descricao: 'Saldo Restante: ',
-                                    valor: 'R\$ ${Constantes.formatoDecimalValor.format(_saldoRestante ?? 0)}',
+                                    valor: 'R\$ ${Constantes.formatoDecimalValor.format(_saldoRestante)}',
                                     corFundo: Colors.blue.shade100,
                                   ),
                                   getItemResumoValor(
                                     descricao: 'Troco: ',
-                                    valor: 'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual.valorTroco ?? 0)}',
+                                    valor: 'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual!.valorTroco ?? 0)}',
                                     corFundo: Colors.red.shade100,
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 5.0,
                                   ),
                                 ],
@@ -363,7 +364,7 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
                     ],
                   ),
 
-                  SizedBox(
+                  const SizedBox(
                     height: 5.0,
                   ),
                 ],
@@ -372,7 +373,7 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: const <Widget>[
               Material(
                 elevation: 5.0,
                 shape: CircleBorder(),
@@ -390,13 +391,13 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
 
   List<DataColumn> getColumnsFechamento() {
     List<DataColumn> lista = [];
-    lista.add(DataColumn(
+    lista.add(const DataColumn(
       label: Text(
         "Tipo",
         style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
       ),
     ));
-    lista.add(DataColumn(
+    lista.add(const DataColumn(
       numeric: true,
       label: Text(
         "Valor",
@@ -414,11 +415,11 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
       celulas = [
         DataCell(
           Text(
-            _getDescricaoTipoPagamento(itemPagamento),
+            _getDescricaoTipoPagamento(itemPagamento)!,
           ), 
           onTap: () => _excluirPagamento(itemPagamento)),
         DataCell(
-          Text('${itemPagamento.valor != null ? Constantes.formatoDecimalValor.format(itemPagamento.valor) : 0.toStringAsFixed(Constantes.decimaisValor)}'),
+          Text(itemPagamento.valor != null ? Constantes.formatoDecimalValor.format(itemPagamento.valor) : 0.toStringAsFixed(Constantes.decimaisValor)),
           onTap: () => _excluirPagamento(itemPagamento)),
       ];
 
@@ -429,11 +430,11 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
 
   Container rodapeTela(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 0.0),
+      margin: const EdgeInsets.only(top: 0.0),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
@@ -456,11 +457,11 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
     );
   }
 
-  List<Widget> _getBotoesRodape({BuildContext context}) {
+  List<Widget> _getBotoesRodape({required BuildContext context}) {
     List<Widget> listaBotoes = [];
     listaBotoes.add(
-      Container(
-        width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+      SizedBox(
+        width: Biblioteca.isTelaPequena(context)! ? 130 : 150,
         child: getBotaoGenericoPdv(
           descricao: Biblioteca.isMobile() ? 'Cancelar' : 'Cancelar [F11]',
           cor: Colors.red, 
@@ -471,11 +472,11 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
       ),
     );
     listaBotoes.add(
-      SizedBox(width: 10.0),
+      const SizedBox(width: 10.0),
     );
     listaBotoes.add(
-      Container(
-        width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+      SizedBox(
+        width: Biblioteca.isTelaPequena(context)! ? 130 : 150,
         child: getBotaoGenericoPdv(
           descricao: Biblioteca.isMobile() ? 'Confirmar' : 'Confirmar [F12]',
           cor: Colors.green, 
@@ -488,23 +489,23 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
     return listaBotoes;
   }
 
-  String _getDescricaoTipoPagamento(PdvTotalTipoPagamento itemPagamento){
-    final tipoFiltrado = Sessao.listaTipoPagamento.where( ((tipo) => tipo.id == itemPagamento.idPdvTipoPagamento)).toList();    
+  String? _getDescricaoTipoPagamento(PdvTotalTipoPagamento itemPagamento){
+    final tipoFiltrado = Sessao.listaTipoPagamento!.where( ((tipo) => tipo.id == itemPagamento.idPdvTipoPagamento)).toList();    
     return tipoFiltrado[0].descricao;
   }
 
   bool _getPagamentoGeraParcelas(PdvTotalTipoPagamento itemPagamento){
-    final tipoFiltrado = Sessao.listaTipoPagamento.where( ((tipo) => tipo.id == itemPagamento.idPdvTipoPagamento)).toList();    
+    final tipoFiltrado = Sessao.listaTipoPagamento!.where( ((tipo) => tipo.id == itemPagamento.idPdvTipoPagamento)).toList();    
     return tipoFiltrado[0].geraParcelas == 'S';
   }
 
   void _fechamentoRapido() {
     PdvTotalTipoPagamento itemPagamento = PdvTotalTipoPagamento(
       id: null,
-      idPdvTipoPagamento: _tipoPagamento.id,
+      idPdvTipoPagamento: _tipoPagamento!.id,
       dataVenda: DateTime.now(),
       horaVenda: Biblioteca.formatarHora(DateTime.now()),
-      valor: Sessao.vendaAtual.valorFinal
+      valor: Sessao.vendaAtual!.valorFinal
     );
     Sessao.listaDadosPagamento.add(itemPagamento);
     _atualizarTotais();
@@ -513,11 +514,11 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
 
   void _adicionarPagamento() {
     if (_valorController.numberValue > 0) {
-      final pagamentoFiltrado = Sessao.listaDadosPagamento.where(((pagamento) => pagamento.idPdvTipoPagamento == _tipoPagamento.id)).toList();    
-      if (pagamentoFiltrado.length == 0) {
+      final pagamentoFiltrado = Sessao.listaDadosPagamento.where(((pagamento) => pagamento.idPdvTipoPagamento == _tipoPagamento!.id)).toList();    
+      if (pagamentoFiltrado.isEmpty) {
         PdvTotalTipoPagamento itemPagamento = PdvTotalTipoPagamento(
           id: null,
-          idPdvTipoPagamento: _tipoPagamento.id,
+          idPdvTipoPagamento: _tipoPagamento!.id,
           dataVenda: DateTime.now(),
           horaVenda: Biblioteca.formatarHora(DateTime.now()),
           valor: _valorController.numberValue
@@ -545,16 +546,16 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
   void _atualizarTotais() {
     _totalRecebido = 0;
     for (var item in Sessao.listaDadosPagamento) {
-      _totalRecebido = _totalRecebido + item.valor;
+      _totalRecebido = _totalRecebido + item.valor!;
     }
-    _saldoRestante = double.tryParse(Sessao.vendaAtual.valorFinal.toStringAsFixed(2)) - _totalRecebido;
+    _saldoRestante = double.tryParse(Sessao.vendaAtual!.valorFinal!.toStringAsFixed(2))! - _totalRecebido;
     _saldoRestante = _saldoRestante > 0 ? _saldoRestante : 0;
-    double troco = _totalRecebido - Sessao.vendaAtual.valorFinal;
+    double troco = _totalRecebido - Sessao.vendaAtual!.valorFinal!;
     troco = troco < 0 ? 0 : troco;
     //
     _valorController.updateValue(_saldoRestante);
     Sessao.vendaAtual = 
-    Sessao.vendaAtual.copyWith(
+    Sessao.vendaAtual!.copyWith(
       valorRecebido: _totalRecebido,
       valorTroco: troco,
     );
@@ -563,7 +564,7 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
   void _zerarTotalRecebido() {
     setState(() {
       Sessao.vendaAtual = 
-      Sessao.vendaAtual.copyWith(
+      Sessao.vendaAtual!.copyWith(
         valorRecebido: 0,
         valorTroco: 0,
       );  
@@ -572,7 +573,7 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
 
   void _confirmar() {
     _atualizarTotais();
-    if (_totalRecebido < Sessao.vendaAtual.valorFinal) {
+    if (_totalRecebido < Sessao.vendaAtual!.valorFinal!) {
       gerarDialogBoxInformacao(context, 'Valores informados não são suficientes para finalizar a venda.');
     } else {
       _verificarParcelamento();
@@ -583,11 +584,11 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
     double totalParcelamento = 0;
     for (var itemPagamento in Sessao.listaDadosPagamento) {
       if (_getPagamentoGeraParcelas(itemPagamento)) {
-        totalParcelamento = totalParcelamento + itemPagamento.valor;
+        totalParcelamento = totalParcelamento + itemPagamento.valor!;
       }
     }
     if (totalParcelamento > 0) {
-      bool finalizouParcelamento = await Navigator.of(context)
+      bool? finalizouParcelamento = await Navigator.of(context)
         .push(MaterialPageRoute(
             builder: (BuildContext context) => ParcelamentoReceitasPage(title: 'Parcelamento da Venda', totalParcelamento: totalParcelamento,)));
       if (finalizouParcelamento ?? false) {

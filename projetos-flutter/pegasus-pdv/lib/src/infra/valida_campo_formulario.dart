@@ -41,58 +41,60 @@ class ValidaCampoFormulario {
   /// factory - teremos apenas uma instância de ValidaCampoFormulario - singleton
   factory ValidaCampoFormulario() {
     _this ??= ValidaCampoFormulario._();
-    return _this;
+    return _this!;
   }
-  static ValidaCampoFormulario _this;
+  static ValidaCampoFormulario? _this;
   ValidaCampoFormulario._() : super();
 
   /// valida campo obrigatório
-  static String validarObrigatorio(String value) {
+  static String? validarObrigatorio(String? value) {
     if (value == null || value.isEmpty) return 'Obrigatório informar esse campo.';
     return null;
   }
 
-  static String validarObrigatorioDouble(String value) {
+  static String? validarObrigatorioDouble(String? value) {
     if (value == null || value == '0,00') return 'Obrigatório informar esse campo.';
     return null;
   }
 
   /// valida campos decimais como obrigatórios
-  static String validarObrigatorioDecimal(String value) {
+  static String? validarObrigatorioDecimal(String value) {
     if (value == '0,00') return 'Obrigatório informar esse campo.';
     return null;
   }
 
   /// validar se os caracteres são alfanumericos
-  static String validarAlfanumerico(String value) {
+  static String? validarAlfanumerico(String value) {
     final RegExp nameExp = RegExp(r'^[A-Za-z0-9ãáàâãéèêíïóôõöúçñÃÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ\-\(\)\/ªº,. ]+$');
-    if (!nameExp.hasMatch(value))
+    if (!nameExp.hasMatch(value)) {
       return 'Por favor, informe apenas caracteres alfanuméricos.';
+    }
     return null;
   }
 
   /// validar o campo como obrigatório e verificar se os caracteres são alfanumericos
-  static String validarObrigatorioAlfanumerico(String value) {
+  static String? validarObrigatorioAlfanumerico(String? value) {
     var campoObrigario = validarObrigatorio(value);
     if (campoObrigario == null) {
-      return validarAlfanumerico(value);
+      return validarAlfanumerico(value!);
     } else {
       return campoObrigario;
     }
   }
  
   /// validar se os caracteres são numericos
-  static String validarNumerico(String value) {
+  static String? validarNumerico(String? value) {
     if (value != null) {
       final RegExp nameExp = RegExp(r'^[0-9]+$');
-      if (!nameExp.hasMatch(value))
+      if (!nameExp.hasMatch(value)) {
         return 'Por favor, informe apenas caracteres numéricos.';
+      }
     }
     return null;
   }
 
   /// validar o campo como obrigatório e verificar se os caracteres são numericos
-  static String validarObrigatorioNumerico(String value) {
+  static String? validarObrigatorioNumerico(String? value) {
     var campoObrigario = validarObrigatorio(value);
     if (campoObrigario == null) {
       return validarNumerico(value);
@@ -102,7 +104,7 @@ class ValidaCampoFormulario {
   }
 
   /// validar se o conteúdo do campo é um CNPJ válido
-  static String validarObrigatorioCNPJ(String value) {
+  static String? validarObrigatorioCNPJ(String? value) {
     var campoObrigario = validarObrigatorio(value);
     if (campoObrigario == null) {
       return validarCNPJ(value);
@@ -111,7 +113,7 @@ class ValidaCampoFormulario {
     }
   }
 
-  static String validarCNPJ(String value) {
+  static String? validarCNPJ(String? value) {
     if (value != "") {
       var cnpjValido = CNPJValidator.isValid(value);
       if (cnpjValido) {
@@ -125,7 +127,7 @@ class ValidaCampoFormulario {
   }
 
   /// validar se o conteúdo do campo é um CPF válido
-  static String validarObrigatorioCPF(String value) {
+  static String? validarObrigatorioCPF(String? value) {
     if (value != "") {
       var campoObrigario = validarObrigatorio(value);
       if (campoObrigario == null) {
@@ -138,7 +140,7 @@ class ValidaCampoFormulario {
     }
   }
 
-  static String validarCPF(String value) {
+  static String? validarCPF(String? value) {
     if (value != "") {
       var cpfValido = CPFValidator.isValid(value);
       if (cpfValido) {
@@ -152,11 +154,12 @@ class ValidaCampoFormulario {
   }
 
   /// validar Email
-  static String validarEmail(String value) {
+  static String? validarEmail(String? value) {
     if (value != "") {
-      final emailValido = EmailValidator.validate(value);
-      if (!emailValido) 
+      final emailValido = EmailValidator.validate(value!);
+      if (!emailValido) {
         return 'Por favor, informe um EMail válido.';
+      }
       return null;
     } else {
       return null;
@@ -164,7 +167,7 @@ class ValidaCampoFormulario {
   }
 
   /// validar se o Email é obrigatório
-  static String validarObrigatorioEmail(String value) {
+  static String? validarObrigatorioEmail(String? value) {
     var campoObrigario = validarObrigatorio(value);
     if (campoObrigario == null) {
       return validarEmail(value);
@@ -174,7 +177,7 @@ class ValidaCampoFormulario {
   }
 
   /// validar se o conteúdo do campo é um DIA válido
-  static String validarObrigatorioDIA(String value) {
+  static String? validarObrigatorioDIA(String value) {
     var campoObrigario = validarObrigatorio(value);
     if (campoObrigario == null) {
       return validarDIA(value);
@@ -183,8 +186,8 @@ class ValidaCampoFormulario {
     }
   }
 
-  static String validarDIA(String value) {
-    int dia = int.tryParse(value);
+  static String? validarDIA(String value) {
+    int? dia = int.tryParse(value);
     if (dia != null) {
       if (dia >= 1 && dia <= 30) {
         return null;
@@ -195,16 +198,16 @@ class ValidaCampoFormulario {
     return null;
   }
 
-  static String validarHORA(String value) {
+  static String? validarHORA(String value) {
     
     // tamanho incorreto, já devolve o erro
     if (value.length != 8) {
       return 'Por favor, informe uma HORA válida.';
     }
 
-    int hora = int.tryParse(value.substring(0, 2)); 
-    int minuto = int.tryParse(value.substring(3, 5));
-    int segundo = int.tryParse(value.substring(6, 8));
+    int? hora = int.tryParse(value.substring(0, 2)); 
+    int? minuto = int.tryParse(value.substring(3, 5));
+    int? segundo = int.tryParse(value.substring(6, 8));
 
     // se os valores não forem inteiros, devolve o erro
     if (hora == null || minuto == null || segundo == null) {
@@ -220,7 +223,7 @@ class ValidaCampoFormulario {
   }
 
   /// validar se o conteúdo do campo é um MÊS válido
-  static String validarObrigatorioMES(String value) {
+  static String? validarObrigatorioMES(String value) {
     var campoObrigario = validarObrigatorio(value);
     if (campoObrigario == null) {
       return validarMES(value);
@@ -229,8 +232,8 @@ class ValidaCampoFormulario {
     }
   }
 
-  static String validarMES(String value) {
-    int mes = int.tryParse(value);
+  static String? validarMES(String value) {
+    int mes = int.tryParse(value)!;
     if (mes >= 1 && mes <= 12) {
       return null;
     } else {

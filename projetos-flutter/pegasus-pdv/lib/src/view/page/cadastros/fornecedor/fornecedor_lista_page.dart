@@ -52,20 +52,22 @@ import 'package:pegasus_pdv/src/view/shared/page/filtro_page.dart';
 import 'fornecedor_persiste_page.dart';
 
 class FornecedorListaPage extends StatefulWidget {
+  const FornecedorListaPage({Key? key}) : super(key: key);
+
   @override
   _FornecedorListaPageState createState() => _FornecedorListaPageState();
 }
 
 class _FornecedorListaPageState extends State<FornecedorListaPage> {
-  int _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
-  int _sortColumnIndex;
+  int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
+  int? _sortColumnIndex;
   bool _sortAscending = true;
-  var _filtro = Filtro();
+  Filtro? _filtro = Filtro();
   final _colunas = FornecedorDao.colunas;
   final _campos = FornecedorDao.campos;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -78,7 +80,7 @@ class _FornecedorListaPageState extends State<FornecedorListaPage> {
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -103,7 +105,7 @@ class _FornecedorListaPageState extends State<FornecedorListaPage> {
 
     final _FornecedorDataSource _fornecedorDataSource = _FornecedorDataSource(_listaFornecedor, context, _refrescarTela);
 
-    void _sort<T>(Comparable<T> getField(Fornecedor fornecedor), int columnIndex, bool ascending) {
+    void _sort<T>(Comparable<T>? Function(Fornecedor fornecedor) getField, int columnIndex, bool ascending) {
       _fornecedorDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
@@ -119,7 +121,7 @@ class _FornecedorListaPageState extends State<FornecedorListaPage> {
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Cadastro - Fornecedor'),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           ),
           floatingActionButton: FloatingActionButton(
             focusColor: ViewUtilLib.getBotaoFocusColor(),
@@ -132,7 +134,7 @@ class _FornecedorListaPageState extends State<FornecedorListaPage> {
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: BottomAppBar(
             color: ViewUtilLib.getBottomAppBarColor(),          
-            shape: CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),
             child: Row(
               children: getBotoesNavigationBarListaPage(
                 context: context, 
@@ -145,14 +147,14 @@ class _FornecedorListaPageState extends State<FornecedorListaPage> {
             onRefresh: _refrescarTela,
             child: Scrollbar(
               child: _listaFornecedor == null
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : ListView(
-                padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
+                padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                 children: <Widget>[
                   PaginatedDataTable(                        
                     header: const Text('Relação - Fornecedor'),
-                    rowsPerPage: _rowsPerPage,
-                    onRowsPerPageChanged: (int value) {
+                    rowsPerPage: _rowsPerPage!,
+                    onRowsPerPageChanged: (int? value) {
                       setState(() {
                         _rowsPerPage = value;
                       });
@@ -340,9 +342,9 @@ class _FornecedorListaPageState extends State<FornecedorListaPage> {
           fullscreenDialog: true,
         ));
     if (_filtro != null) {
-      if (_filtro.campo != null) {
-        _filtro.campo = _campos[int.parse(_filtro.campo)];
-        await Sessao.db.fornecedorDao.consultarListaFiltro(_filtro.campo, _filtro.valor);
+      if (_filtro!.campo != null) {
+        _filtro!.campo = _campos[int.parse(_filtro!.campo!)];
+        await Sessao.db.fornecedorDao.consultarListaFiltro(_filtro!.campo!, _filtro!.valor!);
         setState(() {
         });
       }
@@ -364,109 +366,109 @@ class _FornecedorListaPageState extends State<FornecedorListaPage> {
 
 /// codigo referente a fonte de dados
 class _FornecedorDataSource extends DataTableSource {
-  final List<Fornecedor> listaFornecedor;
+  final List<Fornecedor>? listaFornecedor;
   final BuildContext context;
   final Function refrescarTela;
  
   _FornecedorDataSource(this.listaFornecedor, this.context, this.refrescarTela);
 
-  void _sort<T>(Comparable<T> getField(Fornecedor fornecedor), bool ascending) {
-    listaFornecedor.sort((Fornecedor a, Fornecedor b) {
+  void _sort<T>(Comparable<T>? Function(Fornecedor fornecedor) getField, bool ascending) {
+    listaFornecedor!.sort((Fornecedor a, Fornecedor b) {
       if (!ascending) {
         final Fornecedor c = a;
         a = b;
         b = c;
       }
-      Comparable<T> aValue = getField(a);
-      Comparable<T> bValue = getField(b);
+      Comparable<T>? aValue = getField(a);
+      Comparable<T>? bValue = getField(b);
 
-      if (aValue == null) aValue = '' as Comparable<T>;
-      if (bValue == null) bValue = '' as Comparable<T>;
+      aValue ??= '' as Comparable<T>;
+      bValue ??= '' as Comparable<T>;
 
       return Comparable.compare(aValue, bValue);
     });
   }
 
-  int _selectedCount = 0;
+  final int _selectedCount = 0;
 
   @override
-  DataRow getRow(int index) {
+  DataRow? getRow(int index) {
     assert(index >= 0);
-    if (index >= listaFornecedor.length) return null;
-    final Fornecedor fornecedor = listaFornecedor[index];
+    if (index >= listaFornecedor!.length) return null;
+    final Fornecedor fornecedor = listaFornecedor![index];
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
         DataCell(Text('${fornecedor.id ?? ''}'), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.tipoPessoa ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.tipoPessoa ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.nome ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.nome ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.fantasia ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.fantasia ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.email ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.email ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.url ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.url ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.cpfCnpj ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.cpfCnpj ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.rg ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.rg ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.orgaoRg ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.orgaoRg ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.dataEmissaoRg != null ? DateFormat('dd/MM/yyyy').format(fornecedor.dataEmissaoRg) : ''}'), onTap: () {
+        DataCell(Text(fornecedor.dataEmissaoRg != null ? DateFormat('dd/MM/yyyy').format(fornecedor.dataEmissaoRg!) : ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.sexo ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.sexo ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.inscricaoEstadual ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.inscricaoEstadual ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.inscricaoMunicipal ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.inscricaoMunicipal ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.dataCadastro != null ? DateFormat('dd/MM/yyyy').format(fornecedor.dataCadastro) : ''}'), onTap: () {
+        DataCell(Text(fornecedor.dataCadastro != null ? DateFormat('dd/MM/yyyy').format(fornecedor.dataCadastro!) : ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.logradouro ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.logradouro ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.numero ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.numero ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.complemento ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.complemento ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.cep ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.cep ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.bairro ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.bairro ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.cidade ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.cidade ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.uf ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.uf ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.telefone ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.telefone ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.celular ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.celular ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
-        DataCell(Text('${fornecedor.contato ?? ''}'), onTap: () {
+        DataCell(Text(fornecedor.contato ?? ''), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
       ],
@@ -474,7 +476,7 @@ class _FornecedorDataSource extends DataTableSource {
   }
 
   @override
-  int get rowCount => listaFornecedor.length ?? 0;
+  int get rowCount => listaFornecedor!.length;
 
   @override
   bool get isRowCountApproximate => false;

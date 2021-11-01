@@ -34,11 +34,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 class RetornoJsonErro {
-  String status;
-  String error;
-  String message;
-  String trace;
-  String tipo;
+  String? status;
+  String? error;
+  String? message;
+  String? trace;
+  String? tipo;
 
   RetornoJsonErro({this.status, this.error, this.message, this.trace, this.tipo});
 
@@ -50,11 +50,11 @@ class RetornoJsonErro {
   }
 
   Map<String, dynamic> get toJson {
-    Map<String, dynamic> jsonDados = Map<String, dynamic>();
-    jsonDados['status'] = this.status;
-    jsonDados['error'] = this.error;
-    jsonDados['message'] = this.message;
-    jsonDados['trace'] = this.trace;
+    Map<String, dynamic> jsonDados = <String, dynamic>{};
+    jsonDados['status'] = status;
+    jsonDados['error'] = error;
+    jsonDados['message'] = message;
+    jsonDados['trace'] = trace;
     return jsonDados;
   }
 }

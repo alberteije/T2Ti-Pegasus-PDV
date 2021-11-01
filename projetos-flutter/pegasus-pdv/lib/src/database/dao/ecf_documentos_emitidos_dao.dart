@@ -59,7 +59,7 @@ class EcfDocumentosEmitidosDao extends DatabaseAccessor<AppDatabase> with _$EcfD
 
   Stream<List<EcfDocumentosEmitidos>> observarLista() => select(ecfDocumentosEmitidoss).watch();
 
-  Future<EcfDocumentosEmitidos> consultarObjeto(int pId) {
+  Future<EcfDocumentosEmitidos?> consultarObjeto(int pId) {
     return (select(ecfDocumentosEmitidoss)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

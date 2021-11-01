@@ -36,7 +36,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
@@ -49,14 +49,14 @@ import 'package:pegasus_pdv/src/view/shared/widgets_abas.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 class TributCofinsPersistePage extends StatefulWidget {
-  final TributConfiguraOfGtMontado tributConfiguraOfGtMontado;
-  final GlobalKey<FormState> formKey;
-  final GlobalKey<ScaffoldState> scaffoldKey;
-  final FocusNode foco;
-  final Function salvarTributConfiguraOfGtCallBack;
+  final TributConfiguraOfGtMontado? tributConfiguraOfGtMontado;
+  final GlobalKey<FormState>? formKey;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
+  final FocusNode? foco;
+  final Function? salvarTributConfiguraOfGtCallBack;
 
   const TributCofinsPersistePage(
-      {Key key, this.formKey, this.scaffoldKey, this.tributConfiguraOfGtMontado, this.foco, this.salvarTributConfiguraOfGtCallBack})
+      {Key? key, this.formKey, this.scaffoldKey, this.tributConfiguraOfGtMontado, this.foco, this.salvarTributConfiguraOfGtCallBack})
       : super(key: key);
 
   @override
@@ -64,8 +64,8 @@ class TributCofinsPersistePage extends StatefulWidget {
 }
 
 class _TributCofinsPersistePageState extends State<TributCofinsPersistePage> {
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
 
   @override
@@ -88,7 +88,7 @@ class _TributCofinsPersistePageState extends State<TributCofinsPersistePage> {
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
     switch (intent.type) {
       case AtalhoTelaType.salvar:
-        widget.salvarTributConfiguraOfGtCallBack();
+        widget.salvarTributConfiguraOfGtCallBack!();
         break;
       default:
         break;
@@ -97,11 +97,9 @@ class _TributCofinsPersistePageState extends State<TributCofinsPersistePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _aliquotaPorcentoController = new MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributCofins?.aliquotaPorcento ?? 0);
+    final _aliquotaPorcentoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributCofins?.aliquotaPorcento ?? 0);
 
-    if (widget.tributConfiguraOfGtMontado.tributCofins == null) {
-      widget.tributConfiguraOfGtMontado.tributCofins = TributCofins(id: null);
-    }
+    widget.tributConfiguraOfGtMontado!.tributCofins ??= TributCofins(id: null);
 
     return FocusableActionDetector(
       actions: _actionMap,
@@ -122,10 +120,10 @@ class _TributCofinsPersistePageState extends State<TributCofinsPersistePage> {
                   padding: ViewUtilLib.paddingAbaPersistePage,
                   child: BootstrapContainer(
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                     children: <Widget>[			  			  
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -140,18 +138,18 @@ class _TributCofinsPersistePageState extends State<TributCofinsPersistePage> {
                                 'Informe o CST COFINS',
                                 'CST COFINS',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                widget.tributConfiguraOfGtMontado.tributCofins = 
-                                widget.tributConfiguraOfGtMontado.tributCofins.copyWith(cstCofins: text);
+                                widget.tributConfiguraOfGtMontado!.tributCofins = 
+                                widget.tributConfiguraOfGtMontado!.tributCofins!.copyWith(cstCofins: text);
                                 paginaMestreDetalheFoiAlterada = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -166,18 +164,18 @@ class _TributCofinsPersistePageState extends State<TributCofinsPersistePage> {
                                 'Informe a Modalidade Base Cálculo',
                                 'Modalidade Base Cálculo',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                widget.tributConfiguraOfGtMontado.tributCofins = 
-                                widget.tributConfiguraOfGtMontado.tributCofins.copyWith(modalidadeBaseCalculo: text);
+                                widget.tributConfiguraOfGtMontado!.tributCofins = 
+                                widget.tributConfiguraOfGtMontado!.tributCofins!.copyWith(modalidadeBaseCalculo: text);
                                 paginaMestreDetalheFoiAlterada = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -191,18 +189,18 @@ class _TributCofinsPersistePageState extends State<TributCofinsPersistePage> {
                                 'Informe a Alíquota do Porcento',
                                 'Alíquota Porcento',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                widget.tributConfiguraOfGtMontado.tributCofins = 
-                                widget.tributConfiguraOfGtMontado.tributCofins.copyWith(aliquotaPorcento: _aliquotaPorcentoController.numberValue);
+                                widget.tributConfiguraOfGtMontado!.tributCofins = 
+                                widget.tributConfiguraOfGtMontado!.tributCofins!.copyWith(aliquotaPorcento: _aliquotaPorcentoController.numberValue);
                                 paginaMestreDetalheFoiAlterada = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                       height: 60,
                       children: <BootstrapCol>[
@@ -216,7 +214,7 @@ class _TributCofinsPersistePageState extends State<TributCofinsPersistePage> {
                         ),
                       ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                     ],
                   ),
                 ),

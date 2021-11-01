@@ -36,7 +36,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 Based on: Flutter UI Challenges by Many - https://github.com/lohanidamodar/flutter_ui_challenges
 *******************************************************************************/
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 
@@ -51,7 +51,7 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 class NfceInutilizaNumeroPage extends StatefulWidget {
   
-  const NfceInutilizaNumeroPage({Key key}): super(key: key);
+  const NfceInutilizaNumeroPage({Key? key}): super(key: key);
 
   @override
   _NfceInutilizaNumeroPageState createState() => _NfceInutilizaNumeroPageState();
@@ -70,10 +70,10 @@ class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
     mask: '000000000',
   );
 
-  static List<NfeCabecalho> _listaContingenciadasOrfas = [];
+  static List<NfeCabecalho>? _listaContingenciadasOrfas = [];
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -86,7 +86,7 @@ class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
     };
     _valorFoco.requestFocus();        
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _listarContingenciadasOrfas());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _listarContingenciadasOrfas());
   }
 
   Future<void> _tratarAcoesAtalhos(AtalhoTelaIntent intent) async {
@@ -137,39 +137,39 @@ class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
     if (index == 0) return cabecalhoTela(context);
     // if (index == 1) return dadosFechamento(context);
     if (index == 1) return conteudoTela(context);
-    return null;
+    return const SizedBox();
   }
   
   Container cabecalhoTela(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 20.0),
+      margin: const EdgeInsets.only(top: 20.0),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
               color: Colors.white,
               child: Column(
                 children: <Widget>[
-                  SizedBox(
+                  const SizedBox(
                     height: 50.0,
                   ),
                   Text(
                     _titulo,
-                    style: Biblioteca.isTelaPequena(context) ? Theme.of(context).textTheme.headline6 : Theme.of(context).textTheme.headline4,
+                    style: Biblioteca.isTelaPequena(context)! ? Theme.of(context).textTheme.headline6 : Theme.of(context).textTheme.headline4,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5.0,
                   ),
                   Text(_subtitulo, textAlign: TextAlign.center,),
-                  Divider(
+                  const Divider(
                     indent: 10,
                     endIndent: 10,
                     thickness: 2,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10.0,
                   ),
                 ],
@@ -178,7 +178,7 @@ class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: const <Widget>[
               Material(
                 elevation: 5.0,
                 shape: CircleBorder(),
@@ -197,11 +197,11 @@ class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
 
   Container conteudoTela(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 0.0),
+      margin: const EdgeInsets.only(top: 0.0),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
@@ -253,7 +253,7 @@ class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
                       },
                     ),
                     const SizedBox(height: 10.0),
-                    Container(
+                    SizedBox(
                       height: 170.0,
                       child: Scrollbar(
                         child: ListView(
@@ -288,11 +288,11 @@ class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
     );
   }
 
-  List<Widget> _getBotoesRodape({BuildContext context}) {
+  List<Widget> _getBotoesRodape({required BuildContext context}) {
     List<Widget> listaBotoes = [];
     listaBotoes.add(
-      Container(
-        width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+      SizedBox(
+        width: Biblioteca.isTelaPequena(context)! ? 130 : 150,
         child: getBotaoGenericoPdv(
           descricao: Biblioteca.isMobile() ? 'Cancelar' : 'Cancelar [F11]',
           cor: Colors.red, 
@@ -303,11 +303,11 @@ class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
       ),
     );
     listaBotoes.add(
-      SizedBox(width: 10.0),
+      const SizedBox(width: 10.0),
     );
     listaBotoes.add(
-      Container(
-        width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+      SizedBox(
+        width: Biblioteca.isTelaPequena(context)! ? 130 : 150,
         child: getBotaoGenericoPdv(
           descricao: Biblioteca.isMobile() ? 'Confirmar' : 'Confirmar [F12]',
           cor: Colors.green, 
@@ -328,7 +328,7 @@ class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
 
   List<DataColumn> getColumnsOrfas() {
     List<DataColumn> lista = [];
-    lista.add(DataColumn(
+    lista.add(const DataColumn(
       label: Text(
         "Números Pendentes de Inutilização",
         style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
@@ -339,16 +339,16 @@ class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
 
   List<DataRow> getRowsOrfas() {
     List<DataRow> lista = [];
-    for (var item in _listaContingenciadasOrfas) {
+    for (var item in _listaContingenciadasOrfas!) {
       List<DataCell> celulas = [];
       celulas = [
         DataCell(
           Text(
-            item.numero,
+            item.numero!,
           ), 
           onTap: () {
-            _numeroInicialController.text = item.numero;
-            _numeroFinalController.text = item.numero;
+            _numeroInicialController.text = item.numero!;
+            _numeroFinalController.text = item.numero!;
             _justificativaController.text = 'NOTA EMITIDA EM CONTINGENCIA OFFLINE';
           }),
       ];
@@ -369,12 +369,12 @@ class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
         funcaoDeCallBack: _atualizarDadosLocais, 
       ).then((socket) {
         NfceController.enviarComandoInutilizacaoNumero(
-          socket: socket, 
-          cnpj: Sessao.empresa.cnpj, 
+          socket: socket!, 
+          cnpj: Sessao.empresa!.cnpj!, 
           justificativa: _justificativaController.text, 
           ano: DateTime.now().year.toString(), 
-          modelo: Sessao.numeroNfce.modelo, 
-          serie: Sessao.numeroNfce.serie, 
+          modelo: Sessao.numeroNfce!.modelo!, 
+          serie: Sessao.numeroNfce!.serie!, 
           numeroInicial: _numeroInicialController.text, 
           numeroFinal: _numeroFinalController.text
         );
@@ -386,14 +386,14 @@ class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
 
   Future _atualizarDadosLocais() async {
     NfceController.instanciarNfceMontado();
-    int inicio = int.tryParse(_numeroInicialController.text);
-    int fim = int.tryParse(_numeroFinalController.text);
+    int inicio = int.tryParse(_numeroInicialController.text)!;
+    int fim = int.tryParse(_numeroFinalController.text)!;
     for (var i = inicio; i <= fim; i++) {
       // tabela de inutilização
       NfeNumeroInutilizado inutilizado = 
         NfeNumeroInutilizado(
           id: null,
-          serie: Sessao.numeroNfce.serie,
+          serie: Sessao.numeroNfce!.serie,
           numero: i,
           dataInutilizacao: DateTime.now(),
           observacao: _justificativaController.text,
@@ -401,11 +401,11 @@ class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
       await Sessao.db.nfeNumeroInutilizadoDao.inserir(inutilizado);          
   
       // tabela de cabeçalho da nota
-      NfceController.nfeCabecalhoMontado.nfeCabecalho = 
+      NfceController.nfeCabecalhoMontado!.nfeCabecalho = 
         await Sessao.db.nfeCabecalhoDao.consultarObjetoFiltro('NUMERO', i.toString().padLeft(9, '0')); // verifica se existe essa nota na base de dados, ela estará com o status=9
-      if (NfceController.nfeCabecalhoMontado.nfeCabecalho != null) {
-        NfceController.nfeCabecalhoMontado.nfeCabecalho = 
-        NfceController.nfeCabecalhoMontado.nfeCabecalho.copyWith(
+      if (NfceController.nfeCabecalhoMontado!.nfeCabecalho != null) {
+        NfceController.nfeCabecalhoMontado!.nfeCabecalho = 
+        NfceController.nfeCabecalhoMontado!.nfeCabecalho!.copyWith(
           statusNota: '8',
         );
         await Sessao.db.nfeCabecalhoDao.alterar(NfceController.nfeCabecalhoMontado, atualizaFilhos: false);

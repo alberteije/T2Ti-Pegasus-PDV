@@ -37,11 +37,12 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeDetEspecificoMedicamento")
 class NfeDetEspecificoMedicamentos extends Table {
+  @override
   String get tableName => 'NFE_DET_ESPECIFICO_MEDICAMENTO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')();
-  TextColumn get codigoAnvisa => text().named('CODIGO_ANVISA').withLength(min: 0, max: 13).nullable()();
-  TextColumn get motivoIsencao => text().named('MOTIVO_ISENCAO').withLength(min: 0, max: 250).nullable()();
-  RealColumn get precoMaximoConsumidor => real().named('PRECO_MAXIMO_CONSUMIDOR').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')() as Column<int>?;
+  TextColumn? get codigoAnvisa => text().named('CODIGO_ANVISA').withLength(min: 0, max: 13).nullable()() as Column<String>?;
+  TextColumn? get motivoIsencao => text().named('MOTIVO_ISENCAO').withLength(min: 0, max: 250).nullable()() as Column<String>?;
+  RealColumn? get precoMaximoConsumidor => real().named('PRECO_MAXIMO_CONSUMIDOR').nullable()() as Column<double>?;
 }

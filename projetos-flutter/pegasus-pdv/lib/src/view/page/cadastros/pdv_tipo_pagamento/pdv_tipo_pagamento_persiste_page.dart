@@ -33,6 +33,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
@@ -48,11 +50,11 @@ import 'package:pegasus_pdv/src/view/shared/botoes.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 class PdvTipoPagamentoPersistePage extends StatefulWidget {
-  final PdvTipoPagamento pdvTipoPagamento;
-  final String title;
-  final String operacao;
+  final PdvTipoPagamento? pdvTipoPagamento;
+  final String? title;
+  final String? operacao;
 
-  const PdvTipoPagamentoPersistePage({Key key, this.pdvTipoPagamento, this.title, this.operacao})
+  const PdvTipoPagamentoPersistePage({Key? key, this.pdvTipoPagamento, this.title, this.operacao})
       : super(key: key);
 
   @override
@@ -65,11 +67,11 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   bool _formFoiAlterado = false;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
 
-  PdvTipoPagamento pdvTipoPagamento;
+  PdvTipoPagamento? pdvTipoPagamento;
 
   @override
   void initState() {
@@ -112,7 +114,7 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
         child: Scaffold(drawerDragStartBehavior: DragStartBehavior.down,
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text(widget.title), 
+            title: Text(widget.title!), 
             actions: widget.operacao == 'I' 
               ? getBotoesAppBarPersistePage(context: context, salvar: _salvar,)
               : getBotoesAppBarPersistePageComExclusao(context: context, salvar: _salvar, excluir: _excluir),
@@ -129,10 +131,10 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
                   dragStartBehavior: DragStartBehavior.down,
                   child: BootstrapContainer(
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,                    // children: [
                     children: <Widget>[			  			  
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -148,10 +150,10 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
                                 'Conteúdo para o campo Codigo',
                                 'Codigo',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                pdvTipoPagamento = pdvTipoPagamento.copyWith(codigo: text);
+                                pdvTipoPagamento = pdvTipoPagamento!.copyWith(codigo: text);
                                 _formFoiAlterado = true;
                               },
                             ),
@@ -159,11 +161,11 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
                         ],
                       ),
                       Visibility(
-                        visible: Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC',
-                        child: Divider(color: Colors.white,),
+                        visible: Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC',
+                        child: const Divider(color: Colors.white,),
                       ),
                       Visibility(
-                        visible: Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC',
+                        visible: Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC',
                         child: BootstrapRow(
                           height: 60,
                           children: <BootstrapCol>[
@@ -178,10 +180,10 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
                                   'Conteúdo para o campo Codigo da NFC-e',
                                   'Codigo NFC-e',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  pdvTipoPagamento = pdvTipoPagamento.copyWith(codigoPagamentoNfce: text);
+                                  pdvTipoPagamento = pdvTipoPagamento!.copyWith(codigoPagamentoNfce: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -189,7 +191,7 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
                           ],
                         ),
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -204,17 +206,17 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
                                 'Conteúdo para o campo Descricao',
                                 'Descricao',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                pdvTipoPagamento = pdvTipoPagamento.copyWith(descricao: text);
+                                pdvTipoPagamento = pdvTipoPagamento!.copyWith(descricao: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -225,11 +227,11 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
                                 'Conteúdo para o campo Gera Parcelas',
                                 'Gera Parcelas',
                                 true),
-                              isEmpty: pdvTipoPagamento.geraParcelas == null,
-                              child: getDropDownButton(pdvTipoPagamento.geraParcelas,
-                                (String newValue) {
+                              isEmpty: pdvTipoPagamento!.geraParcelas == null,
+                              child: getDropDownButton(pdvTipoPagamento!.geraParcelas,
+                                (String? newValue) {
                                   setState(() {
-                                    pdvTipoPagamento = pdvTipoPagamento.copyWith(geraParcelas: newValue);
+                                    pdvTipoPagamento = pdvTipoPagamento!.copyWith(geraParcelas: newValue);
                                   });
                               }, <String>[
                                 'S',
@@ -240,7 +242,7 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -254,7 +256,7 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                     ],        
                   ),
                 ),
@@ -267,7 +269,7 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
   }
 
   Future<void> _salvar() async {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (!form.validate()) {
       _autoValidate = AutovalidateMode.always;
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
@@ -279,7 +281,7 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
           await Sessao.db.pdvTipoPagamentoDao.alterar(pdvTipoPagamento);
           tudoCerto = true;
         } else {
-          final tipoPagamento = await Sessao.db.pdvTipoPagamentoDao.consultarObjetoFiltro('CODIGO', pdvTipoPagamento.codigo);
+          final tipoPagamento = await Sessao.db.pdvTipoPagamentoDao.consultarObjetoFiltro('CODIGO', pdvTipoPagamento!.codigo!);
           if (tipoPagamento == null) {
             await Sessao.db.pdvTipoPagamentoDao.inserir(pdvTipoPagamento);
             tudoCerto = true;
@@ -296,10 +298,13 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
   }
 
   Future<bool> _avisarUsuarioFormAlterado() async {
-    final FormState form = _formKey.currentState;
-    if (form == null || !_formFoiAlterado) return true;
-
-    return await gerarDialogBoxFormAlterado(context);
+    final FormState? form = _formKey.currentState;
+    if (form == null || !_formFoiAlterado) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
   }
 
   void _excluir() {

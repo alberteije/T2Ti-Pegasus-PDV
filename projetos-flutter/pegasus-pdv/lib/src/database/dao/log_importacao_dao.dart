@@ -59,7 +59,7 @@ class LogImportacaoDao extends DatabaseAccessor<AppDatabase> with _$LogImportaca
 
   Stream<List<LogImportacao>> observarLista() => select(logImportacaos).watch();
 
-  Future<LogImportacao> consultarObjeto(int pId) {
+  Future<LogImportacao?> consultarObjeto(int pId) {
     return (select(logImportacaos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

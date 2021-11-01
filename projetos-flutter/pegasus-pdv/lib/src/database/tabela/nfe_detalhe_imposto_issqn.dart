@@ -37,24 +37,25 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeDetalheImpostoIssqn")
 class NfeDetalheImpostoIssqns extends Table {
+  @override
   String get tableName => 'NFE_DETALHE_IMPOSTO_ISSQN';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')();
-  RealColumn get baseCalculoIssqn => real().named('BASE_CALCULO_ISSQN').nullable()();
-  RealColumn get aliquotaIssqn => real().named('ALIQUOTA_ISSQN').nullable()();
-  RealColumn get valorIssqn => real().named('VALOR_ISSQN').nullable()();
-  IntColumn get municipioIssqn => integer().named('MUNICIPIO_ISSQN').nullable()();
-  IntColumn get itemListaServicos => integer().named('ITEM_LISTA_SERVICOS').nullable()();
-  RealColumn get valorDeducao => real().named('VALOR_DEDUCAO').nullable()();
-  RealColumn get valorOutrasRetencoes => real().named('VALOR_OUTRAS_RETENCOES').nullable()();
-  RealColumn get valorDescontoIncondicionado => real().named('VALOR_DESCONTO_INCONDICIONADO').nullable()();
-  RealColumn get valorDescontoCondicionado => real().named('VALOR_DESCONTO_CONDICIONADO').nullable()();
-  RealColumn get valorRetencaoIss => real().named('VALOR_RETENCAO_ISS').nullable()();
-  TextColumn get indicadorExigibilidadeIss => text().named('INDICADOR_EXIGIBILIDADE_ISS').withLength(min: 0, max: 1).nullable()();
-  TextColumn get codigoServico => text().named('CODIGO_SERVICO').withLength(min: 0, max: 20).nullable()();
-  IntColumn get municipioIncidencia => integer().named('MUNICIPIO_INCIDENCIA').nullable()();
-  IntColumn get paisSevicoPrestado => integer().named('PAIS_SEVICO_PRESTADO').nullable()();
-  TextColumn get numeroProcesso => text().named('NUMERO_PROCESSO').withLength(min: 0, max: 30).nullable()();
-  TextColumn get indicadorIncentivoFiscal => text().named('INDICADOR_INCENTIVO_FISCAL').withLength(min: 0, max: 1).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')() as Column<int>?;
+  RealColumn? get baseCalculoIssqn => real().named('BASE_CALCULO_ISSQN').nullable()() as Column<double>?;
+  RealColumn? get aliquotaIssqn => real().named('ALIQUOTA_ISSQN').nullable()() as Column<double>?;
+  RealColumn? get valorIssqn => real().named('VALOR_ISSQN').nullable()() as Column<double>?;
+  IntColumn? get municipioIssqn => integer().named('MUNICIPIO_ISSQN').nullable()() as Column<int>?;
+  IntColumn? get itemListaServicos => integer().named('ITEM_LISTA_SERVICOS').nullable()() as Column<int>?;
+  RealColumn? get valorDeducao => real().named('VALOR_DEDUCAO').nullable()() as Column<double>?;
+  RealColumn? get valorOutrasRetencoes => real().named('VALOR_OUTRAS_RETENCOES').nullable()() as Column<double>?;
+  RealColumn? get valorDescontoIncondicionado => real().named('VALOR_DESCONTO_INCONDICIONADO').nullable()() as Column<double>?;
+  RealColumn? get valorDescontoCondicionado => real().named('VALOR_DESCONTO_CONDICIONADO').nullable()() as Column<double>?;
+  RealColumn? get valorRetencaoIss => real().named('VALOR_RETENCAO_ISS').nullable()() as Column<double>?;
+  TextColumn? get indicadorExigibilidadeIss => text().named('INDICADOR_EXIGIBILIDADE_ISS').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get codigoServico => text().named('CODIGO_SERVICO').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  IntColumn? get municipioIncidencia => integer().named('MUNICIPIO_INCIDENCIA').nullable()() as Column<int>?;
+  IntColumn? get paisSevicoPrestado => integer().named('PAIS_SEVICO_PRESTADO').nullable()() as Column<int>?;
+  TextColumn? get numeroProcesso => text().named('NUMERO_PROCESSO').withLength(min: 0, max: 30).nullable()() as Column<String>?;
+  TextColumn? get indicadorIncentivoFiscal => text().named('INDICADOR_INCENTIVO_FISCAL').withLength(min: 0, max: 1).nullable()() as Column<String>?;
 }

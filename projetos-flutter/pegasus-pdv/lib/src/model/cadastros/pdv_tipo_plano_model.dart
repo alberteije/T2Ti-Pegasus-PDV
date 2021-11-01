@@ -37,11 +37,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'dart:convert';
 
 class PdvTipoPlanoModel {
-	int id;
-	String modulo; //G=GRATIS - F=FISCAL - P=PREMIUM 
-	String plano; //M=MENSAL - S=SEMESTRAL - A=ANUAL 
-	String moduloFiscal; // NFC - SAT - MFE
-  double valor;
+	int? id;
+	String? modulo; //G=GRATIS - F=FISCAL - P=PREMIUM 
+	String? plano; //M=MENSAL - S=SEMESTRAL - A=ANUAL 
+	String? moduloFiscal; // NFC - SAT - MFE
+  double? valor;
 
 	PdvTipoPlanoModel({
 			this.id,
@@ -56,32 +56,29 @@ class PdvTipoPlanoModel {
 		modulo = jsonDados['modulo'];
 		plano = getPlano(jsonDados['plano']);
 		moduloFiscal = jsonDados['moduloFiscal'];
-		valor = jsonDados['valor'] != null ? jsonDados['valor'].toDouble() : null;
+		valor = jsonDados['valor']?.toDouble();
 	}
 
 	Map<String, dynamic> get toJson {
-		Map<String, dynamic> jsonDados = Map<String, dynamic>();
+		Map<String, dynamic> jsonDados = <String, dynamic>{};
 
-		jsonDados['id'] = this.id ?? 0;
-		jsonDados['modulo'] = this.modulo;
-		jsonDados['plano'] = this.plano;
-		jsonDados['moduloFiscal'] = this.moduloFiscal;
-		jsonDados['valor'] = this.valor;
+		jsonDados['id'] = id ?? 0;
+		jsonDados['modulo'] = modulo;
+		jsonDados['plano'] = plano;
+		jsonDados['moduloFiscal'] = moduloFiscal;
+		jsonDados['valor'] = valor;
 	
 		return jsonDados;
 	}
 	
-  getPlano(String plano) {
+  getPlano(String? plano) {
     switch (plano) {
       case 'M':
         return 'Mensal';
-        break;
       case 'S':
         return 'Semestral';
-        break;
       case 'A':
         return 'Anual';
-        break;
       default:
         return null;
       }

@@ -36,7 +36,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
@@ -49,14 +49,14 @@ import 'package:pegasus_pdv/src/view/shared/widgets_abas.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 class TributIcmsUfPersistePage extends StatefulWidget {
-  final TributConfiguraOfGtMontado tributConfiguraOfGtMontado;
-  final GlobalKey<FormState> formKey;
-  final GlobalKey<ScaffoldState> scaffoldKey;
-  final FocusNode foco;
-  final Function salvarTributConfiguraOfGtCallBack;
+  final TributConfiguraOfGtMontado? tributConfiguraOfGtMontado;
+  final GlobalKey<FormState>? formKey;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
+  final FocusNode? foco;
+  final Function? salvarTributConfiguraOfGtCallBack;
 
   const TributIcmsUfPersistePage(
-      {Key key, this.formKey, this.scaffoldKey, this.tributConfiguraOfGtMontado, this.foco, this.salvarTributConfiguraOfGtCallBack})
+      {Key? key, this.formKey, this.scaffoldKey, this.tributConfiguraOfGtMontado, this.foco, this.salvarTributConfiguraOfGtCallBack})
       : super(key: key);
 
   @override
@@ -64,8 +64,8 @@ class TributIcmsUfPersistePage extends StatefulWidget {
 }
 
 class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
   // bool _formFoiAlterado = false;
 
@@ -89,7 +89,7 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
     switch (intent.type) {
       case AtalhoTelaType.salvar:
-        widget.salvarTributConfiguraOfGtCallBack();
+        widget.salvarTributConfiguraOfGtCallBack!();
         break;
       default:
         break;
@@ -98,11 +98,11 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _aliquotaController = new MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.aliquota ?? 0);
-    final _valorPautaController = new MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.valorPauta ?? 0);
-    final _valorPrecoMaximoController = new MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.valorPrecoMaximo ?? 0);
-    final _mvaController = new MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.mva ?? 0);
-    final _porcentoBcController = new MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.porcentoBc ?? 0);
+    final _aliquotaController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.aliquota ?? 0);
+    final _valorPautaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.valorPauta ?? 0);
+    final _valorPrecoMaximoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.valorPrecoMaximo ?? 0);
+    final _mvaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.mva ?? 0);
+    final _porcentoBcController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.porcentoBc ?? 0);
     // final _aliquotaInternaStController = new MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.aliquotaInternaSt ?? 0);
     // final _aliquotaInterestadualStController = new MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.aliquotaInterestadualSt ?? 0);
     // final _porcentoBcStController = new MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.porcentoBcSt ?? 0);
@@ -110,9 +110,7 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
     // final _valorPautaStController = new MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.valorPautaSt ?? 0);
     // final _valorPrecoMaximoStController = new MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.valorPrecoMaximoSt ?? 0);
 
-    if (widget.tributConfiguraOfGtMontado.tributIcmsUf == null) {
-      widget.tributConfiguraOfGtMontado.tributIcmsUf = TributIcmsUf(id: null);
-    }
+    widget.tributConfiguraOfGtMontado!.tributIcmsUf ??= TributIcmsUf(id: null);
 
     return FocusableActionDetector(
       actions: _actionMap,
@@ -133,32 +131,32 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                   padding: ViewUtilLib.paddingAbaPersistePage,
                   child: BootstrapContainer(
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                     children: <Widget>[			  			  
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 readOnly: true,
                                 maxLength: 10,
                                 maxLines: 1,
-                                initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.ufDestino ?? Sessao.empresa.uf,
+                                initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.ufDestino ?? Sessao.empresa!.uf,
                                 decoration: getInputDecoration(
                                   'Informe a UF de Destino',
                                   'UF *',
                                   true,
                                   paddingVertical: 18),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  widget.tributConfiguraOfGtMontado.tributIcmsUf = 
-                                  widget.tributConfiguraOfGtMontado.tributIcmsUf.copyWith(ufDestino: Sessao.empresa.uf);
+                                  widget.tributConfiguraOfGtMontado!.tributIcmsUf = 
+                                  widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(ufDestino: Sessao.empresa!.uf);
                                   paginaMestreDetalheFoiAlterada = true;
                                   // _formFoiAlterado = true;
                                 },
@@ -168,20 +166,20 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: InputDecorator(
                                 decoration: getInputDecoration(
                                   'Selecione a Opção Desejada',
                                   'CFOP *',
                                   true),
-                                isEmpty: widget.tributConfiguraOfGtMontado.tributIcmsUf.cfop == null,
-                                child: getDropDownButton(widget.tributConfiguraOfGtMontado.tributIcmsUf.cfop?.toString(),
-                                  (String newValue) {
+                                isEmpty: widget.tributConfiguraOfGtMontado!.tributIcmsUf!.cfop == null,
+                                child: getDropDownButton(widget.tributConfiguraOfGtMontado!.tributIcmsUf!.cfop?.toString(),
+                                  (String? newValue) {
                                     // _formFoiAlterado = true;
                                     paginaMestreDetalheFoiAlterada = true;
                                     setState(() {
-                                      widget.tributConfiguraOfGtMontado.tributIcmsUf = 
-                                      widget.tributConfiguraOfGtMontado.tributIcmsUf.copyWith(cfop: int.tryParse(newValue));
+                                      widget.tributConfiguraOfGtMontado!.tributIcmsUf = 
+                                      widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(cfop: int.tryParse(newValue!));
                                     });
                                   }, <String>[
                                   '5101',
@@ -201,22 +199,22 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
-                              child: Sessao.empresa.crt.substring(0,1) == '1' 
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
+                              child: Sessao.empresa!.crt!.substring(0,1) == '1' 
                                 ?  
                                 InputDecorator(
                                   decoration: getInputDecoration(
                                     'Selecione a Opção Desejada',
                                     'CSOSN *',
                                     true),
-                                  isEmpty: widget.tributConfiguraOfGtMontado.tributIcmsUf.csosn == null,
-                                  child: getDropDownButton(widget.tributConfiguraOfGtMontado.tributIcmsUf.csosn,
-                                    (String newValue) {
+                                  isEmpty: widget.tributConfiguraOfGtMontado!.tributIcmsUf!.csosn == null,
+                                  child: getDropDownButton(widget.tributConfiguraOfGtMontado!.tributIcmsUf!.csosn,
+                                    (String? newValue) {
                                       // _formFoiAlterado = true;
                                       paginaMestreDetalheFoiAlterada = true;
                                       setState(() {
-                                        widget.tributConfiguraOfGtMontado.tributIcmsUf = 
-                                        widget.tributConfiguraOfGtMontado.tributIcmsUf.copyWith(csosn: newValue);
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf = 
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(csosn: newValue);
                                       });
                                     }, <String>[
                                     '102',
@@ -236,11 +234,11 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                     'CST',
                                     true,
                                     paddingVertical: 18),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    widget.tributConfiguraOfGtMontado.tributIcmsUf = 
-                                    widget.tributConfiguraOfGtMontado.tributIcmsUf.copyWith(cst: text);
+                                    widget.tributConfiguraOfGtMontado!.tributIcmsUf = 
+                                    widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(cst: text);
                                     paginaMestreDetalheFoiAlterada = true;
                                     // _formFoiAlterado = true;
                                   },
@@ -250,29 +248,29 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                         ],
                       ),
                       Visibility(
-                        visible: Sessao.empresa.crt.substring(0,1) != '1',
+                        visible: Sessao.empresa!.crt!.substring(0,1) != '1',
                         child: Column(
                           children: [
-                            Divider(color: Colors.white,),
+                            const Divider(color: Colors.white,),
                             BootstrapRow(
                               height: 60,
                               children: <BootstrapCol>[
                                 BootstrapCol(
                                   sizes: 'col-12 col-md-6',
                                   child: Padding(
-                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                     child: InputDecorator(
                                       decoration: getInputDecoration(
                                         'Selecione a Opção Desejada',
                                         'Modalidade Base Cálculo',
                                         true),
-                                      isEmpty: widget.tributConfiguraOfGtMontado.tributIcmsUf.modalidadeBc == null,
-                                      child: getDropDownButton(widget.tributConfiguraOfGtMontado.tributIcmsUf.modalidadeBc,
-                                        (String newValue) {
+                                      isEmpty: widget.tributConfiguraOfGtMontado!.tributIcmsUf!.modalidadeBc == null,
+                                      child: getDropDownButton(widget.tributConfiguraOfGtMontado!.tributIcmsUf!.modalidadeBc,
+                                        (String? newValue) {
                                       paginaMestreDetalheFoiAlterada = true;
                                       setState(() {
-                                        widget.tributConfiguraOfGtMontado.tributIcmsUf = 
-                                        widget.tributConfiguraOfGtMontado.tributIcmsUf.copyWith(modalidadeBc: newValue);
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf = 
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(modalidadeBc: newValue);
                                       });
                                       }, <String>[
                                         '0-Margem Valor Agregado (%)',
@@ -285,7 +283,7 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                 BootstrapCol(
                                   sizes: 'col-12 col-md-6',
                                   child: Padding(
-                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                     child: TextFormField(
                                       keyboardType: TextInputType.number,
                                       controller: _aliquotaController,
@@ -294,11 +292,11 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                         'Alíquota',
                                         true,
                                         paddingVertical: 18),
-                                      onSaved: (String value) {
+                                      onSaved: (String? value) {
                                       },
                                       onChanged: (text) {
-                                        widget.tributConfiguraOfGtMontado.tributIcmsUf = 
-                                        widget.tributConfiguraOfGtMontado.tributIcmsUf.copyWith(aliquota: _aliquotaController.numberValue);
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf = 
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(aliquota: _aliquotaController.numberValue);
                                         paginaMestreDetalheFoiAlterada = true;
                                         // _formFoiAlterado = true;
                                       },
@@ -307,14 +305,14 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                 ),
                               ],
                             ),
-                            Divider(color: Colors.white,),
+                            const Divider(color: Colors.white,),
                             BootstrapRow(
                               height: 60,
                               children: <BootstrapCol>[
                                 BootstrapCol(
                                   sizes: 'col-12 col-md-6',
                                   child: Padding(
-                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                     child: TextFormField(
                                       keyboardType: TextInputType.number,
                                       controller: _valorPautaController,
@@ -322,11 +320,11 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                         'Informe o Valor Pauta, caso Modalidade BC=1',
                                         'Valor Pauta',
                                         false),
-                                      onSaved: (String value) {
+                                      onSaved: (String? value) {
                                       },
                                       onChanged: (text) {
-                                        widget.tributConfiguraOfGtMontado.tributIcmsUf = 
-                                        widget.tributConfiguraOfGtMontado.tributIcmsUf.copyWith(valorPauta: _valorPautaController.numberValue);
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf = 
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(valorPauta: _valorPautaController.numberValue);
                                         paginaMestreDetalheFoiAlterada = true;
                                         // _formFoiAlterado = true;
                                       },
@@ -336,7 +334,7 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                 BootstrapCol(
                                   sizes: 'col-12 col-md-6',
                                   child: Padding(
-                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                     child: TextFormField(
                                       keyboardType: TextInputType.number,
                                       controller: _valorPrecoMaximoController,
@@ -344,11 +342,11 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                         'Informe o Valor Preço Máximo, caso Modalidade BC=2',
                                         'Valor Preço Máximo',
                                         false),
-                                      onSaved: (String value) {
+                                      onSaved: (String? value) {
                                       },
                                       onChanged: (text) {
-                                        widget.tributConfiguraOfGtMontado.tributIcmsUf = 
-                                        widget.tributConfiguraOfGtMontado.tributIcmsUf.copyWith(valorPrecoMaximo: _valorPrecoMaximoController.numberValue);
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf = 
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(valorPrecoMaximo: _valorPrecoMaximoController.numberValue);
                                         paginaMestreDetalheFoiAlterada = true;
                                         // _formFoiAlterado = true;
                                       },
@@ -357,14 +355,14 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                 ),
                               ],
                             ),
-                            Divider(color: Colors.white,),
+                            const Divider(color: Colors.white,),
                             BootstrapRow(
                               height: 60,
                               children: <BootstrapCol>[
                                 BootstrapCol(
                                   sizes: 'col-12 col-md-6',
                                   child: Padding(
-                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                     child: TextFormField(
                                       keyboardType: TextInputType.number,
                                       controller: _mvaController,
@@ -372,11 +370,11 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                         'Informe o Valor da Margem Valor Agregado',
                                         'Valor MVA',
                                         false),
-                                      onSaved: (String value) {
+                                      onSaved: (String? value) {
                                       },
                                       onChanged: (text) {
-                                        widget.tributConfiguraOfGtMontado.tributIcmsUf = 
-                                        widget.tributConfiguraOfGtMontado.tributIcmsUf.copyWith(mva: _mvaController.numberValue);
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf = 
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(mva: _mvaController.numberValue);
                                         paginaMestreDetalheFoiAlterada = true;
                                         // _formFoiAlterado = true;
                                       },
@@ -386,7 +384,7 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                 BootstrapCol(
                                   sizes: 'col-12 col-md-6',
                                   child: Padding(
-                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                     child: TextFormField(
                                       keyboardType: TextInputType.number,
                                       controller: _porcentoBcController,
@@ -394,11 +392,11 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                         'Informe o Porcentual da Base de Cálculo',
                                         'Porcento Base Cálculo',
                                         false),
-                                      onSaved: (String value) {
+                                      onSaved: (String? value) {
                                       },
                                       onChanged: (text) {
-                                        widget.tributConfiguraOfGtMontado.tributIcmsUf = 
-                                        widget.tributConfiguraOfGtMontado.tributIcmsUf.copyWith(porcentoBc: _porcentoBcController.numberValue);
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf = 
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(porcentoBc: _porcentoBcController.numberValue);
                                         paginaMestreDetalheFoiAlterada = true;
                                         // _formFoiAlterado = true;
                                       },
@@ -590,7 +588,7 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                       //     ),
                       //   ],
                       // ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                       height: 60,
                       children: <BootstrapCol>[
@@ -604,7 +602,7 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                         ),
                       ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                     ],
                   ),
                 ),

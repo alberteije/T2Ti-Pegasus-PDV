@@ -37,14 +37,15 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeCupomFiscalReferenciado")
 class NfeCupomFiscalReferenciados extends Table {
+  @override
   String get tableName => 'NFE_CUPOM_FISCAL_REFERENCIADO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')();
-  TextColumn get modeloDocumentoFiscal => text().named('MODELO_DOCUMENTO_FISCAL').withLength(min: 0, max: 2).nullable()();
-  IntColumn get numeroOrdemEcf => integer().named('NUMERO_ORDEM_ECF').nullable()();
-  IntColumn get coo => integer().named('COO').nullable()();
-  DateTimeColumn get dataEmissaoCupom => dateTime().named('DATA_EMISSAO_CUPOM').nullable()();
-  IntColumn get numeroCaixa => integer().named('NUMERO_CAIXA').nullable()();
-  TextColumn get numeroSerieEcf => text().named('NUMERO_SERIE_ECF').withLength(min: 0, max: 21).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')() as Column<int>?;
+  TextColumn? get modeloDocumentoFiscal => text().named('MODELO_DOCUMENTO_FISCAL').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  IntColumn? get numeroOrdemEcf => integer().named('NUMERO_ORDEM_ECF').nullable()() as Column<int>?;
+  IntColumn? get coo => integer().named('COO').nullable()() as Column<int>?;
+  DateTimeColumn? get dataEmissaoCupom => dateTime().named('DATA_EMISSAO_CUPOM').nullable()() as Column<DateTime>?;
+  IntColumn? get numeroCaixa => integer().named('NUMERO_CAIXA').nullable()() as Column<int>?;
+  TextColumn? get numeroSerieEcf => text().named('NUMERO_SERIE_ECF').withLength(min: 0, max: 21).nullable()() as Column<String>?;
 }

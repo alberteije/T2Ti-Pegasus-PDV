@@ -59,7 +59,7 @@ class PdvConfiguracaoBalancaDao extends DatabaseAccessor<AppDatabase> with _$Pdv
 
   Stream<List<PdvConfiguracaoBalanca>> observarLista() => select(pdvConfiguracaoBalancas).watch();
 
-  Future<PdvConfiguracaoBalanca> consultarObjeto(int pId) {
+  Future<PdvConfiguracaoBalanca?> consultarObjeto(int pId) {
     return (select(pdvConfiguracaoBalancas)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

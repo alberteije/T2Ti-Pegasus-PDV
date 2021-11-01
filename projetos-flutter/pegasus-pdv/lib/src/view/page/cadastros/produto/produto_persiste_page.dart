@@ -33,12 +33,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
@@ -54,11 +55,11 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 import 'package:pegasus_pdv/src/view/shared/page/lookup_local_page.dart';
 
 class ProdutoPersistePage extends StatefulWidget {
-  final ProdutoMontado produtoMontado;
-  final String title;
-  final String operacao;
+  final ProdutoMontado? produtoMontado;
+  final String? title;
+  final String? operacao;
 
-  const ProdutoPersistePage({Key key, this.produtoMontado, this.title, this.operacao})
+  const ProdutoPersistePage({Key? key, this.produtoMontado, this.title, this.operacao})
       : super(key: key);
 
   @override
@@ -71,11 +72,11 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   bool _formFoiAlterado = false;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
 
-  Produto _produto;
+  Produto? _produto;
 
   @override
   void initState() {
@@ -91,10 +92,8 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
       ),
     };
 
-    _produto = widget.produtoMontado.produto;
-    if (_produto == null) {
-      _produto = Produto(id: null);
-    }
+    _produto = widget.produtoMontado!.produto;
+    _produto ??= Produto(id: null); // se produto for nulo, instancia
     _foco.requestFocus();
   }
 
@@ -126,7 +125,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
 
     final _ncmController = MaskedTextController(
       mask: '00000000',
-      text: _produto.codigoNcm ?? '',
+      text: _produto!.codigoNcm ?? '',
     );
 
     return FocusableActionDetector(
@@ -137,7 +136,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
         child: Scaffold(drawerDragStartBehavior: DragStartBehavior.down,
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text(widget.title), 
+            title: Text(widget.title!), 
             actions: widget.operacao == 'I' 
               ? getBotoesAppBarPersistePage(context: context, salvar: _salvar,)
               : getBotoesAppBarPersistePageComExclusao(context: context, salvar: _salvar, excluir: _excluir),
@@ -154,10 +153,10 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                   dragStartBehavior: DragStartBehavior.down,
                   child: BootstrapContainer(
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,                    // children: [
                     children: <Widget>[			  			  
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -167,22 +166,20 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                               children: <Widget>[
                                 Expanded(
                                   flex: 1,
-                                  child: Container(
-                                    child: TextFormField(
-                                      focusNode: _foco,
-                                      validator: ValidaCampoFormulario.validarObrigatorio,
-                                      controller: _importaProdutoUnidadeController,
-                                      readOnly: true,
-                                      decoration: getInputDecoration(
-                                        'Conteúdo para o campo Unidade',
-                                        'Unidade *',
-                                        false),
-                                      onSaved: (String value) {
-                                      },
-                                      onChanged: (text) {
-                                        _formFoiAlterado = true;
-                                      },
-                                    ),
+                                  child: TextFormField(
+                                    focusNode: _foco,
+                                    validator: ValidaCampoFormulario.validarObrigatorio,
+                                    controller: _importaProdutoUnidadeController,
+                                    readOnly: true,
+                                    decoration: getInputDecoration(
+                                      'Conteúdo para o campo Unidade',
+                                      'Unidade *',
+                                      false),
+                                    onSaved: (String? value) {
+                                    },
+                                    onChanged: (text) {
+                                      _formFoiAlterado = true;
+                                    },
                                   ),
                                 ),
                                 Expanded(
@@ -192,7 +189,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                     icon: ViewUtilLib.getIconBotaoLookup(),
                                     onPressed: () async {
                                       ///chamando o lookup
-                                      Map<String, dynamic> _objetoJsonRetorno =
+                                      Map<String, dynamic>? _objetoJsonRetorno =
                                         await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -211,8 +208,8 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                       if (_objetoJsonRetorno != null) {
                                         if (_objetoJsonRetorno['sigla'] != null) {
                                           _importaProdutoUnidadeController.text = _objetoJsonRetorno['sigla'];
-                                          _produto = _produto.copyWith(idProdutoUnidade: _objetoJsonRetorno['id']);
-                                          widget.produtoMontado.produtoUnidade = widget.produtoMontado.produtoUnidade.copyWith(
+                                          _produto = _produto!.copyWith(idProdutoUnidade: _objetoJsonRetorno['id']);
+                                          widget.produtoMontado!.produtoUnidade = widget.produtoMontado!.produtoUnidade!.copyWith(
                                             sigla: _objetoJsonRetorno['sigla'],
                                           );
                                         }
@@ -226,11 +223,11 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                         ],
                       ),
                       Visibility(
-                        visible: Sessao.configuracaoPdv.modulo != 'G',
-                        child: Divider(color: Colors.white,),
+                        visible: Sessao.configuracaoPdv!.modulo != 'G',
+                        child: const Divider(color: Colors.white,),
                       ),
                       Visibility(
-                        visible: Sessao.configuracaoPdv.modulo != 'G',
+                        visible: Sessao.configuracaoPdv!.modulo != 'G',
                         child: BootstrapRow(
                           height: 60,
                           children: <BootstrapCol>[
@@ -240,22 +237,20 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 children: <Widget>[
                                   Expanded(
                                     flex: 1,
-                                    child: Container(
-                                      child: TextFormField(
-                                        focusNode: _foco,
-                                        validator: ValidaCampoFormulario.validarObrigatorio,
-                                        controller: _importaTributGrupoTributarioController,
-                                        readOnly: true,
-                                        decoration: getInputDecoration(
-                                          'Conteúdo para o campo Grupo Tributário',
-                                          'Grupo Tributário *',
-                                          false),
-                                        onSaved: (String value) {
-                                        },
-                                        onChanged: (text) {
-                                          _formFoiAlterado = true;
-                                        },
-                                      ),
+                                    child: TextFormField(
+                                      focusNode: _foco,
+                                      validator: ValidaCampoFormulario.validarObrigatorio,
+                                      controller: _importaTributGrupoTributarioController,
+                                      readOnly: true,
+                                      decoration: getInputDecoration(
+                                        'Conteúdo para o campo Grupo Tributário',
+                                        'Grupo Tributário *',
+                                        false),
+                                      onSaved: (String? value) {
+                                      },
+                                      onChanged: (text) {
+                                        _formFoiAlterado = true;
+                                      },
                                     ),
                                   ),
                                   Expanded(
@@ -265,7 +260,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                       icon: ViewUtilLib.getIconBotaoLookup(),
                                       onPressed: () async {
                                         ///chamando o lookup
-                                        Map<String, dynamic> _objetoJsonRetorno =
+                                        Map<String, dynamic>? _objetoJsonRetorno =
                                           await Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -284,8 +279,8 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                         if (_objetoJsonRetorno != null) {
                                           if (_objetoJsonRetorno['descricao'] != null) {
                                             _importaTributGrupoTributarioController.text = _objetoJsonRetorno['descricao'];
-                                            _produto = _produto.copyWith(idTributGrupoTributario: _objetoJsonRetorno['id']);
-                                            widget.produtoMontado.tributGrupoTributario = widget.produtoMontado.tributGrupoTributario.copyWith(
+                                            _produto = _produto!.copyWith(idTributGrupoTributario: _objetoJsonRetorno['id']);
+                                            widget.produtoMontado!.tributGrupoTributario = widget.produtoMontado!.tributGrupoTributario!.copyWith(
                                               descricao: _objetoJsonRetorno['descricao'],
                                             );
                                           }
@@ -299,14 +294,14 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                           ],
                         ),
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 validator: ValidaCampoFormulario.validarObrigatorio,
                                 maxLength: 14,
@@ -316,10 +311,10 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                   'Conteúdo para o campo Gtin',
                                   'Gtin',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto.copyWith(gtin: text);
+                                  _produto = _produto!.copyWith(gtin: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -328,7 +323,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 50,
                                 maxLines: 1,
@@ -337,10 +332,10 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                   'Conteúdo para o campo Codigo Interno',
                                   'Codigo Interno',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto.copyWith(codigoInterno: text);
+                                  _produto = _produto!.copyWith(codigoInterno: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -348,7 +343,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -363,17 +358,17 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 'Conteúdo para o campo Nome',
                                 'Nome',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                _produto = _produto.copyWith(nome: text);
+                                _produto = _produto!.copyWith(nome: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -387,24 +382,24 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 'Conteúdo para o campo Descricao',
                                 'Descricao',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                _produto = _produto.copyWith(descricao: text);
+                                _produto = _produto!.copyWith(descricao: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 textAlign: TextAlign.end,
@@ -413,10 +408,10 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                   'Conteúdo para o campo Valor Compra',
                                   'Valor Compra',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto.copyWith(valorCompra: _valorCompraController.numberValue);
+                                  _produto = _produto!.copyWith(valorCompra: _valorCompraController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -425,7 +420,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 validator: ValidaCampoFormulario.validarObrigatorioDouble,
@@ -435,10 +430,10 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                   'Conteúdo para o campo Valor Venda',
                                   'Valor Venda',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto.copyWith(valorVenda: _valorVendaController.numberValue);
+                                  _produto = _produto!.copyWith(valorVenda: _valorVendaController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -447,17 +442,17 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 controller: _ncmController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo NCM',
                                   'Código NCM',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto.copyWith(codigoNcm: text);
+                                  _produto = _produto!.copyWith(codigoNcm: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -465,14 +460,14 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 textAlign: TextAlign.end,
@@ -481,10 +476,10 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                   'Conteúdo para o campo Quantidade Estoque',
                                   'Quantidade Estoque',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto.copyWith(quantidadeEstoque: _quantidadeEstoqueController.numberValue);
+                                  _produto = _produto!.copyWith(quantidadeEstoque: _quantidadeEstoqueController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -493,7 +488,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 textAlign: TextAlign.end,
@@ -502,10 +497,10 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                   'Conteúdo para o campo Estoque Minimo',
                                   'Estoque Minimo',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto.copyWith(estoqueMinimo: _estoqueMinimoController.numberValue);
+                                  _produto = _produto!.copyWith(estoqueMinimo: _estoqueMinimoController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -514,7 +509,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 textAlign: TextAlign.end,
@@ -523,10 +518,10 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                   'Conteúdo para o campo Estoque Maximo',
                                   'Estoque Maximo',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto.copyWith(estoqueMaximo: _estoqueMaximoController.numberValue);
+                                  _produto = _produto!.copyWith(estoqueMaximo: _estoqueMaximoController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -534,7 +529,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -548,7 +543,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                     ],
                   ),
                 ),
@@ -571,7 +566,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
   }
 
   Future<void> _salvar() async {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (!form.validate()) {
       _autoValidate = AutovalidateMode.always;
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
@@ -583,7 +578,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
           await Sessao.db.produtoDao.alterar(_produto);
           tudoCerto = true;
         } else {
-          final produto = await Sessao.db.produtoDao.consultarObjetoFiltro('GTIN', _produto.gtin);
+          final produto = await Sessao.db.produtoDao.consultarObjetoFiltro('GTIN', _produto!.gtin!);
           if (produto == null) {
             await Sessao.db.produtoDao.inserir(_produto);
             tudoCerto = true;
@@ -599,10 +594,13 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
   }
 
   Future<bool> _avisarUsuarioFormAlterado() async {
-    final FormState form = _formKey.currentState;
-    if (form == null || !_formFoiAlterado) return true;
-
-    return await gerarDialogBoxFormAlterado(context);
+    final FormState? form = _formKey.currentState;
+    if (form == null || !_formFoiAlterado) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
   }
 
   void _excluir() {

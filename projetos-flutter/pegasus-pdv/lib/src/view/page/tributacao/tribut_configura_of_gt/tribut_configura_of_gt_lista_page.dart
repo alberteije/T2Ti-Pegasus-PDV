@@ -47,17 +47,19 @@ import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'tribut_configura_of_gt_page.dart';
 
 class TributConfiguraOfGtListaPage extends StatefulWidget {
+  const TributConfiguraOfGtListaPage({Key? key}) : super(key: key);
+
   @override
   _TributConfiguraOfGtListaPageState createState() => _TributConfiguraOfGtListaPageState();
 }
 
 class _TributConfiguraOfGtListaPageState extends State<TributConfiguraOfGtListaPage> {
-  int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
-  int _sortColumnIndex;
+  int? _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
+  int? _sortColumnIndex;
   bool _sortAscending = true;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -70,7 +72,7 @@ class _TributConfiguraOfGtListaPageState extends State<TributConfiguraOfGtListaP
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -89,7 +91,7 @@ class _TributConfiguraOfGtListaPageState extends State<TributConfiguraOfGtListaP
 
     final _TributConfiguraOfGtDataSource _tributConfiguraOfGtDataSource = _TributConfiguraOfGtDataSource(_listaTributConfiguraOfGtMontado, context, _refrescarTela);
 
-    void _sort<T>(Comparable<T> getField(TributConfiguraOfGtMontado tributConfiguraOfGt), int columnIndex, bool ascending) {
+    void _sort<T>(Comparable<T>? Function(TributConfiguraOfGtMontado tributConfiguraOfGt) getField, int columnIndex, bool ascending) {
       _tributConfiguraOfGtDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
@@ -105,7 +107,7 @@ class _TributConfiguraOfGtListaPageState extends State<TributConfiguraOfGtListaP
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Configura OF-GT'),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           ),
           floatingActionButton: FloatingActionButton(
             focusColor: ViewUtilLib.getBotaoFocusColor(),
@@ -118,23 +120,23 @@ class _TributConfiguraOfGtListaPageState extends State<TributConfiguraOfGtListaP
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: BottomAppBar(
             color: ViewUtilLib.getBottomAppBarColor(),
-            shape: CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),
             child: Row(
-              children: [],
+              children: const [],
             ),
           ),
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
               child: _listaTributConfiguraOfGtMontado == null
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : ListView(
-                padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
+                padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                 children: <Widget>[
                   PaginatedDataTable(
                     header: const Text('Relação - Configura OF-GT'),
-                    rowsPerPage: _rowsPerPage,
-                    onRowsPerPageChanged: (int value) {
+                    rowsPerPage: _rowsPerPage!,
+                    onRowsPerPageChanged: (int? value) {
                       setState(() {
                         _rowsPerPage = value;
                       });
@@ -147,7 +149,7 @@ class _TributConfiguraOfGtListaPageState extends State<TributConfiguraOfGtListaP
                         label: const Text('Id'),
                         tooltip: 'Id',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<num>((TributConfiguraOfGtMontado tributConfiguraOfGt) => tributConfiguraOfGt.tributConfiguraOfGt.id, columnIndex, ascending),
+                          _sort<num>((TributConfiguraOfGtMontado tributConfiguraOfGt) => tributConfiguraOfGt.tributConfiguraOfGt!.id, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Grupo Tributário'),
@@ -179,7 +181,7 @@ class _TributConfiguraOfGtListaPageState extends State<TributConfiguraOfGtListaP
         builder: (BuildContext context) =>
           TributConfiguraOfGtPage(tributConfiguraOfGtMontado: TributConfiguraOfGtMontado(
             tributConfiguraOfGt: TributConfiguraOfGt(id: null),
-            tributIcmsUf: TributIcmsUf(id: null, ufDestino: Sessao.empresa.uf),
+            tributIcmsUf: TributIcmsUf(id: null, ufDestino: Sessao.empresa!.uf),
             tributCofins: TributCofins(id: null, cstCofins: '99', modalidadeBaseCalculo: '0-Percentual', aliquotaPorcento: 0,),
             tributPis: TributPis(id: null, cstPis: '99', modalidadeBaseCalculo: '0-Percentual', aliquotaPorcento: 0,),
             tributGrupoTributario: TributGrupoTributario(id: null),
@@ -191,7 +193,7 @@ class _TributConfiguraOfGtListaPageState extends State<TributConfiguraOfGtListaP
   }
 
   Future _refrescarTela() async {
-    if (Sessao.empresa.uf == null || Sessao.empresa.crt == null) {
+    if (Sessao.empresa!.uf == null || Sessao.empresa!.crt == null) {
       Navigator.pop(context);
       showInSnackBar('Cadastre a UF e o CRT da empresa.', context);
     } else {
@@ -205,47 +207,47 @@ class _TributConfiguraOfGtListaPageState extends State<TributConfiguraOfGtListaP
 
 /// codigo referente a fonte de dados
 class _TributConfiguraOfGtDataSource extends DataTableSource {
-  final List<TributConfiguraOfGtMontado> listaTributConfiguraOfGt;
+  final List<TributConfiguraOfGtMontado>? listaTributConfiguraOfGt;
   final BuildContext context;
   final Function refrescarTela;
 
   _TributConfiguraOfGtDataSource(this.listaTributConfiguraOfGt, this.context, this.refrescarTela);
 
-  void _sort<T>(Comparable<T> getField(TributConfiguraOfGtMontado tributConfiguraOfGt), bool ascending) {
-    listaTributConfiguraOfGt.sort((TributConfiguraOfGtMontado a, TributConfiguraOfGtMontado b) {
+  void _sort<T>(Comparable<T>? Function(TributConfiguraOfGtMontado tributConfiguraOfGt) getField, bool ascending) {
+    listaTributConfiguraOfGt!.sort((TributConfiguraOfGtMontado a, TributConfiguraOfGtMontado b) {
       if (!ascending) {
         final TributConfiguraOfGtMontado c = a;
         a = b;
         b = c;
       }
-      Comparable<T> aValue = getField(a);
-      Comparable<T> bValue = getField(b);
+      Comparable<T>? aValue = getField(a);
+      Comparable<T>? bValue = getField(b);
 
-      if (aValue == null) aValue = '' as Comparable<T>;
-      if (bValue == null) bValue = '' as Comparable<T>;
+      aValue ??= '' as Comparable<T>;
+      bValue ??= '' as Comparable<T>;
 
       return Comparable.compare(aValue, bValue);
     });
   }
 
-  int _selectedCount = 0;
+  final int _selectedCount = 0;
 
   @override
-  DataRow getRow(int index) {
+  DataRow? getRow(int index) {
     assert(index >= 0);
-    if (index >= listaTributConfiguraOfGt.length) return null;
-    final TributConfiguraOfGtMontado tributConfiguraOfGtMontado = listaTributConfiguraOfGt[index];
-    final TributConfiguraOfGt tributConfiguraOfGt = tributConfiguraOfGtMontado.tributConfiguraOfGt;
+    if (index >= listaTributConfiguraOfGt!.length) return null;
+    final TributConfiguraOfGtMontado tributConfiguraOfGtMontado = listaTributConfiguraOfGt![index];
+    final TributConfiguraOfGt tributConfiguraOfGt = tributConfiguraOfGtMontado.tributConfiguraOfGt!;
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
         DataCell(Text('${tributConfiguraOfGt.id ?? ''}'), onTap: () {
           _detalharTributConfiguraOfGt(tributConfiguraOfGtMontado, context, refrescarTela);
         }),
-        DataCell(Text('${tributConfiguraOfGtMontado.tributGrupoTributario?.descricao ?? ''}'), onTap: () {
+        DataCell(Text(tributConfiguraOfGtMontado.tributGrupoTributario?.descricao ?? ''), onTap: () {
           _detalharTributConfiguraOfGt(tributConfiguraOfGtMontado, context, refrescarTela);
         }),
-        DataCell(Text('${tributConfiguraOfGtMontado.tributOperacaoFiscal?.descricao ?? ''}'), onTap: () {
+        DataCell(Text(tributConfiguraOfGtMontado.tributOperacaoFiscal?.descricao ?? ''), onTap: () {
           _detalharTributConfiguraOfGt(tributConfiguraOfGtMontado, context, refrescarTela);
         }),
       ],
@@ -253,7 +255,7 @@ class _TributConfiguraOfGtDataSource extends DataTableSource {
   }
 
   @override
-  int get rowCount => listaTributConfiguraOfGt.length ?? 0;
+  int get rowCount => listaTributConfiguraOfGt!.length;
 
   @override
   bool get isRowCountApproximate => false;

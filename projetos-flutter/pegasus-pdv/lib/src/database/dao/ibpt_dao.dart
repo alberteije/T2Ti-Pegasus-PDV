@@ -59,7 +59,7 @@ class IbptDao extends DatabaseAccessor<AppDatabase> with _$IbptDaoMixin {
 
   Stream<List<Ibpt>> observarLista() => select(ibpts).watch();
 
-  Future<Ibpt> consultarObjeto(int pId) {
+  Future<Ibpt?> consultarObjeto(int pId) {
     return (select(ibpts)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

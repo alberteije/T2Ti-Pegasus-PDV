@@ -2,12 +2,11 @@ import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-// import 'package:yaml/yaml.dart';
 import 'package:provider/provider.dart';
 import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:catcher/catcher.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -22,12 +21,7 @@ import 'package:pegasus_pdv/src/view/shared/page/splash_screen_page.dart';
 import 'package:pegasus_pdv/src/view/page/page.dart';
 
 void main() async {  
-  await DotEnv.load(fileName: ".env");
-
-  // não funciona no Android  
-  // final arquivoYaml = File("../pubspec.yaml");
-  // final stringYaml = await arquivoYaml.readAsString();
-  // Map dadosYaml = loadYaml(stringYaml);
+  await dotenv.load(fileName: ".env");
 
   if (Platform.isWindows) {
     open.overrideFor(OperatingSystem.windows, _openOnWindows);
@@ -81,7 +75,7 @@ void main() async {
   ///O Catcher vai pegar e reportar os erros de forma global
   Catcher(
     runAppFunction: () {
-      runApp(MyApp());
+      runApp(const MyApp());
     },
     debugConfig: debugOptions,
     releaseConfig: releaseOptions,
@@ -95,11 +89,14 @@ DynamicLibrary _openOnWindows() {
     final libraryNextToScript = File('sqlite3.dll');
     return DynamicLibrary.open(libraryNextToScript.path);    
   } catch (e) {
-    throw(e);
+    debugPrint(e.toString());
+    throw 'Erro: ' + DateTime.now().toIso8601String() + ' - Exceção: ' + e.toString();
   }
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -112,10 +109,10 @@ class _MyAppState extends State<MyApp> {
       dispose: (context, db) => db.close(),
       builder: (context, value) {
         return FutureBuilder(
-          future: Future.delayed(Duration(seconds: 3), () async {
+          future: Future.delayed(const Duration(seconds: 3), () async {
             await Sessao.popularObjetosPrincipais(context);
             if (Biblioteca.isDesktop()) {
-              await DesktopWindow.setMinWindowSize(Size(800, 600));
+              await DesktopWindow.setMinWindowSize(const Size(800, 600));
               await DesktopWindow.resetMaxWindowSize();
               await DesktopWindow.toggleFullScreen();
             }
@@ -133,21 +130,21 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-Widget _materialApp({bool splash}) {
+Widget _materialApp({bool? splash}) {
   return MaterialApp(
     navigatorKey: Catcher.navigatorKey,
-    localizationsDelegates: [
+    localizationsDelegates: const [
       GlobalMaterialLocalizations.delegate,
       GlobalWidgetsLocalizations.delegate,
     ],
-    supportedLocales: [
-      const Locale('en', 'US'),
-      const Locale('pt', 'PT'),
+    supportedLocales: const [
+      Locale('en', 'US'),
+      Locale('pt', 'PT'),
     ],
     debugShowCheckedModeBanner: false,
     title: Constantes.nomeApp,
     onGenerateRoute: Rotas.definirRotas,
     theme: ThemeData(), 
-    home: splash == true ? SplashScreenPage() : CaixaPage(),
+    home: splash == true ? const SplashScreenPage() : const CaixaPage(),
   );
 }

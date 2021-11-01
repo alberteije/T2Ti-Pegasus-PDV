@@ -44,18 +44,18 @@ import 'package:flutter/material.dart';
 /// Os demais controles devem aplicar o padding padrão.
 InputDecoration getInputDecoration(
     String hintText, String labelText, bool aplicaPadding, 
-    {double paddingVertical, double paddingHorizontal, Color cor}
+    {double? paddingVertical, double? paddingHorizontal, Color? cor}
     ) {
   return InputDecoration(
     fillColor: cor,
-    border: UnderlineInputBorder(),
+    border: const UnderlineInputBorder(),
     hintText: hintText,
     labelText: labelText,
     filled: true,
     contentPadding: aplicaPadding
         ? EdgeInsets.symmetric(
-          vertical: paddingVertical == null ? 5 : paddingVertical, 
-          horizontal: paddingHorizontal == null ? 10: paddingHorizontal, 
+          vertical: paddingVertical ?? 5, 
+          horizontal: paddingHorizontal ?? 10, 
         )
         : null,
   );
@@ -63,12 +63,12 @@ InputDecoration getInputDecoration(
 
 /// Retorna um DropdownButton
 DropdownButtonFormField<String> getDropDownButton(
-    String value, Function(String) onChanged, List<String> items, {Function(String) validator}) {
+    String? value, Function(String?) onChanged, List<String> items, {Function(String)? validator}) {
   return DropdownButtonFormField<String>(    
     isExpanded: true,
     value: value,
     onChanged: onChanged,
-    validator: validator,
+    validator: validator as String? Function(String?)?,
     items: items.map<DropdownMenuItem<String>>((String value) {
       return DropdownMenuItem<String>(
         value: value,

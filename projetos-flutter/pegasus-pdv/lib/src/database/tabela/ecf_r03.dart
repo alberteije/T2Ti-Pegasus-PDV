@@ -37,13 +37,14 @@ import 'package:moor/moor.dart';
 
 @DataClassName("EcfR03")
 class EcfR03s extends Table {
+  @override
   String get tableName => 'ECF_R03';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idEcfR02 => integer().named('ID_ECF_R02').nullable().customConstraint('NULLABLE REFERENCES ECF_R02(ID)')();
-  TextColumn get serieEcf => text().named('SERIE_ECF').withLength(min: 0, max: 20).nullable()();
-  TextColumn get totalizadorParcial => text().named('TOTALIZADOR_PARCIAL').withLength(min: 0, max: 10).nullable()();
-  RealColumn get valorAcumulado => real().named('VALOR_ACUMULADO').nullable()();
-  IntColumn get crz => integer().named('CRZ').nullable()();
-  TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idEcfR02 => integer().named('ID_ECF_R02').nullable().customConstraint('NULLABLE REFERENCES ECF_R02(ID)')() as Column<int>?;
+  TextColumn? get serieEcf => text().named('SERIE_ECF').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  TextColumn? get totalizadorParcial => text().named('TOTALIZADOR_PARCIAL').withLength(min: 0, max: 10).nullable()() as Column<String>?;
+  RealColumn? get valorAcumulado => real().named('VALOR_ACUMULADO').nullable()() as Column<double>?;
+  IntColumn? get crz => integer().named('CRZ').nullable()() as Column<int>?;
+  TextColumn? get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()() as Column<String>?;
 }

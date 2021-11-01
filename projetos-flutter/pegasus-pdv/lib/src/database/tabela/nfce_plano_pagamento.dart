@@ -38,13 +38,14 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfcePlanoPagamento")
 class NfcePlanoPagamentos extends Table {
+  @override
   String get tableName => 'NFCE_PLANO_PAGAMENTO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  DateTimeColumn get dataSolicitacao => dateTime().named('DATA_SOLICITACAO').nullable()();
-  DateTimeColumn get dataPagamento => dateTime().named('DATA_PAGAMENTO').nullable()();
-  TextColumn get tipoPlano => text().named('TIPO_PLANO').withLength(min: 0, max: 1).nullable()(); //M-MENSAL - S-SEMESTRAL - A-ANUAL
-  RealColumn get valor => real().named('VALOR').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  DateTimeColumn? get dataSolicitacao => dateTime().named('DATA_SOLICITACAO').nullable()() as Column<DateTime>?;
+  DateTimeColumn? get dataPagamento => dateTime().named('DATA_PAGAMENTO').nullable()() as Column<DateTime>?;
+  TextColumn? get tipoPlano => text().named('TIPO_PLANO').withLength(min: 0, max: 1).nullable()() as Column<String>?; //M-MENSAL - S-SEMESTRAL - A-ANUAL
+  RealColumn? get valor => real().named('VALOR').nullable()() as Column<double>?;
   /*  statusPagamento
   1 	Aguardando pagamento: o comprador iniciou a transação, mas até o momento o PagSeguro não recebeu nenhuma informação sobre o pagamento.
   2 	Em análise: o comprador optou por pagar com um cartão de crédito e o PagSeguro está analisando o risco da transação.
@@ -56,8 +57,8 @@ class NfcePlanoPagamentos extends Table {
   8 	Debitado: o valor da transação foi devolvido para o comprador.
   9 	Retenção temporária: o comprador contestou o pagamento junto à operadora do cartão de crédito ou abriu uma demanda judicial ou administrativa (Procon). 
   */
-  TextColumn get statusPagamento => text().named('STATUS_PAGAMENTO').withLength(min: 0, max: 1).nullable()();
-  TextColumn get codigoTransacao => text().named('CODIGO_TRANSACAO').withLength(min: 0, max: 100).nullable()();
+  TextColumn? get statusPagamento => text().named('STATUS_PAGAMENTO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get codigoTransacao => text().named('CODIGO_TRANSACAO').withLength(min: 0, max: 100).nullable()() as Column<String>?;
   /*  metodoPagamento
   1 	Cartão de crédito: o comprador escolheu pagar a transação com cartão de crédito.
   2 	Boleto: o comprador optou por pagar com um boleto bancário.
@@ -66,7 +67,7 @@ class NfcePlanoPagamentos extends Table {
   5 	Oi Paggo *: o comprador escolheu pagar sua transação através de seu celular Oi.
   7 	Depósito em conta: o comprador optou por fazer um depósito na conta corrente do PagSeguro. Ele precisará ir até uma agência bancária, fazer o depósito, guardar o comprovante e retornar ao PagSeguro para informar os dados do pagamento. A transação será confirmada somente após a finalização deste processo, que pode levar de 2 a 13 dias úteis. 
   */
-  TextColumn get metodoPagamento => text().named('METODO_PAGAMENTO').withLength(min: 0, max: 1).nullable()();
+  TextColumn? get metodoPagamento => text().named('METODO_PAGAMENTO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
   /*  codigoTipoPagamento
   101 	Cartão de crédito Visa.
   102 	Cartão de crédito MasterCard.
@@ -102,7 +103,7 @@ class NfcePlanoPagamentos extends Table {
   701 	Depósito em conta - Banco do Brasil
   702 	Depósito em conta - HSBC
   */
-  TextColumn get codigoTipoPagamento => text().named('CODIGO_TIPO_PAGAMENTO').withLength(min: 0, max: 3).nullable()();
-  DateTimeColumn get dataPlanoExpira => dateTime().named('DATA_PLANO_EXPIRA').nullable()();
-  TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()();
+  TextColumn? get codigoTipoPagamento => text().named('CODIGO_TIPO_PAGAMENTO').withLength(min: 0, max: 3).nullable()() as Column<String>?;
+  DateTimeColumn? get dataPlanoExpira => dateTime().named('DATA_PLANO_EXPIRA').nullable()() as Column<DateTime>?;
+  TextColumn? get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()() as Column<String>?;
 }

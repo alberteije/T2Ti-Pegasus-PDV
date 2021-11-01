@@ -37,16 +37,17 @@ import 'package:moor/moor.dart';
 
 @DataClassName("TributCofins")
 class TributCofinss extends Table {
+  @override
   String get tableName => 'TRIBUT_COFINS';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idTributConfiguraOfGt => integer().named('ID_TRIBUT_CONFIGURA_OF_GT').nullable().customConstraint('NULLABLE REFERENCES TRIBUT_CONFIGURA_OF_GT(ID)')();
-  TextColumn get cstCofins => text().named('CST_COFINS').withLength(min: 0, max: 2).nullable()();
-  TextColumn get efdTabela435 => text().named('EFD_TABELA_435').withLength(min: 0, max: 2).nullable()();
-  TextColumn get modalidadeBaseCalculo => text().named('MODALIDADE_BASE_CALCULO').withLength(min: 0, max: 1).nullable()();
-  RealColumn get porcentoBaseCalculo => real().named('PORCENTO_BASE_CALCULO').nullable()();
-  RealColumn get aliquotaPorcento => real().named('ALIQUOTA_PORCENTO').nullable()();
-  RealColumn get aliquotaUnidade => real().named('ALIQUOTA_UNIDADE').nullable()();
-  RealColumn get valorPrecoMaximo => real().named('VALOR_PRECO_MAXIMO').nullable()();
-  RealColumn get valorPautaFiscal => real().named('VALOR_PAUTA_FISCAL').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idTributConfiguraOfGt => integer().named('ID_TRIBUT_CONFIGURA_OF_GT').nullable().customConstraint('NULLABLE REFERENCES TRIBUT_CONFIGURA_OF_GT(ID)')();
+  TextColumn? get cstCofins => text().named('CST_COFINS').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  TextColumn? get efdTabela435 => text().named('EFD_TABELA_435').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  TextColumn? get modalidadeBaseCalculo => text().named('MODALIDADE_BASE_CALCULO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  RealColumn? get porcentoBaseCalculo => real().named('PORCENTO_BASE_CALCULO').nullable()() as Column<double>?;
+  RealColumn? get aliquotaPorcento => real().named('ALIQUOTA_PORCENTO').nullable()() as Column<double>?;
+  RealColumn? get aliquotaUnidade => real().named('ALIQUOTA_UNIDADE').nullable()() as Column<double>?;
+  RealColumn? get valorPrecoMaximo => real().named('VALOR_PRECO_MAXIMO').nullable()() as Column<double>?;
+  RealColumn? get valorPautaFiscal => real().named('VALOR_PAUTA_FISCAL').nullable()() as Column<double>?;
 }

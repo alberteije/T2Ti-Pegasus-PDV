@@ -33,6 +33,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -57,26 +58,30 @@ import 'package:pegasus_pdv/src/view/shared/widgets_caixa.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 class VendasListaPage extends StatefulWidget {
+  const VendasListaPage({Key? key}) : super(key: key);
+
   @override
   _VendasListaPageState createState() => _VendasListaPageState();
 }
 
 class _VendasListaPageState extends State<VendasListaPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  int _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
-  int _sortColumnIndex;
+  int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
+  int? _sortColumnIndex;
   bool _sortAscending = true;
 
   DateTime _mesAno = DateTime.now();
-  String _statusVenda = 'Todas';
+  String? _statusVenda = 'Todas';
   double _totalVendido = 0;
   double _totalDesconto = 0;
   double _totalFinal = 0;
   double _totalCancelado = 0;
-  var _listaPdvVendaCabecalho;
+  List<PdvVendaCabecalho>? _listaPdvVendaCabecalho;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
+
+  final ScrollController controllerScroll = ScrollController();
 
   @override
   void initState() {
@@ -89,13 +94,13 @@ class _VendasListaPageState extends State<VendasListaPage> {
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
   }
 
   @override
   void dispose() {
-    final tipoOperacao = Sessao.configuracaoPdv.moduloFiscalPrincipal == null ? 'REC' : Sessao.configuracaoPdv.moduloFiscalPrincipal;
-    Sessao.vendaAtual = PdvVendaCabecalho(id: null, idPdvMovimento: Sessao.movimento.id, tipoOperacao: tipoOperacao);
+    final tipoOperacao = Sessao.configuracaoPdv!.moduloFiscalPrincipal ?? 'REC';
+    Sessao.vendaAtual = PdvVendaCabecalho(id: null, idPdvMovimento: Sessao.movimento!.id, tipoOperacao: tipoOperacao);
     super.dispose();
   }
 
@@ -113,7 +118,7 @@ class _VendasListaPageState extends State<VendasListaPage> {
     final _PdvVendaCabecalhoDataSource _pdvVendaCabecalhoDataSource = 
       _PdvVendaCabecalhoDataSource(_listaPdvVendaCabecalho, context, _refrescarTela, _cancelarVenda);
 
-    void _sort<T>(Comparable<T> getField(PdvVendaCabecalho pdvVendaCabecalho), int columnIndex, bool ascending) {
+    void _sort<T>(Comparable<T>? Function(PdvVendaCabecalho pdvVendaCabecalho) getField, int columnIndex, bool ascending) {
       _pdvVendaCabecalhoDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
@@ -130,11 +135,11 @@ class _VendasListaPageState extends State<VendasListaPage> {
           key: _scaffoldKey,
           appBar: AppBar(
             title: const Text('Vendas'),
-            actions: Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC' ? _getBotoesPersonalizados() : <Widget>[],
+            actions: Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC' ? _getBotoesPersonalizados() : <Widget>[],
           ),
           bottomNavigationBar: BottomAppBar(
             color: ViewUtilLib.getBottomAppBarColor(),          
-            shape: CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: Row(
@@ -147,20 +152,19 @@ class _VendasListaPageState extends State<VendasListaPage> {
                         'Mês/Ano para o Filtro',
                         'Mês/Ano para o Filtro',
                         true),
-                      isEmpty: _mesAno == null,
                       child: DatePickerItem(
                         mascara: 'MM/yyyy',
                         dateTime: _mesAno,
                         firstDate: DateTime.parse('1900-01-01'),
                         lastDate: DateTime.parse('2050-01-01'),
-                        onChanged: (DateTime value) {
-                          _mesAno = value;
+                        onChanged: (DateTime? value) {
+                          _mesAno = value!;
                           _refrescarTela();
                         },
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 8,
                   ),
                   Expanded(
@@ -173,7 +177,7 @@ class _VendasListaPageState extends State<VendasListaPage> {
                         true, paddingVertical: 1),
                       isEmpty: _statusVenda == null,
                       child: getDropDownButton(_statusVenda,
-                        (String newValue) {
+                        (String? newValue) {
                           _statusVenda = newValue;
                           _refrescarTela();
                       }, <String>[
@@ -192,8 +196,8 @@ class _VendasListaPageState extends State<VendasListaPage> {
             onRefresh: _refrescarTela,
             child: BackdropScaffold(           
               appBar: BackdropAppBar(
-                title: Text("Relação - Vendas"),
-                actions: <Widget>[
+                title: const Text("Relação - Vendas"),
+                actions: const <Widget>[
                   BackdropToggleButton(
                     icon: AnimatedIcons.list_view,
                   ),
@@ -203,13 +207,14 @@ class _VendasListaPageState extends State<VendasListaPage> {
               backLayer: getResumoTotais(context),
               frontLayer: Scrollbar(
                 child: _listaPdvVendaCabecalho == null
-                ? Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator())
                 : ListView(
-                  padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
+                  controller: controllerScroll,
+                  padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                   children: <Widget>[
                     PaginatedDataTable(                        
-                      rowsPerPage: _rowsPerPage,
-                      onRowsPerPageChanged: (int value) {
+                      rowsPerPage: _rowsPerPage!,
+                      onRowsPerPageChanged: (int? value) {
                         setState(() {
                           _rowsPerPage = value;
                         });
@@ -217,8 +222,8 @@ class _VendasListaPageState extends State<VendasListaPage> {
                       sortColumnIndex: _sortColumnIndex,
                       sortAscending: _sortAscending,
                       columns: <DataColumn>[
-                        DataColumn(
-                          label: const Text('Cancelar'),
+                        const DataColumn(
+                          label: Text('Cancelar'),
                           tooltip: 'Cancelar',
                         ),
                         DataColumn(
@@ -327,8 +332,8 @@ class _VendasListaPageState extends State<VendasListaPage> {
                           onSort: (int columnIndex, bool ascending) =>
                             _sort<String>((PdvVendaCabecalho pdvVendaCabecalho) => pdvVendaCabecalho.cupomCancelado, columnIndex, ascending),
                         ),
-                        DataColumn(
-                          label: const Text('Dados NFC-e'),
+                        const DataColumn(
+                          label: Text('Dados NFC-e'),
                           tooltip: 'Dados da NFC-e',                          
                         ),
                       ],
@@ -359,22 +364,22 @@ class _VendasListaPageState extends State<VendasListaPage> {
             const SizedBox(height: 10.0),
             getItemResumoValor(
               descricao: 'Total Vendido: ',
-              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalVendido ?? 0)}',
+              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalVendido)}',
               corFundo: Colors.blue.shade100,
             ),
             getItemResumoValor(
               descricao: 'Total Desconto: ',
-              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalDesconto ?? 0)}',
+              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalDesconto)}',
               corFundo: Colors.red.shade100,
             ),
             getItemResumoValor(
               descricao: 'Total Final: ',
-              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalFinal ?? 0)}',
+              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalFinal)}',
               corFundo: Colors.green.shade100,
             ),
             getItemResumoValor(
               descricao: 'Total Cancelado: ',
-              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalCancelado ?? 0)}',
+              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalCancelado)}',
               corFundo: Colors.red.shade100,
             ),
             const SizedBox(height: 10.0),
@@ -385,11 +390,11 @@ class _VendasListaPageState extends State<VendasListaPage> {
   }  
 
   List<Widget> _getBotoesPersonalizados() {
-    if (Biblioteca.isTelaPequena(context)) {
+    if (Biblioteca.isTelaPequena(context)!) {
       return <Widget>[
         getBotaoTelaPequena(
           tooltip: 'Baixar XMLs Período',
-          icone: Icon(Icons.download),
+          icone: const Icon(Icons.download),
           onPressed: _baixarXmls,
         ),
       ];
@@ -397,7 +402,7 @@ class _VendasListaPageState extends State<VendasListaPage> {
       return <Widget>[
         getBotaoTelaGrande(
           texto: 'Baixar XMLs Período',
-          icone: Icon(Icons.download),
+          icone: const Icon(Icons.download),
           onPressed: _baixarXmls,
         ),
       ];
@@ -445,7 +450,7 @@ class _VendasListaPageState extends State<VendasListaPage> {
     _totalDesconto = 0;
     _totalFinal = 0;
     _totalCancelado = 0;
-    for (PdvVendaCabecalho pdvVendaCabecalho in _listaPdvVendaCabecalho) {
+    for (PdvVendaCabecalho pdvVendaCabecalho in _listaPdvVendaCabecalho!) {
         _totalVendido = _totalVendido + (pdvVendaCabecalho.valorVenda ?? 0);        
         _totalDesconto = _totalDesconto + (pdvVendaCabecalho.valorDesconto ?? 0);        
         _totalFinal = _totalFinal + (pdvVendaCabecalho.valorFinal ?? 0);        
@@ -454,11 +459,11 @@ class _VendasListaPageState extends State<VendasListaPage> {
   }
 
   Future _cancelarVenda() async {
-    final recebimentos = await Sessao.db.contasReceberDao.consultarRecebimentosDeUmaVenda(Sessao.vendaAtual.id, 'R');
-    if (recebimentos.length > 0) {
+    final recebimentos = await Sessao.db.contasReceberDao.consultarRecebimentosDeUmaVenda(Sessao.vendaAtual!.id, 'R');
+    if (recebimentos!.isNotEmpty) {
       showInSnackBar("Essa venda não pode ser cancelada, pois já existem parcelas com o status Recebido.", context);          
     } else {
-      if (Sessao.vendaAtual.tipoOperacao == 'NFC') {
+      if (Sessao.vendaAtual!.tipoOperacao == 'NFC') {
         gerarDialogBoxConfirmacao(context, 'Essa venda é vinculada a uma NFC-e. Deseja cancelar a Nota Fiscal e a Venda?', () async {
           await _cancelarNfce(context);
         });
@@ -473,25 +478,25 @@ class _VendasListaPageState extends State<VendasListaPage> {
 
   Future _cancelarOperacaoVenda() async {
     Sessao.vendaAtual = 
-    Sessao.vendaAtual.copyWith(
+    Sessao.vendaAtual!.copyWith(
       statusVenda: 'C',
       cupomCancelado: 'S',
-      valorCancelado: Sessao.vendaAtual.valorFinal,
+      valorCancelado: Sessao.vendaAtual!.valorFinal,
     );
     await Sessao.db.pdvVendaCabecalhoDao.cancelarVenda(Sessao.vendaAtual).then((value) async => await _refrescarTela());
   }
 
   Future _cancelarNfce(BuildContext context) async {
     // consulta a nota vinculada à venda   
-    final nfceCabecalho = await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(Sessao.vendaAtual.id);
+    final nfceCabecalho = await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(Sessao.vendaAtual!.id);
     if (nfceCabecalho == null) {
       gerarDialogBoxErro(context, 'Não existe uma NFC-e vinculada a esta venda ou a nota foi emitida em Contingência e ainda não foi autorizada.');
     } else {
       NfceController.instanciarNfceMontado();
-      NfceController.nfeCabecalhoMontado.nfeCabecalho = nfceCabecalho;
+      NfceController.nfeCabecalhoMontado!.nfeCabecalho = nfceCabecalho;
       final motivoCancelamento = await showDialog(context: context, 
         builder: (BuildContext context){
-          return InformaValorPage(title: 'Cancelar NFC-e', operacao: 'CANCELAR_NFCE', );
+          return const InformaValorPage(title: 'Cancelar NFC-e', operacao: 'CANCELAR_NFCE', );
         });
 
       if (motivoCancelamento != false) { // só será false se o cara tiver teclado ESC no no botão CANCELAR
@@ -508,7 +513,7 @@ class _VendasListaPageState extends State<VendasListaPage> {
               chaveAcesso: nfceCabecalho.chaveAcesso,
               motivoCancelamento: motivoCancelamento,
             ).then((socket) async {
-              socket.write('NFe.CANCELARNFE("' + nfceCabecalho.chaveAcesso + '", "' + motivoCancelamento + '", "' + Sessao.empresa.cnpj + '")\r\n.\r\n');
+              socket!.write('NFe.CANCELARNFE("' + nfceCabecalho.chaveAcesso! + '", "' + motivoCancelamento + '", "' + Sessao.empresa!.cnpj! + '")\r\n.\r\n');
             });                 
           } catch (e) {
             gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: ' + e.toString());
@@ -523,52 +528,53 @@ class _VendasListaPageState extends State<VendasListaPage> {
 
 /// codigo referente a fonte de dados
 class _PdvVendaCabecalhoDataSource extends DataTableSource {
-  final List<PdvVendaCabecalho> listaPdvVendaCabecalho;
+  final List<PdvVendaCabecalho>? listaPdvVendaCabecalho;
   final BuildContext context;
   final Function refrescarTela;
   final Function cancelarVenda;
  
   _PdvVendaCabecalhoDataSource(this.listaPdvVendaCabecalho, this.context, this.refrescarTela, this.cancelarVenda);
 
-  void _sort<T>(Comparable<T> getField(PdvVendaCabecalho contasPagar), bool ascending) {
-    listaPdvVendaCabecalho.sort((PdvVendaCabecalho a, PdvVendaCabecalho b) {
+  void _sort<T>(Comparable<T>? Function(PdvVendaCabecalho contasPagar) getField, bool ascending) {
+    listaPdvVendaCabecalho!.sort((PdvVendaCabecalho a, PdvVendaCabecalho b) {
       if (!ascending) {
         final PdvVendaCabecalho c = a;
         a = b;
         b = c;
       }
-      Comparable<T> aValue = getField(a);
-      Comparable<T> bValue = getField(b);
+      Comparable<T>? aValue = getField(a);
+      Comparable<T>? bValue = getField(b);
 
-      if (aValue == null) aValue = '' as Comparable<T>;
-      if (bValue == null) bValue = '' as Comparable<T>;
+      aValue ??= '' as Comparable<T>;
+      bValue ??= '' as Comparable<T>;
 
       return Comparable.compare(aValue, bValue);
     });
   }
 
-  int _selectedCount = 0;
+  final int _selectedCount = 0;
 
   @override
-  DataRow getRow(int index) {
+  DataRow? getRow(int index) {
     assert(index >= 0);
-    if (index >= listaPdvVendaCabecalho.length) return null;
-    final PdvVendaCabecalho pdvVendaCabecalho = listaPdvVendaCabecalho[index];
+    if (index >= listaPdvVendaCabecalho!.length) return null;
+    final PdvVendaCabecalho pdvVendaCabecalho = listaPdvVendaCabecalho![index];
     return DataRow.byIndex(
-      color: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-        if ((pdvVendaCabecalho.cupomCancelado != null) && (pdvVendaCabecalho.cupomCancelado == 'S'))
+      color: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+        if ((pdvVendaCabecalho.cupomCancelado != null) && (pdvVendaCabecalho.cupomCancelado == 'S')) {
           return Theme.of(context).colorScheme.error.withOpacity(0.2);
+        }
         return null;  
       }),
       index: index,
       cells: <DataCell>[
         DataCell(
           ((pdvVendaCabecalho.cupomCancelado != null) && (pdvVendaCabecalho.cupomCancelado == 'S'))  
-          ? Text('Cancelada')
+          ? const Text('Cancelada')
           : getBotaoGenericoPdv(
               descricao: 'Cancela',
               cor: Colors.red.shade400, 
-              padding: EdgeInsets.all(5),
+              padding: const EdgeInsets.all(5),
               onPressed: () async {
                 // vinculamos a venda selecionada à venda da sessão, pois o método de cancelamente será chamado via callback pelo service da NFC-e
                 Sessao.vendaAtual = pdvVendaCabecalho;
@@ -578,33 +584,33 @@ class _PdvVendaCabecalhoDataSource extends DataTableSource {
         ),
         DataCell(Text('${pdvVendaCabecalho.id ?? ''}'), ),
         DataCell(Text('${pdvVendaCabecalho.idPdvMovimento ?? ''}'), ),
-        DataCell(Text('${pdvVendaCabecalho.dataVenda != null ? DateFormat('dd/MM/yyyy').format(pdvVendaCabecalho.dataVenda) : ''}'), ),
-        DataCell(Text('${pdvVendaCabecalho.horaVenda ?? ''}'), ),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(pdvVendaCabecalho.valorVenda ?? 0)}'), ),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(pdvVendaCabecalho.taxaDesconto ?? 0)}'), ),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(pdvVendaCabecalho.valorDesconto ?? 0)}'), ),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(pdvVendaCabecalho.valorFinal ?? 0)}'), ),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(pdvVendaCabecalho.valorRecebido ?? 0)}'), ),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(pdvVendaCabecalho.valorTroco ?? 0)}'),),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(pdvVendaCabecalho.valorCancelado ?? 0)}'), ),
-        DataCell(Text('${pdvVendaCabecalho.nomeCliente ?? ''}'), ),
-        DataCell(Text('${pdvVendaCabecalho.cpfCnpjCliente ?? ''}'), ),
+        DataCell(Text(pdvVendaCabecalho.dataVenda != null ? DateFormat('dd/MM/yyyy').format(pdvVendaCabecalho.dataVenda!) : ''), ),
+        DataCell(Text(pdvVendaCabecalho.horaVenda ?? ''), ),
+        DataCell(Text(Constantes.formatoDecimalValor.format(pdvVendaCabecalho.valorVenda ?? 0)), ),
+        DataCell(Text(Constantes.formatoDecimalValor.format(pdvVendaCabecalho.taxaDesconto ?? 0)), ),
+        DataCell(Text(Constantes.formatoDecimalValor.format(pdvVendaCabecalho.valorDesconto ?? 0)), ),
+        DataCell(Text(Constantes.formatoDecimalValor.format(pdvVendaCabecalho.valorFinal ?? 0)), ),
+        DataCell(Text(Constantes.formatoDecimalValor.format(pdvVendaCabecalho.valorRecebido ?? 0)), ),
+        DataCell(Text(Constantes.formatoDecimalValor.format(pdvVendaCabecalho.valorTroco ?? 0)),),
+        DataCell(Text(Constantes.formatoDecimalValor.format(pdvVendaCabecalho.valorCancelado ?? 0)), ),
+        DataCell(Text(pdvVendaCabecalho.nomeCliente ?? ''), ),
+        DataCell(Text(pdvVendaCabecalho.cpfCnpjCliente ?? ''), ),
         DataCell(Text('${pdvVendaCabecalho.idColaborador ?? ''}'), ),
-        DataCell(Text('${pdvVendaCabecalho.statusVenda ?? ''}'),),
-        DataCell(Text('${pdvVendaCabecalho.tipoOperacao ?? ''}'), ),
+        DataCell(Text(pdvVendaCabecalho.statusVenda ?? ''),),
+        DataCell(Text(pdvVendaCabecalho.tipoOperacao ?? ''), ),
         DataCell(
           ((pdvVendaCabecalho.cupomCancelado != null) && (pdvVendaCabecalho.cupomCancelado == 'S'))  
-          ? Text('Cancelada')
+          ? const Text('Cancelada')
           : ((pdvVendaCabecalho.statusVenda != 'F') || (pdvVendaCabecalho.tipoOperacao != 'NFC'))
-            ? Text('')
+            ? const Text('')
             : getBotaoGenericoPdv(
                 descricao: 'Visualizar',
-                tamanho: Size.fromWidth(100),
+                tamanho: const Size.fromWidth(100),
                 cor: Colors.green.shade400, 
-                padding: EdgeInsets.all(5),
+                padding: const EdgeInsets.all(5),
                 onPressed: () async {
                   final nfeCabecalhoMontado = await Sessao.db.nfeCabecalhoDao.consultarObjetoMontado('ID_PDV_VENDA_CABECALHO', pdvVendaCabecalho.id.toString());
-                  if (nfeCabecalhoMontado.nfeCabecalho == null) {
+                  if (nfeCabecalhoMontado?.nfeCabecalho == null) {
                     gerarDialogBoxInformacao(context, 'Nota fiscal não autorizada. Verifique se foi contigenciada e se está pendente de autorização.');
                   } else {
                     Navigator.of(context)
@@ -625,7 +631,7 @@ class _PdvVendaCabecalhoDataSource extends DataTableSource {
   }
 
   @override
-  int get rowCount => listaPdvVendaCabecalho.length ?? 0;
+  int get rowCount => listaPdvVendaCabecalho!.length;
 
   @override
   bool get isRowCountApproximate => false;

@@ -51,20 +51,22 @@ import 'package:pegasus_pdv/src/view/shared/page/filtro_page.dart';
 import 'pdv_tipo_pagamento_persiste_page.dart';
 
 class PdvTipoPagamentoListaPage extends StatefulWidget {
+  const PdvTipoPagamentoListaPage({Key? key}) : super(key: key);
+
   @override
   _PdvTipoPagamentoListaPageState createState() => _PdvTipoPagamentoListaPageState();
 }
 
 class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
-  int _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
-  int _sortColumnIndex;
+  int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
+  int? _sortColumnIndex;
   bool _sortAscending = true;
-  var _filtro = Filtro();
+  Filtro? _filtro = Filtro();
   final _colunas = PdvTipoPagamentoDao.colunas;
   final _campos = PdvTipoPagamentoDao.campos;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -77,7 +79,7 @@ class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -102,7 +104,7 @@ class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
 
     final _PdvTipoPagamentoDataSource _pdvTipoPagamentoDataSource = _PdvTipoPagamentoDataSource(_listaPdvTipoPagamento, context, _refrescarTela);
 
-    void _sort<T>(Comparable<T> getField(PdvTipoPagamento pdvTipoPagamento), int columnIndex, bool ascending) {
+    void _sort<T>(Comparable<T>? Function(PdvTipoPagamento pdvTipoPagamento) getField, int columnIndex, bool ascending) {
       _pdvTipoPagamentoDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
@@ -118,7 +120,7 @@ class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Cadastro - Tipo Pagamento'),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           ),
           floatingActionButton: FloatingActionButton(
             focusColor: ViewUtilLib.getBotaoFocusColor(),
@@ -131,7 +133,7 @@ class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: BottomAppBar(
             color: ViewUtilLib.getBottomAppBarColor(),          
-            shape: CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),
             child: Row(
               children: getBotoesNavigationBarListaPage(
                 context: context, 
@@ -144,14 +146,14 @@ class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
             onRefresh: _refrescarTela,
             child: Scrollbar(
               child: _listaPdvTipoPagamento == null
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : ListView(
-                padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
+                padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                 children: <Widget>[
                   PaginatedDataTable(                        
                     header: const Text('Relação - Tipo Pagamento'),
-                    rowsPerPage: _rowsPerPage,
-                    onRowsPerPageChanged: (int value) {
+                    rowsPerPage: _rowsPerPage!,
+                    onRowsPerPageChanged: (int? value) {
                       setState(() {
                         _rowsPerPage = value;
                       });
@@ -189,7 +191,7 @@ class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
           _sort<String>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.codigo, columnIndex, ascending),
       ),
     );
-    if (Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC') {
+    if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
       _colunas.add(   
         DataColumn(
           label: const Text('Código NFC-e'),
@@ -240,9 +242,9 @@ class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
           fullscreenDialog: true,
         ));
     if (_filtro != null) {
-      if (_filtro.campo != null) {
-        _filtro.campo = _campos[int.parse(_filtro.campo)];
-        await Sessao.db.pdvTipoPagamentoDao.consultarListaFiltro(_filtro.campo, _filtro.valor);
+      if (_filtro!.campo != null) {
+        _filtro!.campo = _campos[int.parse(_filtro!.campo!)];
+        await Sessao.db.pdvTipoPagamentoDao.consultarListaFiltro(_filtro!.campo!, _filtro!.valor!);
         setState(() {
         });
       }
@@ -264,35 +266,35 @@ class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
 
 /// codigo referente a fonte de dados
 class _PdvTipoPagamentoDataSource extends DataTableSource {
-  final List<PdvTipoPagamento> listaPdvTipoPagamento;
+  final List<PdvTipoPagamento>? listaPdvTipoPagamento;
   final BuildContext context;
   final Function refrescarTela;
  
   _PdvTipoPagamentoDataSource(this.listaPdvTipoPagamento, this.context, this.refrescarTela);
 
-  void _sort<T>(Comparable<T> getField(PdvTipoPagamento pdvTipoPagamento), bool ascending) {
-    listaPdvTipoPagamento.sort((PdvTipoPagamento a, PdvTipoPagamento b) {
+  void _sort<T>(Comparable<T>? Function(PdvTipoPagamento pdvTipoPagamento) getField, bool ascending) {
+    listaPdvTipoPagamento!.sort((PdvTipoPagamento a, PdvTipoPagamento b) {
       if (!ascending) {
         final PdvTipoPagamento c = a;
         a = b;
         b = c;
       }
-      Comparable<T> aValue = getField(a);
-      Comparable<T> bValue = getField(b);
+      Comparable<T>? aValue = getField(a);
+      Comparable<T>? bValue = getField(b);
 
-      if (aValue == null) aValue = '' as Comparable<T>;
-      if (bValue == null) bValue = '' as Comparable<T>;
+      aValue ??= '' as Comparable<T>;
+      bValue ??= '' as Comparable<T>;
 
       return Comparable.compare(aValue, bValue);
     });
   }
 
-  int _selectedCount = 0;
+  final int _selectedCount = 0;
 
   @override
-  DataRow getRow(int index) {
+  DataRow? getRow(int index) {
     assert(index >= 0);
-    if (index >= listaPdvTipoPagamento.length) return null;
+    if (index >= listaPdvTipoPagamento!.length) return null;
     return DataRow.byIndex(
       index: index,
       cells: _pegarCelulas(index),
@@ -300,7 +302,7 @@ class _PdvTipoPagamentoDataSource extends DataTableSource {
   }
 
   List<DataCell> _pegarCelulas(int index) {
-    final PdvTipoPagamento pdvTipoPagamento = listaPdvTipoPagamento[index];
+    final PdvTipoPagamento pdvTipoPagamento = listaPdvTipoPagamento![index];
     List<DataCell> _celulas = [];
     _celulas.add(
         DataCell(Text('${pdvTipoPagamento.id ?? ''}'), onTap: () {
@@ -308,24 +310,24 @@ class _PdvTipoPagamentoDataSource extends DataTableSource {
         }),
     );
     _celulas.add(
-        DataCell(Text('${pdvTipoPagamento.codigo ?? ''}'), onTap: () {
+        DataCell(Text(pdvTipoPagamento.codigo ?? ''), onTap: () {
           _detalharPdvTipoPagamento(pdvTipoPagamento, context, refrescarTela);
         }),
     );
-    if (Sessao.configuracaoPdv.moduloFiscalPrincipal == 'NFC') {
+    if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
       _celulas.add(
-        DataCell(Text('${pdvTipoPagamento.codigoPagamentoNfce ?? ''}'), onTap: () {
+        DataCell(Text(pdvTipoPagamento.codigoPagamentoNfce ?? ''), onTap: () {
           _detalharPdvTipoPagamento(pdvTipoPagamento, context, refrescarTela);
         }),
       );
     }
     _celulas.add(
-        DataCell(Text('${pdvTipoPagamento.descricao ?? ''}'), onTap: () {
+        DataCell(Text(pdvTipoPagamento.descricao ?? ''), onTap: () {
           _detalharPdvTipoPagamento(pdvTipoPagamento, context, refrescarTela);
         }),
     );
     _celulas.add(
-        DataCell(Text('${pdvTipoPagamento.geraParcelas ?? ''}'), onTap: () {
+        DataCell(Text(pdvTipoPagamento.geraParcelas ?? ''), onTap: () {
           _detalharPdvTipoPagamento(pdvTipoPagamento, context, refrescarTela);
         }),
     );
@@ -334,7 +336,7 @@ class _PdvTipoPagamentoDataSource extends DataTableSource {
   }
 
   @override
-  int get rowCount => listaPdvTipoPagamento.length ?? 0;
+  int get rowCount => listaPdvTipoPagamento!.length;
 
   @override
   bool get isRowCountApproximate => false;

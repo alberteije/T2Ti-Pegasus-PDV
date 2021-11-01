@@ -36,23 +36,23 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:flutter/material.dart';
 
 class MenuTituloGrupoMenuInterno extends StatelessWidget {
-  final String titulo;
+  final String? titulo;
 
   const MenuTituloGrupoMenuInterno({
-    Key key,
+    Key? key,
     this.titulo,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 40,
       child: Card(
         color: Colors.black54,
         elevation: 2.0,
         child: Center(
-            child: Text(titulo,
+            child: Text(titulo!,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   shadows: <Shadow>[
                     Shadow(

@@ -46,14 +46,16 @@ import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_pdv.dart';
 
 class ReciboRelatorioA4 extends StatefulWidget {
+  const ReciboRelatorioA4({Key? key}) : super(key: key);
+
 
   @override
   _ReciboRelatorioA4State createState() => _ReciboRelatorioA4State();
 }
 
 class _ReciboRelatorioA4State extends State<ReciboRelatorioA4> {
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -85,7 +87,7 @@ class _ReciboRelatorioA4State extends State<ReciboRelatorioA4> {
         autofocus: true,
         child: Scaffold(
           appBar: AppBar(
-            title: Text('Recibo'),
+            title: const Text('Recibo'),
           ),
           body: PdfPreview(          
             maxPageWidth: 800,
@@ -104,14 +106,14 @@ Future<Uint8List> _gerarRecibo() async {
 }
 
 class ReciboA4 {
-  PdfColor _baseColor = PdfColors.blue900;
-  PdfColor _accentColor = PdfColors.black;
-  PdfColor _darkColor = PdfColors.blueGrey800;
-  PdfColor _baseTextColor = PdfColors.blue900.luminance < 0.5 ? PdfColors.white : PdfColors.blueGrey800;
-  PdfColor _accentTextColor = PdfColors.blue900.luminance < 0.5 ? PdfColors.white : PdfColors.blueGrey800;
+  final PdfColor _baseColor = PdfColors.blue900;
+  final PdfColor _accentColor = PdfColors.black;
+  final PdfColor _darkColor = PdfColors.blueGrey800;
+  final PdfColor _baseTextColor = PdfColors.blue900.luminance < 0.5 ? PdfColors.white : PdfColors.blueGrey800;
+  final PdfColor _accentTextColor = PdfColors.blue900.luminance < 0.5 ? PdfColors.white : PdfColors.blueGrey800;
 
-  pw.MemoryImage _logotipoImagem;
-  pw.MemoryImage _rodapeImagem;
+  late pw.MemoryImage _logotipoImagem;
+  late pw.MemoryImage _rodapeImagem;
 
   Future<Uint8List> buildPdf(PdfPageFormat pageFormat) async {
 
@@ -119,7 +121,7 @@ class ReciboA4 {
     final doc = pw.Document();
 
     _logotipoImagem = pw.MemoryImage(
-      Sessao.empresa.logotipo,
+      Sessao.empresa!.logotipo!,
     );
     _rodapeImagem = pw.MemoryImage(
       (await rootBundle.load('assets/images/rodape_recibo.png')).buffer.asUint8List(),
@@ -187,7 +189,7 @@ class ReciboA4 {
                 children: [
                   pw.Container(
                     alignment: pw.Alignment.center,
-                    padding: pw.EdgeInsets.only(bottom: 8, right: 30),
+                    padding: const pw.EdgeInsets.only(bottom: 8, right: 30),
                     height: 120,
                     child: pw.Image(_logotipoImagem),
                   ),
@@ -199,7 +201,7 @@ class ReciboA4 {
                 children: [
                   pw.Container(
                     height: 50,
-                    padding: pw.EdgeInsets.only(left: 20),
+                    padding: const pw.EdgeInsets.only(left: 20),
                     alignment: pw.Alignment.centerLeft,
                     child: pw.Text(
                       'RECIBO',
@@ -212,10 +214,10 @@ class ReciboA4 {
                   ),
                   pw.Container(
                     decoration: pw.BoxDecoration(
-                      borderRadius: pw.BorderRadius.all(pw.Radius.circular(2)),
+                      borderRadius: const pw.BorderRadius.all(pw.Radius.circular(2)),
                       color: _accentColor,
                     ),
-                    padding: pw.EdgeInsets.only(left: 40, top: 10, bottom: 10, right: 20),
+                    padding: const pw.EdgeInsets.only(left: 40, top: 10, bottom: 10, right: 20),
                     alignment: pw.Alignment.centerLeft,
                     height: 35,
                     child: pw.DefaultTextStyle(
@@ -227,7 +229,7 @@ class ReciboA4 {
                         crossAxisCount: 2,
                         children: [
                           pw.Text('Data:'),
-                          pw.Text(Biblioteca.formatarData(Sessao.vendaAtual.dataVenda)),
+                          pw.Text(Biblioteca.formatarData(Sessao.vendaAtual!.dataVenda)),
                         ],
                       ),
                     ),
@@ -248,7 +250,7 @@ class ReciboA4 {
       children: [
         pw.Text(
           'Page ${context.pageNumber}/${context.pagesCount}',
-          style: pw.TextStyle(
+          style: const pw.TextStyle(
             fontSize: 12,
             color: PdfColors.black,
           ),
@@ -263,11 +265,11 @@ class ReciboA4 {
       children: [
         pw.Expanded(
           child: pw.Container(
-            margin: pw.EdgeInsets.symmetric(horizontal: 20),
+            margin: const pw.EdgeInsets.symmetric(horizontal: 20),
             height: 70,
             child: pw.FittedBox(
               child: pw.Text(
-                'Total R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual.valorFinal ?? 0)}',
+                'Total R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual!.valorFinal ?? 0)}',
                 style: pw.TextStyle(
                   color: _baseColor,
                   fontStyle: pw.FontStyle.italic,
@@ -280,7 +282,7 @@ class ReciboA4 {
           child: pw.Row(
             children: [
               pw.Container(
-                margin: pw.EdgeInsets.only(left: 10, right: 10),
+                margin: const pw.EdgeInsets.only(left: 10, right: 10),
                 height: 70,
                 child: pw.Text(
                   'Cliente:',
@@ -296,21 +298,21 @@ class ReciboA4 {
                   height: 70,
                   child: pw.RichText(
                       text: pw.TextSpan(
-                          text: Sessao.vendaAtual.nomeCliente == null ? 'Nome Não Informado' : Sessao.vendaAtual.nomeCliente,
+                          text: Sessao.vendaAtual!.nomeCliente ?? 'Nome Não Informado',
                           style: pw.TextStyle(
                             color: _darkColor,
                             fontWeight: pw.FontWeight.bold,
                             fontSize: 12,
                           ),
                           children: [
-                          pw.TextSpan(
+                          const pw.TextSpan(
                           text: '\n',
                           style: pw.TextStyle(
                             fontSize: 5,
                           ),
                         ),
                         pw.TextSpan(
-                          text: 'CPF/CNPJ: ' + (Sessao.vendaAtual.cpfCnpjCliente ?? ''),
+                          text: 'CPF/CNPJ: ' + (Sessao.vendaAtual!.cpfCnpjCliente ?? ''),
                           style: pw.TextStyle(
                             fontWeight: pw.FontWeight.normal,
                             fontSize: 10,
@@ -328,11 +330,11 @@ class ReciboA4 {
   }
 
   pw.Widget _dadosVendedor() {
-    if (Sessao.vendaAtual.idColaborador != null) {
+    if (Sessao.vendaAtual!.idColaborador != null) {
       return pw.Container(
         alignment: pw.Alignment.topRight,
         child: pw.Text(
-          'Vendedor: ' + Sessao.vendaAtual.idColaborador.toString(),
+          'Vendedor: ' + Sessao.vendaAtual!.idColaborador.toString(),
           style: pw.TextStyle(
             fontWeight: pw.FontWeight.normal,
             fontSize: 10,
@@ -358,7 +360,7 @@ class ReciboA4 {
       border: null,
       cellAlignment: pw.Alignment.centerLeft,
       headerDecoration: pw.BoxDecoration(
-        borderRadius: pw.BorderRadius.all(pw.Radius.circular(2)),
+        borderRadius: const pw.BorderRadius.all(pw.Radius.circular(2)),
         color: _baseColor,
       ),
       headerHeight: 25,
@@ -391,9 +393,9 @@ class ReciboA4 {
         tableHeaders.length,
         (col) => tableHeaders[col],
       ),
-      data: List<List<String>>.generate(
+      data: List<List<String?>>.generate(
         Sessao.listaVendaAtualDetalhe.length,
-        (row) => List<String>.generate(
+        (row) => List<String?>.generate(
           tableHeaders.length,
           (col) => Sessao.listaVendaAtualDetalhe[row].getIndex(col),
         ),
@@ -418,9 +420,9 @@ class ReciboA4 {
                 ),
               ),
               pw.Container(
-                margin: pw.EdgeInsets.only(top: 20, bottom: 8),
+                margin: const pw.EdgeInsets.only(top: 20, bottom: 8),
                 child: pw.Text(
-                  Sessao.empresa.razaoSocial,
+                  Sessao.empresa!.razaoSocial!,
                   style: pw.TextStyle(
                     color: _baseColor,
                     fontWeight: pw.FontWeight.bold,
@@ -428,13 +430,13 @@ class ReciboA4 {
                 ),
               ),
               pw.Text(
-                'Email: ' + (Sessao.empresa.email ?? '') +
+                'Email: ' + (Sessao.empresa!.email ?? '') +
                 ' | ' +
-                'Fone: ' + (Sessao.empresa.fone ?? '') +
+                'Fone: ' + (Sessao.empresa!.fone ?? '') +
                 ' | ' +
-                'Bairro: ' + (Sessao.empresa.bairro ?? '') +
+                'Bairro: ' + (Sessao.empresa!.bairro ?? '') +
                 ' | ' +
-                'Cidade: ' + (Sessao.empresa.cidade ?? ''),
+                'Cidade: ' + (Sessao.empresa!.cidade ?? ''),
                 style: pw.TextStyle(
                   fontSize: 8,
                   lineSpacing: 5,
@@ -459,7 +461,7 @@ class ReciboA4 {
                   children: [
                     pw.Text('Subtotal:'),
                     pw.Text(
-                      'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual.valorVenda ?? 0)}'
+                      'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual!.valorVenda ?? 0)}'
                     ),
                   ],
                 ),
@@ -469,9 +471,11 @@ class ReciboA4 {
                   children: [
                     pw.Text('Desconto:'),
                     pw.Text(
-                      Sessao.vendaAtual.valorDesconto != null 
-                      ? '(${Sessao.vendaAtual.taxaDesconto ?? 0}%)'+' R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual.valorDesconto ?? 0)}'
-                      : '(${Sessao.vendaAtual.taxaDesconto ?? 0}%)'+'R\$ ${Constantes.formatoDecimalValor.format(0)}',
+                      Sessao.vendaAtual!.valorDesconto != null 
+                      ? '(${Sessao.vendaAtual!.taxaDesconto ?? 0}%)'
+                        ' R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual!.valorDesconto ?? 0)}'
+                      : '(${Sessao.vendaAtual!.taxaDesconto ?? 0}%)'
+                        'R\$ ${Constantes.formatoDecimalValor.format(0)}',
                     ),
                   ],
                 ),
@@ -487,7 +491,7 @@ class ReciboA4 {
                     children: [
                       pw.Text('Total:'),
                       pw.Text(
-                        'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual.valorFinal ?? 0)}',
+                        'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual!.valorFinal ?? 0)}',
                       ),
                     ],
                   ),
@@ -504,7 +508,7 @@ class ReciboA4 {
                     children: [
                       pw.Text('Troco:'),
                       pw.Text(
-                        'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual.valorTroco ?? 0)}',
+                        'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual!.valorTroco ?? 0)}',
                       ),
                     ],
                   ),
@@ -518,7 +522,7 @@ class ReciboA4 {
   }
 
   pw.Widget _termosCondicoes(pw.Context context) {
-    final textoRecibo = 'Recebemos do cliente identificado acima o Total informado referente à venda dos '
+    const textoRecibo = 'Recebemos do cliente identificado acima o Total informado referente à venda dos '
                       'itens discriminados neste documento.';
     return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.end,
@@ -531,7 +535,7 @@ class ReciboA4 {
                 decoration: pw.BoxDecoration(
                   border: pw.Border(top: pw.BorderSide(color: _accentColor)),
                 ),
-                padding: pw.EdgeInsets.only(top: 10, bottom: 4),
+                padding: const pw.EdgeInsets.only(top: 10, bottom: 4),
                 child: pw.Text(
                   'Termos e Condições',
                   style: pw.TextStyle(
@@ -604,12 +608,12 @@ class ReciboA4 {
     listaPagamentos.add(pw.SizedBox(height: 5),);
                 
     for (var itemPagamento in Sessao.listaDadosPagamento) {
-      var tipoFiltrado = Sessao.listaTipoPagamento.where( ((tipo) => tipo.id == itemPagamento.idPdvTipoPagamento)).toList();    
+      var tipoFiltrado = Sessao.listaTipoPagamento!.where( ((tipo) => tipo.id == itemPagamento.idPdvTipoPagamento)).toList();    
       listaPagamentos.add(
         pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
-            pw.Text(tipoFiltrado[0].descricao),
+            pw.Text(tipoFiltrado[0].descricao!),
             pw.Text(
               'R\$ ${Constantes.formatoDecimalValor.format(itemPagamento.valor ?? 0)}'
             ),
@@ -623,7 +627,7 @@ class ReciboA4 {
   }
   
   pw.Widget _parcelamentoCabecalho(pw.Context context) {
-    if (Sessao.listaParcelamento.length > 0) {
+    if (Sessao.listaParcelamento.isNotEmpty) {
       return pw.Column(children: [
         pw.Divider(color: _accentColor),
         pw.Text(
@@ -642,7 +646,7 @@ class ReciboA4 {
   }
 
   pw.Widget _conteudoParcelamento(pw.Context context) {
-    if (Sessao.listaParcelamento.length > 0) {
+    if (Sessao.listaParcelamento.isNotEmpty) {
       const tableHeaders = [
         'Vencimento',
         'Histórico',
@@ -652,7 +656,7 @@ class ReciboA4 {
       return  pw.Table.fromTextArray(
           border: null,
           cellAlignment: pw.Alignment.centerLeft,
-          headerDecoration: pw.BoxDecoration(
+          headerDecoration: const pw.BoxDecoration(
             borderRadius: pw.BorderRadius.all(pw.Radius.circular(2)),
             color: PdfColors.green,
           ),
@@ -684,9 +688,9 @@ class ReciboA4 {
             tableHeaders.length,
             (col) => tableHeaders[col],
           ),
-          data: List<List<String>>.generate(
+          data: List<List<String?>>.generate(
             Sessao.listaParcelamento.length,
-            (row) => List<String>.generate(
+            (row) => List<String?>.generate(
               tableHeaders.length,
               (col) => Sessao.listaParcelamento[row].getIndex(col),
             ),

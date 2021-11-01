@@ -40,44 +40,45 @@ import '../database.dart';
 
 @DataClassName("ContasReceber")
 class ContasRecebers extends Table {
+  @override
   String get tableName => 'CONTAS_RECEBER';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idCliente => integer().named('ID_CLIENTE').nullable().customConstraint('NULLABLE REFERENCES CLIENTE(ID)')();
-  IntColumn get idPdvVendaCabecalho => integer().named('ID_PDV_VENDA_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES PDV_VENDA_CABEALHO(ID)')();
-  DateTimeColumn get dataLancamento => dateTime().named('DATA_LANCAMENTO').nullable()();
-  DateTimeColumn get dataVencimento => dateTime().named('DATA_VENCIMENTO').nullable()();
-  DateTimeColumn get dataRecebimento => dateTime().named('DATA_RECEBIMENTO').nullable()();
-  RealColumn get valorAReceber => real().named('VALOR_A_RECEBER').nullable()();
-  RealColumn get taxaJuro => real().named('TAXA_JURO').nullable()();
-  RealColumn get taxaMulta => real().named('TAXA_MULTA').nullable()();
-  RealColumn get taxaDesconto => real().named('TAXA_DESCONTO').nullable()();
-  RealColumn get valorJuro => real().named('VALOR_JURO').nullable()();
-  RealColumn get valorMulta => real().named('VALOR_MULTA').nullable()();
-  RealColumn get valorDesconto => real().named('VALOR_DESCONTO').nullable()();
-  RealColumn get valorRecebido => real().named('VALOR_RECEBIDO').nullable()();
-  TextColumn get numeroDocumento => text().named('NUMERO_DOCUMENTO').withLength(min: 0, max: 50).nullable()();
-  TextColumn get historico => text().named('HISTORICO').withLength(min: 0, max: 250).nullable()();
-  TextColumn get statusRecebimento => text().named('STATUS_RECEBIMENTO').withLength(min: 0, max: 1).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idCliente => integer().named('ID_CLIENTE').nullable().customConstraint('NULLABLE REFERENCES CLIENTE(ID)')() as Column<int>?;
+  IntColumn? get idPdvVendaCabecalho => integer().named('ID_PDV_VENDA_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES PDV_VENDA_CABEALHO(ID)')();
+  DateTimeColumn? get dataLancamento => dateTime().named('DATA_LANCAMENTO').nullable()() as Column<DateTime>?;
+  DateTimeColumn? get dataVencimento => dateTime().named('DATA_VENCIMENTO').nullable()() as Column<DateTime>?;
+  DateTimeColumn? get dataRecebimento => dateTime().named('DATA_RECEBIMENTO').nullable()() as Column<DateTime>?;
+  RealColumn? get valorAReceber => real().named('VALOR_A_RECEBER').nullable()() as Column<double>?;
+  RealColumn? get taxaJuro => real().named('TAXA_JURO').nullable()() as Column<double>?;
+  RealColumn? get taxaMulta => real().named('TAXA_MULTA').nullable()() as Column<double>?;
+  RealColumn? get taxaDesconto => real().named('TAXA_DESCONTO').nullable()() as Column<double>?;
+  RealColumn? get valorJuro => real().named('VALOR_JURO').nullable()() as Column<double>?;
+  RealColumn? get valorMulta => real().named('VALOR_MULTA').nullable()() as Column<double>?;
+  RealColumn? get valorDesconto => real().named('VALOR_DESCONTO').nullable()() as Column<double>?;
+  RealColumn? get valorRecebido => real().named('VALOR_RECEBIDO').nullable()() as Column<double>?;
+  TextColumn? get numeroDocumento => text().named('NUMERO_DOCUMENTO').withLength(min: 0, max: 50).nullable()() as Column<String>?;
+  TextColumn? get historico => text().named('HISTORICO').withLength(min: 0, max: 250).nullable()() as Column<String>?;
+  TextColumn? get statusRecebimento => text().named('STATUS_RECEBIMENTO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
 }
 
 class ContasReceberMontado {
-  Cliente cliente;
-  ContasReceber contasReceber;
+  Cliente? cliente;
+  ContasReceber? contasReceber;
 
   ContasReceberMontado({
     this.cliente,
     this.contasReceber,
   });
 
-  String getIndex(int index) {
+  String? getIndex(int index) {
     switch (index) {
       case 0:
-        return Biblioteca.formatarData(contasReceber.dataVencimento);
+        return Biblioteca.formatarData(contasReceber!.dataVencimento);
       case 1:
-        return contasReceber.historico;
+        return contasReceber!.historico;
       case 2:
-        return Constantes.formatoDecimalValor.format(contasReceber.valorAReceber ?? 0);
+        return Constantes.formatoDecimalValor.format(contasReceber!.valorAReceber ?? 0);
     }
     return '';
   }  

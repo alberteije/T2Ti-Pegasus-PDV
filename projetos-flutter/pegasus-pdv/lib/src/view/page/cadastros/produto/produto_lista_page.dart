@@ -51,20 +51,22 @@ import 'package:pegasus_pdv/src/view/shared/page/filtro_page.dart';
 import 'produto_persiste_page.dart';
 
 class ProdutoListaPage extends StatefulWidget {
+  const ProdutoListaPage({Key? key}) : super(key: key);
+
   @override
   _ProdutoListaPageState createState() => _ProdutoListaPageState();
 }
 
 class _ProdutoListaPageState extends State<ProdutoListaPage> {
-  int _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
-  int _sortColumnIndex;
+  int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
+  int? _sortColumnIndex;
   bool _sortAscending = true;
-  var _filtro = Filtro();
+  Filtro? _filtro = Filtro();
   final _colunas = ProdutoDao.colunas;
   final _campos = ProdutoDao.campos;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -77,7 +79,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -102,7 +104,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
 
     final _ProdutoDataSource _produtoDataSource = _ProdutoDataSource(_listaProdutoMontado, context, _refrescarTela);
 
-    void _sort<T>(Comparable<T> getField(ProdutoMontado produtoMontado), int columnIndex, bool ascending) {
+    void _sort<T>(Comparable<T>? Function(ProdutoMontado produtoMontado) getField, int columnIndex, bool ascending) {
       _produtoDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
@@ -118,7 +120,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Cadastro - Produto'),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           ),
           floatingActionButton: FloatingActionButton(
             focusColor: ViewUtilLib.getBotaoFocusColor(),
@@ -131,7 +133,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: BottomAppBar(
             color: ViewUtilLib.getBottomAppBarColor(),          
-            shape: CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),
             child: Row(
               children: getBotoesNavigationBarListaPage(
                 context: context, 
@@ -144,14 +146,14 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
             onRefresh: _refrescarTela,
             child: Scrollbar(
               child: _listaProdutoMontado == null
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : ListView(
-                padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
+                padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                 children: <Widget>[
                   PaginatedDataTable(                        
                     header: const Text('Relação - Produto'),
-                    rowsPerPage: _rowsPerPage,
-                    onRowsPerPageChanged: (int value) {
+                    rowsPerPage: _rowsPerPage!,
+                    onRowsPerPageChanged: (int? value) {
                       setState(() {
                         _rowsPerPage = value;
                       });
@@ -178,7 +180,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
         label: const Text('Id'),
         tooltip: 'Id',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto.id, columnIndex, ascending),
+          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.id, columnIndex, ascending),
       ),
     );
     _colunas.add(
@@ -186,16 +188,16 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
         label: const Text('Unidade'),
         tooltip: 'Conteúdo para o campo Unidade',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produtoUnidade.sigla, columnIndex, ascending),
+          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produtoUnidade!.sigla, columnIndex, ascending),
       ),
     );
-    if(Sessao.configuracaoPdv.modulo != 'G') { // não mostra a coluna do grupo tributário para o módulo gratuito
+    if(Sessao.configuracaoPdv!.modulo != 'G') { // não mostra a coluna do grupo tributário para o módulo gratuito
       _colunas.add(   
         DataColumn(
           label: const Text('Grupo Tributário'),
           tooltip: 'Conteúdo para o campo Grupo Tributário',
           onSort: (int columnIndex, bool ascending) =>
-            _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.tributGrupoTributario.descricao, columnIndex, ascending),
+            _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.tributGrupoTributario!.descricao, columnIndex, ascending),
         ),
       );
     }
@@ -204,7 +206,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
         label: const Text('Gtin'),
         tooltip: 'Conteúdo para o campo Gtin',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produto.gtin, columnIndex, ascending),
+          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produto!.gtin, columnIndex, ascending),
       ),
     );
     _colunas.add(
@@ -212,7 +214,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
         label: const Text('Codigo Interno'),
         tooltip: 'Conteúdo para o campo Codigo Interno',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produto.codigoInterno, columnIndex, ascending),
+          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produto!.codigoInterno, columnIndex, ascending),
       ),
     );
     _colunas.add(
@@ -220,7 +222,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
         label: const Text('Nome'),
         tooltip: 'Conteúdo para o campo Nome',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produto.nome, columnIndex, ascending),
+          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produto!.nome, columnIndex, ascending),
       ),
     );
     _colunas.add(
@@ -228,7 +230,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
         label: const Text('Descricao'),
         tooltip: 'Conteúdo para o campo Descricao',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produto.descricao, columnIndex, ascending),
+          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produto!.descricao, columnIndex, ascending),
       ),
     );
     _colunas.add(
@@ -237,7 +239,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
         label: const Text('Valor Compra'),
         tooltip: 'Conteúdo para o campo Valor Compra',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto.valorCompra, columnIndex, ascending),
+          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.valorCompra, columnIndex, ascending),
       ),
     );
     _colunas.add(
@@ -246,7 +248,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
         label: const Text('Valor Venda'),
         tooltip: 'Conteúdo para o campo Valor Venda',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto.valorVenda, columnIndex, ascending),
+          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.valorVenda, columnIndex, ascending),
       ),
     );
     _colunas.add(
@@ -255,7 +257,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
         label: const Text('Quantidade Estoque'),
         tooltip: 'Conteúdo para o campo Quantidade Estoque',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto.quantidadeEstoque, columnIndex, ascending),
+          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.quantidadeEstoque, columnIndex, ascending),
       ),
     );
     _colunas.add(
@@ -264,7 +266,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
         label: const Text('Estoque Minimo'),
         tooltip: 'Conteúdo para o campo Estoque Minimo',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto.estoqueMinimo, columnIndex, ascending),
+          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.estoqueMinimo, columnIndex, ascending),
       ),
     );
     _colunas.add(
@@ -273,7 +275,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
         label: const Text('Estoque Maximo'),
         tooltip: 'Conteúdo para o campo Estoque Maximo',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto.estoqueMaximo, columnIndex, ascending),
+          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.estoqueMaximo, columnIndex, ascending),
       ),
     );
     return _colunas;
@@ -309,9 +311,9 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
           fullscreenDialog: true,
         ));
     if (_filtro != null) {
-      if (_filtro.campo != null) {
-        _filtro.campo = _campos[int.parse(_filtro.campo)];
-        await Sessao.db.produtoDao.consultarListaMontado(campo: _filtro.campo, valor: _filtro.valor);
+      if (_filtro!.campo != null) {
+        _filtro!.campo = _campos[int.parse(_filtro!.campo!)];
+        await Sessao.db.produtoDao.consultarListaMontado(campo: _filtro!.campo, valor: _filtro!.valor);
         setState(() {
         });
       }
@@ -333,35 +335,35 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
 
 /// codigo referente a fonte de dados
 class _ProdutoDataSource extends DataTableSource {
-  final List<ProdutoMontado> listaProduto;
+  final List<ProdutoMontado>? listaProduto;
   final BuildContext context;
   final Function refrescarTela;
  
   _ProdutoDataSource(this.listaProduto, this.context, this.refrescarTela);
 
-  void _sort<T>(Comparable<T> getField(ProdutoMontado produto), bool ascending) {
-    listaProduto.sort((ProdutoMontado a, ProdutoMontado b) {
+  void _sort<T>(Comparable<T>? Function(ProdutoMontado produto) getField, bool ascending) {
+    listaProduto!.sort((ProdutoMontado a, ProdutoMontado b) {
       if (!ascending) {
         final ProdutoMontado c = a;
         a = b;
         b = c;
       }
-      Comparable<T> aValue = getField(a);
-      Comparable<T> bValue = getField(b);
+      Comparable<T>? aValue = getField(a);
+      Comparable<T>? bValue = getField(b);
 
-      if (aValue == null) aValue = '' as Comparable<T>;
-      if (bValue == null) bValue = '' as Comparable<T>;
+      aValue ??= '' as Comparable<T>;
+      bValue ??= '' as Comparable<T>;
 
       return Comparable.compare(aValue, bValue);
     });
   }
 
-  int _selectedCount = 0;
+  final int _selectedCount = 0;
 
   @override
-  DataRow getRow(int index) {
+  DataRow? getRow(int index) {
     // assert(index >= 0);
-    if (index >= listaProduto.length) return null;
+    if (index >= listaProduto!.length) return null;
     return DataRow.byIndex(
       index: index,
       cells: _pegarCelulas(index),
@@ -369,8 +371,8 @@ class _ProdutoDataSource extends DataTableSource {
   }
 
   List<DataCell> _pegarCelulas(int index) {
-    final ProdutoMontado produtoMontado = listaProduto[index];
-    final Produto produto = produtoMontado.produto;
+    final ProdutoMontado produtoMontado = listaProduto![index];
+    final Produto produto = produtoMontado.produto!;
     List<DataCell> _celulas = [];
     _celulas.add(
       DataCell(Text('${produto.id ?? ''}'), onTap: () {
@@ -378,59 +380,59 @@ class _ProdutoDataSource extends DataTableSource {
       }),
     );
     _celulas.add(
-      DataCell(Text('${produtoMontado.produtoUnidade?.sigla ?? ''}'), onTap: () {
+      DataCell(Text(produtoMontado.produtoUnidade?.sigla ?? ''), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
-    if(Sessao.configuracaoPdv.modulo != 'G') {
+    if(Sessao.configuracaoPdv!.modulo != 'G') {
       _celulas.add(
-        DataCell(Text('${produtoMontado.tributGrupoTributario?.descricao ?? ''}'), onTap: () {
+        DataCell(Text(produtoMontado.tributGrupoTributario?.descricao ?? ''), onTap: () {
           _detalharProduto(produtoMontado, context, refrescarTela);
         }) 
       );
     }
     _celulas.add(
-      DataCell(Text('${produto.gtin ?? ''}'), onTap: () {
+      DataCell(Text(produto.gtin ?? ''), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
     _celulas.add(
-      DataCell(Text('${produto.codigoInterno ?? ''}'), onTap: () {
+      DataCell(Text(produto.codigoInterno ?? ''), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
     _celulas.add(
-      DataCell(Text('${produto.nome ?? ''}'), onTap: () {
+      DataCell(Text(produto.nome ?? ''), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
     _celulas.add(
-      DataCell(Text('${produto.descricao ?? ''}'), onTap: () {
+      DataCell(Text(produto.descricao ?? ''), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
     _celulas.add(
-      DataCell(Text('${produto.valorCompra != null ? Constantes.formatoDecimalValor.format(produto.valorCompra) : 0.toStringAsFixed(Constantes.decimaisValor)}'), onTap: () {
+      DataCell(Text(produto.valorCompra != null ? Constantes.formatoDecimalValor.format(produto.valorCompra) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
     _celulas.add(
-      DataCell(Text('${produto.valorVenda != null ? Constantes.formatoDecimalValor.format(produto.valorVenda) : 0.toStringAsFixed(Constantes.decimaisValor)}'), onTap: () {
+      DataCell(Text(produto.valorVenda != null ? Constantes.formatoDecimalValor.format(produto.valorVenda) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
     _celulas.add(
-      DataCell(Text('${produto.quantidadeEstoque != null ? Constantes.formatoDecimalQuantidade.format(produto.quantidadeEstoque) : 0.toStringAsFixed(Constantes.decimaisQuantidade)}'), onTap: () {
+      DataCell(Text(produto.quantidadeEstoque != null ? Constantes.formatoDecimalQuantidade.format(produto.quantidadeEstoque) : 0.toStringAsFixed(Constantes.decimaisQuantidade)), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
     _celulas.add(
-      DataCell(Text('${produto.estoqueMinimo != null ? Constantes.formatoDecimalQuantidade.format(produto.estoqueMinimo) : 0.toStringAsFixed(Constantes.decimaisQuantidade)}'), onTap: () {
+      DataCell(Text(produto.estoqueMinimo != null ? Constantes.formatoDecimalQuantidade.format(produto.estoqueMinimo) : 0.toStringAsFixed(Constantes.decimaisQuantidade)), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
     _celulas.add(
-      DataCell(Text('${produto.estoqueMaximo != null ? Constantes.formatoDecimalQuantidade.format(produto.estoqueMaximo) : 0.toStringAsFixed(Constantes.decimaisQuantidade)}'), onTap: () {
+      DataCell(Text(produto.estoqueMaximo != null ? Constantes.formatoDecimalQuantidade.format(produto.estoqueMaximo) : 0.toStringAsFixed(Constantes.decimaisQuantidade)), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
@@ -438,7 +440,7 @@ class _ProdutoDataSource extends DataTableSource {
   }
 
   @override
-  int get rowCount => listaProduto.length ?? 0;
+  int get rowCount => listaProduto!.length;
 
   @override
   bool get isRowCountApproximate => false;
@@ -448,9 +450,7 @@ class _ProdutoDataSource extends DataTableSource {
 }
 
 void _detalharProduto(ProdutoMontado produtoMontado, BuildContext context, Function refrescarTela) {
-  if (produtoMontado.tributGrupoTributario == null) {
-    produtoMontado.tributGrupoTributario = TributGrupoTributario(id: null);
-  }
+  produtoMontado.tributGrupoTributario ??= TributGrupoTributario(id: null); // se tributGrupoTributario for nulo, instancia
   Navigator.of(context)
     .push(MaterialPageRoute(
       builder: (BuildContext context) => ProdutoPersistePage(

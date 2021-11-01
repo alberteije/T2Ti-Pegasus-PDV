@@ -37,14 +37,15 @@ import 'package:moor/moor.dart';
 
 @DataClassName("EcfRelatorioGerencial")
 class EcfRelatorioGerencials extends Table {
+  @override
   String get tableName => 'ECF_RELATORIO_GERENCIAL';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idPdvConfiguracao => integer().named('ID_PDV_CONFIGURACAO').nullable().customConstraint('NULLABLE REFERENCES PDV_CONFIGURACAO(ID)')();
-  IntColumn get x => integer().named('X').nullable()();
-  IntColumn get meiosPagamento => integer().named('MEIOS_PAGAMENTO').nullable()();
-  IntColumn get davEmitidos => integer().named('DAV_EMITIDOS').nullable()();
-  IntColumn get identificacaoPaf => integer().named('IDENTIFICACAO_PAF').nullable()();
-  IntColumn get parametrosConfiguracao => integer().named('PARAMETROS_CONFIGURACAO').nullable()();
-  IntColumn get outros => integer().named('OUTROS').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idPdvConfiguracao => integer().named('ID_PDV_CONFIGURACAO').nullable().customConstraint('NULLABLE REFERENCES PDV_CONFIGURACAO(ID)')() as Column<int>?;
+  IntColumn? get x => integer().named('X').nullable()() as Column<int>?;
+  IntColumn? get meiosPagamento => integer().named('MEIOS_PAGAMENTO').nullable()() as Column<int>?;
+  IntColumn? get davEmitidos => integer().named('DAV_EMITIDOS').nullable()() as Column<int>?;
+  IntColumn? get identificacaoPaf => integer().named('IDENTIFICACAO_PAF').nullable()() as Column<int>?;
+  IntColumn? get parametrosConfiguracao => integer().named('PARAMETROS_CONFIGURACAO').nullable()() as Column<int>?;
+  IntColumn? get outros => integer().named('OUTROS').nullable()() as Column<int>?;
 }

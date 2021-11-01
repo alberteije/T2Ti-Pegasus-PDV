@@ -33,6 +33,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
@@ -49,11 +51,11 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 
 class TributOperacaoFiscalPersistePage extends StatefulWidget {
-  final TributOperacaoFiscal tributOperacaoFiscal;
-  final String title;
-  final String operacao;
+  final TributOperacaoFiscal? tributOperacaoFiscal;
+  final String? title;
+  final String? operacao;
 
-  const TributOperacaoFiscalPersistePage({Key key, this.tributOperacaoFiscal, this.title, this.operacao})
+  const TributOperacaoFiscalPersistePage({Key? key, this.tributOperacaoFiscal, this.title, this.operacao})
       : super(key: key);
 
   @override
@@ -66,11 +68,11 @@ class _TributOperacaoFiscalPersistePageState extends State<TributOperacaoFiscalP
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   bool _formFoiAlterado = false;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
 
-  TributOperacaoFiscal tributOperacaoFiscal;
+  TributOperacaoFiscal? tributOperacaoFiscal;
 
   @override
   void initState() {
@@ -113,7 +115,7 @@ class _TributOperacaoFiscalPersistePageState extends State<TributOperacaoFiscalP
         child: Scaffold(drawerDragStartBehavior: DragStartBehavior.down,
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text(widget.title), 
+            title: Text(widget.title!), 
             actions: widget.operacao == "I"
               ? getBotoesAppBarPersistePage(context: context, salvar: _salvar,)
               : getBotoesAppBarPersistePageComExclusao(context: context, salvar: _salvar, excluir: _excluir),
@@ -130,11 +132,11 @@ class _TributOperacaoFiscalPersistePageState extends State<TributOperacaoFiscalP
                   dragStartBehavior: DragStartBehavior.down,
         				  child: BootstrapContainer(
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
 				          	padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                     children: <Widget>[
-                      Divider(color: Colors.white,),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -150,17 +152,17 @@ class _TributOperacaoFiscalPersistePageState extends State<TributOperacaoFiscalP
                                 'Informe a Descrição da Operação Fiscal',
                                 'Descrição *',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                tributOperacaoFiscal = tributOperacaoFiscal.copyWith(descricao: text);
+                                tributOperacaoFiscal = tributOperacaoFiscal!.copyWith(descricao: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -174,10 +176,10 @@ class _TributOperacaoFiscalPersistePageState extends State<TributOperacaoFiscalP
                                 'Observações Gerais',
                                 'Observação',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                tributOperacaoFiscal = tributOperacaoFiscal.copyWith(observacao: text);
+                                tributOperacaoFiscal = tributOperacaoFiscal!.copyWith(observacao: text);
                                 _formFoiAlterado = true;
                               },
                             ),
@@ -197,7 +199,7 @@ class _TributOperacaoFiscalPersistePageState extends State<TributOperacaoFiscalP
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                     ],        
                   ),
                 ),
@@ -210,7 +212,7 @@ class _TributOperacaoFiscalPersistePageState extends State<TributOperacaoFiscalP
   }
 
   Future<void> _salvar() async {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (!form.validate()) {
       _autoValidate = AutovalidateMode.always;
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
@@ -228,10 +230,13 @@ class _TributOperacaoFiscalPersistePageState extends State<TributOperacaoFiscalP
   }
 
   Future<bool> _avisarUsuarioFormAlterado() async {
-    final FormState form = _formKey.currentState;
-    if (form == null || !_formFoiAlterado) return true;
-
-    return await gerarDialogBoxFormAlterado(context);
+    final FormState? form = _formKey.currentState;
+    if (form == null || !_formFoiAlterado) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
   }
   
   void _excluir() {

@@ -43,10 +43,10 @@ import 'package:pegasus_pdv/src/view/shared/botoes.dart';
 
 /// Utilizado para saber se algo foi alterado em qualquer uma das páginas de detalhe
 /// para avisar ao usuário que dados serão perdidos caso ele saia da tela/página.
-bool paginaMestreDetalheFoiAlterada;
+late bool paginaMestreDetalheFoiAlterada;
 
 /// Retorna o ShapeDecoration para a página de abas
-ShapeDecoration getShapeDecorationAbaPage(String estiloBotoesAba) {
+ShapeDecoration? getShapeDecorationAbaPage(String estiloBotoesAba) {
   switch (estiloBotoesAba) {
     case 'iconsAndText':
       return ShapeDecoration(
@@ -107,14 +107,14 @@ ShapeDecoration getShapeDecorationAbaPage(String estiloBotoesAba) {
 WillPopScope getScaffoldAbaPage(
     String title,
     BuildContext context,
-    TabController controllerAbas,
+    TabController? controllerAbas,
     List<Aba> abasAtivas,
-    Decoration indicatorTabBar,
+    Decoration? indicatorTabBar,
     String estiloBotoesAba,
     Function onPressedIconButton,
     Function(String) onSelectedPopupMenuButton,   
     Future<bool> Function() onWillPop,
-    {bool comBotaoExclusao = false, Function excluir, List<Widget> botoesPersonalizados}
+    {bool comBotaoExclusao = false, Function? excluir, List<Widget>? botoesPersonalizados}
     ) {
   return WillPopScope(
     onWillPop: onWillPop,
@@ -124,8 +124,8 @@ WillPopScope getScaffoldAbaPage(
         actions: (botoesPersonalizados != null)
                  ? botoesPersonalizados
                  : comBotaoExclusao 
-                    ? _getBotoesAppBarComExclusao(context, onPressedIconButton, onSelectedPopupMenuButton, excluir)
-                    : _getBotoesAppBar(context, onPressedIconButton, onSelectedPopupMenuButton),
+                    ? _getBotoesAppBarComExclusao(context, onPressedIconButton as dynamic Function(), onSelectedPopupMenuButton, excluir)
+                    : _getBotoesAppBar(context, onPressedIconButton as dynamic Function(), onSelectedPopupMenuButton),
         bottom: TabBar(
           controller: controllerAbas,
           isScrollable: true,
@@ -139,7 +139,7 @@ WillPopScope getScaffoldAbaPage(
               case 'textOnly':
                 return Tab(text: aba.text);
             }
-            return null;
+            return Tab(text: aba.text);
           }).toList(),
         ),
       ),
@@ -152,17 +152,15 @@ WillPopScope getScaffoldAbaPage(
             child: Container(
               key: ObjectKey(aba.icon),
               padding: const EdgeInsets.all(0.0), //12.0
-              child: aba.pagina == null
-                ? Card(
+              child: aba.pagina ?? Card(
                     child: Center(
                       child: Icon(
                         aba.icon,
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
                         size: 128.0,
                       ),
                     ),
-                  )
-                : aba.pagina,
+                  ),
             ),
           );
         }).toList(),
@@ -172,7 +170,7 @@ WillPopScope getScaffoldAbaPage(
 }
 
 List<Widget> _getBotoesAppBar(BuildContext context, Function() onPressedBotaoSalvar, Function(String) onSelectedPopupMenuButton) {
-  if (Biblioteca.isTelaPequena(context)) {
+  if (Biblioteca.isTelaPequena(context)!) {
     return <Widget>[
       getBotaoTelaPequena(
         tooltip: Constantes.botaoSalvarDica,                
@@ -194,8 +192,8 @@ List<Widget> _getBotoesAppBar(BuildContext context, Function() onPressedBotaoSal
 }
 
 List<Widget> _getBotoesAppBarComExclusao(
-  BuildContext context, Function() onPressedBotaoSalvar, Function(String) onSelectedPopupMenuButton, Function excluir) {
-  if (Biblioteca.isTelaPequena(context)) {
+  BuildContext context, Function() onPressedBotaoSalvar, Function(String) onSelectedPopupMenuButton, Function? excluir) {
+  if (Biblioteca.isTelaPequena(context)!) {
     return <Widget>[
       getBotaoTelaPequena(
         tooltip: Constantes.botaoExcluirDica,                
@@ -249,8 +247,8 @@ PopupMenuButton<String> _getPopupMenu(Function(String) onSelectedPopupMenuButton
 /// Classe usada para montar a aba nas páginas mestre/detalhe
 class Aba {
   Aba({this.icon, this.text, this.visible, this.pagina});
-  IconData icon;
-  String text;
-  bool visible;
-  Widget pagina;
+  IconData? icon;
+  String? text;
+  bool? visible;
+  Widget? pagina;
 }

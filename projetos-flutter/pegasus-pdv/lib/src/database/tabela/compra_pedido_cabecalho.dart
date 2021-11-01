@@ -39,37 +39,38 @@ import '../database.dart';
 
 @DataClassName("CompraPedidoCabecalho")
 class CompraPedidoCabecalhos extends Table {
+  @override
   String get tableName => 'COMPRA_PEDIDO_CABECALHO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idColaborador => integer().named('ID_COLABORADOR').nullable().customConstraint('NULLABLE REFERENCES COLABORADOR(ID)')();
-  IntColumn get idFornecedor => integer().named('ID_FORNECEDOR').nullable().customConstraint('NULLABLE REFERENCES FORNECEDOR(ID)')();
-  DateTimeColumn get dataPedido => dateTime().named('DATA_PEDIDO').nullable()();
-  DateTimeColumn get dataPrevisaoEntrega => dateTime().named('DATA_PREVISAO_ENTREGA').nullable()();
-  DateTimeColumn get dataPrevisaoPagamento => dateTime().named('DATA_PREVISAO_PAGAMENTO').nullable()();
-  TextColumn get localEntrega => text().named('LOCAL_ENTREGA').withLength(min: 0, max: 100).nullable()();
-  TextColumn get localCobranca => text().named('LOCAL_COBRANCA').withLength(min: 0, max: 100).nullable()();
-  TextColumn get contato => text().named('CONTATO').withLength(min: 0, max: 50).nullable()();
-  RealColumn get valorSubtotal => real().named('VALOR_SUBTOTAL').nullable()();
-  RealColumn get taxaDesconto => real().named('TAXA_DESCONTO').nullable()();
-  RealColumn get valorDesconto => real().named('VALOR_DESCONTO').nullable()();
-  RealColumn get valorTotal => real().named('VALOR_TOTAL').nullable()();
-  TextColumn get formaPagamento => text().named('FORMA_PAGAMENTO').withLength(min: 0, max: 10).nullable()();
-  TextColumn get geraFinanceiro => text().named('GERA_FINANCEIRO').withLength(min: 0, max: 1).nullable()();
-  IntColumn get quantidadeParcelas => integer().named('QUANTIDADE_PARCELAS').nullable()();
-  DateTimeColumn get diaPrimeiroVencimento => dateTime().named('DIA_PRIMEIRO_VENCIMENTO').nullable()();
-  IntColumn get intervaloEntreParcelas => integer().named('INTERVALO_ENTRE_PARCELAS').nullable()();
-  TextColumn get diaFixoParcela => text().named('DIA_FIXO_PARCELA').withLength(min: 0, max: 2).nullable()();
-  DateTimeColumn get dataRecebimentoItens => dateTime().named('DATA_RECEBIMENTO_ITENS').nullable()();
-  TextColumn get horaRecebimentoItens => text().named('HORA_RECEBIMENTO_ITENS').withLength(min: 0, max: 8).nullable()();
-  TextColumn get atualizouEstoque => text().named('ATUALIZOU_ESTOQUE').withLength(min: 0, max: 1).nullable()();
-  TextColumn get numeroDocumentoEntrada => text().named('NUMERO_DOCUMENTO_ENTRADA').withLength(min: 0, max: 50).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idColaborador => integer().named('ID_COLABORADOR').nullable().customConstraint('NULLABLE REFERENCES COLABORADOR(ID)')() as Column<int>?;
+  IntColumn? get idFornecedor => integer().named('ID_FORNECEDOR').nullable().customConstraint('NULLABLE REFERENCES FORNECEDOR(ID)')() as Column<int>?;
+  DateTimeColumn? get dataPedido => dateTime().named('DATA_PEDIDO').nullable()() as Column<DateTime>?;
+  DateTimeColumn? get dataPrevisaoEntrega => dateTime().named('DATA_PREVISAO_ENTREGA').nullable()() as Column<DateTime>?;
+  DateTimeColumn? get dataPrevisaoPagamento => dateTime().named('DATA_PREVISAO_PAGAMENTO').nullable()() as Column<DateTime>?;
+  TextColumn? get localEntrega => text().named('LOCAL_ENTREGA').withLength(min: 0, max: 100).nullable()() as Column<String>?;
+  TextColumn? get localCobranca => text().named('LOCAL_COBRANCA').withLength(min: 0, max: 100).nullable()() as Column<String>?;
+  TextColumn? get contato => text().named('CONTATO').withLength(min: 0, max: 50).nullable()() as Column<String>?;
+  RealColumn? get valorSubtotal => real().named('VALOR_SUBTOTAL').nullable()() as Column<double>?;
+  RealColumn? get taxaDesconto => real().named('TAXA_DESCONTO').nullable()() as Column<double>?;
+  RealColumn? get valorDesconto => real().named('VALOR_DESCONTO').nullable()() as Column<double>?;
+  RealColumn? get valorTotal => real().named('VALOR_TOTAL').nullable()() as Column<double>?;
+  TextColumn? get formaPagamento => text().named('FORMA_PAGAMENTO').withLength(min: 0, max: 10).nullable()() as Column<String>?;
+  TextColumn? get geraFinanceiro => text().named('GERA_FINANCEIRO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  IntColumn? get quantidadeParcelas => integer().named('QUANTIDADE_PARCELAS').nullable()() as Column<int>?;
+  DateTimeColumn? get diaPrimeiroVencimento => dateTime().named('DIA_PRIMEIRO_VENCIMENTO').nullable()() as Column<DateTime>?;
+  IntColumn? get intervaloEntreParcelas => integer().named('INTERVALO_ENTRE_PARCELAS').nullable()() as Column<int>?;
+  TextColumn? get diaFixoParcela => text().named('DIA_FIXO_PARCELA').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  DateTimeColumn? get dataRecebimentoItens => dateTime().named('DATA_RECEBIMENTO_ITENS').nullable()() as Column<DateTime>?;
+  TextColumn? get horaRecebimentoItens => text().named('HORA_RECEBIMENTO_ITENS').withLength(min: 0, max: 8).nullable()() as Column<String>?;
+  TextColumn? get atualizouEstoque => text().named('ATUALIZOU_ESTOQUE').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get numeroDocumentoEntrada => text().named('NUMERO_DOCUMENTO_ENTRADA').withLength(min: 0, max: 50).nullable()() as Column<String>?;
 }
 
 class CompraPedidoCabecalhoMontado {
-  CompraPedidoCabecalho compraPedidoCabecalho;
-  Colaborador colaborador;
-  Fornecedor fornecedor;
+  CompraPedidoCabecalho? compraPedidoCabecalho;
+  Colaborador? colaborador;
+  Fornecedor? fornecedor;
 
   CompraPedidoCabecalhoMontado({
     this.compraPedidoCabecalho,

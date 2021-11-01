@@ -37,14 +37,15 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeNfReferenciada")
 class NfeNfReferenciadas extends Table {
+  @override
   String get tableName => 'NFE_NF_REFERENCIADA';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')();
-  IntColumn get codigoUf => integer().named('CODIGO_UF').nullable()();
-  TextColumn get anoMes => text().named('ANO_MES').withLength(min: 0, max: 4).nullable()();
-  TextColumn get cnpj => text().named('CNPJ').withLength(min: 0, max: 14).nullable()();
-  TextColumn get modelo => text().named('MODELO').withLength(min: 0, max: 2).nullable()();
-  TextColumn get serie => text().named('SERIE').withLength(min: 0, max: 3).nullable()();
-  IntColumn get numeroNf => integer().named('NUMERO_NF').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')() as Column<int>?;
+  IntColumn? get codigoUf => integer().named('CODIGO_UF').nullable()() as Column<int>?;
+  TextColumn? get anoMes => text().named('ANO_MES').withLength(min: 0, max: 4).nullable()() as Column<String>?;
+  TextColumn? get cnpj => text().named('CNPJ').withLength(min: 0, max: 14).nullable()() as Column<String>?;
+  TextColumn? get modelo => text().named('MODELO').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  TextColumn? get serie => text().named('SERIE').withLength(min: 0, max: 3).nullable()() as Column<String>?;
+  IntColumn? get numeroNf => integer().named('NUMERO_NF').nullable()() as Column<int>?;
 }

@@ -37,13 +37,14 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeCanaDeducoesSafra")
 class NfeCanaDeducoesSafras extends Table {
+  @override
   String get tableName => 'NFE_CANA_DEDUCOES_SAFRA';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeCana => integer().named('ID_NFE_CANA').nullable().customConstraint('NULLABLE REFERENCES NFE_CANA(ID)')();
-  TextColumn get decricao => text().named('DECRICAO').withLength(min: 0, max: 60).nullable()();
-  RealColumn get valorDeducao => real().named('VALOR_DEDUCAO').nullable()();
-  RealColumn get valorFornecimento => real().named('VALOR_FORNECIMENTO').nullable()();
-  RealColumn get valorTotalDeducao => real().named('VALOR_TOTAL_DEDUCAO').nullable()();
-  RealColumn get valorLiquidoFornecimento => real().named('VALOR_LIQUIDO_FORNECIMENTO').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeCana => integer().named('ID_NFE_CANA').nullable().customConstraint('NULLABLE REFERENCES NFE_CANA(ID)')() as Column<int>?;
+  TextColumn? get decricao => text().named('DECRICAO').withLength(min: 0, max: 60).nullable()() as Column<String>?;
+  RealColumn? get valorDeducao => real().named('VALOR_DEDUCAO').nullable()() as Column<double>?;
+  RealColumn? get valorFornecimento => real().named('VALOR_FORNECIMENTO').nullable()() as Column<double>?;
+  RealColumn? get valorTotalDeducao => real().named('VALOR_TOTAL_DEDUCAO').nullable()() as Column<double>?;
+  RealColumn? get valorLiquidoFornecimento => real().named('VALOR_LIQUIDO_FORNECIMENTO').nullable()() as Column<double>?;
 }

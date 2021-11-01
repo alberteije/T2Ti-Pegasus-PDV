@@ -37,9 +37,10 @@ import 'package:moor/moor.dart';
 
 @DataClassName("PdvCaixa")
 class PdvCaixas extends Table {
+  @override
   String get tableName => 'PDV_CAIXA';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get nome => text().named('NOME').withLength(min: 0, max: 30).nullable()();
-  DateTimeColumn get dataCadastro => dateTime().named('DATA_CADASTRO').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  TextColumn? get nome => text().named('NOME').withLength(min: 0, max: 30).nullable()() as Column<String>?;
+  DateTimeColumn? get dataCadastro => dateTime().named('DATA_CADASTRO').nullable()() as Column<DateTime>?;
 }

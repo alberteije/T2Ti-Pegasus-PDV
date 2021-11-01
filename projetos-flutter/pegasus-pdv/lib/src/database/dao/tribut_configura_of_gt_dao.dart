@@ -54,15 +54,15 @@ class TributConfiguraOfGtDao extends DatabaseAccessor<AppDatabase> with _$Tribut
 
   TributConfiguraOfGtDao(this.db) : super(db);
 
-  List<TributConfiguraOfGt> listaTributConfiguraOfGt; 
-  List<TributConfiguraOfGtMontado> listaTributConfiguraOfGtMontado; 
+  List<TributConfiguraOfGt>? listaTributConfiguraOfGt; 
+  List<TributConfiguraOfGtMontado>? listaTributConfiguraOfGtMontado; 
 
-  Future<List<TributConfiguraOfGt>> consultarLista() async {
+  Future<List<TributConfiguraOfGt>?> consultarLista() async {
     listaTributConfiguraOfGt = await select(tributConfiguraOfGts).get();
     return listaTributConfiguraOfGt;
   }
 
-  Future<List<TributConfiguraOfGt>> consultarListaFiltro(String campo, String valor) async {
+  Future<List<TributConfiguraOfGt>?> consultarListaFiltro(String campo, String valor) async {
     listaTributConfiguraOfGt = await (customSelect("SELECT * FROM TRIBUT_CONFIGURA_OF_GT WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { tributConfiguraOfGts }).map((row) {
                                   return TributConfiguraOfGt.fromData(row.data, db);  
@@ -70,7 +70,7 @@ class TributConfiguraOfGtDao extends DatabaseAccessor<AppDatabase> with _$Tribut
     return listaTributConfiguraOfGt;
   }
 
-  Future<List<TributConfiguraOfGtMontado>> consultarListaMontado() async {
+  Future<List<TributConfiguraOfGtMontado>?> consultarListaMontado() async {
     final consulta = select(tributConfiguraOfGts)
       .join([
         leftOuterJoin(tributGrupoTributarios, tributGrupoTributarios.id.equalsExp(tributConfiguraOfGts.idTributGrupoTributario)),
@@ -111,11 +111,11 @@ class TributConfiguraOfGtDao extends DatabaseAccessor<AppDatabase> with _$Tribut
 
   Stream<List<TributConfiguraOfGt>> observarLista() => select(tributConfiguraOfGts).watch();
 
-  Future<TributConfiguraOfGt> consultarObjeto(int pId) {
+  Future<TributConfiguraOfGt?> consultarObjeto(int pId) {
     return (select(tributConfiguraOfGts)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<TributConfiguraOfGtMontado> consultarObjetoMontado(int pIdOperacaoFiscal, int pIdGrupoTributario) async {
+  Future<TributConfiguraOfGtMontado?> consultarObjetoMontado(int? pIdOperacaoFiscal, int? pIdGrupoTributario) async {
     final consulta = select(tributConfiguraOfGts)
       .join([
         leftOuterJoin(tributGrupoTributarios, tributGrupoTributarios.id.equalsExp(tributConfiguraOfGts.idTributGrupoTributario)),
@@ -156,111 +156,111 @@ class TributConfiguraOfGtDao extends DatabaseAccessor<AppDatabase> with _$Tribut
     return retorno;
   } 
 
-  Future<int> inserir(TributConfiguraOfGtMontado pObjeto) {
+  Future<int> inserir(TributConfiguraOfGtMontado? pObjeto) {
     return transaction(() async {
-      final tributacao = removerDomains(pObjeto);
-      final idInserido = await into(tributConfiguraOfGts).insert(tributacao.tributConfiguraOfGt);
-      tributacao.tributConfiguraOfGt = tributacao.tributConfiguraOfGt.copyWith(id: idInserido);
+      final tributacao = removerDomains(pObjeto!);
+      final idInserido = await into(tributConfiguraOfGts).insert(tributacao.tributConfiguraOfGt!);
+      tributacao.tributConfiguraOfGt = tributacao.tributConfiguraOfGt!.copyWith(id: idInserido);
       await inserirFilhos(tributacao);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(TributConfiguraOfGtMontado pObjeto) {
+  Future<bool> alterar(TributConfiguraOfGtMontado? pObjeto) {
     return transaction(() async {
-      final tributacao = removerDomains(pObjeto);
+      final tributacao = removerDomains(pObjeto!);
       await excluirFilhos(tributacao);
       await inserirFilhos(tributacao);
-      return update(tributConfiguraOfGts).replace(tributacao.tributConfiguraOfGt);
+      return update(tributConfiguraOfGts).replace(tributacao.tributConfiguraOfGt!);
     });    
   } 
 
-  Future<int> excluir(TributConfiguraOfGtMontado pObjeto) {
+  Future<int> excluir(TributConfiguraOfGtMontado? pObjeto) {
     return transaction(() async {
       await excluirFilhos(pObjeto);
-      return delete(tributConfiguraOfGts).delete(pObjeto.tributConfiguraOfGt);
+      return delete(tributConfiguraOfGts).delete(pObjeto!.tributConfiguraOfGt!);
     });    
   }
 
   Future<void> inserirFilhos(TributConfiguraOfGtMontado pObjeto) async {
-    pObjeto.tributIcmsUf = pObjeto.tributIcmsUf.copyWith(idTributConfiguraOfGt: pObjeto.tributConfiguraOfGt.id);
-    pObjeto.tributPis = pObjeto.tributPis.copyWith(idTributConfiguraOfGt: pObjeto.tributConfiguraOfGt.id);
-    pObjeto.tributCofins = pObjeto.tributCofins.copyWith(idTributConfiguraOfGt: pObjeto.tributConfiguraOfGt.id);
-    await into(tributIcmsUfs).insert(pObjeto.tributIcmsUf);  
-    await into(tributPiss).insert(pObjeto.tributPis);  
-    await into(tributCofinss).insert(pObjeto.tributCofins);  
+    pObjeto.tributIcmsUf = pObjeto.tributIcmsUf!.copyWith(idTributConfiguraOfGt: pObjeto.tributConfiguraOfGt!.id);
+    pObjeto.tributPis = pObjeto.tributPis!.copyWith(idTributConfiguraOfGt: pObjeto.tributConfiguraOfGt!.id);
+    pObjeto.tributCofins = pObjeto.tributCofins!.copyWith(idTributConfiguraOfGt: pObjeto.tributConfiguraOfGt!.id);
+    await into(tributIcmsUfs).insert(pObjeto.tributIcmsUf!);  
+    await into(tributPiss).insert(pObjeto.tributPis!);  
+    await into(tributCofinss).insert(pObjeto.tributCofins!);  
   }
   
-  Future<void> excluirFilhos(TributConfiguraOfGtMontado pObjeto) async {
-    await (delete(tributIcmsUfs)..where((t) => t.idTributConfiguraOfGt.equals(pObjeto.tributConfiguraOfGt.id))).go();
-    await (delete(tributPiss)..where((t) => t.idTributConfiguraOfGt.equals(pObjeto.tributConfiguraOfGt.id))).go();
-    await (delete(tributCofinss)..where((t) => t.idTributConfiguraOfGt.equals(pObjeto.tributConfiguraOfGt.id))).go();
+  Future<void> excluirFilhos(TributConfiguraOfGtMontado? pObjeto) async {
+    await (delete(tributIcmsUfs)..where((t) => t.idTributConfiguraOfGt.equals(pObjeto!.tributConfiguraOfGt!.id))).go();
+    await (delete(tributPiss)..where((t) => t.idTributConfiguraOfGt.equals(pObjeto!.tributConfiguraOfGt!.id))).go();
+    await (delete(tributCofinss)..where((t) => t.idTributConfiguraOfGt.equals(pObjeto!.tributConfiguraOfGt!.id))).go();
   }
 
   TributConfiguraOfGtMontado removerDomains(TributConfiguraOfGtMontado tributacao) {
-    if (tributacao.tributIcmsUf.modalidadeBc != null) {
+    if (tributacao.tributIcmsUf!.modalidadeBc != null) {
       tributacao.tributIcmsUf = 
-      tributacao.tributIcmsUf.copyWith(
-        modalidadeBc: tributacao.tributIcmsUf.modalidadeBc.substring(0,1)
+      tributacao.tributIcmsUf!.copyWith(
+        modalidadeBc: tributacao.tributIcmsUf!.modalidadeBc!.substring(0,1)
       );
     }
-    if (tributacao.tributCofins.modalidadeBaseCalculo != null) {
+    if (tributacao.tributCofins!.modalidadeBaseCalculo != null) {
       tributacao.tributCofins = 
-      tributacao.tributCofins.copyWith(
-        modalidadeBaseCalculo: tributacao.tributCofins.modalidadeBaseCalculo.substring(0,1)
+      tributacao.tributCofins!.copyWith(
+        modalidadeBaseCalculo: tributacao.tributCofins!.modalidadeBaseCalculo!.substring(0,1)
       );
     }
-    if (tributacao.tributPis.modalidadeBaseCalculo != null) {
+    if (tributacao.tributPis!.modalidadeBaseCalculo != null) {
       tributacao.tributPis = 
-      tributacao.tributPis.copyWith(
-        modalidadeBaseCalculo: tributacao.tributPis.modalidadeBaseCalculo.substring(0,1)
+      tributacao.tributPis!.copyWith(
+        modalidadeBaseCalculo: tributacao.tributPis!.modalidadeBaseCalculo!.substring(0,1)
       );
     }
     return tributacao;
   }
 
   void aplicarDomains() {
-    for (var i = 0; i < listaTributConfiguraOfGtMontado.length; i++) {
+    for (var i = 0; i < listaTributConfiguraOfGtMontado!.length; i++) {
       // modalidade base calculo ICMS
-      switch (listaTributConfiguraOfGtMontado[i].tributIcmsUf.modalidadeBc) {
+      switch (listaTributConfiguraOfGtMontado![i].tributIcmsUf!.modalidadeBc) {
         case '0' :
-          listaTributConfiguraOfGtMontado[i].tributIcmsUf = listaTributConfiguraOfGtMontado[i].tributIcmsUf.copyWith(
+          listaTributConfiguraOfGtMontado![i].tributIcmsUf = listaTributConfiguraOfGtMontado![i].tributIcmsUf!.copyWith(
             modalidadeBc: '0-Margem Valor Agregado (%)',);
           break;
         case '1' :
-          listaTributConfiguraOfGtMontado[i].tributIcmsUf = listaTributConfiguraOfGtMontado[i].tributIcmsUf.copyWith(
+          listaTributConfiguraOfGtMontado![i].tributIcmsUf = listaTributConfiguraOfGtMontado![i].tributIcmsUf!.copyWith(
             modalidadeBc: '1-Pauta (Valor)',);
           break;
         case '2' :
-          listaTributConfiguraOfGtMontado[i].tributIcmsUf = listaTributConfiguraOfGtMontado[i].tributIcmsUf.copyWith(
+          listaTributConfiguraOfGtMontado![i].tributIcmsUf = listaTributConfiguraOfGtMontado![i].tributIcmsUf!.copyWith(
             modalidadeBc: '2-Preço Tabelado Máx. (valor)',);
           break;
         case '3' :
-          listaTributConfiguraOfGtMontado[i].tributIcmsUf = listaTributConfiguraOfGtMontado[i].tributIcmsUf.copyWith(
+          listaTributConfiguraOfGtMontado![i].tributIcmsUf = listaTributConfiguraOfGtMontado![i].tributIcmsUf!.copyWith(
             modalidadeBc: '3-Valor da Operação',);
           break;
         default:
       }      
       // modalidade base calculo PIS
-      switch (listaTributConfiguraOfGtMontado[i].tributPis.modalidadeBaseCalculo) {
+      switch (listaTributConfiguraOfGtMontado![i].tributPis!.modalidadeBaseCalculo) {
         case '0' :
-          listaTributConfiguraOfGtMontado[i].tributPis = listaTributConfiguraOfGtMontado[i].tributPis.copyWith(
+          listaTributConfiguraOfGtMontado![i].tributPis = listaTributConfiguraOfGtMontado![i].tributPis!.copyWith(
             modalidadeBaseCalculo: '0-Percentual',);
           break;
         case '1' :
-          listaTributConfiguraOfGtMontado[i].tributPis = listaTributConfiguraOfGtMontado[i].tributPis.copyWith(
+          listaTributConfiguraOfGtMontado![i].tributPis = listaTributConfiguraOfGtMontado![i].tributPis!.copyWith(
             modalidadeBaseCalculo: '1-Unidade',);
           break;
         default:
       }      
       // modalidade base calculo PIS
-      switch (listaTributConfiguraOfGtMontado[i].tributCofins.modalidadeBaseCalculo) {
+      switch (listaTributConfiguraOfGtMontado![i].tributCofins!.modalidadeBaseCalculo) {
         case '0' :
-          listaTributConfiguraOfGtMontado[i].tributCofins = listaTributConfiguraOfGtMontado[i].tributCofins.copyWith(
+          listaTributConfiguraOfGtMontado![i].tributCofins = listaTributConfiguraOfGtMontado![i].tributCofins!.copyWith(
             modalidadeBaseCalculo: '0-Percentual',);
           break;
         case '1' :
-          listaTributConfiguraOfGtMontado[i].tributCofins = listaTributConfiguraOfGtMontado[i].tributCofins.copyWith(
+          listaTributConfiguraOfGtMontado![i].tributCofins = listaTributConfiguraOfGtMontado![i].tributCofins!.copyWith(
             modalidadeBaseCalculo: '1-Unidade',);
           break;
         default:

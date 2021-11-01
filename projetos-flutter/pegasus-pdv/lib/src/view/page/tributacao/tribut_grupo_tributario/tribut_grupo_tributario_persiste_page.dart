@@ -33,6 +33,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
@@ -49,11 +51,11 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 
 class TributGrupoTributarioPersistePage extends StatefulWidget {
-  final TributGrupoTributario tributGrupoTributario;
-  final String title;
-  final String operacao;
+  final TributGrupoTributario? tributGrupoTributario;
+  final String? title;
+  final String? operacao;
 
-  const TributGrupoTributarioPersistePage({Key key, this.tributGrupoTributario, this.title, this.operacao})
+  const TributGrupoTributarioPersistePage({Key? key, this.tributGrupoTributario, this.title, this.operacao})
       : super(key: key);
 
   @override
@@ -66,11 +68,11 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   bool _formFoiAlterado = false;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
 
-  TributGrupoTributario tributGrupoTributario;
+  TributGrupoTributario? tributGrupoTributario;
 
   @override
   void initState() {
@@ -113,7 +115,7 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
         child: Scaffold(drawerDragStartBehavior: DragStartBehavior.down,
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text(widget.title), 
+            title: Text(widget.title!), 
             actions: widget.operacao == "I"
               ? getBotoesAppBarPersistePage(context: context, salvar: _salvar,)
               : getBotoesAppBarPersistePageComExclusao(context: context, salvar: _salvar, excluir: _excluir),
@@ -130,10 +132,10 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
                   dragStartBehavior: DragStartBehavior.down,
           			  child: BootstrapContainer(
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
 					          padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                     children: <Widget>[
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -149,17 +151,17 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
                                 'Informe a Descrição do Grupo Tributário',
                                 'Descrição *',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                tributGrupoTributario = tributGrupoTributario.copyWith(descricao: text);
+                                tributGrupoTributario = tributGrupoTributario!.copyWith(descricao: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -170,12 +172,12 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
                                 'Selecione a Opção Desejada',
                                 'Origem da Mercadoria',
                                 true),
-                              isEmpty: tributGrupoTributario.origemMercadoria == null,
-                              child: getDropDownButton(tributGrupoTributario.origemMercadoria,
-                                (String newValue) {
+                              isEmpty: tributGrupoTributario!.origemMercadoria == null,
+                              child: getDropDownButton(tributGrupoTributario!.origemMercadoria,
+                                (String? newValue) {
                                   _formFoiAlterado = true;
                                   setState(() {
-                                    tributGrupoTributario = tributGrupoTributario.copyWith(origemMercadoria: newValue);
+                                    tributGrupoTributario = tributGrupoTributario!.copyWith(origemMercadoria: newValue);
                                   });
                                   }, <String>[
                                     '0-Nacional - Exceto as indicadas nos códigos 3, 4, 5 e 8',
@@ -194,7 +196,7 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -208,17 +210,17 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
                                 'Observações Gerais',
                                 'Observação',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                tributGrupoTributario = tributGrupoTributario.copyWith(observacao: text);
+                                tributGrupoTributario = tributGrupoTributario!.copyWith(observacao: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -232,12 +234,12 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: _getBotoesRodape(context: context),
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                     ],        
                   ),
                 ),
@@ -263,16 +265,19 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
   }
 
   Future<bool> _avisarUsuarioFormAlterado() async {
-    final FormState form = _formKey.currentState;
-    if (form == null || !_formFoiAlterado) return true;
-
-    return await gerarDialogBoxFormAlterado(context);
+    final FormState? form = _formKey.currentState;
+    if (form == null || !_formFoiAlterado) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
   }
   
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-      final listaProduto = await Sessao.db.produtoDao.consultarListaFiltro('ID_TRIBUT_GRUPO_TRIBUTARIO', tributGrupoTributario.id.toString());
-      if (listaProduto.length > 0) {
+      final listaProduto = await Sessao.db.produtoDao.consultarListaFiltro('ID_TRIBUT_GRUPO_TRIBUTARIO', tributGrupoTributario!.id.toString());
+      if (listaProduto!.isNotEmpty) { 
         showInSnackBar('Existem produtos vinculados a este Grupo Tributário.', context);
       } else {
         await Sessao.db.tributGrupoTributarioDao.excluir(tributGrupoTributario);
@@ -281,10 +286,10 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
     });
   }  
 
-  List<Widget> _getBotoesRodape({BuildContext context}) {
+  List<Widget> _getBotoesRodape({BuildContext? context}) {
     List<Widget> listaBotoes = [];
     listaBotoes.add(
-      Container(
+      SizedBox(
         width: 350,
         child: getBotaoGenericoPdv(
           descricao: 'Atribuir Grupo Tributário a Todos os Produtos',
@@ -300,11 +305,11 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
 
   Future<void> _atribuirGrupoAProdutos() async {
     if (_validarForm()) {
-      if (tributGrupoTributario.id == null) {
+      if (tributGrupoTributario!.id == null) {
         final _idInserido = await Sessao.db.tributGrupoTributarioDao.inserir(tributGrupoTributario);
         tributGrupoTributario = await Sessao.db.tributGrupoTributarioDao.consultarObjeto(_idInserido);
       }
-      final _registrosAtualizados = await Sessao.db.produtoDao.atualizarGrupoTributario(tributGrupoTributario.id);
+      final _registrosAtualizados = await Sessao.db.produtoDao.atualizarGrupoTributario(tributGrupoTributario!.id);
       showInSnackBar(
         'Foram atualizados ' + _registrosAtualizados.toString() + ' produtos.', 
         context, 
@@ -315,7 +320,7 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
   }
 
   bool _validarForm() {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (!form.validate()) {
       _autoValidate = AutovalidateMode.always;
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);

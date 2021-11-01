@@ -59,7 +59,7 @@ class EcfImpressoraDao extends DatabaseAccessor<AppDatabase> with _$EcfImpressor
 
   Stream<List<EcfImpressora>> observarLista() => select(ecfImpressoras).watch();
 
-  Future<EcfImpressora> consultarObjeto(int pId) {
+  Future<EcfImpressora?> consultarObjeto(int pId) {
     return (select(ecfImpressoras)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

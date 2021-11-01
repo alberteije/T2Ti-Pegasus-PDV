@@ -57,7 +57,7 @@ class PdvSangriaDao extends DatabaseAccessor<AppDatabase> with _$PdvSangriaDaoMi
                                 }).get());
   }
 
-  Future<PdvSangria> consultarTotaisDia(int idMovimento) async {
+  Future<PdvSangria?> consultarTotaisDia(int? idMovimento) async {
     return (customSelect("SELECT "  
     " sum(VALOR) as VALOR "
     " FROM PDV_SANGRIA "
@@ -69,7 +69,7 @@ class PdvSangriaDao extends DatabaseAccessor<AppDatabase> with _$PdvSangriaDaoMi
 
   Stream<List<PdvSangria>> observarLista() => select(pdvSangrias).watch();
 
-  Future<PdvSangria> consultarObjeto(int pId) {
+  Future<PdvSangria?> consultarObjeto(int pId) {
     return (select(pdvSangrias)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

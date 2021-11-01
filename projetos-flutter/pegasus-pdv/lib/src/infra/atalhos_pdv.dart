@@ -35,7 +35,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 Map<LogicalKeySet, Intent> getAtalhosCaixa() {
@@ -55,7 +54,7 @@ Map<LogicalKeySet, Intent> getAtalhosCaixa() {
 }
 
 class AtalhoTelaIntent extends Intent {
-  const AtalhoTelaIntent({@required this.type});
+  const AtalhoTelaIntent({required this.type});
 
   const AtalhoTelaIntent.fechamentoRapido() : type = AtalhoTelaType.fechamentoRapido;
 

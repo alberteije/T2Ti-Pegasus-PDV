@@ -58,7 +58,7 @@ class CompraPedidoDetalheDao extends DatabaseAccessor<AppDatabase> with _$Compra
                                 }).get());
   }
 
-  Future<List<CompraDetalhe>> consultarListaComProduto(int pId) {
+  Future<List<CompraDetalhe>> consultarListaComProduto(int? pId) {
     final consulta = select(compraPedidoDetalhes)
       .join([
         leftOuterJoin(produtos, produtos.id.equalsExp(compraPedidoDetalhes.idProduto)),
@@ -76,7 +76,7 @@ class CompraPedidoDetalheDao extends DatabaseAccessor<AppDatabase> with _$Compra
 
   Stream<List<CompraPedidoDetalhe>> observarLista() => select(compraPedidoDetalhes).watch();
 
-  Future<CompraPedidoDetalhe> consultarObjeto(int pId) {
+  Future<CompraPedidoDetalhe?> consultarObjeto(int pId) {
     return (select(compraPedidoDetalhes)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

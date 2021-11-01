@@ -34,23 +34,23 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 class EmpresaConsultaPublica {
-	String cnpj;
-	String tipo;
-	String nome;
-  String fantasia;
-	String abertura;
-  String complemento;
-	String uf;
-	String telefone;
-	String email;
-	String situacao;
-	String bairro;
-	String logradouro;
-  String numero;
-  String cep;
-  String municipio;
-  String porte;
-  String naturezaJuridica;
+	String? cnpj;
+	String? tipo;
+	String? nome;
+  String? fantasia;
+	String? abertura;
+  String? complemento;
+	String? uf;
+	String? telefone;
+	String? email;
+	String? situacao;
+	String? bairro;
+	String? logradouro;
+  String? numero;
+  String? cep;
+  String? municipio;
+  String? porte;
+  String? naturezaJuridica;
 
 
 	EmpresaConsultaPublica({

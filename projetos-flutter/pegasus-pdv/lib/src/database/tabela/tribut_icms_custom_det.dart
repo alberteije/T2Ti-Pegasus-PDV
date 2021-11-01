@@ -37,25 +37,26 @@ import 'package:moor/moor.dart';
 
 @DataClassName("TributIcmsCustomDet")
 class TributIcmsCustomDets extends Table {
+  @override
   String get tableName => 'TRIBUT_ICMS_CUSTOM_DET';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idTributIcmsCustomCab => integer().named('ID_TRIBUT_ICMS_CUSTOM_CAB').nullable().customConstraint('NULLABLE REFERENCES TRIBUT_ICMS_CUSTOM_CAB(ID)')();
-  TextColumn get ufDestino => text().named('UF_DESTINO').withLength(min: 0, max: 2).nullable()();
-  IntColumn get cfop => integer().named('CFOP').nullable()();
-  TextColumn get csosn => text().named('CSOSN').withLength(min: 0, max: 3).nullable()();
-  TextColumn get cst => text().named('CST').withLength(min: 0, max: 2).nullable()();
-  TextColumn get modalidadeBc => text().named('MODALIDADE_BC').withLength(min: 0, max: 1).nullable()();
-  RealColumn get aliquota => real().named('ALIQUOTA').nullable()();
-  RealColumn get valorPauta => real().named('VALOR_PAUTA').nullable()();
-  RealColumn get valorPrecoMaximo => real().named('VALOR_PRECO_MAXIMO').nullable()();
-  RealColumn get mva => real().named('MVA').nullable()();
-  RealColumn get porcentoBc => real().named('PORCENTO_BC').nullable()();
-  TextColumn get modalidadeBcSt => text().named('MODALIDADE_BC_ST').withLength(min: 0, max: 1).nullable()();
-  RealColumn get aliquotaInternaSt => real().named('ALIQUOTA_INTERNA_ST').nullable()();
-  RealColumn get aliquotaInterestadualSt => real().named('ALIQUOTA_INTERESTADUAL_ST').nullable()();
-  RealColumn get porcentoBcSt => real().named('PORCENTO_BC_ST').nullable()();
-  RealColumn get aliquotaIcmsSt => real().named('ALIQUOTA_ICMS_ST').nullable()();
-  RealColumn get valorPautaSt => real().named('VALOR_PAUTA_ST').nullable()();
-  RealColumn get valorPrecoMaximoSt => real().named('VALOR_PRECO_MAXIMO_ST').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idTributIcmsCustomCab => integer().named('ID_TRIBUT_ICMS_CUSTOM_CAB').nullable().customConstraint('NULLABLE REFERENCES TRIBUT_ICMS_CUSTOM_CAB(ID)')();
+  TextColumn? get ufDestino => text().named('UF_DESTINO').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  IntColumn? get cfop => integer().named('CFOP').nullable()() as Column<int>?;
+  TextColumn? get csosn => text().named('CSOSN').withLength(min: 0, max: 3).nullable()() as Column<String>?;
+  TextColumn? get cst => text().named('CST').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  TextColumn? get modalidadeBc => text().named('MODALIDADE_BC').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  RealColumn? get aliquota => real().named('ALIQUOTA').nullable()() as Column<double>?;
+  RealColumn? get valorPauta => real().named('VALOR_PAUTA').nullable()() as Column<double>?;
+  RealColumn? get valorPrecoMaximo => real().named('VALOR_PRECO_MAXIMO').nullable()() as Column<double>?;
+  RealColumn? get mva => real().named('MVA').nullable()() as Column<double>?;
+  RealColumn? get porcentoBc => real().named('PORCENTO_BC').nullable()() as Column<double>?;
+  TextColumn? get modalidadeBcSt => text().named('MODALIDADE_BC_ST').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  RealColumn? get aliquotaInternaSt => real().named('ALIQUOTA_INTERNA_ST').nullable()() as Column<double>?;
+  RealColumn? get aliquotaInterestadualSt => real().named('ALIQUOTA_INTERESTADUAL_ST').nullable()() as Column<double>?;
+  RealColumn? get porcentoBcSt => real().named('PORCENTO_BC_ST').nullable()() as Column<double>?;
+  RealColumn? get aliquotaIcmsSt => real().named('ALIQUOTA_ICMS_ST').nullable()() as Column<double>?;
+  RealColumn? get valorPautaSt => real().named('VALOR_PAUTA_ST').nullable()() as Column<double>?;
+  RealColumn? get valorPrecoMaximoSt => real().named('VALOR_PRECO_MAXIMO_ST').nullable()() as Column<double>?;
 }

@@ -59,7 +59,7 @@ class EcfRelatorioGerencialDao extends DatabaseAccessor<AppDatabase> with _$EcfR
 
   Stream<List<EcfRelatorioGerencial>> observarLista() => select(ecfRelatorioGerencials).watch();
 
-  Future<EcfRelatorioGerencial> consultarObjeto(int pId) {
+  Future<EcfRelatorioGerencial?> consultarObjeto(int pId) {
     return (select(ecfRelatorioGerencials)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

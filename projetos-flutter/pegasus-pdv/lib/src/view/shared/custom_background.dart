@@ -43,9 +43,9 @@ import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 
 class CustomBackground extends StatelessWidget {
-  final showIcon;
-  final image;
-  CustomBackground({this.showIcon = true, this.image});
+  final bool showIcon;
+  final String? image;
+  CustomBackground({Key? key, this.showIcon = true, this.image}) : super(key: key);
 
   Widget topHalf(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
@@ -69,11 +69,11 @@ class CustomBackground extends StatelessWidget {
                         child: Image.asset(Constantes.t2tiLogo48,),
                         ),
                   )
-                : Container(
+                : SizedBox(
                     width: double.infinity,
                     child: image != null
                         ? Image.network(
-                            image,
+                            image!,
                             fit: BoxFit.cover,
                           )
                         : Container())

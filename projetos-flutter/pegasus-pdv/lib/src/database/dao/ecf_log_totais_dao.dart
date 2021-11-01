@@ -59,7 +59,7 @@ class EcfLogTotaisDao extends DatabaseAccessor<AppDatabase> with _$EcfLogTotaisD
 
   Stream<List<EcfLogTotais>> observarLista() => select(ecfLogTotaiss).watch();
 
-  Future<EcfLogTotais> consultarObjeto(int pId) {
+  Future<EcfLogTotais?> consultarObjeto(int pId) {
     return (select(ecfLogTotaiss)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

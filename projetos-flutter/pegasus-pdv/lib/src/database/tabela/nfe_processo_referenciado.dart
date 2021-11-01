@@ -37,10 +37,11 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeProcessoReferenciado")
 class NfeProcessoReferenciados extends Table {
+  @override
   String get tableName => 'NFE_PROCESSO_REFERENCIADO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')();
-  TextColumn get identificador => text().named('IDENTIFICADOR').withLength(min: 0, max: 60).nullable()();
-  TextColumn get origem => text().named('ORIGEM').withLength(min: 0, max: 1).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')() as Column<int>?;
+  TextColumn? get identificador => text().named('IDENTIFICADOR').withLength(min: 0, max: 60).nullable()() as Column<String>?;
+  TextColumn? get origem => text().named('ORIGEM').withLength(min: 0, max: 1).nullable()() as Column<String>?;
 }

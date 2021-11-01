@@ -46,16 +46,16 @@ part 'produto_unidade_dao.g.dart';
 class ProdutoUnidadeDao extends DatabaseAccessor<AppDatabase> with _$ProdutoUnidadeDaoMixin {
   final AppDatabase db;
 
-  List<ProdutoUnidade> listaProdutoUnidade; // será usada para popular a grid na janela do produtoUnidade
+  List<ProdutoUnidade>? listaProdutoUnidade; // será usada para popular a grid na janela do produtoUnidade
 
   ProdutoUnidadeDao(this.db) : super(db);
 
-  Future<List<ProdutoUnidade>> consultarLista() async {
+  Future<List<ProdutoUnidade>?> consultarLista() async {
     listaProdutoUnidade = await select(produtoUnidades).get();
     return listaProdutoUnidade;
   }
 
-  Future<List<ProdutoUnidade>> consultarListaFiltro(String campo, String valor) async {
+  Future<List<ProdutoUnidade>?> consultarListaFiltro(String campo, String valor) async {
     listaProdutoUnidade = await (customSelect("SELECT * FROM PRODUTO_UNIDADE WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { produtoUnidades }).map((row) {
                                   return ProdutoUnidade.fromData(row.data, db);  
@@ -63,7 +63,7 @@ class ProdutoUnidadeDao extends DatabaseAccessor<AppDatabase> with _$ProdutoUnid
     return listaProdutoUnidade;
   }
 
-  Future<ProdutoUnidade> consultarObjetoFiltro(String campo, String valor) async {
+  Future<ProdutoUnidade?> consultarObjetoFiltro(String campo, String valor) async {
     return (customSelect("SELECT * FROM PRODUTO_UNIDADE WHERE " + campo + " = '" + valor + "'", 
                                 readsFrom: { produtoUnidades }).map((row) {
                                   return ProdutoUnidade.fromData(row.data, db);  
@@ -72,26 +72,26 @@ class ProdutoUnidadeDao extends DatabaseAccessor<AppDatabase> with _$ProdutoUnid
 
   Stream<List<ProdutoUnidade>> observarLista() => select(produtoUnidades).watch();
 
-  Future<ProdutoUnidade> consultarObjeto(int pId) {
+  Future<ProdutoUnidade?> consultarObjeto(int pId) {
     return (select(produtoUnidades)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<ProdutoUnidade> pObjeto) {
+  Future<int> inserir(Insertable<ProdutoUnidade>? pObjeto) {
     return transaction(() async {
-      final idInserido = await into(produtoUnidades).insert(pObjeto);
+      final idInserido = await into(produtoUnidades).insert(pObjeto!);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<ProdutoUnidade> pObjeto) {
+  Future<bool> alterar(Insertable<ProdutoUnidade>? pObjeto) {
     return transaction(() async {
-      return update(produtoUnidades).replace(pObjeto);
+      return update(produtoUnidades).replace(pObjeto!);
     });    
   } 
 
-  Future<int> excluir(Insertable<ProdutoUnidade> pObjeto) {
+  Future<int> excluir(Insertable<ProdutoUnidade>? pObjeto) {
     return transaction(() async {
-      return delete(produtoUnidades).delete(pObjeto);
+      return delete(produtoUnidades).delete(pObjeto!);
     });    
   }
 

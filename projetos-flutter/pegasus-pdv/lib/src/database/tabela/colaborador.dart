@@ -37,15 +37,16 @@ import 'package:moor/moor.dart';
 
 @DataClassName("Colaborador")
 class Colaboradors extends Table {
+  @override
   String get tableName => 'COLABORADOR';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get nome => text().named('NOME').withLength(min: 0, max: 100).nullable()();
-  TextColumn get cpf => text().named('CPF').withLength(min: 0, max: 11).nullable()();
-  TextColumn get telefone => text().named('TELEFONE').withLength(min: 0, max: 15).nullable()();
-  TextColumn get celular => text().named('CELULAR').withLength(min: 0, max: 15).nullable()();
-  TextColumn get email => text().named('EMAIL').withLength(min: 0, max: 250).nullable()();
-  RealColumn get comissaoVista => real().named('COMISSAO_VISTA').nullable()();
-  RealColumn get comissaoPrazo => real().named('COMISSAO_PRAZO').nullable()();
-  TextColumn get nivelAutorizacao => text().named('NIVEL_AUTORIZACAO').withLength(min: 0, max: 1).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  TextColumn? get nome => text().named('NOME').withLength(min: 0, max: 100).nullable()() as Column<String>?;
+  TextColumn? get cpf => text().named('CPF').withLength(min: 0, max: 11).nullable()() as Column<String>?;
+  TextColumn? get telefone => text().named('TELEFONE').withLength(min: 0, max: 15).nullable()() as Column<String>?;
+  TextColumn? get celular => text().named('CELULAR').withLength(min: 0, max: 15).nullable()() as Column<String>?;
+  TextColumn? get email => text().named('EMAIL').withLength(min: 0, max: 250).nullable()() as Column<String>?;
+  RealColumn? get comissaoVista => real().named('COMISSAO_VISTA').nullable()() as Column<double>?;
+  RealColumn? get comissaoPrazo => real().named('COMISSAO_PRAZO').nullable()() as Column<double>?;
+  TextColumn? get nivelAutorizacao => text().named('NIVEL_AUTORIZACAO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
 }

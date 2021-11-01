@@ -37,14 +37,15 @@ import 'package:moor/moor.dart';
 
 @DataClassName("EcfR07")
 class EcfR07s extends Table {
+  @override
   String get tableName => 'ECF_R07';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idEcfR06 => integer().named('ID_ECF_R06').nullable().customConstraint('NULLABLE REFERENCES ECF_R06(ID)')();
-  IntColumn get ccf => integer().named('CCF').nullable()();
-  TextColumn get meioPagamento => text().named('MEIO_PAGAMENTO').withLength(min: 0, max: 20).nullable()();
-  RealColumn get valorPagamento => real().named('VALOR_PAGAMENTO').nullable()();
-  TextColumn get estorno => text().named('ESTORNO').withLength(min: 0, max: 1).nullable()();
-  RealColumn get valorEstorno => real().named('VALOR_ESTORNO').nullable()();
-  TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idEcfR06 => integer().named('ID_ECF_R06').nullable().customConstraint('NULLABLE REFERENCES ECF_R06(ID)')() as Column<int>?;
+  IntColumn? get ccf => integer().named('CCF').nullable()() as Column<int>?;
+  TextColumn? get meioPagamento => text().named('MEIO_PAGAMENTO').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  RealColumn? get valorPagamento => real().named('VALOR_PAGAMENTO').nullable()() as Column<double>?;
+  TextColumn? get estorno => text().named('ESTORNO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  RealColumn? get valorEstorno => real().named('VALOR_ESTORNO').nullable()() as Column<double>?;
+  TextColumn? get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()() as Column<String>?;
 }

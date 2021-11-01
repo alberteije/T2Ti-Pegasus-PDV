@@ -40,7 +40,7 @@ import 'package:pegasus_pdv/src/infra/infra.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 
-Widget getBotaoTelaGrande({String texto, Icon icone, Function onPressed}) {
+Widget getBotaoTelaGrande({required String texto, required Icon icone, Function? onPressed}) {
   return 
   Container(
     height: 50,
@@ -49,8 +49,9 @@ Widget getBotaoTelaGrande({String texto, Icon icone, Function onPressed}) {
     style: ButtonStyle(
       backgroundColor: MaterialStateProperty.resolveWith<Color>(
         (Set<MaterialState> states) {
-          if (states.contains(MaterialState.pressed))
+          if (states.contains(MaterialState.pressed)) {
             return Colors.indigo;
+          }
           return Colors.black26;
         }),
         overlayColor: MaterialStateProperty.resolveWith<Color>(
@@ -60,22 +61,22 @@ Widget getBotaoTelaGrande({String texto, Icon icone, Function onPressed}) {
       ),
       label: Text(texto),
       icon: icone,
-      onPressed: onPressed,
+      onPressed: onPressed as void Function()?,
     ),
   );
 }
 
-Widget getBotaoTelaPequena({String tooltip, Icon icone, Function onPressed}) {
+Widget getBotaoTelaPequena({String? tooltip, required Icon icone, Function? onPressed}) {
   return IconButton(
     focusColor: Colors.indigo,
     tooltip: tooltip,                
     icon: icone,
-    onPressed: onPressed,
+    onPressed: onPressed as void Function()?,
   );
 }
 
-Widget getBotaoFiltro({BuildContext context, Function chamarFiltro}) {
-  if (Biblioteca.isTelaPequena(context)) {
+Widget getBotaoFiltro({required BuildContext context, Function? chamarFiltro}) {
+  if (Biblioteca.isTelaPequena(context)!) {
     return getBotaoTelaPequena(
         tooltip: Constantes.botaoFiltrarDica,                
         icone: ViewUtilLib.getIconBotaoFiltro(),
@@ -91,8 +92,8 @@ Widget getBotaoFiltro({BuildContext context, Function chamarFiltro}) {
 }
 
 List<Widget> getBotoesNavigationBarListaPage(
-  {BuildContext context, Function chamarFiltro, Function gerarRelatorio}) {
-  if (Biblioteca.isTelaPequena(context)) {
+  {required BuildContext context, Function? chamarFiltro, Function? gerarRelatorio}) {
+  if (Biblioteca.isTelaPequena(context)!) {
     return <Widget>[
       getBotaoTelaPequena(
         tooltip: Constantes.botaoFiltrarDica,                
@@ -122,8 +123,8 @@ List<Widget> getBotoesNavigationBarListaPage(
 }
 
 List<Widget> getBotoesAppBarDetalhePage(
-  {BuildContext context, Function excluir, Function alterar}) {
-  if (Biblioteca.isTelaPequena(context)) {
+  {required BuildContext context, Function? excluir, Function? alterar}) {
+  if (Biblioteca.isTelaPequena(context)!) {
     return <Widget>[
       getBotaoTelaPequena(
         tooltip: Constantes.botaoExcluirDica,                
@@ -153,8 +154,8 @@ List<Widget> getBotoesAppBarDetalhePage(
 }
 
 List<Widget> getBotoesAppBarPersistePage(
-  {BuildContext context, Function salvar}) {
-  if (Biblioteca.isTelaPequena(context)) {
+  {required BuildContext context, Function? salvar}) {
+  if (Biblioteca.isTelaPequena(context)!) {
     return <Widget>[
       getBotaoTelaPequena(
         tooltip: Constantes.botaoSalvarDica,                
@@ -174,8 +175,8 @@ List<Widget> getBotoesAppBarPersistePage(
 }
 
 List<Widget> getBotoesAppBarPersistePageComExclusao(
-  {BuildContext context, Function salvar, Function excluir}) {
-  if (Biblioteca.isTelaPequena(context)) {
+  {required BuildContext context, Function? salvar, Function? excluir}) {
+  if (Biblioteca.isTelaPequena(context)!) {
     return <Widget>[
       getBotaoTelaPequena(
         tooltip: Constantes.botaoExcluirDica,                
@@ -205,7 +206,7 @@ List<Widget> getBotoesAppBarPersistePageComExclusao(
 }
 
 MaterialButton getBotaoInternoCaixa(
-  {String texto, IconData icone, double tamanhoIcone, Color corBotao, double paddingAll, double height, double minWidth, Function onPressed}) {
+  {required String texto, IconData? icone, double? tamanhoIcone, Color? corBotao, required double paddingAll, double? height, double? minWidth, Function? onPressed}) {
     return MaterialButton(
       height: height ?? 70.0,
       padding: EdgeInsets.all(paddingAll),
@@ -216,26 +217,26 @@ MaterialButton getBotaoInternoCaixa(
           FaIcon(icone, size: tamanhoIcone),
           Text(
             texto,
-            style: TextStyle(fontSize: 10),
+            style: const TextStyle(fontSize: 10),
           ),
         ],
       ),
       color: corBotao,
       elevation: 0,
-      onPressed: onPressed,
+      onPressed: onPressed as void Function()?,
     );
 }
 
-InkWell getBotaoIncrementaCaixa({Function incrementar}) {
+InkWell getBotaoIncrementaCaixa({Function? incrementar}) {
   return InkWell(
-    onTap: incrementar,
+    onTap: incrementar as void Function()?,
     splashColor: Colors.lightBlue,
     child: Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50)),
       alignment: Alignment.center,
-      child: Padding(
-        padding: const EdgeInsets.all(6.0),
+      child: const Padding(
+        padding: EdgeInsets.all(6.0),
         child: Icon(
           Icons.add,
           color: Colors.green,
@@ -246,16 +247,16 @@ InkWell getBotaoIncrementaCaixa({Function incrementar}) {
   );
 }
 
-InkWell getBotaoDecrementaCaixa({Function decrementar}) {
+InkWell getBotaoDecrementaCaixa({Function? decrementar}) {
   return InkWell(
-    onTap: decrementar,
+    onTap: decrementar as void Function()?,
     splashColor: Colors.redAccent.shade200,
     child: Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50)),
       alignment: Alignment.center,
-      child: Padding(
-        padding: const EdgeInsets.all(6.0),
+      child: const Padding(
+        padding: EdgeInsets.all(6.0),
         child: Icon(
           Icons.remove,
           color: Colors.redAccent,
@@ -266,7 +267,7 @@ InkWell getBotaoDecrementaCaixa({Function decrementar}) {
   );
 }
 
-ElevatedButton getBotaoGenericoPdv({String descricao, Color cor, Function onPressed, EdgeInsetsGeometry padding, Size tamanho}) {
+ElevatedButton getBotaoGenericoPdv({required String descricao, Color? cor, Function? onPressed, EdgeInsetsGeometry? padding, Size? tamanho}) {
   return ElevatedButton(
     child: Text(descricao),
     style: ElevatedButton.styleFrom(
@@ -276,6 +277,6 @@ ElevatedButton getBotaoGenericoPdv({String descricao, Color cor, Function onPres
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       padding: padding,
     ),
-    onPressed: onPressed,
+    onPressed: onPressed as void Function()?,
   );
 }

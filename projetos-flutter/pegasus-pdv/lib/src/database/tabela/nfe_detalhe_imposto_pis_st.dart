@@ -37,13 +37,14 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeDetalheImpostoPisSt")
 class NfeDetalheImpostoPisSts extends Table {
+  @override
   String get tableName => 'NFE_DETALHE_IMPOSTO_PIS_ST';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')();
-  RealColumn get valorBaseCalculoPisSt => real().named('VALOR_BASE_CALCULO_PIS_ST').nullable()();
-  RealColumn get aliquotaPisStPercentual => real().named('ALIQUOTA_PIS_ST_PERCENTUAL').nullable()();
-  RealColumn get quantidadeVendidaPisSt => real().named('QUANTIDADE_VENDIDA_PIS_ST').nullable()();
-  RealColumn get aliquotaPisStReais => real().named('ALIQUOTA_PIS_ST_REAIS').nullable()();
-  RealColumn get valorPisSt => real().named('VALOR_PIS_ST').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')() as Column<int>?;
+  RealColumn? get valorBaseCalculoPisSt => real().named('VALOR_BASE_CALCULO_PIS_ST').nullable()() as Column<double>?;
+  RealColumn? get aliquotaPisStPercentual => real().named('ALIQUOTA_PIS_ST_PERCENTUAL').nullable()() as Column<double>?;
+  RealColumn? get quantidadeVendidaPisSt => real().named('QUANTIDADE_VENDIDA_PIS_ST').nullable()() as Column<double>?;
+  RealColumn? get aliquotaPisStReais => real().named('ALIQUOTA_PIS_ST_REAIS').nullable()() as Column<double>?;
+  RealColumn? get valorPisSt => real().named('VALOR_PIS_ST').nullable()() as Column<double>?;
 }

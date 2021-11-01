@@ -46,22 +46,22 @@ import 'package:printing/printing.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_pdv.dart';
 
-PdvMovimento _movimento;
-List<PdvFechamento> _listaPagamentosDeclarados;
-List<PdvTotalTipoPagamento> _listaPagamentosRegistrados;
+PdvMovimento? _movimento;
+late List<PdvFechamento> _listaPagamentosDeclarados;
+late List<PdvTotalTipoPagamento> _listaPagamentosRegistrados;
 
 class EncerraMovimentoRelatorio extends StatefulWidget {
-  final PdvMovimento movimento;
+  final PdvMovimento? movimento;
 
-  const EncerraMovimentoRelatorio({Key key, this.movimento}): super(key: key);
+  const EncerraMovimentoRelatorio({Key? key, this.movimento}): super(key: key);
 
   @override
   _EncerraMovimentoRelatorioState createState() => _EncerraMovimentoRelatorioState();
 }
 
 class _EncerraMovimentoRelatorioState extends State<EncerraMovimentoRelatorio> {
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -73,12 +73,12 @@ class _EncerraMovimentoRelatorioState extends State<EncerraMovimentoRelatorio> {
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _carregarListas());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _carregarListas());
   }
 
   Future _carregarListas() async {
-    _listaPagamentosDeclarados = await Sessao.db.pdvFechamentoDao.consultarListaMovimento(_movimento.id);
-    _listaPagamentosRegistrados = await Sessao.db.pdvTotalTipoPagamentoDao.consultarListaTotaisAgrupado(_movimento.id);
+    _listaPagamentosDeclarados = await Sessao.db.pdvFechamentoDao.consultarListaMovimento(_movimento!.id);
+    _listaPagamentosRegistrados = await Sessao.db.pdvTotalTipoPagamentoDao.consultarListaTotaisAgrupado(_movimento!.id);
     setState(() {
     });
   }
@@ -103,7 +103,7 @@ class _EncerraMovimentoRelatorioState extends State<EncerraMovimentoRelatorio> {
         autofocus: true,
         child: Scaffold(
           appBar: AppBar(
-            title: Text('Encerramento do Movimento'),
+            title: const Text('Encerramento do Movimento'),
           ),
           body: PdfPreview(          
             maxPageWidth: 800,
@@ -122,21 +122,21 @@ Future<Uint8List> _gerarRelatorio() async {
 }
 
 class Relatorio {
-  PdfColor _baseColor = PdfColors.blue900;
-  PdfColor _accentColor = PdfColors.black;
-  PdfColor _darkColor = PdfColors.blueGrey800;
+  final PdfColor _baseColor = PdfColors.blue900;
+  final PdfColor _accentColor = PdfColors.black;
+  final PdfColor _darkColor = PdfColors.blueGrey800;
   // PdfColor _baseTextColor = PdfColors.blue900.luminance < 0.5 ? PdfColors.white : PdfColors.blueGrey800;
   // PdfColor _accentTextColor = PdfColors.blue900.luminance < 0.5 ? PdfColors.white : PdfColors.blueGrey800;
 
-  pw.MemoryImage _logotipo;
-  pw.MemoryImage _rodape;
+  late pw.MemoryImage _logotipo;
+  late pw.MemoryImage _rodape;
 
   Future<Uint8List> buildPdf(PdfPageFormat pageFormat) async {
     // Create a PDF document.
     final doc = pw.Document();
 
     _logotipo = pw.MemoryImage(
-      Sessao.empresa.logotipo,
+      Sessao.empresa!.logotipo!,
     );
     _rodape = pw.MemoryImage(
       (await rootBundle.load('assets/images/rodape_recibo.png')).buffer.asUint8List(),
@@ -197,7 +197,7 @@ class Relatorio {
               children: [
                 pw.Container(
                   alignment: pw.Alignment.center,
-                  padding: pw.EdgeInsets.all(2),
+                  padding: const pw.EdgeInsets.all(2),
                   height: 60,
                   child: pw.Image(_logotipo),
                 ),
@@ -208,10 +208,10 @@ class Relatorio {
                 children: [
                   pw.Container(
                     height: 20,
-                    padding: pw.EdgeInsets.all(5),
+                    padding: const pw.EdgeInsets.all(5),
                     alignment: pw.Alignment.center,
                     child: pw.Text(
-                      Sessao.empresa.nomeFantasia,
+                      Sessao.empresa!.nomeFantasia!,
                       style: pw.TextStyle(
                         color: _baseColor,
                         fontWeight: pw.FontWeight.bold,
@@ -221,7 +221,7 @@ class Relatorio {
                   ),
                   pw.Container(
                     height: 20,
-                    padding: pw.EdgeInsets.all(5),
+                    padding: const pw.EdgeInsets.all(5),
                     alignment: pw.Alignment.center,
                     child: pw.Text(
                       'Relatório de Encerramento do Movimento',
@@ -234,7 +234,7 @@ class Relatorio {
                   ),
                   pw.Container(
                     height: 10,
-                    padding: pw.EdgeInsets.only(top: 10),
+                    padding: const pw.EdgeInsets.only(top: 10),
                     alignment: pw.Alignment.bottomRight,
                     child: pw.Text(
                       'Impresso em: ' + Biblioteca.formatarDataHora(DateTime.now()),
@@ -262,7 +262,7 @@ class Relatorio {
       children: [
         pw.Text(
           'Page ${context.pageNumber}/${context.pagesCount}',
-          style: pw.TextStyle(
+          style: const pw.TextStyle(
             fontSize: 12,
             color: PdfColors.black,
           ),
@@ -276,8 +276,8 @@ class Relatorio {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         pw.Text(
-          'Dados do Movimento [ ID = ' + _movimento.id.toString() + ' ] - Status: ' 
-          + (_movimento.statusMovimento == 'A' ? 'ABERTO' : 'FECHADO'),
+          'Dados do Movimento [ ID = ' + _movimento!.id.toString() + ' ] - Status: ' 
+          + (_movimento!.statusMovimento == 'A' ? 'ABERTO' : 'FECHADO'),
           style: pw.TextStyle(
             fontSize: 12,
             color: _baseColor,
@@ -301,7 +301,7 @@ class Relatorio {
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
                         pw.Text('Data de Abertura: '),
-                        pw.Text(Biblioteca.formatarData(_movimento.dataAbertura)),
+                        pw.Text(Biblioteca.formatarData(_movimento!.dataAbertura)),
                       ],
                     ),
                     pw.SizedBox(height: 5),
@@ -309,7 +309,7 @@ class Relatorio {
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
                         pw.Text('Hora de Abertura: '),
-                        pw.Text(_movimento.horaAbertura),
+                        pw.Text(_movimento!.horaAbertura!),
                       ],
                     ),
                   ],
@@ -330,7 +330,7 @@ class Relatorio {
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
                         pw.Text('Data de Fechamento: '),
-                        pw.Text(Biblioteca.formatarData(_movimento.dataFechamento)),
+                        pw.Text(Biblioteca.formatarData(_movimento!.dataFechamento)),
                       ],
                     ),
                     pw.SizedBox(height: 5),
@@ -338,7 +338,7 @@ class Relatorio {
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
                         pw.Text('Hora de Fechamento: '),
-                        pw.Text(_movimento.horaFechamento ?? ''),
+                        pw.Text(_movimento!.horaFechamento ?? ''),
                       ],
                     ),
                   ],
@@ -399,7 +399,7 @@ class Relatorio {
         children: [
           pw.Text('Suprimento: '),
           pw.Text(
-            'R\$ ${Constantes.formatoDecimalValor.format(_movimento.totalSuprimento ?? 0)}'
+            'R\$ ${Constantes.formatoDecimalValor.format(_movimento!.totalSuprimento ?? 0)}'
           ),
         ],
       ),
@@ -411,7 +411,7 @@ class Relatorio {
         children: [
           pw.Text('Sangria: '),
           pw.Text(
-            'R\$ ${Constantes.formatoDecimalValor.format(_movimento.totalSangria ?? 0)}'
+            'R\$ ${Constantes.formatoDecimalValor.format(_movimento!.totalSangria ?? 0)}'
           ),
         ],
       ),
@@ -423,7 +423,7 @@ class Relatorio {
         children: [
           pw.Text('Total Venda: '),
           pw.Text(
-            'R\$ ${Constantes.formatoDecimalValor.format(_movimento.totalVenda ?? 0)}'
+            'R\$ ${Constantes.formatoDecimalValor.format(_movimento!.totalVenda ?? 0)}'
           ),
         ],
       ),
@@ -435,7 +435,7 @@ class Relatorio {
         children: [
           pw.Text('Desconto: '),
           pw.Text(
-            'R\$ ${Constantes.formatoDecimalValor.format(_movimento.totalDesconto ?? 0)}'
+            'R\$ ${Constantes.formatoDecimalValor.format(_movimento!.totalDesconto ?? 0)}'
           ),
         ],
       ),
@@ -447,7 +447,7 @@ class Relatorio {
         children: [
           pw.Text('Recebido: '),
           pw.Text(
-            'R\$ ${Constantes.formatoDecimalValor.format(_movimento.totalRecebido ?? 0)}'
+            'R\$ ${Constantes.formatoDecimalValor.format(_movimento!.totalRecebido ?? 0)}'
           ),
         ],
       ),
@@ -459,7 +459,7 @@ class Relatorio {
         children: [
           pw.Text('Troco: '),
           pw.Text(
-            'R\$ ${Constantes.formatoDecimalValor.format(_movimento.totalTroco ?? 0)}'
+            'R\$ ${Constantes.formatoDecimalValor.format(_movimento!.totalTroco ?? 0)}'
           ),
         ],
       ),
@@ -471,7 +471,7 @@ class Relatorio {
         children: [
           pw.Text('Cancelado: '),
           pw.Text(
-            'R\$ ${Constantes.formatoDecimalValor.format(_movimento.totalCancelado ?? 0)}'
+            'R\$ ${Constantes.formatoDecimalValor.format(_movimento!.totalCancelado ?? 0)}'
           ),
         ],
       ),
@@ -483,7 +483,7 @@ class Relatorio {
         children: [
           pw.Text('Total Final: '),
           pw.Text(
-            'R\$ ${Constantes.formatoDecimalValor.format(_movimento.totalFinal ?? 0)}'
+            'R\$ ${Constantes.formatoDecimalValor.format(_movimento!.totalFinal ?? 0)}'
           ),
         ],
       ),
@@ -556,12 +556,12 @@ class Relatorio {
     listaValores.add(pw.SizedBox(height: 5),);
     
     for (var item in _listaPagamentosDeclarados) {
-      var tipoFiltrado = Sessao.listaTipoPagamento.where( ((tipo) => tipo.id == item.idPdvTipoPagamento)).toList();    
+      var tipoFiltrado = Sessao.listaTipoPagamento!.where( ((tipo) => tipo.id == item.idPdvTipoPagamento)).toList();    
       listaValores.add(
         pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
-            pw.Text(tipoFiltrado[0].descricao),
+            pw.Text(tipoFiltrado[0].descricao!),
             pw.Text(
               'R\$ ${Constantes.formatoDecimalValor.format(item.valor ?? 0)}'
             ),
@@ -589,12 +589,12 @@ class Relatorio {
     listaValores.add(pw.SizedBox(height: 5),);
     
     for (var item in _listaPagamentosRegistrados) {
-      var tipoFiltrado = Sessao.listaTipoPagamento.where( ((tipo) => tipo.id == item.idPdvTipoPagamento)).toList();    
+      var tipoFiltrado = Sessao.listaTipoPagamento!.where( ((tipo) => tipo.id == item.idPdvTipoPagamento)).toList();    
       listaValores.add(
         pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
-            pw.Text(tipoFiltrado[0].descricao),
+            pw.Text(tipoFiltrado[0].descricao!),
             pw.Text(
               'R\$ ${Constantes.formatoDecimalValor.format(item.valor ?? 0)}'
             ),

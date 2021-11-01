@@ -40,7 +40,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
@@ -57,10 +57,10 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 
 class EmpresaPersistePage extends StatefulWidget {
-  final String title;
-  final String operacao;
+  final String? title;
+  final String? operacao;
 
-  const EmpresaPersistePage({Key key, this.title, this.operacao})
+  const EmpresaPersistePage({Key? key, this.title, this.operacao})
       : super(key: key);
 
   @override
@@ -74,8 +74,8 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
 
   final ImagePicker _pickerImagem = ImagePicker();
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
 
   final _imagemController = TextEditingController();
@@ -142,7 +142,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
             key: _scaffoldKey,
             appBar: AppBar(
               automaticallyImplyLeading: false,
-              title: Text('Dados da Empresa'), 
+              title: const Text('Dados da Empresa'), 
               actions: getBotoesAppBarPersistePage(context: context, salvar: _salvar,),
             ),      
             body: SafeArea(
@@ -156,27 +156,27 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                     dragStartBehavior: DragStartBehavior.down,
                     child: BootstrapContainer(
                       fluid: true,
-                      decoration: BoxDecoration(color: Colors.white),
+                      decoration: const BoxDecoration(color: Colors.white),
                       padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,                    // children: [
                       children: <Widget>[			  			  
-                        Divider(color: Colors.white,),
+                        const Divider(color: Colors.white,),
                         BootstrapRow(
                           height: 60,
                           children: <BootstrapCol>[
                             BootstrapCol(
                               sizes: 'col-12 col-md-3',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: InputDecorator(
                                   decoration: getInputDecoration(
                                     'Tipo Empresa (Matriz ou Filial)',
                                     'Tipo Empresa',
                                     true),
-                                  isEmpty: Sessao.empresa.tipo == null,
-                                  child: getDropDownButton(Sessao.empresa.tipo,
-                                    (String newValue) {
+                                  isEmpty: Sessao.empresa!.tipo == null,
+                                  child: getDropDownButton(Sessao.empresa!.tipo,
+                                    (String? newValue) {
                                       setState(() {
-                                        Sessao.empresa = Sessao.empresa.copyWith(tipo: newValue);
+                                        Sessao.empresa = Sessao.empresa!.copyWith(tipo: newValue);
                                       });
                                   }, <String>[
                                     'Matriz',
@@ -187,7 +187,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-9',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
                                   focusNode: _foco,
                                   maxLength: 18,
@@ -199,7 +199,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                     'CNPJ',
                                     true,
                                     paddingVertical: 18),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) async {
                                     if (_cnpjController.text.length == 18) {
@@ -211,7 +211,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             ),
                           ],
                         ),
-                        Divider(color: Colors.white,),
+                        const Divider(color: Colors.white,),
                         BootstrapRow(
                           height: 60,
                           children: <BootstrapCol>[
@@ -226,21 +226,21 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                   'Conteúdo para o campo Fantasia',
                                   'Fantasia',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  Sessao.empresa = Sessao.empresa.copyWith(nomeFantasia: text);
+                                  Sessao.empresa = Sessao.empresa!.copyWith(nomeFantasia: text);
                                 },
                               ),
                             ),
                           ],
                         ),
                         Visibility(
-                          visible: Sessao.configuracaoPdv.modulo != 'G',
-                          child: Divider(color: Colors.white,),
+                          visible: Sessao.configuracaoPdv!.modulo != 'G',
+                          child: const Divider(color: Colors.white,),
                         ),
                         Visibility(
-                          visible: Sessao.configuracaoPdv.modulo != 'G',
+                          visible: Sessao.configuracaoPdv!.modulo != 'G',
                           child: BootstrapRow(
                             height: 60,
                             children: <BootstrapCol>[
@@ -251,11 +251,11 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                     'Selecione a Opção Desejada',
                                     'CRT',
                                     true),
-                                  isEmpty: Sessao.empresa.crt == null,
-                                  child: getDropDownButton(Sessao.empresa.crt,
-                                    (String newValue) {
+                                  isEmpty: Sessao.empresa!.crt == null,
+                                  child: getDropDownButton(Sessao.empresa!.crt,
+                                    (String? newValue) {
                                       setState(() {
-                                        Sessao.empresa = Sessao.empresa.copyWith(crt: newValue);
+                                        Sessao.empresa = Sessao.empresa!.copyWith(crt: newValue);
                                       });
                                       }, <String>[
                                         '1-Simples Nacional',
@@ -269,14 +269,14 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             ],
                           ),
                         ),
-                        Divider(color: Colors.white,),
+                        const Divider(color: Colors.white,),
                         BootstrapRow(
                           height: 60,
                           children: <BootstrapCol>[
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
                                   validator: ValidaCampoFormulario.validarObrigatorio,
                                   maxLength: 150,
@@ -287,10 +287,10 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                     'Razao Social',
                                     true,
                                     paddingVertical: 15),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    Sessao.empresa = Sessao.empresa.copyWith(razaoSocial: text);
+                                    Sessao.empresa = Sessao.empresa!.copyWith(razaoSocial: text);
                                   },
                                 ),
                               ),
@@ -298,21 +298,21 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: InputDecorator(
                                   decoration: getInputDecoration(
                                     'Conteúdo para o campo Data Constituição',
                                     'Data Constituição',
                                     true),
-                                  isEmpty: Sessao.empresa.dataConstituicao == null,
+                                  isEmpty: Sessao.empresa!.dataConstituicao == null,
                                   child: DatePickerItem(
                                     mascara: 'dd/MM/yyyy',
-                                    dateTime: Sessao.empresa.dataConstituicao,
+                                    dateTime: Sessao.empresa!.dataConstituicao,
                                     firstDate: DateTime.parse('1900-01-01'),
                                     lastDate: DateTime.now(),
-                                    onChanged: (DateTime value) {
+                                    onChanged: (DateTime? value) {
                                       setState(() {
-                                        Sessao.empresa = Sessao.empresa.copyWith(dataConstituicao: value);
+                                        Sessao.empresa = Sessao.empresa!.copyWith(dataConstituicao: value);
                                       });
                                     },
                                   ),
@@ -321,16 +321,16 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             ),
                           ],
                         ),
-                        Divider(color: Colors.white,),
+                        const Divider(color: Colors.white,),
                         BootstrapRow(
                           height: 60,
                           children: <BootstrapCol>[
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
-                                  validator: Sessao.configuracaoPdv.modulo != 'G' 
+                                  validator: Sessao.configuracaoPdv!.modulo != 'G' 
                                     ? ValidaCampoFormulario.validarObrigatorio 
                                     : null,
                                   maxLength: 30,
@@ -340,10 +340,10 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                     'Conteúdo para o campo Inscricao Estadual',
                                     'Inscricao Estadual',
                                     false),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    Sessao.empresa = Sessao.empresa.copyWith(inscricaoEstadual: text);
+                                    Sessao.empresa = Sessao.empresa!.copyWith(inscricaoEstadual: text);
                                   },
                                 ),
                               ),
@@ -351,7 +351,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
                                   maxLength: 30,
                                   maxLines: 1,
@@ -360,17 +360,17 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                     'Conteúdo para o campo Inscricao Municipal',
                                     'Inscricao Municipal',
                                     false),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    Sessao.empresa = Sessao.empresa.copyWith(inscricaoMunicipal: text);
+                                    Sessao.empresa = Sessao.empresa!.copyWith(inscricaoMunicipal: text);
                                  },
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        Divider(color: Colors.white,),
+                        const Divider(color: Colors.white,),
                         BootstrapRow(
                           height: 60,
                           children: <BootstrapCol>[
@@ -385,23 +385,23 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                   'Conteúdo para o campo Email',
                                   'Email',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  Sessao.empresa = Sessao.empresa.copyWith(email: text);
+                                  Sessao.empresa = Sessao.empresa!.copyWith(email: text);
                                 },
                               ),
                             ),
                           ],
                         ),
-                        Divider(color: Colors.white,),
+                        const Divider(color: Colors.white,),
                         BootstrapRow(
                           height: 60,
                           children: <BootstrapCol>[
                             BootstrapCol(
                               sizes: 'col-12',
                               child: TextFormField(
-                                validator: Sessao.configuracaoPdv.modulo != 'G' 
+                                validator: Sessao.configuracaoPdv!.modulo != 'G' 
                                   ? ValidaCampoFormulario.validarObrigatorio 
                                   : null,
                                 maxLength: 250,
@@ -411,25 +411,25 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                   'Conteúdo para o campo Logradouro',
                                   'Logradouro',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  Sessao.empresa = Sessao.empresa.copyWith(logradouro: text);
+                                  Sessao.empresa = Sessao.empresa!.copyWith(logradouro: text);
                                 },
                               ),
                             ),
                           ],
                         ),
-                        Divider(color: Colors.white,),
+                        const Divider(color: Colors.white,),
                         BootstrapRow(
                           height: 60,
                           children: <BootstrapCol>[
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
-                                  validator: Sessao.configuracaoPdv.modulo != 'G' 
+                                  validator: Sessao.configuracaoPdv!.modulo != 'G' 
                                     ? ValidaCampoFormulario.validarObrigatorio 
                                     : null,
                                   maxLength: 10,
@@ -440,10 +440,10 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                     'Numero',
                                     true,
                                     paddingVertical: 18),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    Sessao.empresa = Sessao.empresa.copyWith(numero: text);
+                                    Sessao.empresa = Sessao.empresa!.copyWith(numero: text);
                                   },
                                 ),
                               ),
@@ -451,21 +451,21 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: InputDecorator(
                                   decoration: getInputDecoration(
                                     'Conteúdo para o campo Uf',
                                     'Uf',
                                     true),
                                   isEmpty: Sessao.empresa?.uf == null,
-                                  child: getDropDownButton(Sessao.empresa.uf,
-                                    (String newValue) {
+                                  child: getDropDownButton(Sessao.empresa!.uf,
+                                    (String? newValue) {
                                       setState(() {
-                                        Sessao.empresa = Sessao.empresa.copyWith(uf: newValue);
+                                        Sessao.empresa = Sessao.empresa!.copyWith(uf: newValue);
                                       });
                                   }, 
                                   DropdownLista.listaUF,
-                                  validator: Sessao.configuracaoPdv.modulo != 'G' 
+                                  validator: Sessao.configuracaoPdv!.modulo != 'G' 
                                     ? ValidaCampoFormulario.validarObrigatorio 
                                     : null,
                                   )),                                                      
@@ -473,7 +473,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             ),
                           ],
                         ),
-                        Divider(color: Colors.white,),
+                        const Divider(color: Colors.white,),
                         BootstrapRow(
                           height: 60,
                           children: <BootstrapCol>[
@@ -487,25 +487,25 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                   'Conteúdo para o campo Complemento',
                                   'Complemento',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  Sessao.empresa = Sessao.empresa.copyWith(complemento: text);
+                                  Sessao.empresa = Sessao.empresa!.copyWith(complemento: text);
                                 },
                               ),
                             ),
                           ],
                         ),
-                        Divider(color: Colors.white,),
+                        const Divider(color: Colors.white,),
                         BootstrapRow(
                           height: 60,
                           children: <BootstrapCol>[
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
-                                  validator: Sessao.configuracaoPdv.modulo != 'G' 
+                                  validator: Sessao.configuracaoPdv!.modulo != 'G' 
                                     ? ValidaCampoFormulario.validarObrigatorio 
                                     : null,
                                   maxLength: 100,
@@ -515,10 +515,10 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                     'Conteúdo para o campo Bairro',
                                     'Bairro',
                                     false),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    Sessao.empresa = Sessao.empresa.copyWith(bairro: text);
+                                    Sessao.empresa = Sessao.empresa!.copyWith(bairro: text);
                                   },
                                 ),
                               ),
@@ -526,9 +526,9 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
-                                  validator: Sessao.configuracaoPdv.modulo != 'G' 
+                                  validator: Sessao.configuracaoPdv!.modulo != 'G' 
                                     ? ValidaCampoFormulario.validarObrigatorio 
                                     : null,
                                   maxLength: 100,
@@ -538,26 +538,26 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                     'Conteúdo para o campo Cidade',
                                     'Cidade',
                                     false),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    Sessao.empresa = Sessao.empresa.copyWith(cidade: text);
+                                    Sessao.empresa = Sessao.empresa!.copyWith(cidade: text);
                                   },
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        Divider(color: Colors.white,),
+                        const Divider(color: Colors.white,),
                         BootstrapRow(
                           height: 60,
                           children: <BootstrapCol>[
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
-                                  validator: Sessao.configuracaoPdv.modulo != 'G' 
+                                  validator: Sessao.configuracaoPdv!.modulo != 'G' 
                                     ? ValidaCampoFormulario.validarObrigatorio 
                                     : null,
                                   keyboardType: TextInputType.number,
@@ -566,10 +566,10 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                     'Conteúdo para o campo Cep',
                                     'Cep',
                                     false,  ),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    Sessao.empresa = Sessao.empresa.copyWith(cep: Biblioteca.removerMascara(text));
+                                    Sessao.empresa = Sessao.empresa!.copyWith(cep: Biblioteca.removerMascara(text));
                                   },
                                 ),
                               ),
@@ -577,9 +577,9 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
-                                  validator: Sessao.configuracaoPdv.modulo != 'G' 
+                                  validator: Sessao.configuracaoPdv!.modulo != 'G' 
                                     ? ValidaCampoFormulario.validarObrigatorioNumerico 
                                     : null,
                                   maxLength: 7,
@@ -589,24 +589,24 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                     'Conteúdo para o campo IBGE Município',
                                     'Código Município IBGE',
                                     false),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    Sessao.empresa = Sessao.empresa.copyWith(codigoIbgeCidade: int.tryParse(text));
+                                    Sessao.empresa = Sessao.empresa!.copyWith(codigoIbgeCidade: int.tryParse(text));
                                   },
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        Divider(color: Colors.white,),
+                        const Divider(color: Colors.white,),
                         BootstrapRow(
                           height: 60,
                           children: <BootstrapCol>[
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
                                   keyboardType: TextInputType.number,
                                   controller: _telefoneController,
@@ -614,10 +614,10 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                     'Conteúdo para o campo Telefone',
                                     'Telefone',
                                     false),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    Sessao.empresa = Sessao.empresa.copyWith(fone: Biblioteca.removerMascara(text));
+                                    Sessao.empresa = Sessao.empresa!.copyWith(fone: Biblioteca.removerMascara(text));
                                   },
                                 ),
                               ),
@@ -625,7 +625,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
                                   maxLength: 50,
                                   maxLines: 1,
@@ -634,19 +634,19 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                     'Conteúdo para o campo Contato',
                                     'Contato',
                                     false),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    Sessao.empresa = Sessao.empresa.copyWith(contato: text);
+                                    Sessao.empresa = Sessao.empresa!.copyWith(contato: text);
                                   },
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        Divider(color: Colors.white,),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 0),
+                        const Divider(color: Colors.white,),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 0),
                           child: Text(
                             "Logotipo", 
                             style: TextStyle(
@@ -656,7 +656,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             ),
                           ),
                         ),
-                        Divider(
+                        const Divider(
                           indent: 10,
                           endIndent: 10,
                           thickness: 2,
@@ -671,19 +671,19 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                   _exibirImagemPicker(context);
                                 },                            
                                 child: Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 10),
+                                  margin: const EdgeInsets.symmetric(horizontal: 10),
                                   height: 200,
                                   child: FittedBox(
                                     fit: BoxFit.contain,
                                     child: 
-                                    Image.memory(Sessao.empresa.logotipo),                                  
+                                    Image.memory(Sessao.empresa!.logotipo!),                                  
                                   ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        Divider(color: Colors.white,),
+                        const Divider(color: Colors.white,),
                         BootstrapRow(
                           height: 60,
                           children: <BootstrapCol>[
@@ -698,11 +698,11 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                           ],
                         ),
                         Visibility(
-                          visible: Sessao.empresa.registrado ?? false,
+                          visible: Sessao.empresa!.registrado ?? false,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Container(
+                              SizedBox(
                                 width: 200,
                                 child: getBotaoGenericoPdv(
                                   descricao: 'Alterar Opção MEI',
@@ -712,7 +712,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                       showDialog(
                                         context: context, 
                                         builder: (BuildContext context){
-                                          return RegistroPage(title: 'Registro do Usuário');
+                                          return const RegistroPage(title: 'Registro do Usuário');
                                         })
                                         .then((_) {
                                         });
@@ -741,13 +741,13 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
 
     if (empresaModel != null) {
       Sessao.empresa = 
-        Sessao.empresa.copyWith(
+        Sessao.empresa!.copyWith(
           cnpj: Biblioteca.removerMascara(empresaModel.cnpj),
           nomeFantasia: empresaModel.fantasia,
           razaoSocial: empresaModel.nome,
-          dataConstituicao: DateTime.tryParse(empresaModel.abertura),
+          dataConstituicao: DateTime.tryParse(empresaModel.abertura!),
           // email: empresaModel.email,
-          cep: empresaModel.cep.replaceAll('.', ''),
+          cep: empresaModel.cep!.replaceAll('.', ''),
           uf: empresaModel.uf,
           logradouro: empresaModel.logradouro,
           numero: empresaModel.numero,
@@ -767,21 +767,21 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
   }
 
   Future<void> _salvar() async {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (!form.validate()) {
       _autoValidate = AutovalidateMode.always;
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
     } else {
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
-        Sessao.empresa = Sessao.empresa.copyWith(
-          codigoIbgeUf: Biblioteca.retornarCodigoIbgeUf(Sessao.empresa.uf),
+        Sessao.empresa = Sessao.empresa!.copyWith(
+          codigoIbgeUf: Biblioteca.retornarCodigoIbgeUf(Sessao.empresa!.uf),
         ); 
         form.save();
         // if (Sessao.configuracaoPdv.modulo != 'G') {
-          EmpresaModel empresa = EmpresaModel.fromDB(Sessao.empresa);
+          EmpresaModel? empresa = EmpresaModel.fromDB(Sessao.empresa!);
           EmpresaService servico = EmpresaService();
           gerarDialogBoxEspera(context);
-          empresa = await servico.atualizar(empresa);        
+          empresa = await (servico.atualizar(empresa));        
           Sessao.fecharDialogBoxEspera(context);
           if (empresa != null) {
             await _salvarDadosLocais();
@@ -796,7 +796,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
   }
 
   Future _salvarDadosLocais() async {
-    await Sessao.db.empresaDao.alterar(Sessao.empresa, Sessao.configuracaoPdv.modulo != 'G');
+    await Sessao.db.empresaDao.alterar(Sessao.empresa, Sessao.configuracaoPdv!.modulo != 'G');
     Sessao.empresa = await Sessao.db.empresaDao.consultarObjeto(1);
     showInSnackBar('Dados salvos com sucesso.', context, corFundo: Colors.blue);
     Navigator.of(context).pop();
@@ -808,10 +808,8 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
       context: context,
       builder: (BuildContext bc) {
         return SafeArea(
-          child: Container(
-            child: Wrap(
-              children: _getOpcoesImportacaoImagem(),
-            ),
+          child: Wrap(
+            children: _getOpcoesImportacaoImagem(),
           ),
         );
       }
@@ -821,7 +819,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
     List<Widget> listaRetorno = [];
     listaRetorno.add(
       ListTile(
-        leading: Padding( 
+        leading: const Padding( 
           padding: EdgeInsets.all(5),
           child: Icon(Icons.cloud_download),
         ),
@@ -830,7 +828,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
           try {
             final ByteData imageData = await NetworkAssetBundle(Uri.parse(_imagemController.text)).load('');
             setState(() {
-              Sessao.empresa = Sessao.empresa.copyWith(logotipo: imageData.buffer.asUint8List());
+              Sessao.empresa = Sessao.empresa!.copyWith(logotipo: imageData.buffer.asUint8List());
             });
             Navigator.pop(context);
           } catch (e) {
@@ -842,20 +840,20 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
     );
     listaRetorno.add(
       ListTile(
-        leading: Icon(Icons.file_copy),
-        title: Text('Carregar Imagem'),
+        leading: const Icon(Icons.file_copy),
+        title: const Text('Carregar Imagem'),
         onTap: () async {
           // Documentação: https://github.com/miguelpruivo/flutter_file_picker/wiki
-          FilePickerResult arquivoSelecionado = 
+          FilePickerResult? arquivoSelecionado = 
             await FilePicker.platform.pickFiles(
               type: FileType.custom, 
               allowedExtensions: ['jpg, png'],
               dialogTitle: 'Selecione o Logotipo da Empresa'
             );
             if(arquivoSelecionado != null) {
-              File file = File(arquivoSelecionado.files.first.path);
+              File file = File(arquivoSelecionado.files.first.path!);
               setState(() {
-                Sessao.empresa = Sessao.empresa.copyWith(logotipo: file.readAsBytesSync());
+                Sessao.empresa = Sessao.empresa!.copyWith(logotipo: file.readAsBytesSync());
               });  
               Navigator.pop(context);
             }                          
@@ -866,8 +864,8 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
     if (Biblioteca.isMobile()) {
       listaRetorno.add(
         ListTile(
-          leading: Icon(Icons.photo_library),
-          title: Text('Galeria de Imagens'),
+          leading: const Icon(Icons.photo_library),
+          title: const Text('Galeria de Imagens'),
           onTap: () {
             _getImagemGaleria();
             Navigator.of(context).pop();
@@ -876,8 +874,8 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
       );
       listaRetorno.add(
         ListTile(
-          leading: Icon(Icons.photo_camera),
-          title: Text('Câmera'),
+          leading: const Icon(Icons.photo_camera),
+          title: const Text('Câmera'),
           onTap: () {
             _getImagemCamera();
             Navigator.of(context).pop();
@@ -889,22 +887,22 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
   }
   
   _getImagemCamera() async {
-    final pickedFile = await _pickerImagem.getImage(
+    final pickedFile = await _pickerImagem.pickImage(
       source: ImageSource.camera, imageQuality: 50
     );
-    Sessao.empresa = Sessao.empresa.copyWith(
-      logotipo: await pickedFile.readAsBytes(),
+    Sessao.empresa = Sessao.empresa!.copyWith(
+      logotipo: await pickedFile?.readAsBytes(),
     );
     setState(() {
     });
   }
 
   _getImagemGaleria() async {
-    final pickedFile = await _pickerImagem.getImage(
+    final pickedFile = await _pickerImagem.pickImage(
       source: ImageSource.gallery, imageQuality: 50
     );
     if (pickedFile != null) {
-      Sessao.empresa = Sessao.empresa.copyWith(
+      Sessao.empresa = Sessao.empresa!.copyWith(
         logotipo: await pickedFile.readAsBytes(),
       );
       setState(() {

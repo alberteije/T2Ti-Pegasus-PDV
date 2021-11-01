@@ -37,10 +37,11 @@ import 'package:moor/moor.dart';
 
 @DataClassName("EcfSintegra60A")
 class EcfSintegra60As extends Table {
+  @override
   String get tableName => 'ECF_SINTEGRA_60A';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idEcfSintegra60M => integer().named('ID_ECF_SINTEGRA_60M').nullable().customConstraint('NULLABLE REFERENCES ECF_SINTEGRA_60M(ID)')();
-  TextColumn get situacaoTributaria => text().named('SITUACAO_TRIBUTARIA').withLength(min: 0, max: 4).nullable()();
-  RealColumn get valor => real().named('VALOR').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idEcfSintegra60M => integer().named('ID_ECF_SINTEGRA_60M').nullable().customConstraint('NULLABLE REFERENCES ECF_SINTEGRA_60M(ID)')() as Column<int>?;
+  TextColumn? get situacaoTributaria => text().named('SITUACAO_TRIBUTARIA').withLength(min: 0, max: 4).nullable()() as Column<String>?;
+  RealColumn? get valor => real().named('VALOR').nullable()() as Column<double>?;
 }

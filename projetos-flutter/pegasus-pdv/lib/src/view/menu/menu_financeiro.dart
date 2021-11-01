@@ -45,11 +45,13 @@ import 'package:pegasus_pdv/src/view/menu/menu_interno_botoes.dart';
 import 'package:pegasus_pdv/src/view/menu/menu_titulo_grupo_menu_interno.dart';
 
 class MenuFinanceiro extends StatelessWidget {
+  const MenuFinanceiro({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("T2Ti Pegasus PDV - Financeiro"),
+        title: const Text("T2Ti Pegasus PDV - Financeiro"),
         backgroundColor: Colors.black87,
       ),
       // drawer: CommonDrawer(),
@@ -69,7 +71,7 @@ class MenuFinanceiro extends StatelessWidget {
         child: Column(
           children: <Widget>[
             appBarColumn(context),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             actionMenuGrupoFinanceiro(),
           ],
         ),
@@ -82,7 +84,7 @@ class MenuFinanceiro extends StatelessWidget {
             children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
+                children: const <Widget>[
                   ProfileTile(
                     title: "T2Ti Pegasus PDV",
                     subtitle: "Módulo Financeiro",
@@ -106,7 +108,7 @@ class MenuFinanceiro extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  MenuTituloGrupoMenuInterno(titulo: "Grupo Financeiro"),
+                  const MenuTituloGrupoMenuInterno(titulo: "Grupo Financeiro"),
                   MenuInternoBotoes(
                     primeiroBotao: BotaoMenu(
                         icon: FontAwesomeIcons.peopleCarry,

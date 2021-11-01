@@ -77,7 +77,7 @@ Map<LogicalKeySet, Intent> getAtalhosAbaPage() {
 }
 
 class AtalhoTelaIntent extends Intent {
-  const AtalhoTelaIntent({@required this.type});
+  const AtalhoTelaIntent({required this.type});
 
   const AtalhoTelaIntent.inserir() : type = AtalhoTelaType.inserir;
 

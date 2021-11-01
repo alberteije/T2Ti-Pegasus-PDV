@@ -34,7 +34,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 /// Retorna o Padding para a página de detalhe - cabeçalho da página
 Padding getPaddingDetalhePage(String titulo) {
@@ -59,7 +58,7 @@ ThemeData getThemeDataDetalhePage(BuildContext context) {
 /// Retorna o ListTile para a página de detalhe
 ListTile getListTileDataDetalhePage(String title, String subtitle) {
   return ListTile(
-    leading: Icon(
+    leading: const Icon(
       Icons.arrow_right,
       color: Colors.grey,
     ),
@@ -71,7 +70,7 @@ ListTile getListTileDataDetalhePage(String title, String subtitle) {
 /// Retorna o ListTile para a página de detalhe - campos do tipo Id
 ListTile getListTileDataDetalhePageId(String title, String subtitle) {
   return ListTile(
-    leading: Icon(
+    leading: const Icon(
       Icons.vpn_key,
       color: Colors.blue,
     ),

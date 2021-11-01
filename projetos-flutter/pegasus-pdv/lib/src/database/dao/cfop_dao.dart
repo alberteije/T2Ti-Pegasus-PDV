@@ -59,7 +59,7 @@ class CfopDao extends DatabaseAccessor<AppDatabase> with _$CfopDaoMixin {
 
   Stream<List<Cfop>> observarLista() => select(cfops).watch();
 
-  Future<Cfop> consultarObjeto(int pId) {
+  Future<Cfop?> consultarObjeto(int pId) {
     return (select(cfops)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

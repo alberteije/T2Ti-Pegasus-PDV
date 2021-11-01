@@ -34,7 +34,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:pegasus_pdv/src/controller/controller.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
@@ -50,19 +49,19 @@ import 'compra_pedido_cabecalho_page.dart';
 import 'compra_pedido_detalhe_persiste_page.dart';
 
 class CompraPedidoDetalheListaPage extends StatefulWidget {
-  final CompraPedidoCabecalhoMontado compraPedidoCabecalhoMontado;
-  final FocusNode foco;
-  final Function salvarCompraPedidoCabecalhoCallBack;
+  final CompraPedidoCabecalhoMontado? compraPedidoCabecalhoMontado;
+  final FocusNode? foco;
+  final Function? salvarCompraPedidoCabecalhoCallBack;
 
-  const CompraPedidoDetalheListaPage({Key key, this.compraPedidoCabecalhoMontado, this.foco, this.salvarCompraPedidoCabecalhoCallBack}) : super(key: key);
+  const CompraPedidoDetalheListaPage({Key? key, this.compraPedidoCabecalhoMontado, this.foco, this.salvarCompraPedidoCabecalhoCallBack}) : super(key: key);
 
   @override
   _CompraPedidoDetalheListaPageState createState() => _CompraPedidoDetalheListaPageState();
 }
 
 class _CompraPedidoDetalheListaPageState extends State<CompraPedidoDetalheListaPage> {
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -81,7 +80,7 @@ class _CompraPedidoDetalheListaPageState extends State<CompraPedidoDetalheListaP
         _inserir();
         break;
       case AtalhoTelaType.salvar:
-        widget.salvarCompraPedidoCabecalhoCallBack();
+        widget.salvarCompraPedidoCabecalhoCallBack!();
         break;
       default:
         break;
@@ -128,7 +127,7 @@ class _CompraPedidoDetalheListaPageState extends State<CompraPedidoDetalheListaP
 
   void _inserir() async {
     if (_podeAlterarPedido()) {
-      var _compraDetalhe = CompraDetalhe();
+      CompraDetalhe? _compraDetalhe = CompraDetalhe();
       _compraDetalhe = await Navigator.of(context)
         .push(MaterialPageRoute(
           builder: (BuildContext context) =>
@@ -148,49 +147,46 @@ class _CompraPedidoDetalheListaPageState extends State<CompraPedidoDetalheListaP
   
   List<DataColumn> _getColumns() {
     List<DataColumn> lista = [];
-    lista.add(DataColumn(numeric: true, label: Text('Id')));
-    lista.add(DataColumn(label: Text('Produto')));
-    lista.add(DataColumn(numeric: true, label: Text('Quantidade')));
-    lista.add(DataColumn(numeric: true, label: Text('Valor Unitário')));
-    lista.add(DataColumn(numeric: true, label: Text('Valor Subtotal')));
-    lista.add(DataColumn(numeric: true, label: Text('Taxa Desconto')));
-    lista.add(DataColumn(numeric: true, label: Text('Valor Desconto')));
-    lista.add(DataColumn(numeric: true, label: Text('Valor Total')));
+    lista.add(const DataColumn(numeric: true, label: Text('Id')));
+    lista.add(const DataColumn(label: Text('Produto')));
+    lista.add(const DataColumn(numeric: true, label: Text('Quantidade')));
+    lista.add(const DataColumn(numeric: true, label: Text('Valor Unitário')));
+    lista.add(const DataColumn(numeric: true, label: Text('Valor Subtotal')));
+    lista.add(const DataColumn(numeric: true, label: Text('Taxa Desconto')));
+    lista.add(const DataColumn(numeric: true, label: Text('Valor Desconto')));
+    lista.add(const DataColumn(numeric: true, label: Text('Valor Total')));
     return lista;
   }
 
   List<DataRow> _getRows() {
-    if (CompraPedidoCabecalhoController.listaCompraDetalhe == null) {
-      CompraPedidoCabecalhoController.listaCompraDetalhe = [];
-    }
     List<DataRow> lista = [];
     for (var compraDetalhe in CompraPedidoCabecalhoController.listaCompraDetalhe) {
-      if (compraDetalhe.compraPedidoDetalhe.quantidade > 0) {
+      if (compraDetalhe.compraPedidoDetalhe!.quantidade! > 0) {
         List<DataCell> _celulas = [];
 
         _celulas = [
-          DataCell(Text('${ compraDetalhe.compraPedidoDetalhe.id ?? ''}'), onTap: () {
+          DataCell(Text('${ compraDetalhe.compraPedidoDetalhe!.id ?? ''}'), onTap: () {
             _detalharCompraPedidoDetalhe(CompraPedidoCabecalhoController.compraPedidoCabecalho, compraDetalhe, context);
           }),
-          DataCell(Text('${compraDetalhe.produto?.nome ?? ''}'), onTap: () { 
+          DataCell(Text(compraDetalhe.produto?.nome ?? ''), onTap: () { 
             _detalharCompraPedidoDetalhe(CompraPedidoCabecalhoController.compraPedidoCabecalho, compraDetalhe, context);
           }),
-          DataCell(Text('${Constantes.formatoDecimalQuantidade.format(compraDetalhe.compraPedidoDetalhe.quantidade ?? 0)}'), onTap: () {
+          DataCell(Text(Constantes.formatoDecimalQuantidade.format(compraDetalhe.compraPedidoDetalhe!.quantidade ?? 0)), onTap: () {
             _detalharCompraPedidoDetalhe(CompraPedidoCabecalhoController.compraPedidoCabecalho, compraDetalhe, context);
           }),
-          DataCell(Text('${Constantes.formatoDecimalValor.format(compraDetalhe.compraPedidoDetalhe.valorUnitario ?? 0)}'), onTap: () {
+          DataCell(Text(Constantes.formatoDecimalValor.format(compraDetalhe.compraPedidoDetalhe!.valorUnitario ?? 0)), onTap: () {
             _detalharCompraPedidoDetalhe(CompraPedidoCabecalhoController.compraPedidoCabecalho, compraDetalhe, context);
           }),
-          DataCell(Text('${Constantes.formatoDecimalValor.format(compraDetalhe.compraPedidoDetalhe.valorSubtotal ?? 0)}'), onTap: () {
+          DataCell(Text(Constantes.formatoDecimalValor.format(compraDetalhe.compraPedidoDetalhe!.valorSubtotal ?? 0)), onTap: () {
             _detalharCompraPedidoDetalhe(CompraPedidoCabecalhoController.compraPedidoCabecalho, compraDetalhe, context);
           }),
-          DataCell(Text('${Constantes.formatoDecimalTaxa.format(compraDetalhe.compraPedidoDetalhe.taxaDesconto ?? 0)}'), onTap: () {
+          DataCell(Text(Constantes.formatoDecimalTaxa.format(compraDetalhe.compraPedidoDetalhe!.taxaDesconto ?? 0)), onTap: () {
             _detalharCompraPedidoDetalhe(CompraPedidoCabecalhoController.compraPedidoCabecalho, compraDetalhe, context);
           }),
-          DataCell(Text('${Constantes.formatoDecimalValor.format(compraDetalhe.compraPedidoDetalhe.valorDesconto ?? 0)}'), onTap: () {
+          DataCell(Text(Constantes.formatoDecimalValor.format(compraDetalhe.compraPedidoDetalhe!.valorDesconto ?? 0)), onTap: () {
             _detalharCompraPedidoDetalhe(CompraPedidoCabecalhoController.compraPedidoCabecalho, compraDetalhe, context);
           }),
-          DataCell(Text('${Constantes.formatoDecimalValor.format(compraDetalhe.compraPedidoDetalhe.valorTotal ?? 0)}'), onTap: () {
+          DataCell(Text(Constantes.formatoDecimalValor.format(compraDetalhe.compraPedidoDetalhe!.valorTotal ?? 0)), onTap: () {
             _detalharCompraPedidoDetalhe(CompraPedidoCabecalhoController.compraPedidoCabecalho, compraDetalhe, context);
           }),
         ];
@@ -202,7 +198,7 @@ class _CompraPedidoDetalheListaPageState extends State<CompraPedidoDetalheListaP
     return lista;
   }
 
-  void _detalharCompraPedidoDetalhe(CompraPedidoCabecalho compraPedidoCabecalho, CompraDetalhe compraDetalhe, BuildContext context) {
+  void _detalharCompraPedidoDetalhe(CompraPedidoCabecalho? compraPedidoCabecalho, CompraDetalhe compraDetalhe, BuildContext context) {
     if (_podeAlterarPedido()) {
       Navigator.of(context)
         .push(MaterialPageRoute(
@@ -224,23 +220,23 @@ class _CompraPedidoDetalheListaPageState extends State<CompraPedidoDetalheListaP
     double subTotal = 0;        
     double totalDescontosItens = 0;
     for (CompraDetalhe compraDetalhe in CompraPedidoCabecalhoController.listaCompraDetalhe) {
-      subTotal = subTotal + (compraDetalhe.compraPedidoDetalhe.valorTotal ?? 0);
-      totalDescontosItens = totalDescontosItens + (compraDetalhe.compraPedidoDetalhe.valorDesconto ?? 0);
+      subTotal = subTotal + (compraDetalhe.compraPedidoDetalhe!.valorTotal ?? 0);
+      totalDescontosItens = totalDescontosItens + (compraDetalhe.compraPedidoDetalhe!.valorDesconto ?? 0);
     }     
-    double taxaDesconto = 0;
+    double? taxaDesconto = 0;
     double valorDesconto = 0;
     if (totalDescontosItens > 0) {
       valorDesconto = totalDescontosItens;
       taxaDesconto = valorDesconto / subTotal * 100;
-      taxaDesconto = num.parse(taxaDesconto.toStringAsFixed(Constantes.decimaisValor));
+      taxaDesconto = num.parse(taxaDesconto.toStringAsFixed(Constantes.decimaisValor)) as double?;
       CompraPedidoCabecalhoPage.descontoNosItems = true; // se tem desconto nos itens vai impedir de fornecer desconto na venda
     } else {
-      taxaDesconto = CompraPedidoCabecalhoController.compraPedidoCabecalho.taxaDesconto;
-      valorDesconto = Biblioteca.calcularDesconto(subTotal, CompraPedidoCabecalhoController.compraPedidoCabecalho.taxaDesconto);
+      taxaDesconto = CompraPedidoCabecalhoController.compraPedidoCabecalho!.taxaDesconto;
+      valorDesconto = Biblioteca.calcularDesconto(subTotal, CompraPedidoCabecalhoController.compraPedidoCabecalho!.taxaDesconto);
       CompraPedidoCabecalhoPage.descontoNosItems = false;
     }
     CompraPedidoCabecalhoController.compraPedidoCabecalho = 
-      CompraPedidoCabecalhoController.compraPedidoCabecalho.copyWith(
+      CompraPedidoCabecalhoController.compraPedidoCabecalho!.copyWith(
         valorSubtotal: subTotal,
         taxaDesconto: taxaDesconto,
         valorDesconto: valorDesconto,
@@ -250,10 +246,10 @@ class _CompraPedidoDetalheListaPageState extends State<CompraPedidoDetalheListaP
  
   bool _podeAlterarPedido() {
     bool retorno = true;
-    if (CompraPedidoCabecalhoController.compraPedidoCabecalho.geraFinanceiro == 'S') {
+    if (CompraPedidoCabecalhoController.compraPedidoCabecalho!.geraFinanceiro == 'S') {
       retorno = false;
       gerarDialogBoxInformacao(context, 'Não é possível alterar o item. Dados Financeiros já foram gerados.');
-    } else if (CompraPedidoCabecalhoController.compraPedidoCabecalho.atualizouEstoque == 'S') {
+    } else if (CompraPedidoCabecalhoController.compraPedidoCabecalho!.atualizouEstoque == 'S') {
       retorno = false;
       gerarDialogBoxInformacao(context, 'Não é possível alterar o item. Estoque já foi atualizado.');
     }

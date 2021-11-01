@@ -37,10 +37,11 @@ import 'package:moor/moor.dart';
 
 @DataClassName("PdvFechamento")
 class PdvFechamentos extends Table {
+  @override
   String get tableName => 'PDV_FECHAMENTO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idPdvMovimento => integer().named('ID_PDV_MOVIMENTO').nullable().customConstraint('NULLABLE REFERENCES PDV_MOVIMENTO(ID)')();
-  IntColumn get idPdvTipoPagamento => integer().named('ID_PDV_TIPO_PAGAMENTO').nullable().customConstraint('NULLABLE REFERENCES PDV_TIPO_PAGAMENTO(ID)')();
-  RealColumn get valor => real().named('VALOR').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idPdvMovimento => integer().named('ID_PDV_MOVIMENTO').nullable().customConstraint('NULLABLE REFERENCES PDV_MOVIMENTO(ID)')() as Column<int>?;
+  IntColumn? get idPdvTipoPagamento => integer().named('ID_PDV_TIPO_PAGAMENTO').nullable().customConstraint('NULLABLE REFERENCES PDV_TIPO_PAGAMENTO(ID)')() as Column<int>?;
+  RealColumn? get valor => real().named('VALOR').nullable()() as Column<double>?;
 }

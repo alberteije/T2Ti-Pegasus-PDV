@@ -55,27 +55,31 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 import 'contas_receber_persiste_page.dart';
 
 class ContasReceberListaPage extends StatefulWidget {
+  const ContasReceberListaPage({Key? key}) : super(key: key);
+
   @override
   _ContasReceberListaPageState createState() => _ContasReceberListaPageState();
 }
 
 class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
-  int _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
-  int _sortColumnIndex;
+  int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
+  int? _sortColumnIndex;
   bool _sortAscending = true;
-  var _filtro = Filtro();
+  Filtro? _filtro = Filtro();
   final _colunas = ContasReceberDao.colunas;
   final _campos = ContasReceberDao.campos;
 
   DateTime _mesAno = DateTime.now();
-  String _statusRecebimento = 'Todos';
+  String? _statusRecebimento = 'Todos';
   double _totalReceber = 0;
   double _totalRecebido = 0;
   double _totalGeral = 0;
-  var _listaContasReceberMontado;
+  List<ContasReceberMontado>? _listaContasReceberMontado;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
+
+  final ScrollController controllerScroll = ScrollController();
 
   @override
   void initState() {
@@ -88,7 +92,7 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -113,7 +117,7 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
 
     final _ContasReceberDataSource _contasReceberDataSource = _ContasReceberDataSource(_listaContasReceberMontado, context, _refrescarTela);
 
-    void _sort<T>(Comparable<T> getField(ContasReceberMontado contasReceberMontado), int columnIndex, bool ascending) {
+    void _sort<T>(Comparable<T>? Function(ContasReceberMontado contasReceberMontado) getField, int columnIndex, bool ascending) {
       _contasReceberDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
@@ -129,7 +133,7 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Contas a Receber'),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           ),
           floatingActionButton: FloatingActionButton(
             focusColor: ViewUtilLib.getBotaoFocusColor(),
@@ -142,7 +146,7 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: BottomAppBar(
             color: ViewUtilLib.getBottomAppBarColor(),          
-            shape: CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 90, 10),
               child: Row(
@@ -156,20 +160,19 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
                         'Mês/Ano para o Filtro',
                         'Mês/Ano para o Filtro',
                         true),
-                      isEmpty: _mesAno == null,
                       child: DatePickerItem(
                         mascara: 'MM/yyyy',
                         dateTime: _mesAno,
                         firstDate: DateTime.parse('1900-01-01'),
                         lastDate: DateTime.parse('2050-01-01'),
-                        onChanged: (DateTime value) {
-                          _mesAno = value;
+                        onChanged: (DateTime? value) {
+                          _mesAno = value!;
                           _refrescarTela();
                         },
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 8,
                   ),
                   Expanded(
@@ -182,7 +185,7 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
                         true, paddingVertical: 1),
                       isEmpty: _statusRecebimento == null,
                       child: getDropDownButton(_statusRecebimento,
-                        (String newValue) {
+                        (String? newValue) {
                           _statusRecebimento = newValue;
                           _refrescarTela();
                       }, <String>[
@@ -200,8 +203,8 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
             onRefresh: _refrescarTela,
             child: BackdropScaffold(           
               appBar: BackdropAppBar(
-                title: Text("Relação - Contas Receber"),
-                actions: <Widget>[
+                title: const Text("Relação - Contas Receber"),
+                actions: const <Widget>[
                   BackdropToggleButton(
                     icon: AnimatedIcons.list_view,
                   ),
@@ -211,14 +214,15 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
               backLayer: getResumoTotais(context),
               frontLayer: Scrollbar(
                 child: _listaContasReceberMontado == null
-                ? Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator())
                 : ListView(
-                  padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
+                  controller: controllerScroll,
+                  padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                   children: <Widget>[
                     PaginatedDataTable(                        
                       // header: const Text('Relação - Contas Receber'),
-                      rowsPerPage: _rowsPerPage,
-                      onRowsPerPageChanged: (int value) {
+                      rowsPerPage: _rowsPerPage!,
+                      onRowsPerPageChanged: (int? value) {
                         setState(() {
                           _rowsPerPage = value;
                         });
@@ -231,7 +235,7 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
                           label: const Text('Id'),
                           tooltip: 'Id',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber.id, columnIndex, ascending),
+                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber!.id, columnIndex, ascending),
                         ),
                         DataColumn(
                           label: const Text('Cliente'),
@@ -243,93 +247,93 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
                           label: const Text('Data de Lançamento'),
                           tooltip: 'Data de Lançamento',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<DateTime>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber.dataLancamento, columnIndex, ascending),
+                            _sort<DateTime>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber!.dataLancamento, columnIndex, ascending),
                         ),
                         DataColumn(
                           label: const Text('Data de Vencimento'),
                           tooltip: 'Data de Vencimento',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<DateTime>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber.dataVencimento, columnIndex, ascending),
+                            _sort<DateTime>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber!.dataVencimento, columnIndex, ascending),
                         ),
                         DataColumn(
                           label: const Text('Data de Recebimento'),
                           tooltip: 'Data de Recebimento',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<DateTime>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber.dataRecebimento, columnIndex, ascending),
+                            _sort<DateTime>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber!.dataRecebimento, columnIndex, ascending),
                         ),
                         DataColumn(
                           numeric: true,
                           label: const Text('Valor a Receber'),
                           tooltip: 'Valor a Receber',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber.valorAReceber, columnIndex, ascending),
+                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber!.valorAReceber, columnIndex, ascending),
                         ),
                         DataColumn(
                           numeric: true,
                           label: const Text('Taxa Juros'),
                           tooltip: 'Taxa Juros',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber.taxaJuro, columnIndex, ascending),
+                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber!.taxaJuro, columnIndex, ascending),
                         ),
                         DataColumn(
                           numeric: true,
                           label: const Text('Taxa Multa'),
                           tooltip: 'Taxa Multa',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber.taxaMulta, columnIndex, ascending),
+                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber!.taxaMulta, columnIndex, ascending),
                         ),
                         DataColumn(
                           numeric: true,
                           label: const Text('Taxa Desconto'),
                           tooltip: 'Taxa Desconto',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber.taxaDesconto, columnIndex, ascending),
+                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber!.taxaDesconto, columnIndex, ascending),
                         ),
                         DataColumn(
                           numeric: true,
                           label: const Text('Valor Juros'),
                           tooltip: 'Valor Juros',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber.valorJuro, columnIndex, ascending),
+                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber!.valorJuro, columnIndex, ascending),
                         ),
                         DataColumn(
                           numeric: true,
                           label: const Text('Valor Multa'),
                           tooltip: 'Valor Multa',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber.valorMulta, columnIndex, ascending),
+                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber!.valorMulta, columnIndex, ascending),
                         ),
                         DataColumn(
                           numeric: true,
                           label: const Text('Valor Desconto'),
                           tooltip: 'Valor Desconto',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber.valorDesconto, columnIndex, ascending),
+                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber!.valorDesconto, columnIndex, ascending),
                         ),
                         DataColumn(
                           numeric: true,
                           label: const Text('Valor Recebido'),
                           tooltip: 'Valor Recebido',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber.valorRecebido, columnIndex, ascending),
+                            _sort<num>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber!.valorRecebido, columnIndex, ascending),
                         ),
                         DataColumn(
                           label: const Text('Número do Documento'),
                           tooltip: 'Número do Documento',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<String>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber.numeroDocumento, columnIndex, ascending),
+                            _sort<String>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber!.numeroDocumento, columnIndex, ascending),
                         ),
                         DataColumn(
                           label: const Text('Histórico'),
                           tooltip: 'Histórico',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<String>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber.historico, columnIndex, ascending),
+                            _sort<String>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber!.historico, columnIndex, ascending),
                         ),
                         DataColumn(
                           label: const Text('Status Recebimento'),
                           tooltip: 'Conteúdo para o campo Status Recebimento',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<String>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber.statusRecebimento, columnIndex, ascending),
+                            _sort<String>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber!.statusRecebimento, columnIndex, ascending),
                         ),
                       ],
                       source: _contasReceberDataSource,
@@ -359,17 +363,17 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
             const SizedBox(height: 10.0),
             getItemResumoValor(
               descricao: 'Total a Receber: ',
-              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalReceber ?? 0)}',
+              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalReceber)}',
               corFundo: Colors.blue.shade100,
             ),
             getItemResumoValor(
               descricao: 'Total Recebido: ',
-              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalRecebido ?? 0)}',
+              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalRecebido)}',
               corFundo: Colors.red.shade100,
             ),
             getItemResumoValor(
               descricao: 'Total Geral: ',
-              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalGeral ?? 0)}',
+              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalGeral)}',
               corFundo: Colors.green.shade100,
             ),
             const SizedBox(height: 10.0),
@@ -406,9 +410,9 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
           fullscreenDialog: true,
         ));
     if (_filtro != null) {
-      if (_filtro.campo != null) {
-        _filtro.campo = _campos[int.parse(_filtro.campo)];
-        await Sessao.db.contasReceberDao.consultarListaFiltro(_filtro.campo, _filtro.valor);
+      if (_filtro!.campo != null) {
+        _filtro!.campo = _campos[int.parse(_filtro!.campo!)];
+        await Sessao.db.contasReceberDao.consultarListaFiltro(_filtro!.campo!, _filtro!.valor!);
         setState(() {
         });
       }
@@ -431,13 +435,13 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
     _totalReceber = 0;
     _totalRecebido = 0;
     _totalGeral = 0;
-    for (ContasReceberMontado contasReceberMontado in _listaContasReceberMontado) {
-      if (contasReceberMontado.contasReceber.statusRecebimento == 'A') {
-        _totalReceber = _totalReceber + (contasReceberMontado.contasReceber.valorAReceber ?? 0);
-      } else if (contasReceberMontado.contasReceber.statusRecebimento == 'R') {
-        _totalRecebido = _totalRecebido + (contasReceberMontado.contasReceber.valorRecebido ?? 0);
+    for (ContasReceberMontado contasReceberMontado in _listaContasReceberMontado!) {
+      if (contasReceberMontado.contasReceber!.statusRecebimento == 'A') {
+        _totalReceber = _totalReceber + (contasReceberMontado.contasReceber!.valorAReceber ?? 0);
+      } else if (contasReceberMontado.contasReceber!.statusRecebimento == 'R') {
+        _totalRecebido = _totalRecebido + (contasReceberMontado.contasReceber!.valorRecebido ?? 0);
       }
-      _totalGeral = _totalGeral + (contasReceberMontado.contasReceber.valorAReceber ?? 0);
+      _totalGeral = _totalGeral + (contasReceberMontado.contasReceber!.valorAReceber ?? 0);
     }     
   }
 }
@@ -445,87 +449,87 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
 
 /// codigo referente a fonte de dados
 class _ContasReceberDataSource extends DataTableSource {
-  final List<ContasReceberMontado> listaContasReceber;
+  final List<ContasReceberMontado>? listaContasReceber;
   final BuildContext context;
   final Function refrescarTela;
  
   _ContasReceberDataSource(this.listaContasReceber, this.context, this.refrescarTela);
 
-  void _sort<T>(Comparable<T> getField(ContasReceberMontado contasReceber), bool ascending) {
-    listaContasReceber.sort((ContasReceberMontado a, ContasReceberMontado b) {
+  void _sort<T>(Comparable<T>? Function(ContasReceberMontado contasReceber) getField, bool ascending) {
+    listaContasReceber!.sort((ContasReceberMontado a, ContasReceberMontado b) {
       if (!ascending) {
         final ContasReceberMontado c = a;
         a = b;
         b = c;
       }
-      Comparable<T> aValue = getField(a);
-      Comparable<T> bValue = getField(b);
+      Comparable<T>? aValue = getField(a);
+      Comparable<T>? bValue = getField(b);
 
-      if (aValue == null) aValue = '' as Comparable<T>;
-      if (bValue == null) bValue = '' as Comparable<T>;
+      aValue ??= '' as Comparable<T>;
+      bValue ??= '' as Comparable<T>;
 
       return Comparable.compare(aValue, bValue);
     });
     notifyListeners();
   }
 
-  int _selectedCount = 0;
+  final int _selectedCount = 0;
 
   @override
-  DataRow getRow(int index) {
+  DataRow? getRow(int index) {
     assert(index >= 0);
-    if (index >= listaContasReceber.length) return null;
-    final ContasReceberMontado contasReceberMontado = listaContasReceber[index];
-    final ContasReceber contasReceber = contasReceberMontado.contasReceber;
+    if (index >= listaContasReceber!.length) return null;
+    final ContasReceberMontado contasReceberMontado = listaContasReceber![index];
+    final ContasReceber contasReceber = contasReceberMontado.contasReceber!;
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
         DataCell(Text('${contasReceber.id ?? ''}'), onTap: () {
           _detalharContasReceber(contasReceberMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasReceberMontado.cliente?.nome ?? ''}'), onTap: () {
+        DataCell(Text(contasReceberMontado.cliente?.nome ?? ''), onTap: () {
           _detalharContasReceber(contasReceberMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasReceber.dataLancamento != null ? DateFormat('dd/MM/yyyy').format(contasReceber.dataLancamento) : ''}'), onTap: () {
+        DataCell(Text(contasReceber.dataLancamento != null ? DateFormat('dd/MM/yyyy').format(contasReceber.dataLancamento!) : ''), onTap: () {
           _detalharContasReceber(contasReceberMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasReceber.dataVencimento != null ? DateFormat('dd/MM/yyyy').format(contasReceber.dataVencimento) : ''}'), onTap: () {
+        DataCell(Text(contasReceber.dataVencimento != null ? DateFormat('dd/MM/yyyy').format(contasReceber.dataVencimento!) : ''), onTap: () {
           _detalharContasReceber(contasReceberMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasReceber.dataRecebimento != null ? DateFormat('dd/MM/yyyy').format(contasReceber.dataRecebimento) : ''}'), onTap: () {
+        DataCell(Text(contasReceber.dataRecebimento != null ? DateFormat('dd/MM/yyyy').format(contasReceber.dataRecebimento!) : ''), onTap: () {
           _detalharContasReceber(contasReceberMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasReceber.valorAReceber != null ? Constantes.formatoDecimalValor.format(contasReceber.valorAReceber) : 0.toStringAsFixed(Constantes.decimaisValor)}'), onTap: () {
+        DataCell(Text(contasReceber.valorAReceber != null ? Constantes.formatoDecimalValor.format(contasReceber.valorAReceber) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
           _detalharContasReceber(contasReceberMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasReceber.taxaJuro != null ? Constantes.formatoDecimalTaxa.format(contasReceber.taxaJuro) : 0.toStringAsFixed(Constantes.decimaisTaxa)}'), onTap: () {
+        DataCell(Text(contasReceber.taxaJuro != null ? Constantes.formatoDecimalTaxa.format(contasReceber.taxaJuro) : 0.toStringAsFixed(Constantes.decimaisTaxa)), onTap: () {
           _detalharContasReceber(contasReceberMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasReceber.taxaMulta != null ? Constantes.formatoDecimalTaxa.format(contasReceber.taxaMulta) : 0.toStringAsFixed(Constantes.decimaisTaxa)}'), onTap: () {
+        DataCell(Text(contasReceber.taxaMulta != null ? Constantes.formatoDecimalTaxa.format(contasReceber.taxaMulta) : 0.toStringAsFixed(Constantes.decimaisTaxa)), onTap: () {
           _detalharContasReceber(contasReceberMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasReceber.taxaDesconto != null ? Constantes.formatoDecimalTaxa.format(contasReceber.taxaDesconto) : 0.toStringAsFixed(Constantes.decimaisTaxa)}'), onTap: () {
+        DataCell(Text(contasReceber.taxaDesconto != null ? Constantes.formatoDecimalTaxa.format(contasReceber.taxaDesconto) : 0.toStringAsFixed(Constantes.decimaisTaxa)), onTap: () {
           _detalharContasReceber(contasReceberMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasReceber.valorJuro != null ? Constantes.formatoDecimalValor.format(contasReceber.valorJuro) : 0.toStringAsFixed(Constantes.decimaisValor)}'), onTap: () {
+        DataCell(Text(contasReceber.valorJuro != null ? Constantes.formatoDecimalValor.format(contasReceber.valorJuro) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
           _detalharContasReceber(contasReceberMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasReceber.valorMulta != null ? Constantes.formatoDecimalValor.format(contasReceber.valorMulta) : 0.toStringAsFixed(Constantes.decimaisValor)}'), onTap: () {
+        DataCell(Text(contasReceber.valorMulta != null ? Constantes.formatoDecimalValor.format(contasReceber.valorMulta) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
           _detalharContasReceber(contasReceberMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasReceber.valorDesconto != null ? Constantes.formatoDecimalValor.format(contasReceber.valorDesconto) : 0.toStringAsFixed(Constantes.decimaisValor)}'), onTap: () {
+        DataCell(Text(contasReceber.valorDesconto != null ? Constantes.formatoDecimalValor.format(contasReceber.valorDesconto) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
           _detalharContasReceber(contasReceberMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasReceber.valorRecebido != null ? Constantes.formatoDecimalValor.format(contasReceber.valorRecebido) : 0.toStringAsFixed(Constantes.decimaisValor)}'), onTap: () {
+        DataCell(Text(contasReceber.valorRecebido != null ? Constantes.formatoDecimalValor.format(contasReceber.valorRecebido) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
           _detalharContasReceber(contasReceberMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasReceber.numeroDocumento ?? ''}'), onTap: () {
+        DataCell(Text(contasReceber.numeroDocumento ?? ''), onTap: () {
           _detalharContasReceber(contasReceberMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasReceber.historico ?? ''}'), onTap: () {
+        DataCell(Text(contasReceber.historico ?? ''), onTap: () {
           _detalharContasReceber(contasReceberMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasReceber.statusRecebimento ?? ''}'), onTap: () {
+        DataCell(Text(contasReceber.statusRecebimento ?? ''), onTap: () {
           _detalharContasReceber(contasReceberMontado, context, refrescarTela);
         }),
       ],
@@ -533,7 +537,7 @@ class _ContasReceberDataSource extends DataTableSource {
   }
 
   @override
-  int get rowCount => listaContasReceber.length ?? 0;
+  int get rowCount => listaContasReceber!.length;
 
   @override
   bool get isRowCountApproximate => false;

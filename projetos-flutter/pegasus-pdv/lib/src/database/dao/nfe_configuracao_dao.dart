@@ -59,7 +59,7 @@ class NfeConfiguracaoDao extends DatabaseAccessor<AppDatabase> with _$NfeConfigu
 
   Stream<List<NfeConfiguracao>> observarLista() => select(nfeConfiguracaos).watch();
 
-  Future<NfeConfiguracao> consultarObjeto(int pId) {
+  Future<NfeConfiguracao?> consultarObjeto(int pId) {
     return (select(nfeConfiguracaos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
@@ -70,9 +70,9 @@ class NfeConfiguracaoDao extends DatabaseAccessor<AppDatabase> with _$NfeConfigu
     });    
   } 
 
-  Future<bool> alterar(Insertable<NfeConfiguracao> pObjeto) {
+  Future<bool> alterar(Insertable<NfeConfiguracao>? pObjeto) {
     return transaction(() async {
-      return update(nfeConfiguracaos).replace(pObjeto);
+      return update(nfeConfiguracaos).replace(pObjeto!);
     });    
   } 
 

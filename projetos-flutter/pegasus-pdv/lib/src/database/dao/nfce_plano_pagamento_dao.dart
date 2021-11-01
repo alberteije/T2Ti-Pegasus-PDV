@@ -59,34 +59,34 @@ class NfcePlanoPagamentoDao extends DatabaseAccessor<AppDatabase> with _$NfcePla
 
   Stream<List<NfcePlanoPagamento>> observarLista() => select(nfcePlanoPagamentos).watch();
 
-  Future<NfcePlanoPagamento> consultarObjeto(int pId) {
+  Future<NfcePlanoPagamento?> consultarObjeto(int pId) {
     return (select(nfcePlanoPagamentos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
   // retorna um registro caso a data seja maior ou igual ao dia de hoje
-  Future<NfcePlanoPagamento> consultarPlanoAtivo() {
+  Future<NfcePlanoPagamento?> consultarPlanoAtivo() {
     return (select(nfcePlanoPagamentos)
     ..where((t) => t.dataPlanoExpira.isBiggerOrEqualValue(DateTime.now()))
     ..where((t) => t.statusPagamento.equals('3')) //3-pago
     ).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<NfcePlanoPagamento> pObjeto) {
+  Future<int> inserir(Insertable<NfcePlanoPagamento>? pObjeto) {
     return transaction(() async {
-      final idInserido = await into(nfcePlanoPagamentos).insert(pObjeto);
+      final idInserido = await into(nfcePlanoPagamentos).insert(pObjeto!);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<NfcePlanoPagamento> pObjeto) {
+  Future<bool> alterar(Insertable<NfcePlanoPagamento>? pObjeto) {
     return transaction(() async {
-      return update(nfcePlanoPagamentos).replace(pObjeto);
+      return update(nfcePlanoPagamentos).replace(pObjeto!);
     });    
   } 
 
-  Future<int> excluir(Insertable<NfcePlanoPagamento> pObjeto) {
+  Future<int> excluir(Insertable<NfcePlanoPagamento>? pObjeto) {
     return transaction(() async {
-      return delete(nfcePlanoPagamentos).delete(pObjeto);
+      return delete(nfcePlanoPagamentos).delete(pObjeto!);
     });    
   }
 

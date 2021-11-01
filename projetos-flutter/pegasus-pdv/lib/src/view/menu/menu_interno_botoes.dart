@@ -39,13 +39,13 @@ import 'package:flutter/material.dart';
 import 'package:pegasus_pdv/src/view/menu/menu_interno_botao.dart';
 
 class MenuInternoBotoes extends StatelessWidget {
-  final BotaoMenu primeiroBotao;
-  final BotaoMenu segundoBotao;
-  final BotaoMenu terceiroBotao;
-  final BotaoMenu quartoBotao;
+  final BotaoMenu? primeiroBotao;
+  final BotaoMenu? segundoBotao;
+  final BotaoMenu? terceiroBotao;
+  final BotaoMenu? quartoBotao;
 
   const MenuInternoBotoes(
-      {Key key,
+      {Key? key,
       this.primeiroBotao,
       this.segundoBotao,
       this.terceiroBotao,
@@ -67,37 +67,37 @@ class MenuInternoBotoes extends StatelessWidget {
     List<Widget> lista = [];
     if (primeiroBotao != null) {
       lista.add(MenuInternoBotao(
-        icon: primeiroBotao.icon,
-        label: primeiroBotao.label,
-        circleColor: primeiroBotao.circleColor,
-        rota: primeiroBotao.rota,
+        icon: primeiroBotao!.icon,
+        label: primeiroBotao!.label,
+        circleColor: primeiroBotao!.circleColor,
+        rota: primeiroBotao!.rota,
       ));
     }
 
     if (segundoBotao != null) {
       lista.add(MenuInternoBotao(
-        icon: segundoBotao.icon,
-        label: segundoBotao.label,
-        circleColor: segundoBotao.circleColor,
-        rota: segundoBotao.rota,
+        icon: segundoBotao!.icon,
+        label: segundoBotao!.label,
+        circleColor: segundoBotao!.circleColor,
+        rota: segundoBotao!.rota,
       ));
     }
 
     if (terceiroBotao != null) {
       lista.add(MenuInternoBotao(
-        icon: terceiroBotao.icon,
-        label: terceiroBotao.label,
-        circleColor: terceiroBotao.circleColor,
-        rota: terceiroBotao.rota,
+        icon: terceiroBotao!.icon,
+        label: terceiroBotao!.label,
+        circleColor: terceiroBotao!.circleColor,
+        rota: terceiroBotao!.rota,
       ));
     }
 
     if (quartoBotao != null) {
       lista.add(MenuInternoBotao(
-        icon: quartoBotao.icon,
-        label: quartoBotao.label,
-        circleColor: quartoBotao.circleColor,
-        rota: quartoBotao.rota,
+        icon: quartoBotao!.icon,
+        label: quartoBotao!.label,
+        circleColor: quartoBotao!.circleColor,
+        rota: quartoBotao!.rota,
       ));
     }
     return lista;
@@ -105,10 +105,10 @@ class MenuInternoBotoes extends StatelessWidget {
 }
 
 class BotaoMenu {
-  IconData icon;
-  String label;
-  Color circleColor;
-  String rota;
+  IconData? icon;
+  String? label;
+  Color? circleColor;
+  String? rota;
 
   BotaoMenu(
     {this.icon,

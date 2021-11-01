@@ -37,11 +37,12 @@ import 'package:moor/moor.dart';
 
 @DataClassName("EcfRecebimentoNaoFiscal")
 class EcfRecebimentoNaoFiscals extends Table {
+  @override
   String get tableName => 'ECF_RECEBIMENTO_NAO_FISCAL';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idPdvMovimento => integer().named('ID_PDV_MOVIMENTO').nullable().customConstraint('NULLABLE REFERENCES PDV_MOVIMENTO(ID)')();
-  DateTimeColumn get dataRecebimento => dateTime().named('DATA_RECEBIMENTO').nullable()();
-  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 0, max: 50).nullable()();
-  RealColumn get valor => real().named('VALOR').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idPdvMovimento => integer().named('ID_PDV_MOVIMENTO').nullable().customConstraint('NULLABLE REFERENCES PDV_MOVIMENTO(ID)')() as Column<int>?;
+  DateTimeColumn? get dataRecebimento => dateTime().named('DATA_RECEBIMENTO').nullable()() as Column<DateTime>?;
+  TextColumn? get descricao => text().named('DESCRICAO').withLength(min: 0, max: 50).nullable()() as Column<String>?;
+  RealColumn? get valor => real().named('VALOR').nullable()() as Column<double>?;
 }

@@ -37,11 +37,12 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeNumeroInutilizado")
 class NfeNumeroInutilizados extends Table {
+  @override
   String get tableName => 'NFE_NUMERO_INUTILIZADO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get serie => text().named('SERIE').withLength(min: 0, max: 3).nullable()();
-  IntColumn get numero => integer().named('NUMERO').nullable()();
-  DateTimeColumn get dataInutilizacao => dateTime().named('DATA_INUTILIZACAO').nullable()();
-  TextColumn get observacao => text().named('OBSERVACAO').withLength(min: 0, max: 250).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  TextColumn? get serie => text().named('SERIE').withLength(min: 0, max: 3).nullable()() as Column<String>?;
+  IntColumn? get numero => integer().named('NUMERO').nullable()() as Column<int>?;
+  DateTimeColumn? get dataInutilizacao => dateTime().named('DATA_INUTILIZACAO').nullable()() as Column<DateTime>?;
+  TextColumn? get observacao => text().named('OBSERVACAO').withLength(min: 0, max: 250).nullable()() as Column<String>?;
 }

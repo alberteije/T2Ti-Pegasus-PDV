@@ -53,17 +53,17 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class NfceContrataPage extends StatefulWidget {
-  const NfceContrataPage({Key key}) : super(key: key);
+  const NfceContrataPage({Key? key}) : super(key: key);
 
   @override
   _NfceContrataPageState createState() => _NfceContrataPageState();
 }
 
 class _NfceContrataPageState extends State<NfceContrataPage> {
-  List<PdvTipoPlanoModel> _listaTipoPlano = [];
+  List<PdvTipoPlanoModel>? _listaTipoPlano = [];
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   String _mensagemInformativa = 'Selecione um plano e aguarde o carregamento do PagSeguro.';
   bool _podeContratar = false;
@@ -84,7 +84,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
       gutterSize: Constantes.flutterBootstrapGutterSize,
     );
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _carregarDados());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _carregarDados());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -101,7 +101,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
   Widget build(BuildContext context) {
 
     if (Sessao.nfcePlanoPagamento != null) {
-      _mensagemInformativa = 'Plano NFC-e ativo até ' + Biblioteca.formatarData(Sessao.nfcePlanoPagamento.dataPlanoExpira);
+      _mensagemInformativa = 'Plano NFC-e ativo até ' + Biblioteca.formatarData(Sessao.nfcePlanoPagamento!.dataPlanoExpira);
     }
 
     return FocusableActionDetector(
@@ -133,36 +133,36 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
     if (index == 0) return _regiaoTipoPlano(context);
     if (index == 1) return _conteudoTela(context);
     if (index == 2) return _rodapeTela(context);
-    return null;
+    return const SizedBox();
   }
 
   Container _regiaoTipoPlano(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 20.0),
+      margin: const EdgeInsets.only(top: 20.0),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
               color: Colors.white,
               child: Column(
                 children: <Widget>[
-                  SizedBox(
+                  const SizedBox(
                     height: 50.0,
                   ),
                   Text(
                     'Contratação da NFC-e',
-                    style: Biblioteca.isTelaPequena(context) ? Theme.of(context).textTheme.headline6 : Theme.of(context).textTheme.headline4,
+                    style: Biblioteca.isTelaPequena(context)! ? Theme.of(context).textTheme.headline6 : Theme.of(context).textTheme.headline4,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5.0,
                   ),
                   BootstrapContainer(                    
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
-                    padding: Biblioteca.isTelaPequena(context) ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
+                    decoration: const BoxDecoration(color: Colors.white),
+                    padding: Biblioteca.isTelaPequena(context)! ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                     children: <Widget>[			  			  
                       BootstrapRow(
                         height: 60,
@@ -172,14 +172,14 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
                             child: Card(
                               elevation: 4,
                               child: Padding(
-                                padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
+                                padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
                                 child: Column(
                                   children: <Widget>[
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 5.0,
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 0.0, bottom: 0.0),
+                                      padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 0.0, bottom: 0.0),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,10 +188,10 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
                                             style: TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.w600,
-                                            fontSize: Biblioteca.isTelaPequena(context) ? 13.0 : 15.0),
+                                            fontSize: Biblioteca.isTelaPequena(context)! ? 13.0 : 15.0),
                                           ),
                                           getBotaoGenericoPdv(
-                                            descricao: Biblioteca.isTelaPequena(context) ? 'Checar' : 'Verificar se Foi Confirmado',
+                                            descricao: Biblioteca.isTelaPequena(context)! ? 'Checar' : 'Verificar se Foi Confirmado',
                                             cor: Colors.green, 
                                             onPressed: () async {
                                               if (Sessao.nfcePlanoPagamento == null) {
@@ -205,7 +205,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
                                         ],
                                       ),
                                     ),
-                                    Divider(
+                                    const Divider(
                                       indent: 10,
                                       endIndent: 10,
                                       thickness: 2,
@@ -216,8 +216,8 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
                                           flex: 1,
                                           child: _getTile(
                                             _getItemPlanoPagamento(
-                                              _listaTipoPlano.length > 0 ? _listaTipoPlano[0]?.plano : '', 
-                                              _listaTipoPlano.length > 0 ? _listaTipoPlano[0]?.valor : 0, 
+                                              _listaTipoPlano!.isNotEmpty ? _listaTipoPlano![0].plano : '', 
+                                              _listaTipoPlano!.isNotEmpty ? _listaTipoPlano![0].valor : 0, 
                                               Colors.blue.shade900, 
                                               FontAwesomeIcons.calendarAlt,
                                             ),
@@ -230,15 +230,15 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
                                             },
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 10,
                                         ),
                                         Expanded(
                                           flex: 1,
                                           child: _getTile(
                                             _getItemPlanoPagamento(
-                                              _listaTipoPlano.length > 0 ? _listaTipoPlano[1]?.plano : '', 
-                                              _listaTipoPlano.length > 0 ? _listaTipoPlano[1]?.valor : 0, 
+                                              _listaTipoPlano!.isNotEmpty ? _listaTipoPlano![1].plano : '', 
+                                              _listaTipoPlano!.isNotEmpty ? _listaTipoPlano![1].valor : 0, 
                                               Colors.green.shade900, 
                                               FontAwesomeIcons.calendarWeek,
                                             ),
@@ -251,15 +251,15 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
                                             },
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 10,
                                         ),
                                         Expanded(
                                           flex: 1,
                                           child: _getTile(
                                             _getItemPlanoPagamento(
-                                              _listaTipoPlano.length > 0 ? _listaTipoPlano[2]?.plano : '', 
-                                              _listaTipoPlano.length > 0 ? _listaTipoPlano[2]?.valor : 0, 
+                                              _listaTipoPlano!.isNotEmpty ? _listaTipoPlano![2].plano : '', 
+                                              _listaTipoPlano!.isNotEmpty ? _listaTipoPlano![2].valor : 0, 
                                               Colors.purple.shade900, 
                                               FontAwesomeIcons.calendar,
                                             ),
@@ -274,14 +274,14 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
                                         ),
                                       ],
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 10,
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.only(left: 0.0, right: 0.0, top: 0.0, bottom: 0.0),
+                                      padding: const EdgeInsets.only(left: 0.0, right: 0.0, top: 0.0, bottom: 0.0),
                                       child: Text(              
                                         _mensagemInformativa,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.w600, 
                                           fontSize: 17.0, 
                                           color: Colors.red, 
@@ -299,7 +299,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5.0,
                   ),
                 ],
@@ -308,7 +308,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: const <Widget>[
               Material(
                 elevation: 5.0,
                 shape: CircleBorder(),
@@ -326,11 +326,11 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
 
   Container _conteudoTela(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 0.0),
+      margin: const EdgeInsets.only(top: 0.0),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
@@ -339,11 +339,11 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: <Widget>[
-                    SizedBox(
+                    const SizedBox(
                       height: 5.0,
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 0.0, bottom: 0.0),
+                      padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 0.0, bottom: 0.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,18 +352,18 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
                             style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w600,
-                            fontSize: Biblioteca.isTelaPequena(context) ? 13.0 : 15.0),
+                            fontSize: Biblioteca.isTelaPequena(context)! ? 13.0 : 15.0),
                           ),
                         ],
                       ),
                     ),
-                    Divider(
+                    const Divider(
                       indent: 10,
                       endIndent: 10,
                       thickness: 2,
                     ),
-                    Text('Se houver realizado o pagamento com um e-mail diferente do cadastrado aqui, por favor, informe abaixo o código da transação.'),
-                    SizedBox(
+                    const Text('Se houver realizado o pagamento com um e-mail diferente do cadastrado aqui, por favor, informe abaixo o código da transação.'),
+                    const SizedBox(
                       height: 10.0,
                     ),
                     TextField(
@@ -395,19 +395,19 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
     );
   }
 
-  Widget _getTile(Widget child, {Function() onTap}) {
+  Widget _getTile(Widget child, {Function()? onTap}) {
     return Material(
         elevation: 5.0,
         borderRadius: BorderRadius.circular(12.0),
-        shadowColor: Color(0x802196F3),
+        shadowColor: const Color(0x802196F3),
         child: InkWell(
             onTap: onTap != null
                 ? () => onTap()
-                : () { print('Nada foi implementado'); },
+                : () { debugPrint('Nada foi implementado'); },
             child: child));
   }
 
-  Widget _getItemPlanoPagamento(String descricao, double valor, Color corIcone, IconData icone) {
+  Widget _getItemPlanoPagamento(String? descricao, double? valor, Color corIcone, IconData icone) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 32, 10, 0),
       child: Column(
@@ -416,26 +416,26 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
         children: <Widget>[
           Material(
             color: corIcone,
-            shape: CircleBorder(),
+            shape: const CircleBorder(),
             child: Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Icon(icone, color: Colors.white, size: 30.0),
             )),
-          Padding(padding: EdgeInsets.only(bottom: 16.0)),
+          const Padding(padding: EdgeInsets.only(bottom: 16.0)),
           Text(descricao ?? '', style: 
             TextStyle(
               color: Colors.black87,
-              fontSize: Biblioteca.isTelaPequena(context) ? 12 : 14,
+              fontSize: Biblioteca.isTelaPequena(context)! ? 12 : 14,
             )
           ),
           Text(
-            Biblioteca.isTelaPequena(context) 
-            ? '${Constantes.formatoDecimalValor.format(valor ?? 0)}' //valor
+            Biblioteca.isTelaPequena(context)! 
+            ? Constantes.formatoDecimalValor.format(valor ?? 0) //valor
             : 'R\$ ${Constantes.formatoDecimalValor.format(valor ?? 0)}', //valor            
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.w600,
-              fontSize: Biblioteca.isTelaPequena(context) ? 16 : 24)),
+              fontSize: Biblioteca.isTelaPequena(context)! ? 16 : 24)),
         ]
       ),
     );
@@ -443,11 +443,11 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
 
   Container _rodapeTela(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 0.0),
+      margin: const EdgeInsets.only(top: 0.0),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
@@ -470,16 +470,16 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
     );
   }
 
-  List<Widget> _getBotoesRodape({BuildContext context}) {
+  List<Widget> _getBotoesRodape({BuildContext? context}) {
     List<Widget> listaBotoes = [];
     listaBotoes.add(
-      Container(
+      SizedBox(
         width: 200,
         child: getBotaoGenericoPdv(
           descricao: Biblioteca.isMobile() ? 'Sair' : 'Sair [ESC]',
           cor: Colors.green, 
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context!);
           }
         ),
       )
@@ -487,10 +487,10 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
     return listaBotoes;
   }
 
-  List<Widget> _getBotaoConfirmarTransacao({BuildContext context}) {
+  List<Widget> _getBotaoConfirmarTransacao({BuildContext? context}) {
     List<Widget> listaBotoes = [];
     listaBotoes.add(
-       Container(
+       SizedBox(
         width: 200,
         child: getBotaoGenericoPdv(
           descricao: 'Confirmar Transação',
@@ -552,15 +552,15 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
     if (_podeContratar) {
       switch (tipoPlano) {	  
         case 'M' : 
-          final _url = 'https://pag.ae/7XsrnNVw4';
+          const _url = 'https://pag.ae/7XsrnNVw4';
           await canLaunch(_url) ? await launch(_url) : throw 'Houve um problema ao tentar abrir o link de pagamento: $_url';
           break;
         case 'S' : 
-          final _url = 'https://pag.ae/7XsAYgam9';
+          const _url = 'https://pag.ae/7XsAYgam9';
           await canLaunch(_url) ? await launch(_url) : throw 'Houve um problema ao tentar abrir o link de pagamento: $_url';
           break;
         case 'A' : 
-          final _url = 'https://pag.ae/7XsAYQKb8';
+          const _url = 'https://pag.ae/7XsAYQKb8';
           await canLaunch(_url) ? await launch(_url) : throw 'Houve um problema ao tentar abrir o link de pagamento: $_url';
           break;
         default:
@@ -647,7 +647,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
     Sessao.nfcePlanoPagamento = await Sessao.db.nfcePlanoPagamentoDao.consultarPlanoAtivo();    
 
     Sessao.configuracaoPdv = 
-      Sessao.configuracaoPdv.copyWith(
+      Sessao.configuracaoPdv!.copyWith(
         modulo: 'F',
         plano: nfcePlanoPagamentoModel.plano,
         planoSituacao: 'A',
@@ -667,7 +667,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
   void _bloquearDispositivoParaNfce(NfcePlanoPagamentoModel nfcePlanoPagamentoModel) async {
     if(Sessao.nfcePlanoPagamento != null) {
       final dataPlanoExpiraFormatada = Biblioteca.formatarData(nfcePlanoPagamentoModel.dataPlanoExpira);
-      Sessao.nfcePlanoPagamento = Sessao.nfcePlanoPagamento.copyWith(
+      Sessao.nfcePlanoPagamento = Sessao.nfcePlanoPagamento!.copyWith(
         dataSolicitacao: nfcePlanoPagamentoModel.dataSolicitacao,
         dataPagamento: nfcePlanoPagamentoModel.dataPagamento,
         tipoPlano: nfcePlanoPagamentoModel.plano,
@@ -686,8 +686,8 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
     // se tem algum pagamento de plano já armazenado, então a aplicação não pode mais voltar para o modo gratuito
     final listaPagamentos = await Sessao.db.nfcePlanoPagamentoDao.consultarLista();
     var modulo = 'G';
-    var moduloFiscal;
-    if (listaPagamentos.length > 0) {
+    String? moduloFiscal;
+    if (listaPagamentos.isNotEmpty) {
       modulo = 'F';
       moduloFiscal = 'NFC';
     } else {
@@ -702,7 +702,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
     }
 
     Sessao.configuracaoPdv = 
-      Sessao.configuracaoPdv.copyWith(
+      Sessao.configuracaoPdv!.copyWith(
         modulo: modulo,
         planoSituacao: nfcePlanoPagamentoModel.statusPagamento == '2' ? 'B' : 'I',
         moduloFiscalPrincipal: moduloFiscal,

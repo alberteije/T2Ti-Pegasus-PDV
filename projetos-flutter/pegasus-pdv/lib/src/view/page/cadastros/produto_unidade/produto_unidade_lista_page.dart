@@ -51,20 +51,22 @@ import 'package:pegasus_pdv/src/view/shared/page/filtro_page.dart';
 import 'produto_unidade_persiste_page.dart';
 
 class ProdutoUnidadeListaPage extends StatefulWidget {
+  const ProdutoUnidadeListaPage({Key? key}) : super(key: key);
+
   @override
   _ProdutoUnidadeListaPageState createState() => _ProdutoUnidadeListaPageState();
 }
 
 class _ProdutoUnidadeListaPageState extends State<ProdutoUnidadeListaPage> {
-  int _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
-  int _sortColumnIndex;
+  int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
+  int? _sortColumnIndex;
   bool _sortAscending = true;
-  var _filtro = Filtro();
+  Filtro? _filtro = Filtro();
   final _colunas = ProdutoUnidadeDao.colunas;
   final _campos = ProdutoUnidadeDao.campos;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -77,7 +79,7 @@ class _ProdutoUnidadeListaPageState extends State<ProdutoUnidadeListaPage> {
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -102,7 +104,7 @@ class _ProdutoUnidadeListaPageState extends State<ProdutoUnidadeListaPage> {
 
     final _ProdutoUnidadeDataSource _produtoUnidadeDataSource = _ProdutoUnidadeDataSource(_listaProdutoUnidade, context, _refrescarTela);
 
-    void _sort<T>(Comparable<T> getField(ProdutoUnidade produtoUnidade), int columnIndex, bool ascending) {
+    void _sort<T>(Comparable<T>? Function(ProdutoUnidade produtoUnidade) getField, int columnIndex, bool ascending) {
       _produtoUnidadeDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
@@ -118,7 +120,7 @@ class _ProdutoUnidadeListaPageState extends State<ProdutoUnidadeListaPage> {
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Cadastro - Produto Unidade'),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           ),
           floatingActionButton: FloatingActionButton(
             focusColor: ViewUtilLib.getBotaoFocusColor(),
@@ -131,7 +133,7 @@ class _ProdutoUnidadeListaPageState extends State<ProdutoUnidadeListaPage> {
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: BottomAppBar(
             color: ViewUtilLib.getBottomAppBarColor(),          
-            shape: CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),
             child: Row(
               children: getBotoesNavigationBarListaPage(
                 context: context, 
@@ -144,14 +146,14 @@ class _ProdutoUnidadeListaPageState extends State<ProdutoUnidadeListaPage> {
             onRefresh: _refrescarTela,
             child: Scrollbar(
               child: _listaProdutoUnidade == null
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : ListView(
-                padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
+                padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                 children: <Widget>[
                   PaginatedDataTable(                        
                     header: const Text('Relação - Produto Unidade'),
-                    rowsPerPage: _rowsPerPage,
-                    onRowsPerPageChanged: (int value) {
+                    rowsPerPage: _rowsPerPage!,
+                    onRowsPerPageChanged: (int? value) {
                       setState(() {
                         _rowsPerPage = value;
                       });
@@ -219,9 +221,9 @@ class _ProdutoUnidadeListaPageState extends State<ProdutoUnidadeListaPage> {
           fullscreenDialog: true,
         ));
     if (_filtro != null) {
-      if (_filtro.campo != null) {
-        _filtro.campo = _campos[int.parse(_filtro.campo)];
-        await Sessao.db.produtoUnidadeDao.consultarListaFiltro(_filtro.campo, _filtro.valor);
+      if (_filtro!.campo != null) {
+        _filtro!.campo = _campos[int.parse(_filtro!.campo!)];
+        await Sessao.db.produtoUnidadeDao.consultarListaFiltro(_filtro!.campo!, _filtro!.valor!);
         setState(() {
         });
       }
@@ -241,49 +243,49 @@ class _ProdutoUnidadeListaPageState extends State<ProdutoUnidadeListaPage> {
 
 /// codigo referente a fonte de dados
 class _ProdutoUnidadeDataSource extends DataTableSource {
-  final List<ProdutoUnidade> listaProdutoUnidade;
+  final List<ProdutoUnidade>? listaProdutoUnidade;
   final BuildContext context;
   final Function refrescarTela;
  
   _ProdutoUnidadeDataSource(this.listaProdutoUnidade, this.context, this.refrescarTela);
 
-  void _sort<T>(Comparable<T> getField(ProdutoUnidade produtoUnidade), bool ascending) {
-    listaProdutoUnidade.sort((ProdutoUnidade a, ProdutoUnidade b) {
+  void _sort<T>(Comparable<T>? Function(ProdutoUnidade produtoUnidade) getField, bool ascending) {
+    listaProdutoUnidade!.sort((ProdutoUnidade a, ProdutoUnidade b) {
       if (!ascending) {
         final ProdutoUnidade c = a;
         a = b;
         b = c;
       }
-      Comparable<T> aValue = getField(a);
-      Comparable<T> bValue = getField(b);
+      Comparable<T>? aValue = getField(a);
+      Comparable<T>? bValue = getField(b);
 
-      if (aValue == null) aValue = '' as Comparable<T>;
-      if (bValue == null) bValue = '' as Comparable<T>;
+      aValue ??= '' as Comparable<T>;
+      bValue ??= '' as Comparable<T>;
 
       return Comparable.compare(aValue, bValue);
     });
   }
 
-  int _selectedCount = 0;
+  final int _selectedCount = 0;
 
   @override
-  DataRow getRow(int index) {
+  DataRow? getRow(int index) {
     assert(index >= 0);
-    if (index >= listaProdutoUnidade.length) return null;
-    final ProdutoUnidade produtoUnidade = listaProdutoUnidade[index];
+    if (index >= listaProdutoUnidade!.length) return null;
+    final ProdutoUnidade produtoUnidade = listaProdutoUnidade![index];
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
         DataCell(Text('${produtoUnidade.id ?? ''}'), onTap: () {
           _detalharProdutoUnidade(produtoUnidade, context, refrescarTela);
         }),
-        DataCell(Text('${produtoUnidade.sigla ?? ''}'), onTap: () {
+        DataCell(Text(produtoUnidade.sigla ?? ''), onTap: () {
           _detalharProdutoUnidade(produtoUnidade, context, refrescarTela);
         }),
-        DataCell(Text('${produtoUnidade.descricao ?? ''}'), onTap: () {
+        DataCell(Text(produtoUnidade.descricao ?? ''), onTap: () {
           _detalharProdutoUnidade(produtoUnidade, context, refrescarTela);
         }),
-        DataCell(Text('${produtoUnidade.podeFracionar ?? ''}'), onTap: () {
+        DataCell(Text(produtoUnidade.podeFracionar ?? ''), onTap: () {
           _detalharProdutoUnidade(produtoUnidade, context, refrescarTela);
         }),
       ],
@@ -291,7 +293,7 @@ class _ProdutoUnidadeDataSource extends DataTableSource {
   }
 
   @override
-  int get rowCount => listaProdutoUnidade.length ?? 0;
+  int get rowCount => listaProdutoUnidade!.length;
 
   @override
   bool get isRowCountApproximate => false;

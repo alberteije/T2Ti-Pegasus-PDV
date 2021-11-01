@@ -37,13 +37,14 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeImportacaoDetalhe")
 class NfeImportacaoDetalhes extends Table {
+  @override
   String get tableName => 'NFE_IMPORTACAO_DETALHE';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeDeclaracaoImportacao => integer().named('ID_NFE_DECLARACAO_IMPORTACAO').nullable().customConstraint('NULLABLE REFERENCES NFE_DECLARACAO_IMPORTACAO(ID)')();
-  IntColumn get numeroAdicao => integer().named('NUMERO_ADICAO').nullable()();
-  IntColumn get numeroSequencial => integer().named('NUMERO_SEQUENCIAL').nullable()();
-  TextColumn get codigoFabricanteEstrangeiro => text().named('CODIGO_FABRICANTE_ESTRANGEIRO').withLength(min: 0, max: 60).nullable()();
-  RealColumn get valorDesconto => real().named('VALOR_DESCONTO').nullable()();
-  IntColumn get drawback => integer().named('DRAWBACK').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeDeclaracaoImportacao => integer().named('ID_NFE_DECLARACAO_IMPORTACAO').nullable().customConstraint('NULLABLE REFERENCES NFE_DECLARACAO_IMPORTACAO(ID)')() as Column<int>?;
+  IntColumn? get numeroAdicao => integer().named('NUMERO_ADICAO').nullable()() as Column<int>?;
+  IntColumn? get numeroSequencial => integer().named('NUMERO_SEQUENCIAL').nullable()() as Column<int>?;
+  TextColumn? get codigoFabricanteEstrangeiro => text().named('CODIGO_FABRICANTE_ESTRANGEIRO').withLength(min: 0, max: 60).nullable()() as Column<String>?;
+  RealColumn? get valorDesconto => real().named('VALOR_DESCONTO').nullable()() as Column<double>?;
+  IntColumn? get drawback => integer().named('DRAWBACK').nullable()() as Column<int>?;
 }

@@ -59,7 +59,7 @@ class PdvCaixaDao extends DatabaseAccessor<AppDatabase> with _$PdvCaixaDaoMixin 
 
   Stream<List<PdvCaixa>> observarLista() => select(pdvCaixas).watch();
 
-  Future<PdvCaixa> consultarObjeto(int pId) {
+  Future<PdvCaixa?> consultarObjeto(int pId) {
     return (select(pdvCaixas)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

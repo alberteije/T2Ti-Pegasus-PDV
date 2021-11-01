@@ -39,12 +39,12 @@ import 'package:pegasus_pdv/src/model/retorno_json_erro.dart';
 
 class ServiceBase {
   /// define o cabeçalho enviado em todas as requisições que segue com o Token JWT
-  static Map<String, String> cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
+  static Map<String, String>? cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
                               ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT} 
                               : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT};
 
   // Servidor ERP
-  static String _endpoint = Constantes.enderecoServidor + ':' + Constantes.portaServidor;// + Constantes.complementoEnderecoServidor;
+  static final String _endpoint = Constantes.enderecoServidor! + ':' + Constantes.portaServidor!;// + Constantes.complementoEnderecoServidor;
   get endpoint => _endpoint;
   static var _url = '';
   get url => _url;
@@ -59,33 +59,33 @@ class ServiceBase {
   get urlRelatorios => _urlRelatorios;
 
 
-  static var _objetoJsonErro = RetornoJsonErro();
+  static final _objetoJsonErro = RetornoJsonErro();
   get objetoJsonErro => _objetoJsonErro;
 
   // o filtro deve ser enviado da seguinte forma: ?filter=field||$condition||value
   // referência: https://github.com/nestjsx/crud/wiki/Requests
-  void tratarFiltro(Filtro filtro, String entidade) {
-    var stringFiltro = '';
+  void tratarFiltro(Filtro? filtro, String entidade) {
+    String? stringFiltro = '';
 
     if (filtro != null) {
       if (filtro.condicao == 'cont') {
-        stringFiltro = '?filter=' + filtro.campo + '||\$cont' + '||' + filtro.valor;
+        stringFiltro = '?filter=' + filtro.campo! + '||\$cont' + '||' + filtro.valor!;
       } else if (filtro.condicao == 'eq') {
-        stringFiltro = '?filter=' + filtro.campo + '||\$eq' + '||' + filtro.valor;
+        stringFiltro = '?filter=' + filtro.campo! + '||\$eq' + '||' + filtro.valor!;
       } else if (filtro.condicao == 'between') {
-        stringFiltro = '?filter=' + filtro.campo + '||\$between' + '||' + filtro.dataInicial + ',' + filtro.dataFinal;
+        stringFiltro = '?filter=' + filtro.campo! + '||\$between' + '||' + filtro.dataInicial! + ',' + filtro.dataFinal!;
       } else if (filtro.condicao == 'where') { // nesse caso o filtro já foi montado na janela
         if (Constantes.linguagemServidor != 'node') {
-          filtro.where = filtro.where.replaceAll('&filter=', '?');
+          filtro.where = filtro.where!.replaceAll('&filter=', '?');
         }
         stringFiltro = filtro.where;
       }
     }
 
-    _url = _endpoint + entidade + stringFiltro;
+    _url = _endpoint + entidade + stringFiltro!;
   }
 
-  void tratarFiltroRelatorio(Filtro filtro, String entidade) {
+  void tratarFiltroRelatorio(Filtro? filtro, String entidade) {
     var stringFiltro = "";
 
     if (filtro != null) {
@@ -94,11 +94,11 @@ class ServiceBase {
       }
 
       if (filtro.condicao == 'cont') {
-        stringFiltro = stringFiltro + filtro.campo + " LIKE '%25" + filtro.valor + "%25'";
+        stringFiltro = stringFiltro + filtro.campo! + " LIKE '%25" + filtro.valor! + "%25'";
       } else if (filtro.condicao == 'eq') {
-        stringFiltro = stringFiltro + filtro.campo + ' = ' + filtro.valor;
+        stringFiltro = stringFiltro + filtro.campo! + ' = ' + filtro.valor!;
       } else if (filtro.condicao == 'between') {
-        stringFiltro = stringFiltro + filtro.campo + ' between ' + filtro.dataInicial + ' and ' + filtro.dataFinal;
+        stringFiltro = stringFiltro + filtro.campo! + ' between ' + filtro.dataInicial! + ' and ' + filtro.dataFinal!;
       }
     }
 
@@ -110,7 +110,7 @@ class ServiceBase {
   // html.window.open(_urlRelatorios, titulo);
   }
 
-  Future tratarRetornoErro(String corpo, Map<String, String> headers, {Exception exception}) async {
+  Future tratarRetornoErro(String? corpo, Map<String, String>? headers, {Exception? exception}) async {
     throw ('Erro: ' + DateTime.now().toIso8601String() + ' - Exceção: ' + (exception?.toString() ?? '') + ' - Mensagem: ' + (corpo?.toString() ?? ''));
   }
 

@@ -37,26 +37,27 @@ import 'package:moor/moor.dart';
 
 @DataClassName("PdvMovimento")
 class PdvMovimentos extends Table {
+  @override
   String get tableName => 'PDV_MOVIMENTO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idEcfImpressora => integer().named('ID_ECF_IMPRESSORA').nullable().customConstraint('NULLABLE REFERENCES ECF_IMPRESSORA(ID)')();
-  IntColumn get idPdvOperador => integer().named('ID_PDV_OPERADOR').nullable().customConstraint('NULLABLE REFERENCES PDV_OPERADOR(ID)')();
-  IntColumn get idPdvCaixa => integer().named('ID_PDV_CAIXA').nullable().customConstraint('NULLABLE REFERENCES PDV_CAIXA(ID)')();
-  IntColumn get idGerenteSupervisor => integer().named('ID_GERENTE_SUPERVISOR').nullable().customConstraint('NULLABLE REFERENCES GERENTE_SUPERVISOR(ID)')();
-  DateTimeColumn get dataAbertura => dateTime().named('DATA_ABERTURA').nullable()();
-  TextColumn get horaAbertura => text().named('HORA_ABERTURA').withLength(min: 0, max: 8).nullable()();
-  DateTimeColumn get dataFechamento => dateTime().named('DATA_FECHAMENTO').nullable()();
-  TextColumn get horaFechamento => text().named('HORA_FECHAMENTO').withLength(min: 0, max: 8).nullable()();
-  RealColumn get totalSuprimento => real().named('TOTAL_SUPRIMENTO').nullable()();
-  RealColumn get totalSangria => real().named('TOTAL_SANGRIA').nullable()();
-  RealColumn get totalNaoFiscal => real().named('TOTAL_NAO_FISCAL').nullable()();
-  RealColumn get totalVenda => real().named('TOTAL_VENDA').nullable()();
-  RealColumn get totalDesconto => real().named('TOTAL_DESCONTO').nullable()();
-  RealColumn get totalAcrescimo => real().named('TOTAL_ACRESCIMO').nullable()();
-  RealColumn get totalFinal => real().named('TOTAL_FINAL').nullable()();
-  RealColumn get totalRecebido => real().named('TOTAL_RECEBIDO').nullable()();
-  RealColumn get totalTroco => real().named('TOTAL_TROCO').nullable()();
-  RealColumn get totalCancelado => real().named('TOTAL_CANCELADO').nullable()();
-  TextColumn get statusMovimento => text().named('STATUS_MOVIMENTO').withLength(min: 0, max: 1).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idEcfImpressora => integer().named('ID_ECF_IMPRESSORA').nullable().customConstraint('NULLABLE REFERENCES ECF_IMPRESSORA(ID)')() as Column<int>?;
+  IntColumn? get idPdvOperador => integer().named('ID_PDV_OPERADOR').nullable().customConstraint('NULLABLE REFERENCES PDV_OPERADOR(ID)')() as Column<int>?;
+  IntColumn? get idPdvCaixa => integer().named('ID_PDV_CAIXA').nullable().customConstraint('NULLABLE REFERENCES PDV_CAIXA(ID)')() as Column<int>?;
+  IntColumn? get idGerenteSupervisor => integer().named('ID_GERENTE_SUPERVISOR').nullable().customConstraint('NULLABLE REFERENCES GERENTE_SUPERVISOR(ID)')() as Column<int>?;
+  DateTimeColumn? get dataAbertura => dateTime().named('DATA_ABERTURA').nullable()() as Column<DateTime>?;
+  TextColumn? get horaAbertura => text().named('HORA_ABERTURA').withLength(min: 0, max: 8).nullable()() as Column<String>?;
+  DateTimeColumn? get dataFechamento => dateTime().named('DATA_FECHAMENTO').nullable()() as Column<DateTime>?;
+  TextColumn? get horaFechamento => text().named('HORA_FECHAMENTO').withLength(min: 0, max: 8).nullable()() as Column<String>?;
+  RealColumn? get totalSuprimento => real().named('TOTAL_SUPRIMENTO').nullable()() as Column<double>?;
+  RealColumn? get totalSangria => real().named('TOTAL_SANGRIA').nullable()() as Column<double>?;
+  RealColumn? get totalNaoFiscal => real().named('TOTAL_NAO_FISCAL').nullable()() as Column<double>?;
+  RealColumn? get totalVenda => real().named('TOTAL_VENDA').nullable()() as Column<double>?;
+  RealColumn? get totalDesconto => real().named('TOTAL_DESCONTO').nullable()() as Column<double>?;
+  RealColumn? get totalAcrescimo => real().named('TOTAL_ACRESCIMO').nullable()() as Column<double>?;
+  RealColumn? get totalFinal => real().named('TOTAL_FINAL').nullable()() as Column<double>?;
+  RealColumn? get totalRecebido => real().named('TOTAL_RECEBIDO').nullable()() as Column<double>?;
+  RealColumn? get totalTroco => real().named('TOTAL_TROCO').nullable()() as Column<double>?;
+  RealColumn? get totalCancelado => real().named('TOTAL_CANCELADO').nullable()() as Column<double>?;
+  TextColumn? get statusMovimento => text().named('STATUS_MOVIMENTO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
 }

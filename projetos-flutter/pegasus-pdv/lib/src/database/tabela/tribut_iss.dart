@@ -37,16 +37,17 @@ import 'package:moor/moor.dart';
 
 @DataClassName("TributIss")
 class TributIsss extends Table {
+  @override
   String get tableName => 'TRIBUT_ISS';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idTributOperacaoFiscal => integer().named('ID_TRIBUT_OPERACAO_FISCAL').nullable().customConstraint('NULLABLE REFERENCES TRIBUT_OPERACAO_FISCAL(ID)')();
-  TextColumn get modalidadeBaseCalculo => text().named('MODALIDADE_BASE_CALCULO').withLength(min: 0, max: 1).nullable()();
-  RealColumn get porcentoBaseCalculo => real().named('PORCENTO_BASE_CALCULO').nullable()();
-  RealColumn get aliquotaPorcento => real().named('ALIQUOTA_PORCENTO').nullable()();
-  RealColumn get aliquotaUnidade => real().named('ALIQUOTA_UNIDADE').nullable()();
-  RealColumn get valorPrecoMaximo => real().named('VALOR_PRECO_MAXIMO').nullable()();
-  RealColumn get valorPautaFiscal => real().named('VALOR_PAUTA_FISCAL').nullable()();
-  IntColumn get itemListaServico => integer().named('ITEM_LISTA_SERVICO').nullable()();
-  TextColumn get codigoTributacao => text().named('CODIGO_TRIBUTACAO').withLength(min: 0, max: 1).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idTributOperacaoFiscal => integer().named('ID_TRIBUT_OPERACAO_FISCAL').nullable().customConstraint('NULLABLE REFERENCES TRIBUT_OPERACAO_FISCAL(ID)')() as Column<int>?;
+  TextColumn? get modalidadeBaseCalculo => text().named('MODALIDADE_BASE_CALCULO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  RealColumn? get porcentoBaseCalculo => real().named('PORCENTO_BASE_CALCULO').nullable()() as Column<double>?;
+  RealColumn? get aliquotaPorcento => real().named('ALIQUOTA_PORCENTO').nullable()() as Column<double>?;
+  RealColumn? get aliquotaUnidade => real().named('ALIQUOTA_UNIDADE').nullable()() as Column<double>?;
+  RealColumn? get valorPrecoMaximo => real().named('VALOR_PRECO_MAXIMO').nullable()() as Column<double>?;
+  RealColumn? get valorPautaFiscal => real().named('VALOR_PAUTA_FISCAL').nullable()() as Column<double>?;
+  IntColumn? get itemListaServico => integer().named('ITEM_LISTA_SERVICO').nullable()() as Column<int>?;
+  TextColumn? get codigoTributacao => text().named('CODIGO_TRIBUTACAO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
 }

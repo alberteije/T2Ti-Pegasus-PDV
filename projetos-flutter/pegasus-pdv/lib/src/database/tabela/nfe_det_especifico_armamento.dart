@@ -37,12 +37,13 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeDetEspecificoArmamento")
 class NfeDetEspecificoArmamentos extends Table {
+  @override
   String get tableName => 'NFE_DET_ESPECIFICO_ARMAMENTO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')();
-  TextColumn get tipoArma => text().named('TIPO_ARMA').withLength(min: 0, max: 1).nullable()();
-  TextColumn get numeroSerieArma => text().named('NUMERO_SERIE_ARMA').withLength(min: 0, max: 15).nullable()();
-  TextColumn get numeroSerieCano => text().named('NUMERO_SERIE_CANO').withLength(min: 0, max: 15).nullable()();
-  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 0, max: 250).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')() as Column<int>?;
+  TextColumn? get tipoArma => text().named('TIPO_ARMA').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get numeroSerieArma => text().named('NUMERO_SERIE_ARMA').withLength(min: 0, max: 15).nullable()() as Column<String>?;
+  TextColumn? get numeroSerieCano => text().named('NUMERO_SERIE_CANO').withLength(min: 0, max: 15).nullable()() as Column<String>?;
+  TextColumn? get descricao => text().named('DESCRICAO').withLength(min: 0, max: 250).nullable()() as Column<String>?;
 }

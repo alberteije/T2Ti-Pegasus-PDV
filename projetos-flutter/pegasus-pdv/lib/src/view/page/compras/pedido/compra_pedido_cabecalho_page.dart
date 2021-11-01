@@ -56,33 +56,33 @@ List<Aba> _todasAsAbas = <Aba>[];
 List<Aba> _getAbasAtivas() {
   List<Aba> retorno = [];
   for (var item in _todasAsAbas) {
-    if (item.visible) retorno.add(item);
+    if (item.visible!) retorno.add(item);
   }
   return retorno;
 }
 
 class CompraPedidoCabecalhoPage extends StatefulWidget {
-  final CompraPedidoCabecalhoMontado compraPedidoCabecalhoMontado;
-  final String title;
-  final String operacao;
+  final CompraPedidoCabecalhoMontado? compraPedidoCabecalhoMontado;
+  final String? title;
+  final String? operacao;
 
   // static CompraPedidoCabecalho compraPedidoCabecalho;
   // static List<CompraDetalhe> listaCompraDetalhe = [];
   static bool descontoNosItems = false;
 
-  CompraPedidoCabecalhoPage({this.compraPedidoCabecalhoMontado, this.title, this.operacao, Key key}): super(key: key);
+  const CompraPedidoCabecalhoPage({this.compraPedidoCabecalhoMontado, this.title, this.operacao, Key? key}): super(key: key);
 
   @override
   _CompraPedidoCabecalhoPageState createState() => _CompraPedidoCabecalhoPageState();
 }
 
 class _CompraPedidoCabecalhoPageState extends State<CompraPedidoCabecalhoPage> with SingleTickerProviderStateMixin {
-  TabController _abasController;
+  TabController? _abasController;
   String _estiloBotoesAba = 'iconsAndText';
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
-  FocusNode myFocusNode;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
+  FocusNode? myFocusNode;
   
   // CompraPedidoCabecalho
   final GlobalKey<FormState> _compraPedidoCabecalhoPersisteFormKey = GlobalKey<FormState>();
@@ -93,7 +93,7 @@ class _CompraPedidoCabecalhoPageState extends State<CompraPedidoCabecalhoPage> w
     super.initState();
     _atualizarAbas();
     _abasController = TabController(vsync: this, length: _getAbasAtivas().length);
-    _abasController.addListener(_salvarForms);
+    _abasController!.addListener(_salvarForms);
     paginaMestreDetalheFoiAlterada = false; // vamos controlar as alterações nas paginas filhas aqui para alertar ao usuario sobre possivel perda de dados
   
     bootstrapGridParameters(
@@ -106,22 +106,19 @@ class _CompraPedidoCabecalhoPageState extends State<CompraPedidoCabecalhoPage> w
         onInvoke: _tratarAcoesAtalhos,
       ),
     };
-    CompraPedidoCabecalhoController.compraPedidoCabecalho = widget.compraPedidoCabecalhoMontado.compraPedidoCabecalho;
-    if (CompraPedidoCabecalhoController.compraPedidoCabecalho == null) {
-      CompraPedidoCabecalhoController.compraPedidoCabecalho = 
-        CompraPedidoCabecalho(
+    CompraPedidoCabecalhoController.compraPedidoCabecalho = widget.compraPedidoCabecalhoMontado!.compraPedidoCabecalho;
+    CompraPedidoCabecalhoController.compraPedidoCabecalho ??= CompraPedidoCabecalho(
           id: null, 
           dataPedido: DateTime.now(), 
-          idColaborador: widget.compraPedidoCabecalhoMontado.colaborador?.id,
+          idColaborador: widget.compraPedidoCabecalhoMontado!.colaborador?.id,
         );
-    }
     myFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
-    myFocusNode.dispose();
-    _abasController.dispose();
+    myFocusNode!.dispose();
+    _abasController!.dispose();
     super.dispose();
   }
   
@@ -143,7 +140,7 @@ class _CompraPedidoCabecalhoPageState extends State<CompraPedidoCabecalhoPage> w
       child: Focus(
         autofocus: false, //o foco deve ser enviado para as páginas filhas e elas devem chamar o método salvar
         child: getScaffoldAbaPage(
-          widget.title,
+          widget.title!,
           context,
           _abasController,
           _getAbasAtivas(),
@@ -193,10 +190,10 @@ class _CompraPedidoCabecalhoPageState extends State<CompraPedidoCabecalhoPage> w
 
   bool _salvarForms() {
     // valida e salva o form CompraPedidoCabecalhoDetalhe
-    FormState formCompraPedidoCabecalho = _compraPedidoCabecalhoPersisteFormKey.currentState;
+    FormState? formCompraPedidoCabecalho = _compraPedidoCabecalhoPersisteFormKey.currentState;
     if (formCompraPedidoCabecalho != null) {
       if (!formCompraPedidoCabecalho.validate()) {
-        _abasController.animateTo(0);
+        _abasController!.animateTo(0);
 		    return false;
       } else {
         _compraPedidoCabecalhoPersisteFormKey.currentState?.save();
@@ -228,13 +225,17 @@ class _CompraPedidoCabecalhoPageState extends State<CompraPedidoCabecalhoPage> w
     });
   }
 
-  Decoration _getIndicator() {
+  Decoration? _getIndicator() {
     return getShapeDecorationAbaPage(_estiloBotoesAba);
   }
 
   Future<bool> _avisarUsuarioAlteracoesNaPagina() async {
-    if (!paginaMestreDetalheFoiAlterada) return true;
-    return await gerarDialogBoxFormAlterado(context);
+    if (!paginaMestreDetalheFoiAlterada) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
   }
 
   void _excluir() {

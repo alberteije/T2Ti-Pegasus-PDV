@@ -39,7 +39,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
@@ -54,10 +54,10 @@ import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/page/lookup_local_page.dart';
 
 class ParcelamentoReceitasPage extends StatefulWidget {
-  final String title;
-  final double totalParcelamento;
+  final String? title;
+  final double? totalParcelamento;
 
-  const ParcelamentoReceitasPage({Key key, this.title, this.totalParcelamento}) : super(key: key);
+  const ParcelamentoReceitasPage({Key? key, this.title, this.totalParcelamento}) : super(key: key);
 
   @override
   _ParcelamentoReceitasPageState createState() => _ParcelamentoReceitasPageState();
@@ -84,11 +84,11 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
   );
   DateTime _diaPrimeiroVencimento = DateTime.now();
   final _importaClienteController = TextEditingController(
-    text: Sessao.vendaAtual.nomeCliente,
+    text: Sessao.vendaAtual!.nomeCliente,
   );
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -156,35 +156,35 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
     if (index == 0) return cabecalhoTela(context);
     // if (index == 1) return dadosFechamento(context);
     if (index == 1) return rodapeTela(context);
-    return null;
+    return const SizedBox();
   }
 
   Container cabecalhoTela(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 20.0),
+      margin: const EdgeInsets.only(top: 20.0),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
               color: Colors.white,
               child: Column(
                 children: <Widget>[
-                  SizedBox(
+                  const SizedBox(
                     height: 50.0,
                   ),
                   Text(
-                    widget.title,
+                    widget.title!,
                     style: Theme.of(context).textTheme.headline5,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5.0,
                   ),
                   BootstrapContainer(                    
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                     children: <Widget>[			  			  
                       BootstrapRow(
@@ -195,16 +195,16 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                             child: Card(
                               elevation: 4,
                               child: Padding(
-                                padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
+                                padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
                                 child: Column(
                                   children: <Widget>[
-                                    Text("Financeiro - Contas a Receber",),
-                                    Divider(
+                                    const Text("Financeiro - Contas a Receber",),
+                                    const Divider(
                                       indent: 10,
                                       endIndent: 10,
                                       thickness: 2,
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 16.0,
                                     ),
                                     BootstrapRow(
@@ -213,7 +213,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                         BootstrapCol(
                                           sizes: 'col-12',
                                           child: Container(
-                                            margin: EdgeInsets.symmetric(horizontal: 10),
+                                            margin: const EdgeInsets.symmetric(horizontal: 10),
                                             height: 30,
                                             child: FittedBox(
                                               child: Text(
@@ -237,7 +237,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                             children: <Widget>[
                                               Expanded(
                                                 flex: 1,
-                                                child: Container(
+                                                child: SizedBox(
                                                   child: TextFormField(
                                                     validator: ValidaCampoFormulario.validarObrigatorio,
                                                     controller: _importaClienteController,
@@ -246,7 +246,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                                       'Conteúdo para o campo Cliente',
                                                       'Cliente *',
                                                       false),
-                                                    onSaved: (String value) {
+                                                    onSaved: (String? value) {
                                                     },
                                                     onChanged: (text) {
                                                     },
@@ -260,7 +260,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                                   icon: ViewUtilLib.getIconBotaoLookup(),
                                                   onPressed: () async {
                                                     ///chamando o lookup
-                                                    Map<String, dynamic> _objetoJsonRetorno =
+                                                    Map<String, dynamic>? _objetoJsonRetorno =
                                                       await Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
@@ -281,7 +281,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                                       if (_objetoJsonRetorno['nome'] != null) {
                                                         _importaClienteController.text = _objetoJsonRetorno['nome'];
                                                         Sessao.vendaAtual = 
-                                                        Sessao.vendaAtual.copyWith(
+                                                        Sessao.vendaAtual!.copyWith(
                                                           idCliente: _objetoJsonRetorno['id'],
                                                           nomeCliente: _objetoJsonRetorno['nome'],
                                                           cpfCnpjCliente: _objetoJsonRetorno['cpfCnpj'],
@@ -296,14 +296,14 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                         ),
                                       ],
                                     ),
-                                    Divider(color: Colors.white,),
+                                    const Divider(color: Colors.white,),
                                     BootstrapRow(
                                       height: 60,
                                       children: <BootstrapCol>[
                                         BootstrapCol(
                                           sizes: 'col-12 col-md-6',
                                           child: Padding(
-                                            padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                            padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                             child: TextFormField(
                                               enableInteractiveSelection: !Biblioteca.isDesktop(),
                                               focusNode: _valorFoco,
@@ -314,7 +314,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                                 '',
                                                 'Quantidade de Parcelas',
                                                 false,),
-                                              onSaved: (String value) {
+                                              onSaved: (String? value) {
                                               },
                                               onChanged: (text) {
                                               },
@@ -324,7 +324,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                         BootstrapCol(
                                           sizes: 'col-12 col-md-6',
                                           child: Padding(
-                                            padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                            padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                             child: TextFormField(
                                               keyboardType: TextInputType.number,
                                               maxLength: 2,
@@ -334,7 +334,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                                 '',
                                                 'Intervalo entre Parcelas',
                                                 false),
-                                              onSaved: (String value) {
+                                              onSaved: (String? value) {
                                               },
                                               onChanged: (text) {
                                               },
@@ -343,28 +343,27 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                         ),
                                       ],
                                     ),
-                                    Divider(color: Colors.white,),
+                                    const Divider(color: Colors.white,),
                                     BootstrapRow(
                                       height: 60,
                                       children: <BootstrapCol>[
                                         BootstrapCol(
                                           sizes: 'col-12 col-md-6',
                                           child: Padding(
-                                            padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                            padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                             child: InputDecorator(
                                               decoration: getInputDecoration(
                                                 'Conteúdo para o campo Dia Primeiro Vencimento',
                                                 'Dia Primeiro Vencimento',
                                                 true),
-                                              isEmpty: _diaPrimeiroVencimento == null,
                                               child: DatePickerItem(
                                                 mascara: 'dd/MM/yyyy',
                                                 dateTime: _diaPrimeiroVencimento,
                                                 firstDate: DateTime.parse('1900-01-01'),
                                                 lastDate: DateTime.parse('2050-01-01'),
-                                                onChanged: (DateTime value) {
+                                                onChanged: (DateTime? value) {
                                                   setState(() {
-                                                    _diaPrimeiroVencimento = value;
+                                                    _diaPrimeiroVencimento = value!;
                                                   });
                                                 },
                                               ),
@@ -374,7 +373,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                         BootstrapCol(
                                           sizes: 'col-12 col-md-6',
                                           child: Padding(
-                                            padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                            padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                             child: TextFormField(
                                               maxLength: 2,
                                               keyboardType: TextInputType.number,
@@ -385,7 +384,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                                 true,
                                                 paddingVertical: 15,
                                                 ),
-                                              onSaved: (String value) {
+                                              onSaved: (String? value) {
                                               },
                                               onChanged: (text) {
                                               },
@@ -394,7 +393,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                         ),
                                       ],
                                     ),
-                                    Divider(color: Colors.white,),
+                                    const Divider(color: Colors.white,),
                                     getBotaoGenericoPdv(
                                       descricao: 'Gerar Parcelas',
                                       cor: Colors.blue, 
@@ -402,15 +401,15 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                         _gerarParcelas();
                                       }
                                     ),                                         
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 16.0,
                                     ),
-                                    Divider(
+                                    const Divider(
                                       indent: 0,
                                       endIndent: 0,
                                       thickness: 2,
                                     ),
-                                    Container(
+                                    SizedBox(
                                       height: 200.0,
                                       child: Scrollbar(
                                         child: ListView(
@@ -430,10 +429,10 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                         ),
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 16.0,
                                     ),
-                                    Divider(
+                                    const Divider(
                                       indent: 0,
                                       endIndent: 0,
                                       thickness: 2,
@@ -447,7 +446,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5.0,
                   ),
                 ],
@@ -456,7 +455,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: const <Widget>[
               Material(
                 elevation: 5.0,
                 shape: CircleBorder(),
@@ -474,20 +473,20 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
 
   List<DataColumn> getColumnsParcelamento() {
     List<DataColumn> lista = [];
-    lista.add(DataColumn(
+    lista.add(const DataColumn(
       label: Text(
         "Vencimento",
         style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
       ),
     ));
-    lista.add(DataColumn(
+    lista.add(const DataColumn(
       numeric: true,
       label: Text(
         "Valor",
         style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
       ),
     ));
-    lista.add(DataColumn(
+    lista.add(const DataColumn(
       label: Text(
         "Histórico",
         style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
@@ -506,10 +505,10 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
           Text(Biblioteca.formatarData( parcelaReceber.dataVencimento)), 
         ),
         DataCell(
-          Text('${Constantes.formatoDecimalValor.format(parcelaReceber.valorAReceber ?? 0)}'),
+          Text(Constantes.formatoDecimalValor.format(parcelaReceber.valorAReceber ?? 0)),
         ),
         DataCell(
-          Text(parcelaReceber.historico),
+          Text(parcelaReceber.historico!),
         ),
       ];
 
@@ -520,11 +519,11 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
 
   Container rodapeTela(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 0.0),
+      margin: const EdgeInsets.only(top: 0.0),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
@@ -547,11 +546,11 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
     );
   }
 
-  List<Widget> _getBotoesRodape({BuildContext context}) {
+  List<Widget> _getBotoesRodape({required BuildContext context}) {
     List<Widget> listaBotoes = [];
     listaBotoes.add(
-      Container(
-        width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+      SizedBox(
+        width: Biblioteca.isTelaPequena(context)! ? 130 : 150,
         child: getBotaoGenericoPdv(
          descricao: Biblioteca.isMobile() ? 'Cancelar' : 'Cancelar [F11]',
          cor: Colors.red, 
@@ -562,11 +561,11 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
       ),
     );
     listaBotoes.add(
-      SizedBox(width: 10.0),
+      const SizedBox(width: 10.0),
     );
     listaBotoes.add(
-      Container(
-        width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+      SizedBox(
+        width: Biblioteca.isTelaPequena(context)! ? 130 : 150,
         child: getBotaoGenericoPdv(
           descricao: Biblioteca.isMobile() ? 'Confirmar' : 'Confirmar [F12]',
           cor: Colors.green, 
@@ -596,10 +595,6 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
       showInSnackBar("Por favor, informe a quantidade de parcelas.", context);          
       podeGerar = false;
     }
-    if (dataPrimeiroVencimento == null) {
-      showInSnackBar("Por favor, informe o primeiro dia do vencimento.", context);          
-      podeGerar = false;
-    }
     if (intervaloEntreParcelas <= 0 && diaFixoParcela <= 0) {
       showInSnackBar("Por favor, informe o intervalo entre as pacelas OU o dia fixo.", context);          
       podeGerar = false;
@@ -621,26 +616,26 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
         var parcelaReceber = 
           ContasReceber(
             id: null,
-            idCliente: Sessao.vendaAtual.idCliente,
-            idPdvVendaCabecalho: Sessao.vendaAtual.id,
+            idCliente: Sessao.vendaAtual!.idCliente,
+            idPdvVendaCabecalho: Sessao.vendaAtual!.id,
             dataLancamento: DateTime.now(),
             dataVencimento: (diaVencimentoFixo) 
                             ? DateTime.utc(dataPrimeiroVencimento.year, dataPrimeiroVencimento.month + i, dataPrimeiroVencimento.day)
                             : dataPrimeiroVencimento.add(Duration(days: intervaloEntreParcelas * i)),
-            valorAReceber: num.parse((widget.totalParcelamento / quantidadeParcelas).toStringAsFixed(Constantes.decimaisValor)),
+            valorAReceber: num.parse((widget.totalParcelamento! / quantidadeParcelas).toStringAsFixed(Constantes.decimaisValor)) as double?,
             statusRecebimento: 'A',
-            historico: 'Gerado pela venda número ' + Sessao.vendaAtual.id.toString() + ' Parcela ' + (i+1).toString() + ' de ' + _quantidadeParcelasController.text,
+            historico: 'Gerado pela venda número ' + Sessao.vendaAtual!.id.toString() + ' Parcela ' + (i+1).toString() + ' de ' + _quantidadeParcelasController.text,
           );
         _listaParcelas.add(parcelaReceber);
         Sessao.listaParcelamento.add(ContasReceberMontado(contasReceber: parcelaReceber));
-        somaParcelas = somaParcelas + parcelaReceber.valorAReceber;
+        somaParcelas = somaParcelas + parcelaReceber.valorAReceber!;
       }
       // verifica se sobraram centavos no cálculo e lança na primeira parcela
-      residuo = widget.totalParcelamento - somaParcelas;
+      residuo = widget.totalParcelamento! - somaParcelas;
       if (residuo != 0) {
         var primeiraParcela = _listaParcelas[0];
         primeiraParcela = primeiraParcela.copyWith(
-          valorAReceber: primeiraParcela.valorAReceber + residuo,
+          valorAReceber: primeiraParcela.valorAReceber! + residuo,
         );
       } 
       setState(() {
@@ -651,7 +646,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
 
   void _confirmar() {
     if (_gerarParcelas()) {
-      final FormState form = _formKey.currentState;
+      final FormState form = _formKey.currentState!;
       if (!form.validate()) {
         _autoValidate = AutovalidateMode.always;
         showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);

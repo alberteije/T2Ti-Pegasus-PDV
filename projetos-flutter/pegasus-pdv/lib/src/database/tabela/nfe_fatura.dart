@@ -37,12 +37,13 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeFatura")
 class NfeFaturas extends Table {
+  @override
   String get tableName => 'NFE_FATURA';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')();
-  TextColumn get numero => text().named('NUMERO').withLength(min: 0, max: 60).nullable()();
-  RealColumn get valorOriginal => real().named('VALOR_ORIGINAL').nullable()();
-  RealColumn get valorDesconto => real().named('VALOR_DESCONTO').nullable()();
-  RealColumn get valorLiquido => real().named('VALOR_LIQUIDO').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')() as Column<int>?;
+  TextColumn? get numero => text().named('NUMERO').withLength(min: 0, max: 60).nullable()() as Column<String>?;
+  RealColumn? get valorOriginal => real().named('VALOR_ORIGINAL').nullable()() as Column<double>?;
+  RealColumn? get valorDesconto => real().named('VALOR_DESCONTO').nullable()() as Column<double>?;
+  RealColumn? get valorLiquido => real().named('VALOR_LIQUIDO').nullable()() as Column<double>?;
 }

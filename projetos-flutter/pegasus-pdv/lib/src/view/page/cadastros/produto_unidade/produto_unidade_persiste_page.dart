@@ -33,6 +33,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
@@ -49,11 +51,11 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 
 class ProdutoUnidadePersistePage extends StatefulWidget {
-  final ProdutoUnidade produtoUnidade;
-  final String title;
-  final String operacao;
+  final ProdutoUnidade? produtoUnidade;
+  final String? title;
+  final String? operacao;
 
-  const ProdutoUnidadePersistePage({Key key, this.produtoUnidade, this.title, this.operacao})
+  const ProdutoUnidadePersistePage({Key? key, this.produtoUnidade, this.title, this.operacao})
       : super(key: key);
 
   @override
@@ -66,11 +68,11 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   bool _formFoiAlterado = false;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
 
-  ProdutoUnidade produtoUnidade;
+  ProdutoUnidade? produtoUnidade;
 
   @override
   void initState() {
@@ -113,7 +115,7 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
         child: Scaffold(drawerDragStartBehavior: DragStartBehavior.down,
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text(widget.title), 
+            title: Text(widget.title!), 
             actions: widget.operacao == 'I' 
               ? getBotoesAppBarPersistePage(context: context, salvar: _salvar,)
               : getBotoesAppBarPersistePageComExclusao(context: context, salvar: _salvar, excluir: _excluir),
@@ -130,10 +132,10 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
                   dragStartBehavior: DragStartBehavior.down,
                   child: BootstrapContainer(
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,                    // children: [
                     children: <Widget>[			  			  
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -149,17 +151,17 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
                                 'Conteúdo para o campo Sigla',
                                 'Sigla',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                produtoUnidade = produtoUnidade.copyWith(sigla: text);
+                                produtoUnidade = produtoUnidade!.copyWith(sigla: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -173,17 +175,17 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
                                 'Conteúdo para o campo Descricao',
                                 'Descricao',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                produtoUnidade = produtoUnidade.copyWith(descricao: text);
+                                produtoUnidade = produtoUnidade!.copyWith(descricao: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -194,11 +196,11 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
                                 'Conteúdo para o campo Pode Fracionar',
                                 'Pode Fracionar',
                                 true),
-                              isEmpty: produtoUnidade.podeFracionar == null,
-                              child: getDropDownButton(produtoUnidade.podeFracionar,
-                                (String newValue) {
+                              isEmpty: produtoUnidade!.podeFracionar == null,
+                              child: getDropDownButton(produtoUnidade!.podeFracionar,
+                                (String? newValue) {
                                   setState(() {
-                                    produtoUnidade = produtoUnidade.copyWith(podeFracionar: newValue);
+                                    produtoUnidade = produtoUnidade!.copyWith(podeFracionar: newValue);
                                   });
                               }, <String>[
                                 'S',
@@ -207,7 +209,7 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -221,7 +223,7 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                     ],        
                   ),
                 ),
@@ -234,7 +236,7 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
   }
 
   Future<void> _salvar() async {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (!form.validate()) {
       _autoValidate = AutovalidateMode.always;
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
@@ -246,7 +248,7 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
           await Sessao.db.produtoUnidadeDao.alterar(produtoUnidade);
           tudoCerto = true;
         } else {
-          final unidade = await Sessao.db.produtoUnidadeDao.consultarObjetoFiltro('SIGLA', produtoUnidade.sigla);
+          final unidade = await Sessao.db.produtoUnidadeDao.consultarObjetoFiltro('SIGLA', produtoUnidade!.sigla!);
           if (unidade == null) {
             await Sessao.db.produtoUnidadeDao.inserir(produtoUnidade);
             tudoCerto = true;
@@ -262,10 +264,13 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
   }
 
   Future<bool> _avisarUsuarioFormAlterado() async {
-    final FormState form = _formKey.currentState;
-    if (form == null || !_formFoiAlterado) return true;
-
-    return await gerarDialogBoxFormAlterado(context);
+    final FormState? form = _formKey.currentState;
+    if (form == null || !_formFoiAlterado) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
   }
 
   void _excluir() {

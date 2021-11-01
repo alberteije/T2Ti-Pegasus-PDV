@@ -33,6 +33,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
+
 import 'package:moor/moor.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
@@ -47,17 +49,17 @@ part 'contas_receber_dao.g.dart';
 class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasReceberDaoMixin {
   final AppDatabase db;
 
-  List<ContasReceber> listaContasReceber; // será usada para popular a grid na janela do contasReceber
-  List<ContasReceberMontado> listaContasReceberMontado; // será usada para popular a grid na janela do contas a receber, pois leva o cliente
+  List<ContasReceber>? listaContasReceber; // será usada para popular a grid na janela do contasReceber
+  List<ContasReceberMontado>? listaContasReceberMontado; // será usada para popular a grid na janela do contas a receber, pois leva o cliente
 
   ContasReceberDao(this.db) : super(db);
 
-  Future<List<ContasReceber>> consultarLista() async {
+  Future<List<ContasReceber>?> consultarLista() async {
     listaContasReceber = await select(contasRecebers).get();
     return listaContasReceber;
   }
 
-  Future<List<ContasReceber>> consultarListaFiltro(String campo, String valor) async {
+  Future<List<ContasReceber>?> consultarListaFiltro(String campo, String valor) async {
     listaContasReceber = await (customSelect("SELECT * FROM CONTAS_RECEBER WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { contasRecebers }).map((row) {
                                   return ContasReceber.fromData(row.data, db);  
@@ -65,7 +67,7 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
     return listaContasReceber;
   }
 
-  Future<List<ContasReceber>> consultarRecebimentosDeUmaVenda(int idPdvVendaCabecalho, String status) async {
+  Future<List<ContasReceber>?> consultarRecebimentosDeUmaVenda(int? idPdvVendaCabecalho, String status) async {
     listaContasReceber = await (customSelect("SELECT * FROM CONTAS_RECEBER WHERE ID_PDV_VENDA_CABECALHO = " 
                                 + idPdvVendaCabecalho.toString() + " AND STATUS_RECEBIMENTO =  '" + status + "'", 
                                 readsFrom: { contasRecebers }).map((row) {
@@ -73,7 +75,7 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
                                 }).get());
     return listaContasReceber;
   }
-  Future<List<ContasReceberMontado>> consultarListaMontado({int mes, int ano, String status}) async {
+  Future<List<ContasReceberMontado>?> consultarListaMontado({int? mes, int? ano, String? status}) async {
     final consulta = select(contasRecebers)
       .join([
         leftOuterJoin(clientes, clientes.id.equalsExp(contasRecebers.idCliente)),
@@ -108,8 +110,8 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
     return listaContasReceberMontado;
   }
 
-  Future<double> consultarReceitas({String periodo}) async {
-    var diasPeriodo;
+  Future<double> consultarReceitas({required String periodo}) async {
+    late String diasPeriodo;
     if (periodo.contains('Semana')) {
       diasPeriodo = '7';
     } else if (periodo.contains('Mês')) {
@@ -127,11 +129,11 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
                 "date('now','-" + diasPeriodo + " day') AND date('now') "
                 ")";
     final resultado = await customSelect(sql).getSingleOrNull();
-    return resultado.data["TOTAL"] ?? 0;
+    return resultado?.data["TOTAL"] ?? 0;
   }
 
   Future<double> consultarRecebimentosVencidos() async {
-    final sql = "select SUM(VALOR_RECEBIDO) AS TOTAL from CONTAS_RECEBER "
+    const sql = "select SUM(VALOR_RECEBIDO) AS TOTAL from CONTAS_RECEBER "
                 "where "
                 "STATUS_RECEBIMENTO='A' "
                 "and " 
@@ -141,11 +143,11 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
                 "date('now') "
                 ")";
     final resultado = await customSelect(sql).getSingleOrNull();
-    return resultado.data["TOTAL"] ?? 0;
+    return resultado?.data["TOTAL"] ?? 0;
   }
 
-  Future<double> consultarFluxo({String periodo}) async {
-    var diasPeriodo;
+  Future<double> consultarFluxo({required String periodo}) async {
+    late String diasPeriodo;
     if (periodo.contains('Semana')) {
       diasPeriodo = '7';
     } else if (periodo.contains('Mês')) {
@@ -164,49 +166,45 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
                 "date('now') AND date('now','+"+ diasPeriodo + " day') "
                 ")";
     final resultado = await customSelect(sql).getSingleOrNull();
-    return resultado.data["TOTAL"] ?? 0;
+    return resultado?.data["TOTAL"] ?? 0;
   }
 
   Stream<List<ContasReceber>> observarLista() => select(contasRecebers).watch();
 
-  Future<ContasReceber> consultarObjeto(int pId) {
+  Future<ContasReceber?> consultarObjeto(int pId) {
     return (select(contasRecebers)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<ContasReceber> pObjeto) {
+  Future<int> inserir(Insertable<ContasReceber>? pObjeto) {
     return transaction(() async {
-      final idInserido = await into(contasRecebers).insert(pObjeto);
+      final idInserido = await into(contasRecebers).insert(pObjeto!);
       return idInserido;
     });    
   } 
 
   Future<bool> inserirParcelas(List<ContasReceber> listaParcelas) {
     var retorno = 0;
-    if (listaParcelas != null) {
-      return transaction(() async {
-        for (var objeto in listaParcelas) {
-          retorno = await into(contasRecebers).insert(objeto);  
-        }
-        return Future.value(retorno > 0);
-      });    
-    } else {
-      return Future.value(false);
-    }
-  } 
-
-  Future<bool> alterar(Insertable<ContasReceber> pObjeto) {
     return transaction(() async {
-      return update(contasRecebers).replace(pObjeto);
+      for (var objeto in listaParcelas) {
+        retorno = await into(contasRecebers).insert(objeto);  
+      }
+      return Future.value(retorno > 0);
     });    
   } 
 
-  Future<int> excluir(Insertable<ContasReceber> pObjeto) {
+  Future<bool> alterar(Insertable<ContasReceber>? pObjeto) {
     return transaction(() async {
-      return delete(contasRecebers).delete(pObjeto);
+      return update(contasRecebers).replace(pObjeto!);
+    });    
+  } 
+
+  Future<int> excluir(Insertable<ContasReceber>? pObjeto) {
+    return transaction(() async {
+      return delete(contasRecebers).delete(pObjeto!);
     });    
   }
 
-  Future<int> excluirReceitasDeUmaVenda(int idPdvVendaCabecalho) async {
+  Future<int> excluirReceitasDeUmaVenda(int? idPdvVendaCabecalho) async {
     return await (delete(contasRecebers)..where((t) => t.idPdvVendaCabecalho.equals(idPdvVendaCabecalho))).go();
   }
 

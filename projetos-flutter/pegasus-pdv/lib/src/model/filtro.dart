@@ -36,12 +36,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'dart:convert';
 
 class Filtro {
-  String campo;
-  String valor;
-  String dataInicial;
-  String dataFinal;
-  String condicao;
-  String where; // será utilizado quando o filtro for múltiplo, ou seja, quando mais de um filtro for enviado para o servidor
+  String? campo;
+  String? valor;
+  String? dataInicial;
+  String? dataFinal;
+  String? condicao;
+  String? where; // será utilizado quando o filtro for múltiplo, ou seja, quando mais de um filtro for enviado para o servidor
 
   Filtro({this.campo, this.valor, this.dataInicial, this.dataFinal});
 
@@ -53,11 +53,11 @@ class Filtro {
   }
 
   Map<String, dynamic> get toJson {
-    Map<String, dynamic> jsonDados = Map<String, dynamic>();
-    jsonDados['campo'] = this.campo;
-    jsonDados['valor'] = this.valor;
-    jsonDados['dataInicial'] = this.dataInicial;
-    jsonDados['dataFinal'] = this.dataFinal;
+    Map<String, dynamic> jsonDados = <String, dynamic>{};
+    jsonDados['campo'] = campo;
+    jsonDados['valor'] = valor;
+    jsonDados['dataInicial'] = dataInicial;
+    jsonDados['dataFinal'] = dataFinal;
     return jsonDados;
   }
 }

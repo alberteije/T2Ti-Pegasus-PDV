@@ -37,17 +37,18 @@ import 'package:moor/moor.dart';
 
 @DataClassName("EcfSintegra60M")
 class EcfSintegra60Ms extends Table {
+  @override
   String get tableName => 'ECF_SINTEGRA_60M';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  DateTimeColumn get dataEmissao => dateTime().named('DATA_EMISSAO').nullable()();
-  TextColumn get numeroSerieEcf => text().named('NUMERO_SERIE_ECF').withLength(min: 0, max: 20).nullable()();
-  IntColumn get numeroEquipamento => integer().named('NUMERO_EQUIPAMENTO').nullable()();
-  TextColumn get modeloDocumentoFiscal => text().named('MODELO_DOCUMENTO_FISCAL').withLength(min: 0, max: 2).nullable()();
-  IntColumn get cooInicial => integer().named('COO_INICIAL').nullable()();
-  IntColumn get cooFinal => integer().named('COO_FINAL').nullable()();
-  IntColumn get crz => integer().named('CRZ').nullable()();
-  IntColumn get cro => integer().named('CRO').nullable()();
-  RealColumn get valorVendaBruta => real().named('VALOR_VENDA_BRUTA').nullable()();
-  RealColumn get valorGrandeTotal => real().named('VALOR_GRANDE_TOTAL').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  DateTimeColumn? get dataEmissao => dateTime().named('DATA_EMISSAO').nullable()() as Column<DateTime>?;
+  TextColumn? get numeroSerieEcf => text().named('NUMERO_SERIE_ECF').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  IntColumn? get numeroEquipamento => integer().named('NUMERO_EQUIPAMENTO').nullable()() as Column<int>?;
+  TextColumn? get modeloDocumentoFiscal => text().named('MODELO_DOCUMENTO_FISCAL').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  IntColumn? get cooInicial => integer().named('COO_INICIAL').nullable()() as Column<int>?;
+  IntColumn? get cooFinal => integer().named('COO_FINAL').nullable()() as Column<int>?;
+  IntColumn? get crz => integer().named('CRZ').nullable()() as Column<int>?;
+  IntColumn? get cro => integer().named('CRO').nullable()() as Column<int>?;
+  RealColumn? get valorVendaBruta => real().named('VALOR_VENDA_BRUTA').nullable()() as Column<double>?;
+  RealColumn? get valorGrandeTotal => real().named('VALOR_GRANDE_TOTAL').nullable()() as Column<double>?;
 }

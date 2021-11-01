@@ -51,20 +51,22 @@ import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
 
 class NfeCabecalhoListaPage extends StatefulWidget {
+  const NfeCabecalhoListaPage({Key? key}) : super(key: key);
+
   @override
   _NfeCabecalhoListaPageState createState() => _NfeCabecalhoListaPageState();
 }
 
 class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
-  int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
-  int _sortColumnIndex;
+  int? _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
+  int? _sortColumnIndex;
   bool _sortAscending = true;
 
   NfeCabecalhoMontado nfceCabecalhoInicial = NfeCabecalhoMontado();
-  var _listaNfeCabecalho;
+  List<NfeCabecalho>? _listaNfeCabecalho;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -77,7 +79,7 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -94,7 +96,7 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
     final _NfeCabecalhoDataSource _nfeCabecalhoDataSource = 
       _NfeCabecalhoDataSource(_listaNfeCabecalho, context, _refrescarTela, _transmitirNota);
 
-    void _sort<T>(Comparable<T> getField(NfeCabecalho nfeCabecalho), int columnIndex, bool ascending) {
+    void _sort<T>(Comparable<T>? Function(NfeCabecalho nfeCabecalho) getField, int columnIndex, bool ascending) {
       _nfeCabecalhoDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
@@ -110,26 +112,26 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
         child: Scaffold(
           appBar: AppBar(
             title: const Text('NFC-e em Contingência'),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           ),
           bottomNavigationBar: BottomAppBar(
             color: ViewUtilLib.getBottomAppBarColor(),
-            shape: CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),
             child: Row(
-              children: [],
+              children: const [],
             ),
           ),
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
               child: _listaNfeCabecalho == null
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : ListView(
-                padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
+                padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                 children: <Widget>[
                   PaginatedDataTable(
-                    rowsPerPage: _rowsPerPage,
-                    onRowsPerPageChanged: (int value) {
+                    rowsPerPage: _rowsPerPage!,
+                    onRowsPerPageChanged: (int? value) {
                       setState(() {
                         _rowsPerPage = value;
                       });
@@ -137,9 +139,9 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
                     sortColumnIndex: _sortColumnIndex,
                     sortAscending: _sortAscending,
                     columns: <DataColumn>[
-                      DataColumn(
+                      const DataColumn(
                         numeric: true,
-                        label: const Text('Cancelar'),
+                        label: Text('Cancelar'),
                         tooltip: 'Cancelar',
                       ),
                       DataColumn(
@@ -154,9 +156,9 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
                         onSort: (int columnIndex, bool ascending) =>
                           _sort<DateTime>((NfeCabecalho nfeCabecalho) => nfeCabecalho.dataHoraEmissao, columnIndex, ascending),
                       ),
-                      DataColumn(
+                      const DataColumn(
                         numeric: true,
-                        label: const Text('Prazo Limite'),
+                        label: Text('Prazo Limite'),
                         tooltip: 'Prazo Limite para Transmissão',
                       ),
                       DataColumn(
@@ -210,7 +212,7 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
   Future _inutilizarNumero() async {
     // pesquisa pela nota com status igual a 9 - essa nota foi gerada e tentamos emiti-la, mas houve erro e outra foi impressa em contingência
     nfceCabecalhoInicial.nfeCabecalho = 
-      await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(NfceController.nfeCabecalhoMontado.nfeCabecalho.idPdvVendaCabecalho, status: '9');
+      await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(NfceController.nfeCabecalhoMontado!.nfeCabecalho!.idPdvVendaCabecalho, status: '9');
 
     // vamos inutilizar o número
     NfceAcbrService servicoNfce = NfceAcbrService();
@@ -220,18 +222,18 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
         context, 
         formaEmissao: '1',
         operacao: 'INUTILIZAR_NUMERO', 
-        chaveAcesso: nfceCabecalhoInicial.nfeCabecalho.chaveAcesso,
+        chaveAcesso: nfceCabecalhoInicial.nfeCabecalho!.chaveAcesso,
         funcaoDeCallBack: _atualizarNotaInicial, 
       ).then((socket) {
         NfceController.enviarComandoInutilizacaoNumero(
-          socket: socket, 
-          cnpj: Sessao.empresa.cnpj, 
+          socket: socket!, 
+          cnpj: Sessao.empresa!.cnpj!, 
           justificativa: 'NOTA EMITIDA EM CONTINGENCIA OFFLINE', 
-          ano: nfceCabecalhoInicial.nfeCabecalho.dataHoraEmissao.year.toString(), 
-          modelo: nfceCabecalhoInicial.nfeCabecalho.codigoModelo, 
-          serie: nfceCabecalhoInicial.nfeCabecalho.serie, 
-          numeroInicial: nfceCabecalhoInicial.nfeCabecalho.numero, 
-          numeroFinal: nfceCabecalhoInicial.nfeCabecalho.numero
+          ano: nfceCabecalhoInicial.nfeCabecalho!.dataHoraEmissao!.year.toString(), 
+          modelo: nfceCabecalhoInicial.nfeCabecalho!.codigoModelo!, 
+          serie: nfceCabecalhoInicial.nfeCabecalho!.serie!, 
+          numeroInicial: nfceCabecalhoInicial.nfeCabecalho!.numero!, 
+          numeroFinal: nfceCabecalhoInicial.nfeCabecalho!.numero!
         );
       });                 
     } catch (e) {
@@ -243,7 +245,7 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
   Future _atualizarNotaInicial() async {
     // atualiza nota
     nfceCabecalhoInicial.nfeCabecalho = 
-    nfceCabecalhoInicial.nfeCabecalho.copyWith(
+    nfceCabecalhoInicial.nfeCabecalho!.copyWith(
       statusNota: '8',
     );
     await Sessao.db.nfeCabecalhoDao.alterar(nfceCabecalhoInicial, atualizaFilhos: false).then((value) async => await _refrescarTela());
@@ -252,8 +254,8 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
     NfeNumeroInutilizado inutilizado = 
       NfeNumeroInutilizado(
         id: null,
-        serie: nfceCabecalhoInicial.nfeCabecalho.serie,
-        numero: int.tryParse(nfceCabecalhoInicial.nfeCabecalho.numero),
+        serie: nfceCabecalhoInicial.nfeCabecalho!.serie,
+        numero: int.tryParse(nfceCabecalhoInicial.nfeCabecalho!.numero!),
         dataInutilizacao: DateTime.now(),
         observacao: 'NOTA EMITIDA EM CONTINGENCIA OFFLINE',
       );
@@ -264,7 +266,7 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
     NfceAcbrService servicoNfce = NfceAcbrService();
     try {
       NfceController.instanciarNfceMontado();
-      NfceController.nfeCabecalhoMontado.nfeCabecalho = nfeCabecalhoContingenciada;
+      NfceController.nfeCabecalhoMontado!.nfeCabecalho = nfeCabecalhoContingenciada;
       await servicoNfce.conectar(
         context, 
         formaEmissao: '1',
@@ -272,7 +274,7 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
         operacao: 'TRANSMITIR_CONTINGENCIADA', 
         chaveAcesso: nfeCabecalhoContingenciada.chaveAcesso,
       ).then((socket) async {
-        socket.write('NFe.EnviarNFe("C:\\ACBrMonitor\\' + Sessao.empresa.cnpj + '\\LOG_NFe\\' + nfeCabecalhoContingenciada.chaveAcesso + '-nfe.xml", "001", , , , "1", , )\r\n.\r\n');
+        socket!.write('NFe.EnviarNFe("C:\\ACBrMonitor\\' + Sessao.empresa!.cnpj! + '\\LOG_NFe\\' + nfeCabecalhoContingenciada.chaveAcesso! + '-nfe.xml", "001", , , , "1", , )\r\n.\r\n');
       });                 
     } catch (e) {
       gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: ' + e.toString());
@@ -282,39 +284,39 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
 
 /// codigo referente a fonte de dados
 class _NfeCabecalhoDataSource extends DataTableSource {
-  final List<NfeCabecalho> listaNfeCabecalho;
+  final List<NfeCabecalho>? listaNfeCabecalho;
   final BuildContext context;
   final Function refrescarTela;
   final Function transmitirNota;
 
   _NfeCabecalhoDataSource(this.listaNfeCabecalho, this.context, this.refrescarTela, this.transmitirNota);
 
-  void _sort<T>(Comparable<T> getField(NfeCabecalho nfeCabecalho), bool ascending) {
-    listaNfeCabecalho.sort((NfeCabecalho a, NfeCabecalho b) {
+  void _sort<T>(Comparable<T>? Function(NfeCabecalho nfeCabecalho) getField, bool ascending) {
+    listaNfeCabecalho!.sort((NfeCabecalho a, NfeCabecalho b) {
       if (!ascending) {
         final NfeCabecalho c = a;
         a = b;
         b = c;
       }
-      Comparable<T> aValue = getField(a);
-      Comparable<T> bValue = getField(b);
+      Comparable<T>? aValue = getField(a);
+      Comparable<T>? bValue = getField(b);
 
-      if (aValue == null) aValue = '' as Comparable<T>;
-      if (bValue == null) bValue = '' as Comparable<T>;
+      aValue ??= '' as Comparable<T>;
+      bValue ??= '' as Comparable<T>;
 
       return Comparable.compare(aValue, bValue);
     });
   }
 
-  int _selectedCount = 0;
+  final int _selectedCount = 0;
 
   @override
-  DataRow getRow(int index) {
+  DataRow? getRow(int index) {
     assert(index >= 0);
-    if (index >= listaNfeCabecalho.length) return null;
-    final nfeCabecalho = listaNfeCabecalho[index];
+    if (index >= listaNfeCabecalho!.length) return null;
+    final nfeCabecalho = listaNfeCabecalho![index];
     
-    final prazoLimite = nfeCabecalho.dataHoraEmissao.add(Duration(hours: 24));
+    final prazoLimite = nfeCabecalho.dataHoraEmissao!.add(const Duration(hours: 24));
 
     return DataRow.byIndex(
       index: index,
@@ -322,25 +324,25 @@ class _NfeCabecalhoDataSource extends DataTableSource {
          DataCell(
             getBotaoGenericoPdv(
               descricao: 'Transmitir',
-              tamanho: Size.fromWidth(100),
+              tamanho: const Size.fromWidth(100),
               cor: Colors.green.shade400, 
-              padding: EdgeInsets.all(5),
+              padding: const EdgeInsets.all(5),
               onPressed: () async {
                 await transmitirNota(nfeCabecalho);
               }
             ),
         ),       
-        DataCell(Text('${nfeCabecalho.numero ?? ''}'), ),
-        DataCell(Text('${nfeCabecalho.dataHoraEmissao != null ? Biblioteca.formatarDataHora(nfeCabecalho.dataHoraEmissao) : ''}'), ),
-        DataCell(Text('${prazoLimite != null ? Biblioteca.formatarDataHora(prazoLimite) : ''}'), ),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(nfeCabecalho.valorTotal ?? 0)}'), ),
+        DataCell(Text(nfeCabecalho.numero ?? ''), ),
+        DataCell(Text(nfeCabecalho.dataHoraEmissao != null ? Biblioteca.formatarDataHora(nfeCabecalho.dataHoraEmissao) : ''), ),
+        DataCell(Text(Biblioteca.formatarDataHora(prazoLimite)), ),
+        DataCell(Text(Constantes.formatoDecimalValor.format(nfeCabecalho.valorTotal ?? 0)), ),
         DataCell(Text('${nfeCabecalho.idPdvVendaCabecalho ?? ''}'), ),
       ],
     );
   }
 
   @override
-  int get rowCount => listaNfeCabecalho.length ?? 0;
+  int get rowCount => listaNfeCabecalho!.length;
 
   @override
   bool get isRowCountApproximate => false;

@@ -59,7 +59,7 @@ class EcfAliquotasDao extends DatabaseAccessor<AppDatabase> with _$EcfAliquotasD
 
   Stream<List<EcfAliquotas>> observarLista() => select(ecfAliquotass).watch();
 
-  Future<EcfAliquotas> consultarObjeto(int pId) {
+  Future<EcfAliquotas?> consultarObjeto(int pId) {
     return (select(ecfAliquotass)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

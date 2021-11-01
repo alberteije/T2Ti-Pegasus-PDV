@@ -41,18 +41,18 @@ import 'package:printing/printing.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_pdv.dart';
 
 class PdfPage extends StatefulWidget {
-  final String title;
-  final Uint8List arquivoPdf;
+  final String? title;
+  final Uint8List? arquivoPdf;
 
-  const PdfPage({Key key, this.title, this.arquivoPdf}) : super(key: key);
+  const PdfPage({Key? key, this.title, this.arquivoPdf}) : super(key: key);
 
   @override
   PdfPageState createState() => PdfPageState();
 }
 
 class PdfPageState extends State<PdfPage> {
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -84,13 +84,13 @@ class PdfPageState extends State<PdfPage> {
         autofocus: true,
         child: Scaffold(
           appBar: AppBar(
-            title: Text(widget.title),
-            actions: <Widget>[],
+            title: Text(widget.title!),
+            actions: const <Widget>[],
           ),
           body: PdfPreview(          
             maxPageWidth: 800,
             canChangePageFormat: false,
-            build: (format) => widget.arquivoPdf,
+            build: (format) => widget.arquivoPdf!,
           ),      
         ),
       ),

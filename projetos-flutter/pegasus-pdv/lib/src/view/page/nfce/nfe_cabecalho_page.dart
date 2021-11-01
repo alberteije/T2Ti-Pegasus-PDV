@@ -58,16 +58,16 @@ List<Aba> _todasAsAbas = <Aba>[];
 List<Aba> _getAbasAtivas() {
   List<Aba> retorno = [];
   for (var item in _todasAsAbas) {
-    if (item.visible) retorno.add(item);
+    if (item.visible!) retorno.add(item);
   }
   return retorno;
 }
 
 class NfeCabecalhoPage extends StatefulWidget {
-  final NfeCabecalhoMontado nfeCabecalhoMontado;
-  final String title;
+  final NfeCabecalhoMontado? nfeCabecalhoMontado;
+  final String? title;
 
-  NfeCabecalhoPage({this.nfeCabecalhoMontado, this.title, Key key})
+  const NfeCabecalhoPage({this.nfeCabecalhoMontado, this.title, Key? key})
       : super(key: key);
 
   @override
@@ -75,12 +75,12 @@ class NfeCabecalhoPage extends StatefulWidget {
 }
 
 class _NfeCabecalhoPageState extends State<NfeCabecalhoPage> with SingleTickerProviderStateMixin {
-  TabController _abasController;
+  TabController? _abasController;
   String _estiloBotoesAba = 'iconsAndText';
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
-  FocusNode myFocusNode;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
+  FocusNode? myFocusNode;
   
   // NfeCabecalho
   final GlobalKey<FormState> _nfeCabecalhoPersisteFormKey = GlobalKey<FormState>();
@@ -91,7 +91,7 @@ class _NfeCabecalhoPageState extends State<NfeCabecalhoPage> with SingleTickerPr
     super.initState();
     _atualizarAbas();
     _abasController = TabController(vsync: this, length: _getAbasAtivas().length);
-    _abasController.addListener(_salvarForms);
+    _abasController!.addListener(_salvarForms);
     paginaMestreDetalheFoiAlterada = false; // vamos controlar as alterações nas paginas filhas aqui para alertar ao usuario sobre possivel perda de dados
   
     bootstrapGridParameters(
@@ -111,8 +111,8 @@ class _NfeCabecalhoPageState extends State<NfeCabecalhoPage> with SingleTickerPr
 
   @override
   void dispose() {
-    myFocusNode.dispose();
-    _abasController.dispose();
+    myFocusNode!.dispose();
+    _abasController!.dispose();
     super.dispose();
   }
   
@@ -134,7 +134,7 @@ class _NfeCabecalhoPageState extends State<NfeCabecalhoPage> with SingleTickerPr
       child: Focus(
         autofocus: false, //o foco deve ser enviado para as páginas filhas e elas devem chamar o método salvar
         child: getScaffoldAbaPage(
-          widget.title,
+          widget.title!,
           context,
           _abasController,
           _getAbasAtivas(),
@@ -150,11 +150,11 @@ class _NfeCabecalhoPageState extends State<NfeCabecalhoPage> with SingleTickerPr
   }
   
   List<Widget> _getBotoesPersonalizados() {
-    if (Biblioteca.isTelaPequena(context)) {
+    if (Biblioteca.isTelaPequena(context)!) {
       return <Widget>[
         getBotaoTelaPequena(
           tooltip: 'Imprimir DANFE',
-          icone: Icon(Icons.print),
+          icone: const Icon(Icons.print),
           onPressed: _baixarDanfe,
         ),
       ];
@@ -162,7 +162,7 @@ class _NfeCabecalhoPageState extends State<NfeCabecalhoPage> with SingleTickerPr
       return <Widget>[
         getBotaoTelaGrande(
           texto: 'Imprimir DANFE',
-          icone: Icon(Icons.print),
+          icone: const Icon(Icons.print),
           onPressed: _baixarDanfe,
         ),
       ];
@@ -176,14 +176,14 @@ class _NfeCabecalhoPageState extends State<NfeCabecalhoPage> with SingleTickerPr
         context, 
         formaEmissao: '1',
         operacao: 'IMPRIMIR_DANFE', 
-        chaveAcesso: widget.nfeCabecalhoMontado.nfeCabecalho.chaveAcesso,
+        chaveAcesso: widget.nfeCabecalhoMontado!.nfeCabecalho!.chaveAcesso,
         funcaoDeCallBack: _imprimirDanfe, 
       ).then((socket) {
-        socket.write('NFE.ImprimirDANFEPDF("' 
-          + Sessao.configuracaoNfce.caminhoSalvarXml 
+        socket!.write('NFE.ImprimirDANFEPDF("' 
+          + Sessao.configuracaoNfce!.caminhoSalvarXml! 
           + Biblioteca.formatarDataAAAAMM(DateTime.now())
           + '\\NFCe\\'
-          + widget.nfeCabecalhoMontado.nfeCabecalho.chaveAcesso 
+          + widget.nfeCabecalhoMontado!.nfeCabecalho!.chaveAcesso! 
           + '-nfe.xml")\r\n.\r\n');
       });                 
     } catch (e) {
@@ -231,10 +231,10 @@ class _NfeCabecalhoPageState extends State<NfeCabecalhoPage> with SingleTickerPr
   bool _salvarForms() {
 	  
     // valida e salva o form NfeCabecalhoDetalhe
-    FormState formNfeCabecalho = _nfeCabecalhoPersisteFormKey.currentState;
+    FormState? formNfeCabecalho = _nfeCabecalhoPersisteFormKey.currentState;
     if (formNfeCabecalho != null) {
       if (!formNfeCabecalho.validate()) {
-        _abasController.animateTo(0);
+        _abasController!.animateTo(0);
 		return false;
       } else {
         _nfeCabecalhoPersisteFormKey.currentState?.save();
@@ -254,12 +254,16 @@ class _NfeCabecalhoPageState extends State<NfeCabecalhoPage> with SingleTickerPr
     });
   }
 
-  Decoration _getIndicator() {
+  Decoration? _getIndicator() {
     return getShapeDecorationAbaPage(_estiloBotoesAba);
   }
 
   Future<bool> _avisarUsuarioAlteracoesNaPagina() async {
-    if (!paginaMestreDetalheFoiAlterada) return true;
-    return await gerarDialogBoxFormAlterado(context);
+    if (!paginaMestreDetalheFoiAlterada) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
   }
 }

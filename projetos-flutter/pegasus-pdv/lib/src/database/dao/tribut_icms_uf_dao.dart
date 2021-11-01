@@ -59,7 +59,7 @@ class TributIcmsUfDao extends DatabaseAccessor<AppDatabase> with _$TributIcmsUfD
 
   Stream<List<TributIcmsUf>> observarLista() => select(tributIcmsUfs).watch();
 
-  Future<TributIcmsUf> consultarObjeto(int pId) {
+  Future<TributIcmsUf?> consultarObjeto(int pId) {
     return (select(tributIcmsUfs)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

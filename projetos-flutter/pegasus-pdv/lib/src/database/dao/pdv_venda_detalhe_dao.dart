@@ -60,7 +60,7 @@ class PdvVendaDetalheDao extends DatabaseAccessor<AppDatabase> with _$PdvVendaDe
 
   Stream<List<PdvVendaDetalhe>> observarLista() => select(pdvVendaDetalhes).watch();
 
-  Future<List<VendaDetalhe>> consultarListaComProduto(int pId) {
+  Future<List<VendaDetalhe>> consultarListaComProduto(int? pId) {
     final consulta = select(pdvVendaDetalhes)
       .join([
         leftOuterJoin(produtos, produtos.id.equalsExp(pdvVendaDetalhes.idProduto)),
@@ -76,7 +76,7 @@ class PdvVendaDetalheDao extends DatabaseAccessor<AppDatabase> with _$PdvVendaDe
       }).get();
   }
 
-  Future<PdvVendaDetalhe> consultarObjeto(int pId) {
+  Future<PdvVendaDetalhe?> consultarObjeto(int pId) {
     return (select(pdvVendaDetalhes)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

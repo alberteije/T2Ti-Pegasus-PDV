@@ -59,7 +59,7 @@ class EcfSintegra60MDao extends DatabaseAccessor<AppDatabase> with _$EcfSintegra
 
   Stream<List<EcfSintegra60M>> observarLista() => select(ecfSintegra60Ms).watch();
 
-  Future<EcfSintegra60M> consultarObjeto(int pId) {
+  Future<EcfSintegra60M?> consultarObjeto(int pId) {
     return (select(ecfSintegra60Ms)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

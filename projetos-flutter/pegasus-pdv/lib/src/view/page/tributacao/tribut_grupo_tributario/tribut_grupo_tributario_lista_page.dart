@@ -51,20 +51,22 @@ import 'package:pegasus_pdv/src/view/shared/page/filtro_page.dart';
 import 'tribut_grupo_tributario_persiste_page.dart';
 
 class TributGrupoTributarioListaPage extends StatefulWidget {
+  const TributGrupoTributarioListaPage({Key? key}) : super(key: key);
+
   @override
   _TributGrupoTributarioListaPageState createState() => _TributGrupoTributarioListaPageState();
 }
 
 class _TributGrupoTributarioListaPageState extends State<TributGrupoTributarioListaPage> {
-  int _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
-  int _sortColumnIndex;
+  int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
+  int? _sortColumnIndex;
   bool _sortAscending = true;
-  var _filtro = Filtro();
+  Filtro? _filtro = Filtro();
   final _colunas = TributGrupoTributarioDao.colunas;
   final _campos = TributGrupoTributarioDao.campos;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -77,7 +79,7 @@ class _TributGrupoTributarioListaPageState extends State<TributGrupoTributarioLi
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
   }
   
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -102,7 +104,7 @@ class _TributGrupoTributarioListaPageState extends State<TributGrupoTributarioLi
   
     final _TributGrupoTributarioDataSource _tributGrupoTributarioDataSource = _TributGrupoTributarioDataSource(_listaTributGrupoTributario, context, _refrescarTela);
 
-    void _sort<T>(Comparable<T> getField(TributGrupoTributario tributGrupoTributario), int columnIndex, bool ascending) {
+    void _sort<T>(Comparable<T>? Function(TributGrupoTributario tributGrupoTributario) getField, int columnIndex, bool ascending) {
       _tributGrupoTributarioDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
@@ -118,7 +120,7 @@ class _TributGrupoTributarioListaPageState extends State<TributGrupoTributarioLi
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Cadastro - Grupo Tributario'),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           ),
           floatingActionButton: FloatingActionButton(
             focusColor: ViewUtilLib.getBotaoFocusColor(),
@@ -131,7 +133,7 @@ class _TributGrupoTributarioListaPageState extends State<TributGrupoTributarioLi
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: BottomAppBar(
             color: ViewUtilLib.getBottomAppBarColor(),          
-            shape: CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),
             child: Row(
               children: getBotoesNavigationBarListaPage(
                 context: context, 
@@ -144,14 +146,14 @@ class _TributGrupoTributarioListaPageState extends State<TributGrupoTributarioLi
             onRefresh: _refrescarTela,
             child: Scrollbar(
               child: _listaTributGrupoTributario == null
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : ListView(
-                padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
+                padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                 children: <Widget>[
                   PaginatedDataTable(                        
                     header: const Text('Relação - Grupo Tributario'),
-                    rowsPerPage: _rowsPerPage,
-                    onRowsPerPageChanged: (int value) {
+                    rowsPerPage: _rowsPerPage!,
+                    onRowsPerPageChanged: (int? value) {
                       setState(() {
                         _rowsPerPage = value;
                       });
@@ -219,9 +221,9 @@ class _TributGrupoTributarioListaPageState extends State<TributGrupoTributarioLi
           fullscreenDialog: true,
         ));
     if (_filtro != null) {
-      if (_filtro.campo != null) {
-        _filtro.campo = _campos[int.parse(_filtro.campo)];
-        await Sessao.db.produtoUnidadeDao.consultarListaFiltro(_filtro.campo, _filtro.valor);
+      if (_filtro!.campo != null) {
+        _filtro!.campo = _campos[int.parse(_filtro!.campo!)];
+        await Sessao.db.produtoUnidadeDao.consultarListaFiltro(_filtro!.campo!, _filtro!.valor!);
         setState(() {
         });
       }
@@ -232,7 +234,7 @@ class _TributGrupoTributarioListaPageState extends State<TributGrupoTributarioLi
     gerarDialogBoxInformacao(context, 'Essa janela não possui relatório implementado');
   }
 
-  Future<Null> _refrescarTela() async {
+  Future _refrescarTela() async {
     await Sessao.db.tributGrupoTributarioDao.consultarLista();
     setState(() {
     });
@@ -241,49 +243,49 @@ class _TributGrupoTributarioListaPageState extends State<TributGrupoTributarioLi
 
 /// codigo referente a fonte de dados
 class _TributGrupoTributarioDataSource extends DataTableSource {
-  final List<TributGrupoTributario> listaTributGrupoTributario;
+  final List<TributGrupoTributario>? listaTributGrupoTributario;
   final BuildContext context;
   final Function refrescarTela;
 
   _TributGrupoTributarioDataSource(this.listaTributGrupoTributario, this.context, this.refrescarTela);
 
-  void _sort<T>(Comparable<T> getField(TributGrupoTributario tributGrupoTributario), bool ascending) {
-    listaTributGrupoTributario.sort((TributGrupoTributario a, TributGrupoTributario b) {
+  void _sort<T>(Comparable<T>? Function(TributGrupoTributario tributGrupoTributario) getField, bool ascending) {
+    listaTributGrupoTributario!.sort((TributGrupoTributario a, TributGrupoTributario b) {
       if (!ascending) {
         final TributGrupoTributario c = a;
         a = b;
         b = c;
       }
-      Comparable<T> aValue = getField(a);
-      Comparable<T> bValue = getField(b);
+      Comparable<T>? aValue = getField(a);
+      Comparable<T>? bValue = getField(b);
 
-      if (aValue == null) aValue = '' as Comparable<T>;
-      if (bValue == null) bValue = '' as Comparable<T>;
+      aValue ??= '' as Comparable<T>;
+      bValue ??= '' as Comparable<T>;
 
       return Comparable.compare(aValue, bValue);
     });
   }
 
-  int _selectedCount = 0;
+  final int _selectedCount = 0;
 
   @override
-  DataRow getRow(int index) {
+  DataRow? getRow(int index) {
     assert(index >= 0);
-    if (index >= listaTributGrupoTributario.length) return null;
-    final TributGrupoTributario tributGrupoTributario = listaTributGrupoTributario[index];
+    if (index >= listaTributGrupoTributario!.length) return null;
+    final TributGrupoTributario tributGrupoTributario = listaTributGrupoTributario![index];
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
         DataCell(Text('${tributGrupoTributario.id ?? ''}'), onTap: () {
           _detalharTributGrupoTributario(tributGrupoTributario, context, refrescarTela);
         }),
-        DataCell(Text('${tributGrupoTributario.descricao ?? ''}'), onTap: () {
+        DataCell(Text(tributGrupoTributario.descricao ?? ''), onTap: () {
           _detalharTributGrupoTributario(tributGrupoTributario, context, refrescarTela);
         }),
-        DataCell(Text('${tributGrupoTributario.origemMercadoria ?? ''}'), onTap: () {
+        DataCell(Text(tributGrupoTributario.origemMercadoria ?? ''), onTap: () {
           _detalharTributGrupoTributario(tributGrupoTributario, context, refrescarTela);
         }),
-        DataCell(Text('${tributGrupoTributario.observacao ?? ''}'), onTap: () {
+        DataCell(Text(tributGrupoTributario.observacao ?? ''), onTap: () {
           _detalharTributGrupoTributario(tributGrupoTributario, context, refrescarTela);
         }),
       ],
@@ -291,7 +293,7 @@ class _TributGrupoTributarioDataSource extends DataTableSource {
   }
 
   @override
-  int get rowCount => listaTributGrupoTributario.length ?? 0;
+  int get rowCount => listaTributGrupoTributario!.length;
 
   @override
   bool get isRowCountApproximate => false;

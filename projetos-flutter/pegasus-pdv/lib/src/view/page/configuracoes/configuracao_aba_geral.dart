@@ -46,23 +46,25 @@ import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 class ConfiguracaoAbaGeral extends StatefulWidget {
+  const ConfiguracaoAbaGeral({Key? key}) : super(key: key);
+
   
   @override
   _ConfiguracaoAbaGeralState createState() => _ConfiguracaoAbaGeralState();
 }
 
 class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
-  bool _permiteEstoqueNegativo = Sessao.configuracaoPdv.permiteEstoqueNegativo == 'S' ? true : false;
-  String _formatoPagina = Sessao.configuracaoPdv.reciboFormatoPagina;
-  double _larguraPagina = Sessao.configuracaoPdv.reciboLarguraPagina ?? 57;
-  double _margensPagina = Sessao.configuracaoPdv.reciboMargemPagina ?? 5;
+  bool _permiteEstoqueNegativo = Sessao.configuracaoPdv!.permiteEstoqueNegativo == 'S' ? true : false;
+  String? _formatoPagina = Sessao.configuracaoPdv!.reciboFormatoPagina;
+  double _larguraPagina = Sessao.configuracaoPdv!.reciboLarguraPagina ?? 57;
+  double _margensPagina = Sessao.configuracaoPdv!.reciboMargemPagina ?? 5;
   double _larguraPaginaSlider = 100;
   final _importaTributOperacaoFiscalController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
   }
 
   @override
@@ -116,10 +118,10 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
   Padding _pegarCabecalho() {
     return Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Container(
+        child: SizedBox(
           child: Stack(
             children: <Widget>[
-              Container(
+              SizedBox(
                 child: Material(
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                   elevation: 5.0,
@@ -127,26 +129,26 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      SizedBox(
+                      const SizedBox(
                         height: 10.0,
                       ),
                       Text(
                         'Configurações Gerais',
                         style: Theme.of(context).textTheme.headline5,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 5.0,
                       ),
-                      Padding(
+                      const Padding(
                         padding: EdgeInsets.all(10),
                         child: Text('Utilize esse espaço para configurar a aplicação', textAlign: TextAlign.center,),                
                       ),                      
-                      Divider(
+                      const Divider(
                         indent: 10,
                         endIndent: 10,
                         thickness: 2,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10.0,
                       ),
                     ],
@@ -174,7 +176,7 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
                 fontSize: 18,
               ),
             ),
-            Divider(color: Colors.grey),
+            const Divider(color: Colors.grey),
           ],
         )
       ),
@@ -186,16 +188,16 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
         child: Column(
           children: <Widget>[
             ExpansionTile(
-              leading: Icon(
+              leading: const Icon(
                 Icons.document_scanner,
                 color: Colors.blue,
               ),
               key: GlobalKey(),
               title: 
-                Biblioteca.isTelaPequena(context) 
-                ? Text('Formato Página: ' + _formatoPagina)
-                : Text('Formato da Página: ' + _formatoPagina),                             
-              backgroundColor: Theme.of(context).accentColor.withOpacity(0.025),
+                Biblioteca.isTelaPequena(context)! 
+                ? Text('Formato Página: ' + _formatoPagina!)
+                : Text('Formato da Página: ' + _formatoPagina!),                             
+              backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.025),
               children: <Widget>[
                 ListTile(
                   title: const Text(Constantes.impressaoFormularioA4),
@@ -231,10 +233,10 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
             Visibility(
               visible: _formatoPagina != Constantes.impressaoFormularioA4,
               child: ListTile(
-                contentPadding: EdgeInsets.only(top: 5, bottom: 5, left: 12, right: 2),
+                contentPadding: const EdgeInsets.only(top: 5, bottom: 5, left: 12, right: 2),
                 leading: Wrap( 
                   spacing: 12,
-                  children: [
+                  children: const [
                     SizedBox(width: 1,),
                     Icon(
                       Icons.amp_stories_outlined,
@@ -243,12 +245,12 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
                   ]
                 ),
                 title: 
-                  Biblioteca.isTelaPequena(context) 
+                  Biblioteca.isTelaPequena(context)! 
                   ? Text("Largura [" + _larguraPagina.toString() + "]")
                   : Text("Largura Página [" + _larguraPagina.toString() + "]"),                    
                 trailing:
-                Container(
-                  width: Biblioteca.isTelaPequena(context) ? 200 : 200,
+                SizedBox(
+                  width: Biblioteca.isTelaPequena(context)! ? 200 : 200,
                   child: SliderTheme(
                     data: ViewUtilLib.sliderThemeData(context),
                     child: Slider(
@@ -272,10 +274,10 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
             Visibility(
               visible: _formatoPagina != Constantes.impressaoFormularioA4,
               child: ListTile(
-                contentPadding: EdgeInsets.only(top: 5, bottom: 5, left: 12, right: 2),
+                contentPadding: const EdgeInsets.only(top: 5, bottom: 5, left: 12, right: 2),
                 leading: Wrap( 
                   spacing: 12,
-                  children: [
+                  children: const [
                     SizedBox(width: 1,),
                     Icon(
                       Icons.ad_units_outlined,
@@ -284,12 +286,12 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
                   ]
                 ),
                 title: 
-                  Biblioteca.isTelaPequena(context) 
+                  Biblioteca.isTelaPequena(context)! 
                   ? Text("Margens [" + _margensPagina.toString() + "]")
                   : Text("Margens Página [" + _margensPagina.toString() + "]"),                    
                 trailing:
-                Container(
-                  width: Biblioteca.isTelaPequena(context) ? 150 : 200,
+                SizedBox(
+                  width: Biblioteca.isTelaPequena(context)! ? 150 : 200,
                   child: SliderTheme(
                     data: ViewUtilLib.sliderThemeData(context),
                     child: Slider(
@@ -327,7 +329,7 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
                 fontSize: 18,
               ),
             ),
-            Divider(color: Colors.grey),
+            const Divider(color: Colors.grey),
           ],
         )
       ),
@@ -339,11 +341,11 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
         child: Column(
           children: <Widget>[
             ListTile(
-              leading: Icon(
+              leading: const Icon(
                 Icons.now_widgets_sharp,
                 color: Colors.red,
               ),
-              title: Text("Permite Venda com Estoque Negativo"),
+              title: const Text("Permite Venda com Estoque Negativo"),
               trailing: CupertinoSwitch(
                 value: _permiteEstoqueNegativo,
                 onChanged: (val) {
@@ -353,14 +355,14 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
               )
             ),
             Visibility(
-              visible: Sessao.configuracaoPdv.modulo != 'G',
+              visible: Sessao.configuracaoPdv!.modulo != 'G',
               child: Padding(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Row(
                   children: <Widget>[
                     Expanded(
                       flex: 1,
-                      child: Container(
+                      child: SizedBox(
                         child: TextFormField(
                           controller: _importaTributOperacaoFiscalController,
                           readOnly: true,
@@ -368,7 +370,7 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
                             'Importe a Operação Fiscal Padrão',
                             'Operação Fiscal Padrão',
                             false),
-                          onSaved: (String value) {
+                          onSaved: (String? value) {
                           },
                           validator: ValidaCampoFormulario.validarObrigatorioAlfanumerico,
                           onChanged: (text) {
@@ -383,7 +385,7 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
                         icon: ViewUtilLib.getIconBotaoLookup(),
                         onPressed: () async {
                           ///chamando o lookup
-                          Map<String, dynamic> _objetoJsonRetorno =
+                          Map<String, dynamic>? _objetoJsonRetorno =
                             await Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -401,7 +403,7 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
                           if (_objetoJsonRetorno != null) {
                             if (_objetoJsonRetorno['descricao'] != null) {
                               Sessao.configuracaoPdv = 
-                              Sessao.configuracaoPdv.copyWith(
+                              Sessao.configuracaoPdv!.copyWith(
                                 idTributOperacaoFiscalPadrao: _objetoJsonRetorno['id'],
                               );                                
                               await _refrescarTela();
@@ -436,7 +438,7 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
     }    
 
     Sessao.configuracaoPdv = 
-    Sessao.configuracaoPdv.copyWith(
+    Sessao.configuracaoPdv!.copyWith(
       reciboFormatoPagina: _formatoPagina,
       reciboLarguraPagina: _larguraPagina,
       reciboMargemPagina: _margensPagina,
@@ -447,9 +449,9 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
   }
 
   Future _refrescarTela() async {
-    if (Sessao.configuracaoPdv.idTributOperacaoFiscalPadrao != null) {
-      final operacaoFiscal = await Sessao.db.tributOperacaoFiscalDao.consultarObjeto(Sessao.configuracaoPdv.idTributOperacaoFiscalPadrao);
-      _importaTributOperacaoFiscalController.text = operacaoFiscal.descricao;
+    if (Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao != null) {
+      final operacaoFiscal = await Sessao.db.tributOperacaoFiscalDao.consultarObjeto(Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao);
+      _importaTributOperacaoFiscalController.text = operacaoFiscal?.descricao ?? '';
       setState(() {
       });
     }

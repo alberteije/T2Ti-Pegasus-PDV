@@ -55,27 +55,31 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 import 'contas_pagar_persiste_page.dart';
 
 class ContasPagarListaPage extends StatefulWidget {
+  const ContasPagarListaPage({Key? key}) : super(key: key);
+
   @override
   _ContasPagarListaPageState createState() => _ContasPagarListaPageState();
 }
 
 class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
-  int _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
-  int _sortColumnIndex;
+  int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
+  int? _sortColumnIndex;
   bool _sortAscending = true;
-  var _filtro = Filtro();
+  Filtro? _filtro = Filtro();
   final _colunas = ContasPagarDao.colunas;
   final _campos = ContasPagarDao.campos;
 
   DateTime _mesAno = DateTime.now();
-  String _statusPagamento = 'Todos';
+  String? _statusPagamento = 'Todos';
   double _totalPagar = 0;
   double _totalPago = 0;
   double _totalGeral = 0;
-  var _listaContasPagarMontado;
+  List<ContasPagarMontado>? _listaContasPagarMontado;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
+
+  final ScrollController controllerScroll = ScrollController();
 
   @override
   void initState() {
@@ -88,7 +92,7 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -113,7 +117,7 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
 
     final _ContasPagarDataSource _contasPagarDataSource = _ContasPagarDataSource(_listaContasPagarMontado, context, _refrescarTela);
 
-    void _sort<T>(Comparable<T> getField(ContasPagarMontado contasPagarMontado), int columnIndex, bool ascending) {
+    void _sort<T>(Comparable<T>? Function(ContasPagarMontado contasPagarMontado) getField, int columnIndex, bool ascending) {
       _contasPagarDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
@@ -129,7 +133,7 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Contas a Pagar'),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           ),
           floatingActionButton: FloatingActionButton(
             focusColor: ViewUtilLib.getBotaoFocusColor(),
@@ -142,7 +146,7 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: BottomAppBar(
             color: ViewUtilLib.getBottomAppBarColor(),          
-            shape: CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 90, 10),
               child: Row(
@@ -155,20 +159,19 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
                         'Mês/Ano para o Filtro',
                         'Mês/Ano para o Filtro',
                         true),
-                      isEmpty: _mesAno == null,
                       child: DatePickerItem(
                         mascara: 'MM/yyyy',
                         dateTime: _mesAno,
                         firstDate: DateTime.parse('1900-01-01'),
                         lastDate: DateTime.parse('2050-01-01'),
-                        onChanged: (DateTime value) {
-                          _mesAno = value;
+                        onChanged: (DateTime? value) {
+                          _mesAno = value!;
                           _refrescarTela();
                         },
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 8,
                   ),
                   Expanded(
@@ -181,7 +184,7 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
                         true, paddingVertical: 1),
                       isEmpty: _statusPagamento == null,
                       child: getDropDownButton(_statusPagamento,
-                        (String newValue) {
+                        (String? newValue) {
                           _statusPagamento = newValue;
                           _refrescarTela();
                       }, <String>[
@@ -199,8 +202,8 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
             onRefresh: _refrescarTela,
             child: BackdropScaffold(     
               appBar: BackdropAppBar(
-                title: Text("Relação - Contas Pagar"),
-                actions: <Widget>[
+                title: const Text("Relação - Contas Pagar"),
+                actions: const <Widget>[
                   BackdropToggleButton(
                     icon: AnimatedIcons.list_view,
                   ),
@@ -210,14 +213,15 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
               backLayer: getResumoTotais(context),
               frontLayer: Scrollbar(
                 child: _listaContasPagarMontado == null
-                ? Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator())
                 : ListView(
-                  padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
+                  controller: controllerScroll,
+                  padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                   children: <Widget>[
                     PaginatedDataTable(                        
                       // header: const Text('Relação - Contas Pagar'),
-                      rowsPerPage: _rowsPerPage,
-                      onRowsPerPageChanged: (int value) {
+                      rowsPerPage: _rowsPerPage!,
+                      onRowsPerPageChanged: (int? value) {
                         setState(() {
                           _rowsPerPage = value;
                         });
@@ -230,7 +234,7 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
                           label: const Text('Id'),
                           tooltip: 'Id',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar.id, columnIndex, ascending),
+                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar!.id, columnIndex, ascending),
                         ),
                         DataColumn(
                           label: const Text('Fornecedor'),
@@ -242,93 +246,93 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
                           label: const Text('Data de Lançamento'),
                           tooltip: 'Data de Lançamento',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<DateTime>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar.dataLancamento, columnIndex, ascending),
+                            _sort<DateTime>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar!.dataLancamento, columnIndex, ascending),
                         ),
                         DataColumn(
                           label: const Text('Data de Vencimento'),
                           tooltip: 'Data de Vencimento',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<DateTime>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar.dataVencimento, columnIndex, ascending),
+                            _sort<DateTime>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar!.dataVencimento, columnIndex, ascending),
                         ),
                         DataColumn(
                           label: const Text('Data de Pagamento'),
                           tooltip: 'Data de Pagamento',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<DateTime>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar.dataPagamento, columnIndex, ascending),
+                            _sort<DateTime>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar!.dataPagamento, columnIndex, ascending),
                         ),
                         DataColumn(
                           numeric: true,
                           label: const Text('Valor a Pagar'),
                           tooltip: 'Valor a Pagar',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar.valorAPagar, columnIndex, ascending),
+                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar!.valorAPagar, columnIndex, ascending),
                         ),
                         DataColumn(
                           numeric: true,
                           label: const Text('Taxa Juros'),
                           tooltip: 'Taxa Juros',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar.taxaJuro, columnIndex, ascending),
+                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar!.taxaJuro, columnIndex, ascending),
                         ),
                         DataColumn(
                           numeric: true,
                           label: const Text('Taxa Multa'),
                           tooltip: 'Taxa Multa',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar.taxaMulta, columnIndex, ascending),
+                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar!.taxaMulta, columnIndex, ascending),
                         ),
                         DataColumn(
                           numeric: true,
                           label: const Text('Taxa Desconto'),
                           tooltip: 'Taxa Desconto',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar.taxaDesconto, columnIndex, ascending),
+                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar!.taxaDesconto, columnIndex, ascending),
                         ),
                         DataColumn(
                           numeric: true,
                           label: const Text('Valor Juros'),
                           tooltip: 'Valor Juros',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar.valorJuro, columnIndex, ascending),
+                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar!.valorJuro, columnIndex, ascending),
                         ),
                         DataColumn(
                           numeric: true,
                           label: const Text('Valor Multa'),
                           tooltip: 'Valor Multa',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar.valorMulta, columnIndex, ascending),
+                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar!.valorMulta, columnIndex, ascending),
                         ),
                         DataColumn(
                           numeric: true,
                           label: const Text('Valor Desconto'),
                           tooltip: 'Valor Desconto',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar.valorDesconto, columnIndex, ascending),
+                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar!.valorDesconto, columnIndex, ascending),
                         ),
                         DataColumn(
                           numeric: true,
                           label: const Text('Valor Pago'),
                           tooltip: 'Valor Pago',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar.valorPago, columnIndex, ascending),
+                            _sort<num>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar!.valorPago, columnIndex, ascending),
                         ),
                         DataColumn(
                           label: const Text('Número do Documento'),
                           tooltip: 'Número do Documento',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<String>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar.numeroDocumento, columnIndex, ascending),
+                            _sort<String>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar!.numeroDocumento, columnIndex, ascending),
                         ),
                         DataColumn(
                           label: const Text('Histórico'),
                           tooltip: 'Histórico',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<String>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar.historico, columnIndex, ascending),
+                            _sort<String>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar!.historico, columnIndex, ascending),
                         ),
                         DataColumn(
                           label: const Text('Status Pagamento'),
                           tooltip: 'Conteúdo para o campo Status Pagamento',
                           onSort: (int columnIndex, bool ascending) =>
-                            _sort<String>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar.statusPagamento, columnIndex, ascending),
+                            _sort<String>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar!.statusPagamento, columnIndex, ascending),
                         ),
                       ],
                       source: _contasPagarDataSource,
@@ -358,17 +362,17 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
             const SizedBox(height: 10.0),
             getItemResumoValor(
               descricao: 'Total a Pagar: ',
-              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalPagar ?? 0)}',
+              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalPagar)}',
               corFundo: Colors.blue.shade100,
             ),
             getItemResumoValor(
               descricao: 'Total Pago: ',
-              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalPago ?? 0)}',
+              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalPago)}',
               corFundo: Colors.red.shade100,
             ),
             getItemResumoValor(
               descricao: 'Total Geral: ',
-              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalGeral ?? 0)}',
+              valor: 'R\$ ${Constantes.formatoDecimalValor.format(_totalGeral)}',
               corFundo: Colors.green.shade100,
             ),
             const SizedBox(height: 10.0),
@@ -405,9 +409,9 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
           fullscreenDialog: true,
         ));
     if (_filtro != null) {
-      if (_filtro.campo != null) {
-        _filtro.campo = _campos[int.parse(_filtro.campo)];
-        await Sessao.db.contasPagarDao.consultarListaFiltro(_filtro.campo, _filtro.valor);
+      if (_filtro!.campo != null) {
+        _filtro!.campo = _campos[int.parse(_filtro!.campo!)];
+        await Sessao.db.contasPagarDao.consultarListaFiltro(_filtro!.campo!, _filtro!.valor!);
         setState(() {
         });
       }
@@ -430,13 +434,13 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
     _totalPagar = 0;
     _totalPago = 0;
     _totalGeral = 0;
-    for (ContasPagarMontado contasPagarMontado in _listaContasPagarMontado) {
-      if (contasPagarMontado.contasPagar.statusPagamento == 'A') {
-        _totalPagar = _totalPagar + (contasPagarMontado.contasPagar.valorAPagar ?? 0);        
-      } else if (contasPagarMontado.contasPagar.statusPagamento == 'P') {
-        _totalPago = _totalPago + (contasPagarMontado.contasPagar.valorPago ?? 0);        
+    for (ContasPagarMontado contasPagarMontado in _listaContasPagarMontado!) {
+      if (contasPagarMontado.contasPagar!.statusPagamento == 'A') {
+        _totalPagar = _totalPagar + (contasPagarMontado.contasPagar!.valorAPagar ?? 0);        
+      } else if (contasPagarMontado.contasPagar!.statusPagamento == 'P') {
+        _totalPago = _totalPago + (contasPagarMontado.contasPagar!.valorPago ?? 0);        
       }
-      _totalGeral = _totalGeral + (contasPagarMontado.contasPagar.valorAPagar ?? 0);
+      _totalGeral = _totalGeral + (contasPagarMontado.contasPagar!.valorAPagar ?? 0);
     }     
   }
 }
@@ -444,87 +448,87 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
 
 /// codigo referente a fonte de dados
 class _ContasPagarDataSource extends DataTableSource {
-  final List<ContasPagarMontado> listaContasPagar;
+  final List<ContasPagarMontado>? listaContasPagar;
   final BuildContext context;
   final Function refrescarTela;
  
   _ContasPagarDataSource(this.listaContasPagar, this.context, this.refrescarTela);
 
-  void _sort<T>(Comparable<T> getField(ContasPagarMontado contasPagar), bool ascending) {
-    listaContasPagar.sort((ContasPagarMontado a, ContasPagarMontado b) {
+  void _sort<T>(Comparable<T>? Function(ContasPagarMontado contasPagar) getField, bool ascending) {
+    listaContasPagar!.sort((ContasPagarMontado a, ContasPagarMontado b) {
       if (!ascending) {
         final ContasPagarMontado c = a;
         a = b;
         b = c;
       }
-      Comparable<T> aValue = getField(a);
-      Comparable<T> bValue = getField(b);
+      Comparable<T>? aValue = getField(a);
+      Comparable<T>? bValue = getField(b);
 
-      if (aValue == null) aValue = '' as Comparable<T>;
-      if (bValue == null) bValue = '' as Comparable<T>;
+      aValue ??= '' as Comparable<T>;
+      bValue ??= '' as Comparable<T>;
 
       return Comparable.compare(aValue, bValue);
     });
     notifyListeners();
   }
 
-  int _selectedCount = 0;
+  final int _selectedCount = 0;
 
   @override
-  DataRow getRow(int index) {
+  DataRow? getRow(int index) {
     assert(index >= 0);
-    if (index >= listaContasPagar.length) return null;
-    final ContasPagarMontado contasPagarMontado = listaContasPagar[index];
-    final ContasPagar contasPagar = contasPagarMontado.contasPagar;
+    if (index >= listaContasPagar!.length) return null;
+    final ContasPagarMontado contasPagarMontado = listaContasPagar![index];
+    final ContasPagar contasPagar = contasPagarMontado.contasPagar!;
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
         DataCell(Text('${contasPagar.id ?? ''}'), onTap: () {
           _detalharContasPagar(contasPagarMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasPagarMontado.fornecedor?.nome ?? ''}'), onTap: () {
+        DataCell(Text(contasPagarMontado.fornecedor?.nome ?? ''), onTap: () {
           _detalharContasPagar(contasPagarMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasPagar.dataLancamento != null ? DateFormat('dd/MM/yyyy').format(contasPagar.dataLancamento) : ''}'), onTap: () {
+        DataCell(Text(contasPagar.dataLancamento != null ? DateFormat('dd/MM/yyyy').format(contasPagar.dataLancamento!) : ''), onTap: () {
           _detalharContasPagar(contasPagarMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasPagar.dataVencimento != null ? DateFormat('dd/MM/yyyy').format(contasPagar.dataVencimento) : ''}'), onTap: () {
+        DataCell(Text(contasPagar.dataVencimento != null ? DateFormat('dd/MM/yyyy').format(contasPagar.dataVencimento!) : ''), onTap: () {
           _detalharContasPagar(contasPagarMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasPagar.dataPagamento != null ? DateFormat('dd/MM/yyyy').format(contasPagar.dataPagamento) : ''}'), onTap: () {
+        DataCell(Text(contasPagar.dataPagamento != null ? DateFormat('dd/MM/yyyy').format(contasPagar.dataPagamento!) : ''), onTap: () {
           _detalharContasPagar(contasPagarMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasPagar.valorAPagar != null ? Constantes.formatoDecimalValor.format(contasPagar.valorAPagar) : 0.toStringAsFixed(Constantes.decimaisValor)}'), onTap: () {
+        DataCell(Text(contasPagar.valorAPagar != null ? Constantes.formatoDecimalValor.format(contasPagar.valorAPagar) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
           _detalharContasPagar(contasPagarMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasPagar.taxaJuro != null ? Constantes.formatoDecimalTaxa.format(contasPagar.taxaJuro) : 0.toStringAsFixed(Constantes.decimaisTaxa)}'), onTap: () {
+        DataCell(Text(contasPagar.taxaJuro != null ? Constantes.formatoDecimalTaxa.format(contasPagar.taxaJuro) : 0.toStringAsFixed(Constantes.decimaisTaxa)), onTap: () {
           _detalharContasPagar(contasPagarMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasPagar.taxaMulta != null ? Constantes.formatoDecimalTaxa.format(contasPagar.taxaMulta) : 0.toStringAsFixed(Constantes.decimaisTaxa)}'), onTap: () {
+        DataCell(Text(contasPagar.taxaMulta != null ? Constantes.formatoDecimalTaxa.format(contasPagar.taxaMulta) : 0.toStringAsFixed(Constantes.decimaisTaxa)), onTap: () {
           _detalharContasPagar(contasPagarMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasPagar.taxaDesconto != null ? Constantes.formatoDecimalTaxa.format(contasPagar.taxaDesconto) : 0.toStringAsFixed(Constantes.decimaisTaxa)}'), onTap: () {
+        DataCell(Text(contasPagar.taxaDesconto != null ? Constantes.formatoDecimalTaxa.format(contasPagar.taxaDesconto) : 0.toStringAsFixed(Constantes.decimaisTaxa)), onTap: () {
           _detalharContasPagar(contasPagarMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasPagar.valorJuro != null ? Constantes.formatoDecimalValor.format(contasPagar.valorJuro) : 0.toStringAsFixed(Constantes.decimaisValor)}'), onTap: () {
+        DataCell(Text(contasPagar.valorJuro != null ? Constantes.formatoDecimalValor.format(contasPagar.valorJuro) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
           _detalharContasPagar(contasPagarMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasPagar.valorMulta != null ? Constantes.formatoDecimalValor.format(contasPagar.valorMulta) : 0.toStringAsFixed(Constantes.decimaisValor)}'), onTap: () {
+        DataCell(Text(contasPagar.valorMulta != null ? Constantes.formatoDecimalValor.format(contasPagar.valorMulta) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
           _detalharContasPagar(contasPagarMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasPagar.valorDesconto != null ? Constantes.formatoDecimalValor.format(contasPagar.valorDesconto) : 0.toStringAsFixed(Constantes.decimaisValor)}'), onTap: () {
+        DataCell(Text(contasPagar.valorDesconto != null ? Constantes.formatoDecimalValor.format(contasPagar.valorDesconto) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
           _detalharContasPagar(contasPagarMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasPagar.valorPago != null ? Constantes.formatoDecimalValor.format(contasPagar.valorPago) : 0.toStringAsFixed(Constantes.decimaisValor)}'), onTap: () {
+        DataCell(Text(contasPagar.valorPago != null ? Constantes.formatoDecimalValor.format(contasPagar.valorPago) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
           _detalharContasPagar(contasPagarMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasPagar.numeroDocumento ?? ''}'), onTap: () {
+        DataCell(Text(contasPagar.numeroDocumento ?? ''), onTap: () {
           _detalharContasPagar(contasPagarMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasPagar.historico ?? ''}'), onTap: () {
+        DataCell(Text(contasPagar.historico ?? ''), onTap: () {
           _detalharContasPagar(contasPagarMontado, context, refrescarTela);
         }),
-        DataCell(Text('${contasPagar.statusPagamento ?? ''}'), onTap: () {
+        DataCell(Text(contasPagar.statusPagamento ?? ''), onTap: () {
           _detalharContasPagar(contasPagarMontado, context, refrescarTela);
         }),
       ],
@@ -532,7 +536,7 @@ class _ContasPagarDataSource extends DataTableSource {
   }
 
   @override
-  int get rowCount => listaContasPagar.length ?? 0;
+  int get rowCount => listaContasPagar!.length;
 
   @override
   bool get isRowCountApproximate => false;

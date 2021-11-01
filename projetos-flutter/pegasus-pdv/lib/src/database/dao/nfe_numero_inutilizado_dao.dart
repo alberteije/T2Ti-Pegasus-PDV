@@ -59,7 +59,7 @@ class NfeNumeroInutilizadoDao extends DatabaseAccessor<AppDatabase> with _$NfeNu
 
   Stream<List<NfeNumeroInutilizado>> observarLista() => select(nfeNumeroInutilizados).watch();
 
-  Future<NfeNumeroInutilizado> consultarObjeto(int pId) {
+  Future<NfeNumeroInutilizado?> consultarObjeto(int pId) {
     return (select(nfeNumeroInutilizados)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

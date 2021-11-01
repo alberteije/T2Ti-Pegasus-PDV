@@ -37,12 +37,13 @@ import 'package:moor/moor.dart';
 
 @DataClassName("PdvSuprimento")
 class PdvSuprimentos extends Table {
+  @override
   String get tableName => 'PDV_SUPRIMENTO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idPdvMovimento => integer().named('ID_PDV_MOVIMENTO').nullable().customConstraint('NULLABLE REFERENCES PDV_MOVIMENTO(ID)')();
-  DateTimeColumn get dataSuprimento => dateTime().named('DATA_SUPRIMENTO').nullable()();
-  TextColumn get horaSuprimento => text().named('HORA_SUPRIMENTO').withLength(min: 0, max: 8).nullable()();
-  RealColumn get valor => real().named('VALOR').nullable()();
-  TextColumn get observacao => text().named('OBSERVACAO').withLength(min: 0, max: 250).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idPdvMovimento => integer().named('ID_PDV_MOVIMENTO').nullable().customConstraint('NULLABLE REFERENCES PDV_MOVIMENTO(ID)')() as Column<int>?;
+  DateTimeColumn? get dataSuprimento => dateTime().named('DATA_SUPRIMENTO').nullable()() as Column<DateTime>?;
+  TextColumn? get horaSuprimento => text().named('HORA_SUPRIMENTO').withLength(min: 0, max: 8).nullable()() as Column<String>?;
+  RealColumn? get valor => real().named('VALOR').nullable()() as Column<double>?;
+  TextColumn? get observacao => text().named('OBSERVACAO').withLength(min: 0, max: 250).nullable()() as Column<String>?;
 }

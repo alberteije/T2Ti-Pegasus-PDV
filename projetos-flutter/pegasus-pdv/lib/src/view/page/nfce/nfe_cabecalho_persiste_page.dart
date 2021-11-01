@@ -46,13 +46,13 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
 class NfeCabecalhoPersistePage extends StatefulWidget {
-  final NfeCabecalhoMontado nfeCabecalhoMontado;
-  final GlobalKey<FormState> formKey;
-  final GlobalKey<ScaffoldState> scaffoldKey;
-  final FocusNode foco;
+  final NfeCabecalhoMontado? nfeCabecalhoMontado;
+  final GlobalKey<FormState>? formKey;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
+  final FocusNode? foco;
 
   const NfeCabecalhoPersistePage(
-      {Key key, this.formKey, this.scaffoldKey, this.nfeCabecalhoMontado, this.foco})
+      {Key? key, this.formKey, this.scaffoldKey, this.nfeCabecalhoMontado, this.foco})
       : super(key: key);
 
   @override
@@ -60,8 +60,8 @@ class NfeCabecalhoPersistePage extends StatefulWidget {
 }
 
 class _NfeCabecalhoPersistePageState extends State<NfeCabecalhoPersistePage> {
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -102,20 +102,20 @@ class _NfeCabecalhoPersistePageState extends State<NfeCabecalhoPersistePage> {
                   padding: ViewUtilLib.paddingAbaPersistePage,
                   child: BootstrapContainer(
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                     children: <Widget>[			  			  
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 readOnly: true,
-                                initialValue: widget.nfeCabecalhoMontado.nfeCabecalho.chaveAcesso ?? '',
+                                initialValue: widget.nfeCabecalhoMontado!.nfeCabecalho!.chaveAcesso ?? '',
                                 decoration: getInputDecoration(
                                   'Chave de Acesso - Gerado Automaticamente',
                                   'Chave de Acesso',
@@ -126,10 +126,10 @@ class _NfeCabecalhoPersistePageState extends State<NfeCabecalhoPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 readOnly: true,
-                                initialValue: widget.nfeCabecalhoMontado.nfeCabecalho.numero ?? '',
+                                initialValue: widget.nfeCabecalhoMontado!.nfeCabecalho!.numero ?? '',
                                 decoration: getInputDecoration(
                                   'Número - Gerado Automaticamente',
                                   'Número',
@@ -139,17 +139,17 @@ class _NfeCabecalhoPersistePageState extends State<NfeCabecalhoPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 readOnly: true,
-                                initialValue: Biblioteca.formatarDataHora(widget.nfeCabecalhoMontado.nfeCabecalho.dataHoraEmissao) ?? '',
+                                initialValue: Biblioteca.formatarDataHora(widget.nfeCabecalhoMontado!.nfeCabecalho!.dataHoraEmissao),
                                 decoration: getInputDecoration(
                                   'Data/Hora Emissão',
                                   'Data/Hora Emissão',
@@ -160,10 +160,10 @@ class _NfeCabecalhoPersistePageState extends State<NfeCabecalhoPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 readOnly: true,
-                                initialValue: Biblioteca.formatarValorDecimal(widget.nfeCabecalhoMontado.nfeCabecalho.valorTotal) ?? '',
+                                initialValue: Biblioteca.formatarValorDecimal(widget.nfeCabecalhoMontado!.nfeCabecalho!.valorTotal),
                                 textAlign: TextAlign.end,
                                 decoration: getInputDecoration(
                                   'Valor Total da Nota',
@@ -174,7 +174,7 @@ class _NfeCabecalhoPersistePageState extends State<NfeCabecalhoPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                     ],
                   ),
                 ),

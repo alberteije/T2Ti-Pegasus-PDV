@@ -37,12 +37,13 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeExportacao")
 class NfeExportacaos extends Table {
+  @override
   String get tableName => 'NFE_EXPORTACAO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')();
-  IntColumn get drawback => integer().named('DRAWBACK').nullable()();
-  IntColumn get numeroRegistro => integer().named('NUMERO_REGISTRO').nullable()();
-  TextColumn get chaveAcesso => text().named('CHAVE_ACESSO').withLength(min: 0, max: 44).nullable()();
-  RealColumn get quantidade => real().named('QUANTIDADE').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')() as Column<int>?;
+  IntColumn? get drawback => integer().named('DRAWBACK').nullable()() as Column<int>?;
+  IntColumn? get numeroRegistro => integer().named('NUMERO_REGISTRO').nullable()() as Column<int>?;
+  TextColumn? get chaveAcesso => text().named('CHAVE_ACESSO').withLength(min: 0, max: 44).nullable()() as Column<String>?;
+  RealColumn? get quantidade => real().named('QUANTIDADE').nullable()() as Column<double>?;
 }

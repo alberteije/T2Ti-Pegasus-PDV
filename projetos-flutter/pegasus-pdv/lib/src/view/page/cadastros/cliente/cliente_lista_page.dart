@@ -52,20 +52,22 @@ import 'package:pegasus_pdv/src/view/shared/page/filtro_page.dart';
 import 'cliente_persiste_page.dart';
 
 class ClienteListaPage extends StatefulWidget {
+  const ClienteListaPage({Key? key}) : super(key: key);
+
   @override
   _ClienteListaPageState createState() => _ClienteListaPageState();
 }
 
 class _ClienteListaPageState extends State<ClienteListaPage> {
-  int _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
-  int _sortColumnIndex;
+  int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
+  int? _sortColumnIndex;
   bool _sortAscending = true;
-  var _filtro = Filtro();
+  Filtro? _filtro = Filtro();
   final _colunas = ClienteDao.colunas;
   final _campos = ClienteDao.campos;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -78,7 +80,7 @@ class _ClienteListaPageState extends State<ClienteListaPage> {
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -103,7 +105,7 @@ class _ClienteListaPageState extends State<ClienteListaPage> {
 
     final _ClienteDataSource _clienteDataSource = _ClienteDataSource(_listaCliente, context, _refrescarTela);
 
-    void _sort<T>(Comparable<T> getField(Cliente cliente), int columnIndex, bool ascending) {
+    void _sort<T>(Comparable<T>? Function(Cliente cliente) getField, int columnIndex, bool ascending) {
       _clienteDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
@@ -119,7 +121,7 @@ class _ClienteListaPageState extends State<ClienteListaPage> {
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Cadastro - Cliente'),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           ),
           floatingActionButton: FloatingActionButton(
             focusColor: ViewUtilLib.getBotaoFocusColor(),
@@ -132,7 +134,7 @@ class _ClienteListaPageState extends State<ClienteListaPage> {
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: BottomAppBar(
             color: ViewUtilLib.getBottomAppBarColor(),          
-            shape: CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),
             child: Row(
               children: getBotoesNavigationBarListaPage(
                 context: context, 
@@ -145,14 +147,14 @@ class _ClienteListaPageState extends State<ClienteListaPage> {
             onRefresh: _refrescarTela,
             child: Scrollbar(
               child: _listaCliente == null
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : ListView(
-                padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
+                padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                 children: <Widget>[
                   PaginatedDataTable(                        
                     header: const Text('Relação - Cliente'),
-                    rowsPerPage: _rowsPerPage,
-                    onRowsPerPageChanged: (int value) {
+                    rowsPerPage: _rowsPerPage!,
+                    onRowsPerPageChanged: (int? value) {
                       setState(() {
                         _rowsPerPage = value;
                       });
@@ -340,9 +342,9 @@ class _ClienteListaPageState extends State<ClienteListaPage> {
           fullscreenDialog: true,
         ));
     if (_filtro != null) {
-      if (_filtro.campo != null) {
-        _filtro.campo = _campos[int.parse(_filtro.campo)];
-        await Sessao.db.clienteDao.consultarListaFiltro(_filtro.campo, _filtro.valor);
+      if (_filtro!.campo != null) {
+        _filtro!.campo = _campos[int.parse(_filtro!.campo!)];
+        await Sessao.db.clienteDao.consultarListaFiltro(_filtro!.campo!, _filtro!.valor!);
         setState(() {
         });
       }
@@ -364,109 +366,109 @@ class _ClienteListaPageState extends State<ClienteListaPage> {
 
 /// codigo referente a fonte de dados
 class _ClienteDataSource extends DataTableSource {
-  final List<Cliente> listaCliente;
+  final List<Cliente>? listaCliente;
   final BuildContext context;
   final Function refrescarTela;
  
   _ClienteDataSource(this.listaCliente, this.context, this.refrescarTela);
 
-  void _sort<T>(Comparable<T> getField(Cliente cliente), bool ascending) {
-    listaCliente.sort((Cliente a, Cliente b) {
+  void _sort<T>(Comparable<T>? Function(Cliente cliente) getField, bool ascending) {
+    listaCliente!.sort((Cliente a, Cliente b) {
       if (!ascending) {
         final Cliente c = a;
         a = b;
         b = c;
       }
-      Comparable<T> aValue = getField(a);
-      Comparable<T> bValue = getField(b);
+      Comparable<T>? aValue = getField(a);
+      Comparable<T>? bValue = getField(b);
 
-      if (aValue == null) aValue = '' as Comparable<T>;
-      if (bValue == null) bValue = '' as Comparable<T>;
+      aValue ??= '' as Comparable<T>;
+      bValue ??= '' as Comparable<T>;
 
       return Comparable.compare(aValue, bValue);
     });
   }
 
-  int _selectedCount = 0;
+  final int _selectedCount = 0;
 
   @override
-  DataRow getRow(int index) {
+  DataRow? getRow(int index) {
     assert(index >= 0);
-    if (index >= listaCliente.length) return null;
-    final Cliente cliente = listaCliente[index];
+    if (index >= listaCliente!.length) return null;
+    final Cliente cliente = listaCliente![index];
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
         DataCell(Text('${cliente.id ?? ''}'), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.tipoPessoa ?? ''}'), onTap: () {
+        DataCell(Text(cliente.tipoPessoa ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.nome ?? ''}'), onTap: () {
+        DataCell(Text(cliente.nome ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.fantasia ?? ''}'), onTap: () {
+        DataCell(Text(cliente.fantasia ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.email ?? ''}'), onTap: () {
+        DataCell(Text(cliente.email ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.url ?? ''}'), onTap: () {
+        DataCell(Text(cliente.url ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.cpfCnpj ?? ''}'), onTap: () {
+        DataCell(Text(cliente.cpfCnpj ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.rg ?? ''}'), onTap: () {
+        DataCell(Text(cliente.rg ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.orgaoRg ?? ''}'), onTap: () {
+        DataCell(Text(cliente.orgaoRg ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.dataEmissaoRg != null ? DateFormat('dd/MM/yyyy').format(cliente.dataEmissaoRg) : ''}'), onTap: () {
+        DataCell(Text(cliente.dataEmissaoRg != null ? DateFormat('dd/MM/yyyy').format(cliente.dataEmissaoRg!) : ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.sexo ?? ''}'), onTap: () {
+        DataCell(Text(cliente.sexo ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.inscricaoEstadual ?? ''}'), onTap: () {
+        DataCell(Text(cliente.inscricaoEstadual ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.inscricaoMunicipal ?? ''}'), onTap: () {
+        DataCell(Text(cliente.inscricaoMunicipal ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.dataCadastro != null ? DateFormat('dd/MM/yyyy').format(cliente.dataCadastro) : ''}'), onTap: () {
+        DataCell(Text(cliente.dataCadastro != null ? DateFormat('dd/MM/yyyy').format(cliente.dataCadastro!) : ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.logradouro ?? ''}'), onTap: () {
+        DataCell(Text(cliente.logradouro ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.numero ?? ''}'), onTap: () {
+        DataCell(Text(cliente.numero ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.complemento ?? ''}'), onTap: () {
+        DataCell(Text(cliente.complemento ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.cep ?? ''}'), onTap: () {
+        DataCell(Text(cliente.cep ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.bairro ?? ''}'), onTap: () {
+        DataCell(Text(cliente.bairro ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.cidade ?? ''}'), onTap: () {
+        DataCell(Text(cliente.cidade ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.uf ?? ''}'), onTap: () {
+        DataCell(Text(cliente.uf ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.telefone ?? ''}'), onTap: () {
+        DataCell(Text(cliente.telefone ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.celular ?? ''}'), onTap: () {
+        DataCell(Text(cliente.celular ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text('${cliente.contato ?? ''}'), onTap: () {
+        DataCell(Text(cliente.contato ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
       ],
@@ -474,7 +476,7 @@ class _ClienteDataSource extends DataTableSource {
   }
 
   @override
-  int get rowCount => listaCliente.length ?? 0;
+  int get rowCount => listaCliente!.length;
 
   @override
   bool get isRowCountApproximate => false;

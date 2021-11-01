@@ -46,16 +46,16 @@ part 'tribut_operacao_fiscal_dao.g.dart';
 class TributOperacaoFiscalDao extends DatabaseAccessor<AppDatabase> with _$TributOperacaoFiscalDaoMixin {
   final AppDatabase db;
 
-  List<TributOperacaoFiscal> listaTributOperacaoFiscal; // será usada para popular a grid na janela da operação fiscal
+  List<TributOperacaoFiscal>? listaTributOperacaoFiscal; // será usada para popular a grid na janela da operação fiscal
 
   TributOperacaoFiscalDao(this.db) : super(db);
 
-  Future<List<TributOperacaoFiscal>> consultarLista() async {
+  Future<List<TributOperacaoFiscal>?> consultarLista() async {
     listaTributOperacaoFiscal = await select(tributOperacaoFiscals).get();
     return listaTributOperacaoFiscal;
   }
 
-  Future<List<TributOperacaoFiscal>> consultarListaFiltro(String campo, String valor) async {
+  Future<List<TributOperacaoFiscal>?> consultarListaFiltro(String campo, String valor) async {
     listaTributOperacaoFiscal = await (customSelect("SELECT * FROM TRIBUT_OPERACAO_FISCAL WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { tributOperacaoFiscals }).map((row) {
                                   return TributOperacaoFiscal.fromData(row.data, db);  
@@ -65,26 +65,26 @@ class TributOperacaoFiscalDao extends DatabaseAccessor<AppDatabase> with _$Tribu
 
   Stream<List<TributOperacaoFiscal>> observarLista() => select(tributOperacaoFiscals).watch();
 
-  Future<TributOperacaoFiscal> consultarObjeto(int pId) {
+  Future<TributOperacaoFiscal?> consultarObjeto(int? pId) {
     return (select(tributOperacaoFiscals)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<TributOperacaoFiscal> pObjeto) {
+  Future<int> inserir(Insertable<TributOperacaoFiscal>? pObjeto) {
     return transaction(() async {
-      final idInserido = await into(tributOperacaoFiscals).insert(pObjeto);
+      final idInserido = await into(tributOperacaoFiscals).insert(pObjeto!);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<TributOperacaoFiscal> pObjeto) {
+  Future<bool> alterar(Insertable<TributOperacaoFiscal>? pObjeto) {
     return transaction(() async {
-      return update(tributOperacaoFiscals).replace(pObjeto);
+      return update(tributOperacaoFiscals).replace(pObjeto!);
     });    
   } 
 
-  Future<int> excluir(Insertable<TributOperacaoFiscal> pObjeto) {
+  Future<int> excluir(Insertable<TributOperacaoFiscal>? pObjeto) {
     return transaction(() async {
-      return delete(tributOperacaoFiscals).delete(pObjeto);
+      return delete(tributOperacaoFiscals).delete(pObjeto!);
     });    
   }
 

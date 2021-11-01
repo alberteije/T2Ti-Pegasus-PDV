@@ -39,52 +39,53 @@ import '../database.dart';
 
 @DataClassName("NfeDetalhe")
 class NfeDetalhes extends Table {
+  @override
   String get tableName => 'NFE_DETALHE';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')();
-  IntColumn get numeroItem => integer().named('NUMERO_ITEM').nullable()();
-  TextColumn get codigoProduto => text().named('CODIGO_PRODUTO').withLength(min: 0, max: 60).nullable()();
-  TextColumn get gtin => text().named('GTIN').withLength(min: 0, max: 14).nullable()();
-  TextColumn get nomeProduto => text().named('NOME_PRODUTO').withLength(min: 0, max: 120).nullable()();
-  TextColumn get ncm => text().named('NCM').withLength(min: 0, max: 8).nullable()();
-  TextColumn get nve => text().named('NVE').withLength(min: 0, max: 6).nullable()();
-  TextColumn get cest => text().named('CEST').withLength(min: 0, max: 7).nullable()();
-  TextColumn get indicadorEscalaRelevante => text().named('INDICADOR_ESCALA_RELEVANTE').withLength(min: 0, max: 1).nullable()();
-  TextColumn get cnpjFabricante => text().named('CNPJ_FABRICANTE').withLength(min: 0, max: 14).nullable()();
-  TextColumn get codigoBeneficioFiscal => text().named('CODIGO_BENEFICIO_FISCAL').withLength(min: 0, max: 10).nullable()();
-  IntColumn get exTipi => integer().named('EX_TIPI').nullable()();
-  IntColumn get cfop => integer().named('CFOP').nullable()();
-  TextColumn get unidadeComercial => text().named('UNIDADE_COMERCIAL').withLength(min: 0, max: 6).nullable()();
-  RealColumn get quantidadeComercial => real().named('QUANTIDADE_COMERCIAL').nullable()();
-  TextColumn get numeroPedidoCompra => text().named('NUMERO_PEDIDO_COMPRA').withLength(min: 0, max: 15).nullable()();
-  IntColumn get itemPedidoCompra => integer().named('ITEM_PEDIDO_COMPRA').nullable()();
-  TextColumn get numeroFci => text().named('NUMERO_FCI').withLength(min: 0, max: 36).nullable()();
-  TextColumn get numeroRecopi => text().named('NUMERO_RECOPI').withLength(min: 0, max: 20).nullable()();
-  RealColumn get valorUnitarioComercial => real().named('VALOR_UNITARIO_COMERCIAL').nullable()(); // valor unitário do produto que está sendo vendido
-  RealColumn get valorBrutoProduto => real().named('VALOR_BRUTO_PRODUTO').nullable()(); // quantidade * valor unitário
-  TextColumn get gtinUnidadeTributavel => text().named('GTIN_UNIDADE_TRIBUTAVEL').withLength(min: 0, max: 14).nullable()();
-  TextColumn get unidadeTributavel => text().named('UNIDADE_TRIBUTAVEL').withLength(min: 0, max: 6).nullable()();
-  RealColumn get quantidadeTributavel => real().named('QUANTIDADE_TRIBUTAVEL').nullable()();
-  RealColumn get valorUnitarioTributavel => real().named('VALOR_UNITARIO_TRIBUTAVEL').nullable()(); // valor unitário do produto que está sendo vendido
-  RealColumn get valorFrete => real().named('VALOR_FRETE').nullable()();
-  RealColumn get valorSeguro => real().named('VALOR_SEGURO').nullable()();
-  RealColumn get valorDesconto => real().named('VALOR_DESCONTO').nullable()(); // valor do desconto no item
-  RealColumn get valorOutrasDespesas => real().named('VALOR_OUTRAS_DESPESAS').nullable()();
-  TextColumn get entraTotal => text().named('ENTRA_TOTAL').withLength(min: 0, max: 1).nullable()();
-  RealColumn get valorTotalTributos => real().named('VALOR_TOTAL_TRIBUTOS').nullable()(); // IBPT = estadual+municipal+federal para o item
-  RealColumn get percentualDevolvido => real().named('PERCENTUAL_DEVOLVIDO').nullable()();
-  RealColumn get valorIpiDevolvido => real().named('VALOR_IPI_DEVOLVIDO').nullable()();
-  TextColumn get informacoesAdicionais => text().named('INFORMACOES_ADICIONAIS').withLength(min: 0, max: 250).nullable()();
-  RealColumn get valorSubtotal => real().named('VALOR_SUBTOTAL').nullable()(); // quantidade * valor unitário
-  RealColumn get valorTotal => real().named('VALOR_TOTAL').nullable()(); // (quantidade * valor unitário) - valor do desconto
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')();
+  IntColumn? get numeroItem => integer().named('NUMERO_ITEM').nullable()() as Column<int>?;
+  TextColumn? get codigoProduto => text().named('CODIGO_PRODUTO').withLength(min: 0, max: 60).nullable()() as Column<String>?;
+  TextColumn? get gtin => text().named('GTIN').withLength(min: 0, max: 14).nullable()() as Column<String>?;
+  TextColumn? get nomeProduto => text().named('NOME_PRODUTO').withLength(min: 0, max: 120).nullable()() as Column<String>?;
+  TextColumn? get ncm => text().named('NCM').withLength(min: 0, max: 8).nullable()() as Column<String>?;
+  TextColumn? get nve => text().named('NVE').withLength(min: 0, max: 6).nullable()() as Column<String>?;
+  TextColumn? get cest => text().named('CEST').withLength(min: 0, max: 7).nullable()() as Column<String>?;
+  TextColumn? get indicadorEscalaRelevante => text().named('INDICADOR_ESCALA_RELEVANTE').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get cnpjFabricante => text().named('CNPJ_FABRICANTE').withLength(min: 0, max: 14).nullable()() as Column<String>?;
+  TextColumn? get codigoBeneficioFiscal => text().named('CODIGO_BENEFICIO_FISCAL').withLength(min: 0, max: 10).nullable()() as Column<String>?;
+  IntColumn? get exTipi => integer().named('EX_TIPI').nullable()() as Column<int>?;
+  IntColumn? get cfop => integer().named('CFOP').nullable()() as Column<int>?;
+  TextColumn? get unidadeComercial => text().named('UNIDADE_COMERCIAL').withLength(min: 0, max: 6).nullable()() as Column<String>?;
+  RealColumn? get quantidadeComercial => real().named('QUANTIDADE_COMERCIAL').nullable()() as Column<double>?;
+  TextColumn? get numeroPedidoCompra => text().named('NUMERO_PEDIDO_COMPRA').withLength(min: 0, max: 15).nullable()() as Column<String>?;
+  IntColumn? get itemPedidoCompra => integer().named('ITEM_PEDIDO_COMPRA').nullable()() as Column<int>?;
+  TextColumn? get numeroFci => text().named('NUMERO_FCI').withLength(min: 0, max: 36).nullable()() as Column<String>?;
+  TextColumn? get numeroRecopi => text().named('NUMERO_RECOPI').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  RealColumn? get valorUnitarioComercial => real().named('VALOR_UNITARIO_COMERCIAL').nullable()() as Column<double>?; // valor unitário do produto que está sendo vendido
+  RealColumn? get valorBrutoProduto => real().named('VALOR_BRUTO_PRODUTO').nullable()() as Column<double>?; // quantidade * valor unitário
+  TextColumn? get gtinUnidadeTributavel => text().named('GTIN_UNIDADE_TRIBUTAVEL').withLength(min: 0, max: 14).nullable()() as Column<String>?;
+  TextColumn? get unidadeTributavel => text().named('UNIDADE_TRIBUTAVEL').withLength(min: 0, max: 6).nullable()() as Column<String>?;
+  RealColumn? get quantidadeTributavel => real().named('QUANTIDADE_TRIBUTAVEL').nullable()() as Column<double>?;
+  RealColumn? get valorUnitarioTributavel => real().named('VALOR_UNITARIO_TRIBUTAVEL').nullable()() as Column<double>?; // valor unitário do produto que está sendo vendido
+  RealColumn? get valorFrete => real().named('VALOR_FRETE').nullable()() as Column<double>?;
+  RealColumn? get valorSeguro => real().named('VALOR_SEGURO').nullable()() as Column<double>?;
+  RealColumn? get valorDesconto => real().named('VALOR_DESCONTO').nullable()() as Column<double>?; // valor do desconto no item
+  RealColumn? get valorOutrasDespesas => real().named('VALOR_OUTRAS_DESPESAS').nullable()() as Column<double>?;
+  TextColumn? get entraTotal => text().named('ENTRA_TOTAL').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  RealColumn? get valorTotalTributos => real().named('VALOR_TOTAL_TRIBUTOS').nullable()() as Column<double>?; // IBPT = estadual+municipal+federal para o item
+  RealColumn? get percentualDevolvido => real().named('PERCENTUAL_DEVOLVIDO').nullable()() as Column<double>?;
+  RealColumn? get valorIpiDevolvido => real().named('VALOR_IPI_DEVOLVIDO').nullable()() as Column<double>?;
+  TextColumn? get informacoesAdicionais => text().named('INFORMACOES_ADICIONAIS').withLength(min: 0, max: 250).nullable()() as Column<String>?;
+  RealColumn? get valorSubtotal => real().named('VALOR_SUBTOTAL').nullable()() as Column<double>?; // quantidade * valor unitário
+  RealColumn? get valorTotal => real().named('VALOR_TOTAL').nullable()() as Column<double>?; // (quantidade * valor unitário) - valor do desconto
 }
 
 class NfeDetalheMontado {
-  NfeDetalhe nfeDetalhe;
-  NfeDetalheImpostoIcms nfeDetalheImpostoIcms;
-  NfeDetalheImpostoPis nfeDetalheImpostoPis;
-  NfeDetalheImpostoCofins nfeDetalheImpostoCofins;
+  NfeDetalhe? nfeDetalhe;
+  NfeDetalheImpostoIcms? nfeDetalheImpostoIcms;
+  NfeDetalheImpostoPis? nfeDetalheImpostoPis;
+  NfeDetalheImpostoCofins? nfeDetalheImpostoCofins;
 
   NfeDetalheMontado({
     this.nfeDetalhe,

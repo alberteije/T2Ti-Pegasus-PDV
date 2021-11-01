@@ -37,14 +37,15 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeDetalheImpostoCofins")
 class NfeDetalheImpostoCofinss extends Table {
+  @override
   String get tableName => 'NFE_DETALHE_IMPOSTO_COFINS';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')();
-  TextColumn get cstCofins => text().named('CST_COFINS').withLength(min: 0, max: 2).nullable()();
-  RealColumn get baseCalculoCofins => real().named('BASE_CALCULO_COFINS').nullable()();
-  RealColumn get aliquotaCofinsPercentual => real().named('ALIQUOTA_COFINS_PERCENTUAL').nullable()();
-  RealColumn get quantidadeVendida => real().named('QUANTIDADE_VENDIDA').nullable()();
-  RealColumn get aliquotaCofinsReais => real().named('ALIQUOTA_COFINS_REAIS').nullable()();
-  RealColumn get valorCofins => real().named('VALOR_COFINS').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')();
+  TextColumn? get cstCofins => text().named('CST_COFINS').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  RealColumn? get baseCalculoCofins => real().named('BASE_CALCULO_COFINS').nullable()() as Column<double>?;
+  RealColumn? get aliquotaCofinsPercentual => real().named('ALIQUOTA_COFINS_PERCENTUAL').nullable()() as Column<double>?;
+  RealColumn? get quantidadeVendida => real().named('QUANTIDADE_VENDIDA').nullable()() as Column<double>?;
+  RealColumn? get aliquotaCofinsReais => real().named('ALIQUOTA_COFINS_REAIS').nullable()() as Column<double>?;
+  RealColumn? get valorCofins => real().named('VALOR_COFINS').nullable()() as Column<double>?;
 }

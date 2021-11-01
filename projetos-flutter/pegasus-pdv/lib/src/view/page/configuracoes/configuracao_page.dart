@@ -39,6 +39,8 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:pegasus_pdv/src/view/page/page.dart';
 
 class ConfiguracaoPage extends StatefulWidget {
+  const ConfiguracaoPage({Key? key}) : super(key: key);
+
 
   @override
   _ConfiguracaoPageState createState() => _ConfiguracaoPageState();
@@ -46,7 +48,7 @@ class ConfiguracaoPage extends StatefulWidget {
 
 class _ConfiguracaoPageState extends State<ConfiguracaoPage> {
   int _currentIndex = 0;
-  PageController _pageController;
+  PageController? _pageController;
 
   @override
   void initState() {
@@ -56,14 +58,14 @@ class _ConfiguracaoPageState extends State<ConfiguracaoPage> {
   
   @override
   void dispose() {
-    _pageController.dispose();
+    _pageController!.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Configurações")),
+      appBar: AppBar(title: const Text("Configurações")),
       body: SizedBox.expand(
         child: PageView(
           controller: _pageController,
@@ -72,16 +74,16 @@ class _ConfiguracaoPageState extends State<ConfiguracaoPage> {
           },
           children: <Widget>[
             Container(color: Colors.blueGrey, 
-              child: ConfiguracaoAbaGeral(),
+              child: const ConfiguracaoAbaGeral(),
             ),
             Container(color: Colors.red, 
-              child: ConfiguracaoAbaNfce(),
+              child: const ConfiguracaoAbaNfce(),
             ),
             Container(color: Colors.green, 
-              child: ConfiguracaoAbaCadastro(title: 'Configurações do SAT', modulo: 'SAT'),
+              child: const ConfiguracaoAbaCadastro(title: 'Configurações do SAT', modulo: 'SAT'),
             ),
             Container(color: Colors.blue, 
-              child: ConfiguracaoAbaCadastro(title: 'Configurações do MFE', modulo: 'MFE'),
+              child: const ConfiguracaoAbaCadastro(title: 'Configurações do MFE', modulo: 'MFE'),
             ),
           ],
         ),
@@ -90,24 +92,24 @@ class _ConfiguracaoPageState extends State<ConfiguracaoPage> {
         selectedIndex: _currentIndex,
         onItemSelected: (index) {
           setState(() => _currentIndex = index);
-          _pageController.jumpToPage(index);
+          _pageController!.jumpToPage(index);
         },
         items: <BottomNavyBarItem>[
           BottomNavyBarItem(
-            title: Text('Geral'),
-            icon: Icon(Icons.settings)
+            title: const Text('Geral'),
+            icon: const Icon(Icons.settings)
           ),
           BottomNavyBarItem(
-            title: Text('NFC-e'),
-            icon: Icon(Icons.description_outlined)
+            title: const Text('NFC-e'),
+            icon: const Icon(Icons.description_outlined)
           ),
           BottomNavyBarItem(
-            title: Text('SAT'),
-            icon: Icon(Icons.print_outlined)
+            title: const Text('SAT'),
+            icon: const Icon(Icons.print_outlined)
           ),
           BottomNavyBarItem(
-            title: Text('MFE'),
-            icon: Icon(Icons.scanner_outlined)
+            title: const Text('MFE'),
+            icon: const Icon(Icons.scanner_outlined)
           ),
         ],
       ),

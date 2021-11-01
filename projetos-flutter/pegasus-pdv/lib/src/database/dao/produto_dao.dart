@@ -33,6 +33,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
+
 import 'package:moor/moor.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
@@ -48,17 +50,17 @@ part 'produto_dao.g.dart';
 class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
   final AppDatabase db;
 
-  List<Produto> listaProduto; // será usada para popular a grid na janela do produto
-  List<ProdutoMontado> listaProdutoMontado; // será usada para popular a grid na janela do produto, pois leva a unidade
+  List<Produto>? listaProduto; // será usada para popular a grid na janela do produto
+  List<ProdutoMontado>? listaProdutoMontado; // será usada para popular a grid na janela do produto, pois leva a unidade
 
   ProdutoDao(this.db) : super(db);
 
-  Future<List<Produto>> consultarLista() async {
+  Future<List<Produto>?> consultarLista() async {
     listaProduto = await select(produtos).get();
     return listaProduto;
   }
 
-  Future<List<Produto>> consultarListaFiltro(String campo, String valor) async {
+  Future<List<Produto>?> consultarListaFiltro(String campo, String valor) async {
     listaProduto = await (customSelect("SELECT * FROM PRODUTO WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { produtos }).map((row) {
                                   return Produto.fromData(row.data, db);  
@@ -66,7 +68,7 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
     return listaProduto;
   }
 
-  Future<List<Produto>> consultarProdutoSemGrupoTributario() async {
+  Future<List<Produto>?> consultarProdutoSemGrupoTributario() async {
     listaProduto = await (customSelect("SELECT * FROM PRODUTO WHERE id_tribut_grupo_tributario is null", 
                                 readsFrom: { produtos }).map((row) {
                                   return Produto.fromData(row.data, db);  
@@ -74,14 +76,14 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
     return listaProduto;
   }  
 
-  Future<Produto> consultarObjetoFiltro(String campo, String valor) async {
+  Future<Produto?> consultarObjetoFiltro(String campo, String valor) async {
     return (customSelect("SELECT * FROM PRODUTO WHERE " + campo + " = '" + valor + "'", 
                                 readsFrom: { produtos }).map((row) {
                                   return Produto.fromData(row.data, db);  
                                 }).getSingleOrNull());
   }
 
-  Future<ProdutoMontado> consultarObjetoMontado(int pId) async {
+  Future<ProdutoMontado?> consultarObjetoMontado(int? pId) async {
     final consulta = select(produtos)
       .join([
         leftOuterJoin(produtoUnidades, produtoUnidades.id.equalsExp(produtos.idProdutoUnidade)),
@@ -106,7 +108,7 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
     return retorno;
   }
 
-  Future<List<ProdutoMontado>> consultarListaMontado({String campo, dynamic valor, String status}) async {
+  Future<List<ProdutoMontado>?> consultarListaMontado({String? campo, dynamic valor, String? status}) async {
     final consulta = select(produtos)
       .join([
         leftOuterJoin(produtoUnidades, produtoUnidades.id.equalsExp(produtos.idProdutoUnidade)),
@@ -158,78 +160,78 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
 
   Future<int> consultarEstoqueCritico() async {
     final resultado = await customSelect("select count(*) as QUANTIDADE from produto where QUANTIDADE_ESTOQUE<ESTOQUE_MINIMO").getSingleOrNull();
-    return resultado.data["QUANTIDADE"] ?? 0;
+    return resultado?.data["QUANTIDADE"] ?? 0;
   }
 
-  Future<bool> incrementarEstoque({List<VendaDetalhe> listaVendaDetalhe, List<CompraDetalhe> listaCompraDetalhe}) {
+  Future<bool> incrementarEstoque({List<VendaDetalhe>? listaVendaDetalhe, List<CompraDetalhe>? listaCompraDetalhe}) {
     return transaction(() async {
       if (listaCompraDetalhe != null) {
         for (var objeto in listaCompraDetalhe) {
-          Produto produto = await consultarObjeto(objeto.compraPedidoDetalhe.idProduto);
-          produto = produto.copyWith(
-              quantidadeEstoque: (produto.quantidadeEstoque ?? 0) + objeto.compraPedidoDetalhe.quantidade,
-              valorCompra: objeto.compraPedidoDetalhe.valorUnitario,
+          Produto? produto = await consultarObjeto(objeto.compraPedidoDetalhe!.idProduto);
+          produto = produto?.copyWith(
+              quantidadeEstoque: (produto.quantidadeEstoque ?? 0) + objeto.compraPedidoDetalhe!.quantidade!,
+              valorCompra: objeto.compraPedidoDetalhe!.valorUnitario,
             );
-          update(produtos).replace(produto);
+          await update(produtos).replace(produto!);
         }
       } else if (listaVendaDetalhe != null) {
         for (var objeto in listaVendaDetalhe) {
-          Produto produto = await consultarObjeto(objeto.pdvVendaDetalhe.idProduto);
-          produto = produto.copyWith(
-              quantidadeEstoque: (produto.quantidadeEstoque ?? 0) + objeto.pdvVendaDetalhe.quantidade,
+          Produto? produto = await consultarObjeto(objeto.pdvVendaDetalhe!.idProduto);
+          produto = produto?.copyWith(
+              quantidadeEstoque: (produto.quantidadeEstoque ?? 0) + objeto.pdvVendaDetalhe!.quantidade!,
             );
-          update(produtos).replace(produto);
+          await update(produtos).replace(produto!);
         }
       }
       return true;
     });    
   } 
 
-  Future<bool> decrementarEstoque({List<VendaDetalhe> listaVendaDetalhe, List<CompraDetalhe> listaCompraDetalhe}) {
+  Future<bool> decrementarEstoque({List<VendaDetalhe>? listaVendaDetalhe, List<CompraDetalhe>? listaCompraDetalhe}) {
     return transaction(() async {
       if (listaVendaDetalhe != null) {
         for (var objeto in listaVendaDetalhe) {
-          Produto produto = await consultarObjeto(objeto.pdvVendaDetalhe.idProduto);
-          produto = produto.copyWith(quantidadeEstoque: (produto.quantidadeEstoque ?? 0) - objeto.pdvVendaDetalhe.quantidade);
-          update(produtos).replace(produto);
+          Produto? produto = await consultarObjeto(objeto.pdvVendaDetalhe!.idProduto);
+          produto = produto?.copyWith(quantidadeEstoque: (produto.quantidadeEstoque ?? 0) - objeto.pdvVendaDetalhe!.quantidade!);
+          await update(produtos).replace(produto!);
         }
       } else if (listaCompraDetalhe != null) {
         for (var objeto in listaCompraDetalhe) {
-          Produto produto = await consultarObjeto(objeto.compraPedidoDetalhe.idProduto);
-          produto = produto.copyWith(quantidadeEstoque: (produto.quantidadeEstoque ?? 0) - objeto.compraPedidoDetalhe.quantidade);
-          update(produtos).replace(produto);
+          Produto? produto = await consultarObjeto(objeto.compraPedidoDetalhe!.idProduto);
+          produto = produto?.copyWith(quantidadeEstoque: (produto.quantidadeEstoque ?? 0) - objeto.compraPedidoDetalhe!.quantidade!);
+          await update(produtos).replace(produto!);
         }
       }
       return true;
     });    
   } 
 
-  Future<int> atualizarGrupoTributario(int idGrupoTributario) async {
+  Future<int> atualizarGrupoTributario(int? idGrupoTributario) async {
     return customUpdate("update PRODUTO set ID_TRIBUT_GRUPO_TRIBUTARIO = '" + idGrupoTributario.toString() + "'");
   }
 
   Stream<List<Produto>> observarLista() => select(produtos).watch();
 
-  Future<Produto> consultarObjeto(int pId) {
+  Future<Produto?> consultarObjeto(int? pId) {
     return (select(produtos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<Produto> pObjeto) {
+  Future<int> inserir(Insertable<Produto>? pObjeto) {
     return transaction(() async {
-      final idInserido = await into(produtos).insert(pObjeto);
+      final idInserido = await into(produtos).insert(pObjeto!);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Produto> pObjeto) {
+  Future<bool> alterar(Insertable<Produto>? pObjeto) {
     return transaction(() async {
-      return update(produtos).replace(pObjeto);
+      return update(produtos).replace(pObjeto!);
     });    
   } 
 
-  Future<int> excluir(Insertable<Produto> pObjeto) {
+  Future<int> excluir(Insertable<Produto>? pObjeto) {
     return transaction(() async {
-      return delete(produtos).delete(pObjeto);
+      return delete(produtos).delete(pObjeto!);
     });    
   }
 

@@ -33,10 +33,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 
@@ -51,11 +53,11 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 
 class ClientePersistePage extends StatefulWidget {
-  final Cliente cliente;
-  final String title;
-  final String operacao;
+  final Cliente? cliente;
+  final String? title;
+  final String? operacao;
 
-  const ClientePersistePage({Key key, this.cliente, this.title, this.operacao})
+  const ClientePersistePage({Key? key, this.cliente, this.title, this.operacao})
       : super(key: key);
 
   @override
@@ -68,11 +70,11 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   bool _formFoiAlterado = false;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
 
-  Cliente cliente;
+  Cliente? cliente;
 
   @override
   void initState() {
@@ -136,7 +138,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
         child: Scaffold(drawerDragStartBehavior: DragStartBehavior.down,
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text(widget.title), 
+            title: Text(widget.title!), 
             actions: widget.operacao == 'I' 
               ? getBotoesAppBarPersistePage(context: context, salvar: _salvar,)
               : getBotoesAppBarPersistePageComExclusao(context: context, salvar: _salvar, excluir: _excluir),
@@ -153,27 +155,27 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                   dragStartBehavior: DragStartBehavior.down,
                   child: BootstrapContainer(
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,                    // children: [
                     children: <Widget>[			  			  
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: InputDecorator(
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Tipo Pessoa',
                                   'Tipo Pessoa',
                                   true),
-                                isEmpty: cliente.tipoPessoa == null,
-                                child: getDropDownButton(cliente.tipoPessoa,
-                                  (String newValue) {
+                                isEmpty: cliente!.tipoPessoa == null,
+                                child: getDropDownButton(cliente!.tipoPessoa,
+                                  (String? newValue) {
                                     setState(() {
-                                      cliente = cliente.copyWith(tipoPessoa: newValue);
+                                      cliente = cliente!.copyWith(tipoPessoa: newValue);
                                     });
                                 }, <String>[
                                   'Física',
@@ -187,7 +189,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-8',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 focusNode: _foco,
                                 validator: ValidaCampoFormulario.validarObrigatorioAlfanumerico,
@@ -199,10 +201,10 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                   'Nome',
                                   true,
                                   paddingVertical: 18),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  cliente = cliente.copyWith(nome: text);
+                                  cliente = cliente!.copyWith(nome: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -212,7 +214,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                       ),
                       Visibility(
                         visible: cliente?.tipoPessoa == 'Jurídica',
-                        child: Divider(color: Colors.white,),
+                        child: const Divider(color: Colors.white,),
                       ),
                       Visibility(
                         visible: cliente?.tipoPessoa == 'Jurídica',
@@ -229,10 +231,10 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                   'Conteúdo para o campo Fantasia',
                                   'Fantasia',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  cliente = cliente.copyWith(fantasia: text);
+                                  cliente = cliente!.copyWith(fantasia: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -240,14 +242,14 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                           ],
                         ),
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 validator: ValidaCampoFormulario.validarEmail,
                                 maxLength: 250,
@@ -257,10 +259,10 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                   'Conteúdo para o campo Email',
                                   'Email',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  cliente = cliente.copyWith(email: text);
+                                  cliente = cliente!.copyWith(email: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -269,7 +271,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 250,
                                 maxLines: 3,
@@ -278,10 +280,10 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                   'Conteúdo para o campo Url',
                                   'Url',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  cliente = cliente.copyWith(url: text);
+                                  cliente = cliente!.copyWith(url: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -289,14 +291,14 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: cliente?.tipoPessoa == 'Física' ? 14 : 18,
                                 keyboardType: TextInputType.number,
@@ -306,10 +308,10 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                   'Cpf / Cnpj',
                                   true,
                                   paddingVertical: 15),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  cliente = cliente.copyWith(cpfCnpj: Biblioteca.removerMascara(text));
+                                  cliente = cliente!.copyWith(cpfCnpj: Biblioteca.removerMascara(text));
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -318,21 +320,21 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: InputDecorator(
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Data Cadastro',
                                   'Data Cadastro',
                                   true),
-                                isEmpty: cliente.dataCadastro == null,
+                                isEmpty: cliente!.dataCadastro == null,
                                 child: DatePickerItem(
                                   mascara: 'dd/MM/yyyy',
-                                  dateTime: cliente.dataCadastro,
+                                  dateTime: cliente!.dataCadastro,
                                   firstDate: DateTime.parse('1900-01-01'),
                                   lastDate: DateTime.now(),
-                                  onChanged: (DateTime value) {
+                                  onChanged: (DateTime? value) {
                                     setState(() {
-                                      cliente = cliente.copyWith(dataCadastro: value);
+                                      cliente = cliente!.copyWith(dataCadastro: value);
                                     });
                                   },
                                 ),
@@ -343,7 +345,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                       ),
                       Visibility(
                         visible: cliente?.tipoPessoa == 'Física',
-                        child: Divider(color: Colors.white,),
+                        child: const Divider(color: Colors.white,),
                       ),
                       Visibility(
                         visible: cliente?.tipoPessoa == 'Física',
@@ -353,17 +355,17 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: InputDecorator(
                                   decoration: getInputDecoration(
                                     'Conteúdo para o campo Sexo',
                                     'Sexo',
                                     true),
-                                  isEmpty: cliente.sexo == null,
-                                  child: getDropDownButton(cliente.sexo,
-                                    (String newValue) {
+                                  isEmpty: cliente!.sexo == null,
+                                  child: getDropDownButton(cliente!.sexo,
+                                    (String? newValue) {
                                       setState(() {
-                                        cliente = cliente.copyWith(sexo: newValue);
+                                        cliente = cliente!.copyWith(sexo: newValue);
                                       });
                                   }, <String>[
                                     'M',
@@ -374,7 +376,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
                                   maxLength: 20,
                                   maxLines: 1,
@@ -384,10 +386,10 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                     'Rg',
                                     true,
                                     paddingVertical: 18),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    cliente = cliente.copyWith(rg: text);
+                                    cliente = cliente!.copyWith(rg: text);
                                     _formFoiAlterado = true;
                                   },
                                 ),
@@ -398,7 +400,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                       ),
                       Visibility(
                         visible: cliente?.tipoPessoa == 'Física',
-                        child: Divider(color: Colors.white,),
+                        child: const Divider(color: Colors.white,),
                       ),
                       Visibility(
                         visible: cliente?.tipoPessoa == 'Física',
@@ -408,7 +410,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
                                   maxLength: 20,
                                   maxLines: 1,
@@ -418,10 +420,10 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                     'Orgao Rg',
                                     true,
                                     paddingVertical: 15),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    cliente = cliente.copyWith(orgaoRg: text);
+                                    cliente = cliente!.copyWith(orgaoRg: text);
                                     _formFoiAlterado = true;
                                   },
                                 ),
@@ -430,21 +432,21 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: InputDecorator(
                                   decoration: getInputDecoration(
                                     'Conteúdo para o campo Data Emissao Rg',
                                     'Data Emissao Rg',
                                     true),
-                                  isEmpty: cliente.dataEmissaoRg == null,
+                                  isEmpty: cliente!.dataEmissaoRg == null,
                                   child: DatePickerItem(
                                     mascara: 'dd/MM/yyyy',
-                                    dateTime: cliente.dataEmissaoRg,
+                                    dateTime: cliente!.dataEmissaoRg,
                                     firstDate: DateTime.parse('1900-01-01'),
                                     lastDate: DateTime.now(),
-                                    onChanged: (DateTime value) {
+                                    onChanged: (DateTime? value) {
                                       setState(() {
-                                        cliente = cliente.copyWith(dataEmissaoRg: value);
+                                        cliente = cliente!.copyWith(dataEmissaoRg: value);
                                       });
                                     },
                                   ),
@@ -456,7 +458,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                       ),
                       Visibility(
                         visible: cliente?.tipoPessoa == 'Jurídica',
-                        child: Divider(color: Colors.white,),
+                        child: const Divider(color: Colors.white,),
                       ),
                       Visibility(
                         visible: cliente?.tipoPessoa == 'Jurídica',
@@ -466,7 +468,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
                                   maxLength: 30,
                                   maxLines: 1,
@@ -475,10 +477,10 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                     'Conteúdo para o campo Inscricao Estadual',
                                     'Inscricao Estadual',
                                     false),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    cliente = cliente.copyWith(inscricaoEstadual: text);
+                                    cliente = cliente!.copyWith(inscricaoEstadual: text);
                                     _formFoiAlterado = true;
                                   },
                                 ),
@@ -487,7 +489,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                 child: TextFormField(
                                   maxLength: 30,
                                   maxLines: 1,
@@ -496,10 +498,10 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                     'Conteúdo para o campo Inscricao Municipal',
                                     'Inscricao Municipal',
                                     false),
-                                  onSaved: (String value) {
+                                  onSaved: (String? value) {
                                   },
                                   onChanged: (text) {
-                                    cliente = cliente.copyWith(inscricaoMunicipal: text);
+                                    cliente = cliente!.copyWith(inscricaoMunicipal: text);
                                     _formFoiAlterado = true;
                                   },
                                 ),
@@ -508,7 +510,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                           ],
                         ),
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -522,34 +524,34 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                 'Conteúdo para o campo Logradouro',
                                 'Logradouro',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                cliente = cliente.copyWith(logradouro: text);
+                                cliente = cliente!.copyWith(logradouro: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: InputDecorator(
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Uf',
                                   'Uf',
                                   true),
                                 isEmpty: cliente?.uf == null,
-                                child: getDropDownButton(cliente.uf,
-                                  (String newValue) {
+                                child: getDropDownButton(cliente!.uf,
+                                  (String? newValue) {
                                 setState(() {
-                                  cliente = cliente.copyWith(uf: newValue);
+                                  cliente = cliente!.copyWith(uf: newValue);
                                 });
                                 }, DropdownLista.listaUF)),                                                      
                             ),
@@ -557,7 +559,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 9,
                                 keyboardType: TextInputType.number,
@@ -567,10 +569,10 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                   'Cep',
                                   true,
                                   paddingVertical: 18),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  cliente = cliente.copyWith(cep: Biblioteca.removerMascara(text));
+                                  cliente = cliente!.copyWith(cep: Biblioteca.removerMascara(text));
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -579,7 +581,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-4',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 10,
                                 maxLines: 1,
@@ -589,10 +591,10 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                   'Numero',
                                   true,
                                   paddingVertical: 18),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  cliente = cliente.copyWith(numero: text);
+                                  cliente = cliente!.copyWith(numero: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -600,7 +602,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -614,24 +616,24 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                 'Conteúdo para o campo Complemento',
                                 'Complemento',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                cliente = cliente.copyWith(complemento: text);
+                                cliente = cliente!.copyWith(complemento: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 100,
                                 maxLines: 1,
@@ -640,10 +642,10 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                   'Conteúdo para o campo Bairro',
                                   'Bairro',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  cliente = cliente.copyWith(bairro: text);
+                                  cliente = cliente!.copyWith(bairro: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -652,7 +654,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 100,
                                 maxLines: 1,
@@ -661,10 +663,10 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                   'Conteúdo para o campo Cidade',
                                   'Cidade',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  cliente = cliente.copyWith(cidade: text);
+                                  cliente = cliente!.copyWith(cidade: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -672,14 +674,14 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 14,
                                 keyboardType: TextInputType.number,
@@ -688,10 +690,10 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                   'Conteúdo para o campo Telefone',
                                   'Telefone',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  cliente = cliente.copyWith(telefone: Biblioteca.removerMascara(text));
+                                  cliente = cliente!.copyWith(telefone: Biblioteca.removerMascara(text));
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -700,7 +702,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 14,
                                 keyboardType: TextInputType.number,
@@ -709,10 +711,10 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                   'Conteúdo para o campo Celular',
                                   'Celular',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  cliente = cliente.copyWith(celular: Biblioteca.removerMascara(text));
+                                  cliente = cliente!.copyWith(celular: Biblioteca.removerMascara(text));
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -720,7 +722,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -734,17 +736,17 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                                 'Conteúdo para o campo Contato',
                                 'Contato',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                cliente = cliente.copyWith(contato: text);
+                                cliente = cliente!.copyWith(contato: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -758,7 +760,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                     ],        
                   ),
                 ),
@@ -771,7 +773,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
   }
 
   Future<void> _salvar() async {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (!form.validate()) {
       _autoValidate = AutovalidateMode.always;
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
@@ -789,10 +791,13 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
   }
 
   Future<bool> _avisarUsuarioFormAlterado() async {
-    final FormState form = _formKey.currentState;
-    if (form == null || !_formFoiAlterado) return true;
-
-    return await gerarDialogBoxFormAlterado(context);
+    final FormState? form = _formKey.currentState;
+    if (form == null || !_formFoiAlterado) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
   }
 
   void _excluir() {

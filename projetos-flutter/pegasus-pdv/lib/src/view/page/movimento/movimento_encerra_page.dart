@@ -36,7 +36,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 Based on: Flutter UI Challenges by Many - https://github.com/lohanidamodar/flutter_ui_challenges
 *******************************************************************************/
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
@@ -52,9 +52,9 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 
 class MovimentoEncerraPage extends StatefulWidget {
-  final String title;
+  final String? title;
 
-  const MovimentoEncerraPage({Key key, this.title}) : super(key: key);
+  const MovimentoEncerraPage({Key? key, this.title}) : super(key: key);
 
   @override
   _MovimentoEncerraPageState createState() => _MovimentoEncerraPageState();
@@ -67,21 +67,22 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
   final _valorFoco = FocusNode();
 
   double _totalFechamento = 0;
-  PdvTipoPagamento _tipoPagamento = Sessao.listaTipoPagamento[0];
+  PdvTipoPagamento? _tipoPagamento = Sessao.listaTipoPagamento![0];
   static List<PdvFechamento> _listaFechamento = [];
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
     super.initState();
 
-    _valorController.afterChange = (_, __) {
-      _valorController.selection = TextSelection.collapsed(
-        offset: _valorController.text.length,
-      );
-    };
+    // EIJE - 22102021 - comentado para observar o comportamento do novo widget
+    // _valorController.afterChange = (_, __) {
+    //   _valorController.selection = TextSelection.collapsed(
+    //     offset: _valorController.text.length,
+    //   );
+    // };
 
     _valorFoco.addListener(() {
       if(_valorFoco.hasFocus) {
@@ -151,44 +152,44 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
     // if (index == 2) return dadosOperador(context); 
     // if (index == 3) return dadosGerente(context);  
     if (index == 2) return rodapeTela(context);
-    return null;
+    return const SizedBox();
   }
 
   Container cabecalhoTela(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 20.0),
+      margin: const EdgeInsets.only(top: 20.0),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
               color: Colors.white,
               child: Column(
                 children: <Widget>[
-                  SizedBox(
+                  const SizedBox(
                     height: 50.0,
                   ),
                   Text(
-                    widget.title,
+                    widget.title!,
                     style: Theme.of(context).textTheme.headline5,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5.0,
                   ),
                   Text(
-                    "Informe os dados para encerrar o movimento [" + Sessao.movimento.id.toString() + "]",
+                    "Informe os dados para encerrar o movimento [" + Sessao.movimento!.id.toString() + "]",
                     textAlign: TextAlign.center,
                     ),
-                  Divider(
+                  const Divider(
                     indent: 10,
                     endIndent: 10,
                     thickness: 2,
                   ),
                   BootstrapContainer(
                     fluid: false,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                     children: <Widget>[			  			  
                       BootstrapRow(
@@ -197,22 +198,22 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: ListTile(
-                                title: Text("Data da Abertura"),
-                                subtitle: Text(Biblioteca.formatarData(Sessao.movimento.dataAbertura)), 
-                                leading: Icon(Icons.calendar_today),
+                                title: const Text("Data da Abertura"),
+                                subtitle: Text(Biblioteca.formatarData(Sessao.movimento!.dataAbertura)), 
+                                leading: const Icon(Icons.calendar_today),
                               ),
                             ),
                           ),
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: ListTile(
-                                title: Text("Hora da Abertura"),
-                                subtitle: Text(Sessao.movimento.horaAbertura), 
-                                leading: Icon(Icons.timer),
+                                title: const Text("Hora da Abertura"),
+                                subtitle: Text(Sessao.movimento!.horaAbertura!), 
+                                leading: const Icon(Icons.timer),
                               ),
                             ),
                           ),
@@ -220,7 +221,7 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
                       ),
 					          ],
 				          ),
-                  Divider(
+                  const Divider(
                     indent: 10,
                     endIndent: 10,
                     thickness: 2,
@@ -235,12 +236,12 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
                           Navigator.of(context)
                             .push(MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    MovimentoListaPage()))
+                                    const MovimentoListaPage()))
                             .then((_) {
                             });
                         }
                       ),                                         
-                      SizedBox(
+                      const SizedBox(
                         width: 10.0,
                       ),
                       getBotaoGenericoPdv(
@@ -256,7 +257,7 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
                       ),                                         
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10.0,
                   ),
                 ],
@@ -265,7 +266,7 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: const <Widget>[
               Material(
                 elevation: 5.0,
                 shape: CircleBorder(),
@@ -283,11 +284,11 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
 
   Container dadosFechamento(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 0.0),
+      margin: const EdgeInsets.only(top: 0.0),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
@@ -296,13 +297,13 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: <Widget>[
-                    Text("Informe os dados do fechamento"),
-                    Divider(
+                    const Text("Informe os dados do fechamento"),
+                    const Divider(
                       indent: 10,
                       endIndent: 10,
                       thickness: 2,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 16.0,
                     ),
                     InputDecorator(
@@ -316,20 +317,20 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
                         focusNode: _tipoPagamentoFoco,
                         isExpanded: true,
                         value: _tipoPagamento,
-                        onChanged: (PdvTipoPagamento newValue) {
+                        onChanged: (PdvTipoPagamento? newValue) {
                           setState(() {
                             _tipoPagamento = newValue;
                           });
                         },
-                        items: Sessao.listaTipoPagamento.map<DropdownMenuItem<PdvTipoPagamento>>((PdvTipoPagamento value) {
+                        items: Sessao.listaTipoPagamento!.map<DropdownMenuItem<PdvTipoPagamento>>((PdvTipoPagamento value) {
                           return DropdownMenuItem<PdvTipoPagamento>(
                             value: value,
-                            child: Text(value.descricao),
+                            child: Text(value.descricao!),
                           );
                         }).toList(),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 16.0,
                     ),
                     TextField(
@@ -348,15 +349,15 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
                       onChanged: (text) {
                       },
                     ),                                    
-                    Divider(
+                    const Divider(
                       indent: 0,
                       endIndent: 0,
                       thickness: 2,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 16.0,
                     ),
-                    Container(
+                    SizedBox(
                       height: 170.0,
                       child: Scrollbar(
                         child: ListView(
@@ -376,27 +377,27 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 16.0,
                     ),
-                    Divider(
+                    const Divider(
                       indent: 0,
                       endIndent: 0,
                       thickness: 2,
                     ),
                     Row(
                       children: <Widget>[
-                        Text(
+                        const Text(
                           "Total Geral Informado: ",
                           style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15.0),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 5,
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Text(
-                          'R\$ ${Constantes.formatoDecimalValor.format(_totalFechamento ?? 0)}',
-                          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15.0),
+                          'R\$ ${Constantes.formatoDecimalValor.format(_totalFechamento)}',
+                          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15.0),
                         )
                       ],
                     ),
@@ -412,13 +413,13 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
 
   List<DataColumn> getColumnsFechamento() {
     List<DataColumn> lista = [];
-    lista.add(DataColumn(
+    lista.add(const DataColumn(
       label: Text(
         "Tipo",
         style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
       ),
     ));
-    lista.add(DataColumn(
+    lista.add(const DataColumn(
       numeric: true,
       label: Text(
         "Valor",
@@ -436,11 +437,11 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
       celulas = [
         DataCell(
           Text(
-            _getDescricaoTipoPagamento(itemPagamento),
+            _getDescricaoTipoPagamento(itemPagamento)!,
           ), 
           onTap: () => _excluirPagamento(itemPagamento)),
         DataCell(
-          Text('${Constantes.formatoDecimalValor.format(itemPagamento.valor ?? 0)}'),
+          Text(Constantes.formatoDecimalValor.format(itemPagamento.valor ?? 0)),
           onTap: () => _excluirPagamento(itemPagamento)),
       ];
 
@@ -451,11 +452,11 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
 
   Container rodapeTela(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 0.0),
+      margin: const EdgeInsets.only(top: 0.0),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
@@ -478,11 +479,11 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
     );
   }
 
-  List<Widget> _getBotoesRodape({BuildContext context}) {
+  List<Widget> _getBotoesRodape({required BuildContext context}) {
     List<Widget> listaBotoes = [];
     listaBotoes.add(
-      Container(
-        width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+      SizedBox(
+        width: Biblioteca.isTelaPequena(context)! ? 130 : 150,
         child: getBotaoGenericoPdv(
           descricao: Biblioteca.isMobile() ? 'Cancelar' : 'Cancelar [F11]',
           cor: Colors.red, 
@@ -493,11 +494,11 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
       ),
     );
     listaBotoes.add(
-      SizedBox(width: 10.0),
+      const SizedBox(width: 10.0),
     );
     listaBotoes.add(
-      Container(
-        width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+      SizedBox(
+        width: Biblioteca.isTelaPequena(context)! ? 130 : 150,
         child: getBotaoGenericoPdv(
           descricao: Biblioteca.isMobile() ? 'Confirmar' : 'Confirmar [F12]',
           cor: Colors.green, 
@@ -510,19 +511,19 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
     return listaBotoes;
   }
 
-  String _getDescricaoTipoPagamento(PdvFechamento itemPagamento){
-    final tipoFiltrado = Sessao.listaTipoPagamento.where( ((tipo) => tipo.id == itemPagamento.idPdvTipoPagamento)).toList();    
+  String? _getDescricaoTipoPagamento(PdvFechamento itemPagamento){
+    final tipoFiltrado = Sessao.listaTipoPagamento!.where( ((tipo) => tipo.id == itemPagamento.idPdvTipoPagamento)).toList();    
     return tipoFiltrado[0].descricao;
   }
 
   void _adicionarPagamento() {
     if (_valorController.numberValue > 0) {
-      final pagamentoFiltrado = _listaFechamento.where(((pagamento) => pagamento.idPdvTipoPagamento == _tipoPagamento.id)).toList();    
-      if (pagamentoFiltrado.length == 0) {
+      final pagamentoFiltrado = _listaFechamento.where(((pagamento) => pagamento.idPdvTipoPagamento == _tipoPagamento!.id)).toList();    
+      if (pagamentoFiltrado.isEmpty) {
         PdvFechamento itemPagamento = PdvFechamento(
           id: null,
-          idPdvTipoPagamento: _tipoPagamento.id,
-          idPdvMovimento: Sessao.movimento.id,
+          idPdvTipoPagamento: _tipoPagamento!.id,
+          idPdvMovimento: Sessao.movimento!.id,
           valor: _valorController.numberValue
         );
         _listaFechamento.add(itemPagamento);
@@ -548,7 +549,7 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
   void _atualizarTotais() {
     _totalFechamento = 0;
     for (var item in _listaFechamento) {
-      _totalFechamento = _totalFechamento + item.valor;
+      _totalFechamento = _totalFechamento + item.valor!;
     }
   }
 

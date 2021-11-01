@@ -59,7 +59,7 @@ class NfeNumeroDao extends DatabaseAccessor<AppDatabase> with _$NfeNumeroDaoMixi
 
   Stream<List<NfeNumero>> observarLista() => select(nfeNumeros).watch();
 
-  Future<NfeNumero> consultarObjeto(int pId) {
+  Future<NfeNumero?> consultarObjeto(int pId) {
     return (select(nfeNumeros)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
@@ -70,9 +70,9 @@ class NfeNumeroDao extends DatabaseAccessor<AppDatabase> with _$NfeNumeroDaoMixi
     });    
   } 
 
-  Future<bool> alterar(Insertable<NfeNumero> pObjeto) {
+  Future<bool> alterar(Insertable<NfeNumero>? pObjeto) {
     return transaction(() async {
-      return update(nfeNumeros).replace(pObjeto);
+      return update(nfeNumeros).replace(pObjeto!);
     });    
   } 
 

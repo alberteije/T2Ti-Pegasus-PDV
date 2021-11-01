@@ -37,10 +37,11 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeNumero")
 class NfeNumeros extends Table {
+  @override
   String get tableName => 'NFE_NUMERO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get modelo => text().named('MODELO').withLength(min: 0, max: 2).nullable()();
-  TextColumn get serie => text().named('SERIE').withLength(min: 0, max: 3).nullable()();
-  IntColumn get numero => integer().named('NUMERO').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  TextColumn? get modelo => text().named('MODELO').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  TextColumn? get serie => text().named('SERIE').withLength(min: 0, max: 3).nullable()() as Column<String>?;
+  IntColumn? get numero => integer().named('NUMERO').nullable()() as Column<int>?;
 }

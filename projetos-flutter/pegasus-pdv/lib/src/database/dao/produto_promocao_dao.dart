@@ -59,7 +59,7 @@ class ProdutoPromocaoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoPro
 
   Stream<List<ProdutoPromocao>> observarLista() => select(produtoPromocaos).watch();
 
-  Future<ProdutoPromocao> consultarObjeto(int pId) {
+  Future<ProdutoPromocao?> consultarObjeto(int pId) {
     return (select(produtoPromocaos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

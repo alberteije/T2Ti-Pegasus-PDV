@@ -39,25 +39,26 @@ import '../database.dart';
 
 @DataClassName("CompraPedidoDetalhe")
 class CompraPedidoDetalhes extends Table {
+  @override
   String get tableName => 'COMPRA_PEDIDO_DETALHE';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idCompraPedidoCabecalho => integer().named('ID_COMPRA_PEDIDO_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES COMPRA_PEDIDO_CABECALHO(ID)')();
-  IntColumn get idProduto => integer().named('ID_PRODUTO').nullable().customConstraint('NULLABLE REFERENCES PRODUTO(ID)')();
-  RealColumn get quantidade => real().named('QUANTIDADE').nullable()();
-  RealColumn get valorUnitario => real().named('VALOR_UNITARIO').nullable()();
-  RealColumn get valorSubtotal => real().named('VALOR_SUBTOTAL').nullable()();
-  RealColumn get taxaDesconto => real().named('TAXA_DESCONTO').nullable()();
-  RealColumn get valorDesconto => real().named('VALOR_DESCONTO').nullable()();
-  RealColumn get valorTotal => real().named('VALOR_TOTAL').nullable()();
-  TextColumn get cst => text().named('CST').withLength(min: 0, max: 2).nullable()();
-  TextColumn get csosn => text().named('CSOSN').withLength(min: 0, max: 3).nullable()();
-  IntColumn get cfop => integer().named('CFOP').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idCompraPedidoCabecalho => integer().named('ID_COMPRA_PEDIDO_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES COMPRA_PEDIDO_CABECALHO(ID)')();
+  IntColumn? get idProduto => integer().named('ID_PRODUTO').nullable().customConstraint('NULLABLE REFERENCES PRODUTO(ID)')() as Column<int>?;
+  RealColumn? get quantidade => real().named('QUANTIDADE').nullable()() as Column<double>?;
+  RealColumn? get valorUnitario => real().named('VALOR_UNITARIO').nullable()() as Column<double>?;
+  RealColumn? get valorSubtotal => real().named('VALOR_SUBTOTAL').nullable()() as Column<double>?;
+  RealColumn? get taxaDesconto => real().named('TAXA_DESCONTO').nullable()() as Column<double>?;
+  RealColumn? get valorDesconto => real().named('VALOR_DESCONTO').nullable()() as Column<double>?;
+  RealColumn? get valorTotal => real().named('VALOR_TOTAL').nullable()() as Column<double>?;
+  TextColumn? get cst => text().named('CST').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  TextColumn? get csosn => text().named('CSOSN').withLength(min: 0, max: 3).nullable()() as Column<String>?;
+  IntColumn? get cfop => integer().named('CFOP').nullable()() as Column<int>?;
 }
 
 class CompraDetalhe {
-  CompraPedidoDetalhe compraPedidoDetalhe;
-  Produto produto;
+  CompraPedidoDetalhe? compraPedidoDetalhe;
+  Produto? produto;
 
   CompraDetalhe({
     this.compraPedidoDetalhe,

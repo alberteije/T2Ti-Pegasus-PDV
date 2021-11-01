@@ -37,10 +37,11 @@ import 'package:moor/moor.dart';
 
 @DataClassName("EcfAliquotas")
 class EcfAliquotass extends Table {
+  @override
   String get tableName => 'ECF_ALIQUOTAS';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get totalizadorParcial => text().named('TOTALIZADOR_PARCIAL').withLength(min: 0, max: 10).nullable()();
-  TextColumn get ecfIcmsSt => text().named('ECF_ICMS_ST').withLength(min: 0, max: 4).nullable()();
-  TextColumn get pafPSt => text().named('PAF_P_ST').withLength(min: 0, max: 1).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  TextColumn? get totalizadorParcial => text().named('TOTALIZADOR_PARCIAL').withLength(min: 0, max: 10).nullable()() as Column<String>?;
+  TextColumn? get ecfIcmsSt => text().named('ECF_ICMS_ST').withLength(min: 0, max: 4).nullable()() as Column<String>?;
+  TextColumn? get pafPSt => text().named('PAF_P_ST').withLength(min: 0, max: 1).nullable()() as Column<String>?;
 }

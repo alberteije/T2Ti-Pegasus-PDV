@@ -37,7 +37,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 Based on: Flutter UI Challenges by Many - https://github.com/lohanidamodar/flutter_ui_challenges
 *******************************************************************************/
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 
@@ -48,10 +48,10 @@ import 'package:pegasus_pdv/src/view/shared/botoes.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 class InformaValorPage extends StatefulWidget {
-  final String title;
-  final String operacao;
+  final String? title;
+  final String? operacao;
   
-  const InformaValorPage({Key key, this.title, this.operacao}): super(key: key);
+  const InformaValorPage({Key? key, this.title, this.operacao}): super(key: key);
 
   @override
   _InformaValorPageState createState() => _InformaValorPageState();
@@ -64,18 +64,19 @@ class _InformaValorPageState extends State<InformaValorPage> {
   var _textoValor = 'Valor';
   final _valorFoco = FocusNode();
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
     super.initState();
 
-    _valorController.afterChange = (_, __) {
-      _valorController.selection = TextSelection.collapsed(
-        offset: _valorController.text.length,
-      );
-    };
+    // EIJE - 22102021 - comentado para observar o comportamento do novo widget
+    // _valorController.afterChange = (_, __) {
+    //   _valorController.selection = TextSelection.collapsed(
+    //     offset: _valorController.text.length,
+    //   );
+    // };
 
     _valorFoco.addListener(() {
       if(_valorFoco.hasFocus) {
@@ -111,7 +112,7 @@ class _InformaValorPageState extends State<InformaValorPage> {
   @override
   Widget build(BuildContext context) {
     if (widget.operacao == 'DESCONTO') {
-      _valorController.updateValue(Sessao.vendaAtual.taxaDesconto ?? 0);
+      _valorController.updateValue(Sessao.vendaAtual!.taxaDesconto ?? 0);
       _subtitulo = 'Informe a taxa e a observação';
       _textoValor = 'Taxa';
     } else if (widget.operacao == 'CANCELAR_NFCE') {
@@ -147,39 +148,39 @@ class _InformaValorPageState extends State<InformaValorPage> {
     if (index == 0) return cabecalhoTela(context);
     // if (index == 1) return dadosFechamento(context);
     if (index == 1) return conteudoTela(context);
-    return null;
+    return const SizedBox();
   }
   
   Container cabecalhoTela(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 20.0),
+      margin: const EdgeInsets.only(top: 20.0),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
               color: Colors.white,
               child: Column(
                 children: <Widget>[
-                  SizedBox(
+                  const SizedBox(
                     height: 50.0,
                   ),
                   Text(
-                    widget.title,
+                    widget.title!,
                     style: Theme.of(context).textTheme.headline5,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5.0,
                   ),
                   Text(_subtitulo),
-                  Divider(
+                  const Divider(
                     indent: 10,
                     endIndent: 10,
                     thickness: 2,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10.0,
                   ),
                 ],
@@ -188,7 +189,7 @@ class _InformaValorPageState extends State<InformaValorPage> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: const <Widget>[
               Material(
                 elevation: 5.0,
                 shape: CircleBorder(),
@@ -207,11 +208,11 @@ class _InformaValorPageState extends State<InformaValorPage> {
 
   Container conteudoTela(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 0.0),
+      margin: const EdgeInsets.only(top: 0.0),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
@@ -274,11 +275,11 @@ class _InformaValorPageState extends State<InformaValorPage> {
     );
   }
 
-  List<Widget> _getBotoesRodape({BuildContext context}) {
+  List<Widget> _getBotoesRodape({required BuildContext context}) {
     List<Widget> listaBotoes = [];
     listaBotoes.add(
-      Container(
-        width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+      SizedBox(
+        width: Biblioteca.isTelaPequena(context)! ? 130 : 150,
         child: getBotaoGenericoPdv(
           descricao: Biblioteca.isMobile() ? 'Cancelar' : 'Cancelar [F11]',
           cor: Colors.red, 
@@ -289,11 +290,11 @@ class _InformaValorPageState extends State<InformaValorPage> {
       ),
     );
     listaBotoes.add(
-      SizedBox(width: 10.0),
+      const SizedBox(width: 10.0),
     );
     listaBotoes.add(
-      Container(
-        width: Biblioteca.isTelaPequena(context) ? 130 : 150,
+      SizedBox(
+        width: Biblioteca.isTelaPequena(context)! ? 130 : 150,
         child: getBotaoGenericoPdv(
           descricao: Biblioteca.isMobile() ? 'Confirmar' : 'Confirmar [F12]',
           cor: Colors.green, 
@@ -308,16 +309,16 @@ class _InformaValorPageState extends State<InformaValorPage> {
 
   void _efetuarOperacao() {
     if (widget.operacao == 'DESCONTO') {
-      Sessao.vendaAtual = Sessao.vendaAtual.copyWith(
+      Sessao.vendaAtual = Sessao.vendaAtual!.copyWith(
         taxaDesconto: _valorController.numberValue,
-        valorDesconto: Biblioteca.calcularDesconto(Sessao.vendaAtual.valorFinal, _valorController.numberValue),
+        valorDesconto: Biblioteca.calcularDesconto(Sessao.vendaAtual!.valorFinal, _valorController.numberValue),
       );
       Navigator.pop(context, true);
     } else if (widget.operacao == 'SUPRIMENTO') {
       PdvSuprimento suprimento = 
       PdvSuprimento(
         id: null,
-        idPdvMovimento: Sessao.movimento.id,
+        idPdvMovimento: Sessao.movimento!.id,
         dataSuprimento: DateTime.now(), 
         horaSuprimento: Biblioteca.formatarHora(DateTime.now()),
         valor: _valorController.numberValue,
@@ -329,7 +330,7 @@ class _InformaValorPageState extends State<InformaValorPage> {
       PdvSangria sangria = 
       PdvSangria(
         id: null,
-        idPdvMovimento: Sessao.movimento.id,
+        idPdvMovimento: Sessao.movimento!.id,
         dataSangria: DateTime.now(), 
         horaSangria: Biblioteca.formatarHora(DateTime.now()), 
         valor: _valorController.numberValue,

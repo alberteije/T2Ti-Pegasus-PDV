@@ -57,7 +57,7 @@ class PdvSuprimentoDao extends DatabaseAccessor<AppDatabase> with _$PdvSupriment
                                 }).get());
   }
 
-  Future<PdvSuprimento> consultarTotaisDia(int idMovimento) async {
+  Future<PdvSuprimento?> consultarTotaisDia(int? idMovimento) async {
     return (customSelect("SELECT " 
     " sum(VALOR) as VALOR "
     " FROM PDV_SUPRIMENTO "
@@ -69,7 +69,7 @@ class PdvSuprimentoDao extends DatabaseAccessor<AppDatabase> with _$PdvSupriment
 
   Stream<List<PdvSuprimento>> observarLista() => select(pdvSuprimentos).watch();
 
-  Future<PdvSuprimento> consultarObjeto(int pId) {
+  Future<PdvSuprimento?> consultarObjeto(int pId) {
     return (select(pdvSuprimentos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

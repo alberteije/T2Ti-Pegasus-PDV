@@ -37,18 +37,19 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeDetalheImpostoIpi")
 class NfeDetalheImpostoIpis extends Table {
+  @override
   String get tableName => 'NFE_DETALHE_IMPOSTO_IPI';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')();
-  TextColumn get cnpjProdutor => text().named('CNPJ_PRODUTOR').withLength(min: 0, max: 14).nullable()();
-  TextColumn get codigoSeloIpi => text().named('CODIGO_SELO_IPI').withLength(min: 0, max: 60).nullable()();
-  IntColumn get quantidadeSeloIpi => integer().named('QUANTIDADE_SELO_IPI').nullable()();
-  TextColumn get enquadramentoLegalIpi => text().named('ENQUADRAMENTO_LEGAL_IPI').withLength(min: 0, max: 3).nullable()();
-  TextColumn get cstIpi => text().named('CST_IPI').withLength(min: 0, max: 2).nullable()();
-  RealColumn get valorBaseCalculoIpi => real().named('VALOR_BASE_CALCULO_IPI').nullable()();
-  RealColumn get quantidadeUnidadeTributavel => real().named('QUANTIDADE_UNIDADE_TRIBUTAVEL').nullable()();
-  RealColumn get valorUnidadeTributavel => real().named('VALOR_UNIDADE_TRIBUTAVEL').nullable()();
-  RealColumn get aliquotaIpi => real().named('ALIQUOTA_IPI').nullable()();
-  RealColumn get valorIpi => real().named('VALOR_IPI').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')() as Column<int>?;
+  TextColumn? get cnpjProdutor => text().named('CNPJ_PRODUTOR').withLength(min: 0, max: 14).nullable()() as Column<String>?;
+  TextColumn? get codigoSeloIpi => text().named('CODIGO_SELO_IPI').withLength(min: 0, max: 60).nullable()() as Column<String>?;
+  IntColumn? get quantidadeSeloIpi => integer().named('QUANTIDADE_SELO_IPI').nullable()() as Column<int>?;
+  TextColumn? get enquadramentoLegalIpi => text().named('ENQUADRAMENTO_LEGAL_IPI').withLength(min: 0, max: 3).nullable()() as Column<String>?;
+  TextColumn? get cstIpi => text().named('CST_IPI').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  RealColumn? get valorBaseCalculoIpi => real().named('VALOR_BASE_CALCULO_IPI').nullable()() as Column<double>?;
+  RealColumn? get quantidadeUnidadeTributavel => real().named('QUANTIDADE_UNIDADE_TRIBUTAVEL').nullable()() as Column<double>?;
+  RealColumn? get valorUnidadeTributavel => real().named('VALOR_UNIDADE_TRIBUTAVEL').nullable()() as Column<double>?;
+  RealColumn? get aliquotaIpi => real().named('ALIQUOTA_IPI').nullable()() as Column<double>?;
+  RealColumn? get valorIpi => real().named('VALOR_IPI').nullable()() as Column<double>?;
 }

@@ -48,14 +48,14 @@ class TributGrupoTributarioDao extends DatabaseAccessor<AppDatabase> with _$Trib
 
   TributGrupoTributarioDao(this.db) : super(db);
 
-  List<TributGrupoTributario> listaTributGrupoTributario; // será usada para popular a grid na janela do grupo tributario
+  List<TributGrupoTributario>? listaTributGrupoTributario; // será usada para popular a grid na janela do grupo tributario
   
-  Future<List<TributGrupoTributario>> consultarLista() async {
+  Future<List<TributGrupoTributario>?> consultarLista() async {
     listaTributGrupoTributario = await select(tributGrupoTributarios).get();
     aplicarDomains();
     return listaTributGrupoTributario;
   }
-  Future<List<TributGrupoTributario>> consultarListaFiltro(String campo, String valor) async {
+  Future<List<TributGrupoTributario>?> consultarListaFiltro(String campo, String valor) async {
     listaTributGrupoTributario = await (customSelect("SELECT * FROM TRIBUT_GRUPO_TRIBUTARIO WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { tributGrupoTributarios }).map((row) {
                                   return TributGrupoTributario.fromData(row.data, db);  
@@ -66,69 +66,69 @@ class TributGrupoTributarioDao extends DatabaseAccessor<AppDatabase> with _$Trib
 
   Stream<List<TributGrupoTributario>> observarLista() => select(tributGrupoTributarios).watch();
 
-  Future<TributGrupoTributario> consultarObjeto(int pId) {
+  Future<TributGrupoTributario?> consultarObjeto(int pId) {
     return (select(tributGrupoTributarios)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<TributGrupoTributario> pObjeto) {
+  Future<int> inserir(Insertable<TributGrupoTributario>? pObjeto) {
     return transaction(() async {
-      final grupoTributario = removerDomains(pObjeto);
+      final grupoTributario = removerDomains(pObjeto as TributGrupoTributario);
       final idInserido = await into(tributGrupoTributarios).insert(grupoTributario);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<TributGrupoTributario> pObjeto) {
+  Future<bool> alterar(Insertable<TributGrupoTributario>? pObjeto) {
     return transaction(() async {
-      final grupoTributario = removerDomains(pObjeto);
+      final grupoTributario = removerDomains(pObjeto as TributGrupoTributario);
       return update(tributGrupoTributarios).replace(grupoTributario);
     });    
   } 
 
-  Future<int> excluir(Insertable<TributGrupoTributario> pObjeto) {
+  Future<int> excluir(Insertable<TributGrupoTributario>? pObjeto) {
     return transaction(() async {
-      return delete(tributGrupoTributarios).delete(pObjeto);
+      return delete(tributGrupoTributarios).delete(pObjeto!);
     });    
   }
 
   TributGrupoTributario removerDomains(TributGrupoTributario grupoTributario) {
     if (grupoTributario.origemMercadoria != null) {
       grupoTributario = grupoTributario.copyWith(
-        origemMercadoria: grupoTributario.origemMercadoria.substring(0,1)
+        origemMercadoria: grupoTributario.origemMercadoria!.substring(0,1)
       );
     }
     return grupoTributario;
   }
   
   void aplicarDomains() {
-    for (var i = 0; i < listaTributGrupoTributario.length; i++) {
-      switch (listaTributGrupoTributario[i].origemMercadoria) {
+    for (var i = 0; i < listaTributGrupoTributario!.length; i++) {
+      switch (listaTributGrupoTributario![i].origemMercadoria) {
         case '0' :
-          listaTributGrupoTributario[i] = listaTributGrupoTributario[i].copyWith(origemMercadoria: '0-Nacional - Exceto as indicadas nos códigos 3, 4, 5 e 8',);
+          listaTributGrupoTributario![i] = listaTributGrupoTributario![i].copyWith(origemMercadoria: '0-Nacional - Exceto as indicadas nos códigos 3, 4, 5 e 8',);
           break;
         case '1' :
-          listaTributGrupoTributario[i] = listaTributGrupoTributario[i].copyWith(origemMercadoria: '1-Estrangeira – Importação direta, exceto a indicada no código 6',);
+          listaTributGrupoTributario![i] = listaTributGrupoTributario![i].copyWith(origemMercadoria: '1-Estrangeira – Importação direta, exceto a indicada no código 6',);
           break;
         case '2' :
-          listaTributGrupoTributario[i] = listaTributGrupoTributario[i].copyWith(origemMercadoria: '2-Estrangeira – Adquirida no mercado interno, exceto a indicada no código 7',);
+          listaTributGrupoTributario![i] = listaTributGrupoTributario![i].copyWith(origemMercadoria: '2-Estrangeira – Adquirida no mercado interno, exceto a indicada no código 7',);
           break;
         case '3' :
-          listaTributGrupoTributario[i] = listaTributGrupoTributario[i].copyWith(origemMercadoria: '3-Nacional - Conteúdo de Importação > 40% e <= 70%',);
+          listaTributGrupoTributario![i] = listaTributGrupoTributario![i].copyWith(origemMercadoria: '3-Nacional - Conteúdo de Importação > 40% e <= 70%',);
           break;
         case '4' :
-          listaTributGrupoTributario[i] = listaTributGrupoTributario[i].copyWith(origemMercadoria: '4-Nacional - Produção conforme processos produtivos - Decreto/Lei',);
+          listaTributGrupoTributario![i] = listaTributGrupoTributario![i].copyWith(origemMercadoria: '4-Nacional - Produção conforme processos produtivos - Decreto/Lei',);
           break;
         case '5' :
-          listaTributGrupoTributario[i] = listaTributGrupoTributario[i].copyWith(origemMercadoria: '5-Nacional - Conteúdo de Importação <= 40%',);
+          listaTributGrupoTributario![i] = listaTributGrupoTributario![i].copyWith(origemMercadoria: '5-Nacional - Conteúdo de Importação <= 40%',);
           break;
         case '6' :
-          listaTributGrupoTributario[i] = listaTributGrupoTributario[i].copyWith(origemMercadoria: '6-Estrangeira – Importação direta - Resolução CAMEX e gás natural',);
+          listaTributGrupoTributario![i] = listaTributGrupoTributario![i].copyWith(origemMercadoria: '6-Estrangeira – Importação direta - Resolução CAMEX e gás natural',);
           break;
         case '7' :
-          listaTributGrupoTributario[i] = listaTributGrupoTributario[i].copyWith(origemMercadoria: '7-Estrangeira – Adquirida no mercado interno - Resolução CAMEX e gás natural',);
+          listaTributGrupoTributario![i] = listaTributGrupoTributario![i].copyWith(origemMercadoria: '7-Estrangeira – Adquirida no mercado interno - Resolução CAMEX e gás natural',);
           break;
         case '8' :
-          listaTributGrupoTributario[i] = listaTributGrupoTributario[i].copyWith(origemMercadoria: '8-Nacional - Conteúdo de Importação > 70%',);
+          listaTributGrupoTributario![i] = listaTributGrupoTributario![i].copyWith(origemMercadoria: '8-Nacional - Conteúdo de Importação > 70%',);
           break;
         default:
       }      

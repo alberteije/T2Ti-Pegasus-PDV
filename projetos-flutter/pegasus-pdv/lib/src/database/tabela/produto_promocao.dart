@@ -37,13 +37,14 @@ import 'package:moor/moor.dart';
 
 @DataClassName("ProdutoPromocao")
 class ProdutoPromocaos extends Table {
+  @override
   String get tableName => 'PRODUTO_PROMOCAO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idProduto => integer().named('ID_PRODUTO').nullable().customConstraint('NULLABLE REFERENCES PRODUTO(ID)')();
-  DateTimeColumn get dataInicio => dateTime().named('DATA_INICIO').nullable()();
-  DateTimeColumn get dataFim => dateTime().named('DATA_FIM').nullable()();
-  RealColumn get quantidadeEmPromocao => real().named('QUANTIDADE_EM_PROMOCAO').nullable()();
-  RealColumn get quantidadeMaximaCliente => real().named('QUANTIDADE_MAXIMA_CLIENTE').nullable()();
-  RealColumn get valor => real().named('VALOR').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idProduto => integer().named('ID_PRODUTO').nullable().customConstraint('NULLABLE REFERENCES PRODUTO(ID)')() as Column<int>?;
+  DateTimeColumn? get dataInicio => dateTime().named('DATA_INICIO').nullable()() as Column<DateTime>?;
+  DateTimeColumn? get dataFim => dateTime().named('DATA_FIM').nullable()() as Column<DateTime>?;
+  RealColumn? get quantidadeEmPromocao => real().named('QUANTIDADE_EM_PROMOCAO').nullable()() as Column<double>?;
+  RealColumn? get quantidadeMaximaCliente => real().named('QUANTIDADE_MAXIMA_CLIENTE').nullable()() as Column<double>?;
+  RealColumn? get valor => real().named('VALOR').nullable()() as Column<double>?;
 }

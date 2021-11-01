@@ -39,14 +39,14 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 
 class UsuarioModel {
-	int id;
-	String email;
-	String senha;
-	DateTime dataCadastro;
-	String pendente;
-  String modulo;
-	String whatsapp;
-	String news;
+	int? id;
+	String? email;
+	String? senha;
+	DateTime? dataCadastro;
+	String? pendente;
+  String? modulo;
+	String? whatsapp;
+	String? news;
 
 	UsuarioModel({
 			this.id,
@@ -71,16 +71,16 @@ class UsuarioModel {
 	}
 
 	Map<String, dynamic> get toJson {
-		Map<String, dynamic> jsonDados = Map<String, dynamic>();
+		Map<String, dynamic> jsonDados = <String, dynamic>{};
 
 		// jsonDados['id'] = this.id ?? 0;
-		jsonDados['email'] = this.email;
-		jsonDados['senha'] = this.senha;
-		jsonDados['dataCadastro'] = this.dataCadastro != null ? DateFormat('yyyy-MM-ddT00:00:00').format(this.dataCadastro) : null;
-		jsonDados['pendente'] = this.pendente;
-    jsonDados['modulo'] = this.modulo;
-		jsonDados['whatsapp'] = this.whatsapp;
-		jsonDados['news'] = this.news;
+		jsonDados['email'] = email;
+		jsonDados['senha'] = senha;
+		jsonDados['dataCadastro'] = dataCadastro != null ? DateFormat('yyyy-MM-ddT00:00:00').format(dataCadastro!) : null;
+		jsonDados['pendente'] = pendente;
+    jsonDados['modulo'] = modulo;
+		jsonDados['whatsapp'] = whatsapp;
+		jsonDados['news'] = news;
 	
 		return jsonDados;
 	}

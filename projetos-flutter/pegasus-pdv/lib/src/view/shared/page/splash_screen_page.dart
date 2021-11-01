@@ -37,6 +37,8 @@ import 'package:flutter/material.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 
 class SplashScreenPage extends StatelessWidget {
+  const SplashScreenPage({Key? key}) : super(key: key);
+
   @override  
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,37 +46,37 @@ class SplashScreenPage extends StatelessWidget {
         fit: StackFit.expand,
         children: <Widget>[
           Container(
-            decoration: BoxDecoration(color: Colors.blueGrey),
+            decoration: const BoxDecoration(color: Colors.blueGrey),
           ),
           FittedBox(
             child: Column(
               children: [
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
                   height: 300,
                   width: 300,
                   child: Image.asset(
                     Constantes.t2tiLogoPegasusPdv,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10.0,
                 ),
-                Text(
+                const Text(
                   "T2Ti Pegasus PDV",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 25.0,
                     fontWeight: FontWeight.bold),
                 ),
-                SizedBox( 
+                const SizedBox( 
                   height: 10.0,
                 ),
-                CircularProgressIndicator(),
-                Padding(
+                const CircularProgressIndicator(),
+                const Padding(
                   padding: EdgeInsets.only(top: 20.0),
                 ),
-                Text(
+                const Text(
                   "Bem-vindo. Aguarde um momento.",
                   style: TextStyle(
                     color: Colors.white,
@@ -82,7 +84,7 @@ class SplashScreenPage extends StatelessWidget {
                     fontWeight: FontWeight.bold
                   ),                   
                 ),
-                SizedBox( 
+                const SizedBox( 
                   height: 10.0,
                 ),
               ],

@@ -37,12 +37,13 @@ import 'package:moor/moor.dart';
 
 @DataClassName("EcfDocumentosEmitidos")
 class EcfDocumentosEmitidoss extends Table {
+  @override
   String get tableName => 'ECF_DOCUMENTOS_EMITIDOS';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idPdvMovimento => integer().named('ID_PDV_MOVIMENTO').nullable().customConstraint('NULLABLE REFERENCES PDV_MOVIMENTO(ID)')();
-  DateTimeColumn get dataEmissao => dateTime().named('DATA_EMISSAO').nullable()();
-  TextColumn get horaEmissao => text().named('HORA_EMISSAO').withLength(min: 0, max: 8).nullable()();
-  TextColumn get tipo => text().named('TIPO').withLength(min: 0, max: 2).nullable()();
-  IntColumn get coo => integer().named('COO').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idPdvMovimento => integer().named('ID_PDV_MOVIMENTO').nullable().customConstraint('NULLABLE REFERENCES PDV_MOVIMENTO(ID)')() as Column<int>?;
+  DateTimeColumn? get dataEmissao => dateTime().named('DATA_EMISSAO').nullable()() as Column<DateTime>?;
+  TextColumn? get horaEmissao => text().named('HORA_EMISSAO').withLength(min: 0, max: 8).nullable()() as Column<String>?;
+  TextColumn? get tipo => text().named('TIPO').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  IntColumn? get coo => integer().named('COO').nullable()() as Column<int>?;
 }

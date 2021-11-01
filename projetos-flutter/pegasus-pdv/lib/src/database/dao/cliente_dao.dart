@@ -46,16 +46,16 @@ part 'cliente_dao.g.dart';
 class ClienteDao extends DatabaseAccessor<AppDatabase> with _$ClienteDaoMixin {
   final AppDatabase db;
 
-  List<Cliente> listaCliente; // será usada para popular a grid na janela do cliente
+  List<Cliente>? listaCliente; // será usada para popular a grid na janela do cliente
 
   ClienteDao(this.db) : super(db);
 
-  Future<List<Cliente>> consultarLista() async {
+  Future<List<Cliente>?> consultarLista() async {
     listaCliente = await select(clientes).get();
     return listaCliente;
   }
 
-  Future<List<Cliente>> consultarListaFiltro(String campo, String valor) async {
+  Future<List<Cliente>?> consultarListaFiltro(String campo, String valor) async {
     listaCliente = await (customSelect("SELECT * FROM CLIENTE WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { clientes }).map((row) {
                                   return Cliente.fromData(row.data, db);  
@@ -65,26 +65,26 @@ class ClienteDao extends DatabaseAccessor<AppDatabase> with _$ClienteDaoMixin {
 
   Stream<List<Cliente>> observarLista() => select(clientes).watch();
 
-  Future<Cliente> consultarObjeto(int pId) {
+  Future<Cliente?> consultarObjeto(int? pId) {
     return (select(clientes)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<Cliente> pObjeto) {
+  Future<int> inserir(Insertable<Cliente>? pObjeto) {
     return transaction(() async {
-      final idInserido = await into(clientes).insert(pObjeto);
+      final idInserido = await into(clientes).insert(pObjeto!);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Cliente> pObjeto) {
+  Future<bool> alterar(Insertable<Cliente>? pObjeto) {
     return transaction(() async {
-      return update(clientes).replace(pObjeto);
+      return update(clientes).replace(pObjeto!);
     });    
   } 
 
-  Future<int> excluir(Insertable<Cliente> pObjeto) {
+  Future<int> excluir(Insertable<Cliente>? pObjeto) {
     return transaction(() async {
-      return delete(clientes).delete(pObjeto);
+      return delete(clientes).delete(pObjeto!);
     });    
   }
 

@@ -37,13 +37,14 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeTransporteReboque")
 class NfeTransporteReboques extends Table {
+  @override
   String get tableName => 'NFE_TRANSPORTE_REBOQUE';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeTransporte => integer().named('ID_NFE_TRANSPORTE').nullable().customConstraint('NULLABLE REFERENCES NFE_TRANSPORTE(ID)')();
-  TextColumn get placa => text().named('PLACA').withLength(min: 0, max: 8).nullable()();
-  TextColumn get uf => text().named('UF').withLength(min: 0, max: 2).nullable()();
-  TextColumn get rntc => text().named('RNTC').withLength(min: 0, max: 20).nullable()();
-  TextColumn get vagao => text().named('VAGAO').withLength(min: 0, max: 20).nullable()();
-  TextColumn get balsa => text().named('BALSA').withLength(min: 0, max: 20).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeTransporte => integer().named('ID_NFE_TRANSPORTE').nullable().customConstraint('NULLABLE REFERENCES NFE_TRANSPORTE(ID)')() as Column<int>?;
+  TextColumn? get placa => text().named('PLACA').withLength(min: 0, max: 8).nullable()() as Column<String>?;
+  TextColumn? get uf => text().named('UF').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  TextColumn? get rntc => text().named('RNTC').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  TextColumn? get vagao => text().named('VAGAO').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  TextColumn? get balsa => text().named('BALSA').withLength(min: 0, max: 20).nullable()() as Column<String>?;
 }

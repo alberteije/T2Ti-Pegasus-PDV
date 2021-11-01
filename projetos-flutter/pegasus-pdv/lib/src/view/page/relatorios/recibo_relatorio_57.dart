@@ -50,13 +50,15 @@ import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_pdv.dart';
 
 class ReciboRelatorio57 extends StatefulWidget {
+  const ReciboRelatorio57({Key? key}) : super(key: key);
+
   @override
   _ReciboRelatorio57State createState() => _ReciboRelatorio57State();
 }
 
 class _ReciboRelatorio57State extends State<ReciboRelatorio57> {
-  Map<LogicalKeySet, Intent> _shortcutMap;
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap;
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -88,7 +90,7 @@ class _ReciboRelatorio57State extends State<ReciboRelatorio57> {
         autofocus: true,
         child: Scaffold(
           appBar: AppBar(
-            title: Text('Recibo'),
+            title: const Text('Recibo'),
           ),
           body: PdfPreview(
             maxPageWidth: 300,
@@ -105,19 +107,19 @@ Future<Uint8List> _gerarRecibo() async {
   final recibo = Recibo57();
   return await recibo.buildPdf(
     PdfPageFormat(
-      (Sessao.configuracaoPdv.reciboLarguraPagina ?? 57) * 2.83, 
+      (Sessao.configuracaoPdv!.reciboLarguraPagina ?? 57) * 2.83, 
       double.infinity, 
-      marginAll: (Sessao.configuracaoPdv.reciboMargemPagina ?? 5) * 2.83)
+      marginAll: (Sessao.configuracaoPdv!.reciboMargemPagina ?? 5) * 2.83)
   );
 }
 
 class Recibo57 {
-  PdfColor _baseColor = PdfColors.black;
-  PdfColor _accentColor = PdfColors.black;
-  PdfColor _darkColor = PdfColors.black;
-  PdfColor _baseTextColor = PdfColors.blue900.luminance < 0.5 ? PdfColors.white : PdfColors.blueGrey800;
+  final PdfColor _baseColor = PdfColors.black;
+  final PdfColor _accentColor = PdfColors.black;
+  final PdfColor _darkColor = PdfColors.black;
+  final PdfColor _baseTextColor = PdfColors.blue900.luminance < 0.5 ? PdfColors.white : PdfColors.blueGrey800;
 
-  pw.MemoryImage _logotipoImagem;
+  late pw.MemoryImage _logotipoImagem;
 
   Future<Uint8List> buildPdf(PdfPageFormat pageFormat) async {
  
@@ -125,7 +127,7 @@ class Recibo57 {
     final doc = pw.Document();
 
     _logotipoImagem = pw.MemoryImage(
-      Sessao.empresa.logotipo,
+      Sessao.empresa!.logotipo!,
     );
 
     final _fontNormal = await rootBundle.load('assets/fonts/lucida-console.ttf');
@@ -185,7 +187,7 @@ class Recibo57 {
             children: [
               pw.Container(
                 alignment: pw.Alignment.center,
-                padding: pw.EdgeInsets.only(top: -10),
+                padding: const pw.EdgeInsets.only(top: -10),
                 height: 40,
                 child: pw.Image(_logotipoImagem),
               ),
@@ -194,9 +196,9 @@ class Recibo57 {
         ),
         pw.Container(
           alignment: pw.Alignment.center,
-          margin: pw.EdgeInsets.only(top: -2),
+          margin: const pw.EdgeInsets.only(top: -2),
           child: pw.Text(
-            Sessao.empresa.razaoSocial,
+            Sessao.empresa!.razaoSocial!,
             style: pw.TextStyle(
               color: _baseColor,
               fontWeight: pw.FontWeight.bold,
@@ -208,13 +210,13 @@ class Recibo57 {
         pw.Container(
           alignment: pw.Alignment.center,
           child: pw.Text(
-            'Email: ' + (Sessao.empresa.email ?? '') +
+            'Email: ' + (Sessao.empresa!.email ?? '') +
             ' | ' +
-            'Fone: ' + (Sessao.empresa.fone ?? '') +
+            'Fone: ' + (Sessao.empresa!.fone ?? '') +
             ' | ' +
-            'Bairro: ' + (Sessao.empresa.bairro ?? '') +
+            'Bairro: ' + (Sessao.empresa!.bairro ?? '') +
             ' | ' +
-            'Cidade: ' + (Sessao.empresa.cidade ?? ''),
+            'Cidade: ' + (Sessao.empresa!.cidade ?? ''),
             textAlign: pw.TextAlign.center,
             style: pw.TextStyle(
               fontSize: 8,
@@ -253,7 +255,7 @@ class Recibo57 {
         pw.Container(
           alignment: pw.Alignment.topLeft,
           child: pw.Text(
-            'Cliente: ' + (Sessao.vendaAtual.nomeCliente == null ? 'Nome Não Informado' : Sessao.vendaAtual.nomeCliente),
+            'Cliente: ' + (Sessao.vendaAtual!.nomeCliente ?? 'Nome Não Informado'),
             style: pw.TextStyle(
               color: _darkColor,
               fontWeight: pw.FontWeight.bold,
@@ -264,7 +266,7 @@ class Recibo57 {
         pw.Container(
           alignment: pw.Alignment.topLeft,
           child: pw.Text(
-            'CPF/CNPJ: ' + (Sessao.vendaAtual.cpfCnpjCliente ?? ''),
+            'CPF/CNPJ: ' + (Sessao.vendaAtual!.cpfCnpjCliente ?? ''),
             style: pw.TextStyle(
               fontWeight: pw.FontWeight.normal,
               fontSize: 9,
@@ -274,7 +276,7 @@ class Recibo57 {
         pw.Container(
           alignment: pw.Alignment.topRight,
           child: pw.Text(
-            'Data: ' + Biblioteca.formatarData(Sessao.vendaAtual.dataVenda),
+            'Data: ' + Biblioteca.formatarData(Sessao.vendaAtual!.dataVenda),
             style: pw.TextStyle(
               fontWeight: pw.FontWeight.normal,
               fontSize: 8,
@@ -289,11 +291,11 @@ class Recibo57 {
   }
 
   pw.Widget _dadosVendedor() {
-    if (Sessao.vendaAtual.idColaborador != null) {
+    if (Sessao.vendaAtual!.idColaborador != null) {
       return pw.Container(
         alignment: pw.Alignment.topRight,
         child: pw.Text(
-          'Vendedor: ' + Sessao.vendaAtual.idColaborador.toString(),
+          'Vendedor: ' + Sessao.vendaAtual!.idColaborador.toString(),
           style: pw.TextStyle(
             fontWeight: pw.FontWeight.normal,
             fontSize: 8,
@@ -313,16 +315,16 @@ class Recibo57 {
       border: null,
       cellAlignment: pw.Alignment.center,
       headerDecoration: pw.BoxDecoration(
-        borderRadius: pw.BorderRadius.all(pw.Radius.zero),
+        borderRadius: const pw.BorderRadius.all(pw.Radius.zero),
         color: _baseColor,
       ),
       cellHeight: 20,
       columnWidths: {
-        0: pw.FlexColumnWidth(10),
-        1: pw.FlexColumnWidth(25),
-        2: pw.FlexColumnWidth(20),
-        3: pw.FlexColumnWidth(20),
-        4: pw.FlexColumnWidth(25),
+        0: const pw.FlexColumnWidth(10),
+        1: const pw.FlexColumnWidth(25),
+        2: const pw.FlexColumnWidth(20),
+        3: const pw.FlexColumnWidth(20),
+        4: const pw.FlexColumnWidth(25),
       },
       cellAlignments: {
         0: pw.Alignment.centerLeft,
@@ -353,9 +355,9 @@ class Recibo57 {
         tableHeaders.length,
         (col) => tableHeaders[col],
       ),
-      data: List<List<String>>.generate(
+      data: List<List<String?>>.generate(
         Sessao.listaVendaAtualDetalhe.length,
-        (row) => List<String>.generate(
+        (row) => List<String?>.generate(
           tableHeaders.length,
           (col) => col == 0 ? Sessao.listaVendaAtualDetalhe[row].getIndex(5) : Sessao.listaVendaAtualDetalhe[row].getIndex(col),
         ),
@@ -379,7 +381,7 @@ class Recibo57 {
               children: [
                 pw.Text('Subtotal: '),
                 pw.Text(
-                    'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual.valorVenda ?? 0)}'),
+                    'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual!.valorVenda ?? 0)}'),
               ],
             ),
           ),
@@ -397,11 +399,11 @@ class Recibo57 {
               children: [
                 pw.Text('Desconto: '),
                 pw.Text(
-                  Sessao.vendaAtual.valorDesconto != null
-                      ? '(${Constantes.formatoDecimalValor.format(Sessao.vendaAtual.taxaDesconto ?? 0)}%)' +
-                          ' R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual.valorDesconto ?? 0)}'
-                      : '(${Sessao.vendaAtual.taxaDesconto ?? 0}%)' +
-                          'R\$ ${Constantes.formatoDecimalValor.format(0)}',
+                  Sessao.vendaAtual!.valorDesconto != null
+                      ? '(${Constantes.formatoDecimalValor.format(Sessao.vendaAtual!.taxaDesconto ?? 0)}%) '
+                        ' R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual!.valorDesconto ?? 0)}'
+                      : '(${Sessao.vendaAtual!.taxaDesconto ?? 0}%)' 
+                        'R\$ ${Constantes.formatoDecimalValor.format(0)}',
                 ),
               ],
             ),
@@ -420,7 +422,7 @@ class Recibo57 {
               children: [
                 pw.Text('Total:'),
                 pw.Text(
-                  'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual.valorFinal ?? 0)}',
+                  'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual!.valorFinal ?? 0)}',
                 ),
               ],
             ),
@@ -439,7 +441,7 @@ class Recibo57 {
               children: [
                 pw.Text('Troco:'),
                 pw.Text(
-                  'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual.valorTroco ?? 0)}',
+                  'R\$ ${Constantes.formatoDecimalValor.format(Sessao.vendaAtual!.valorTroco ?? 0)}',
                 ),
               ],
             ),
@@ -485,7 +487,7 @@ class Recibo57 {
         child: pw.Divider(color: _accentColor),
       ),
     );
-    if (Sessao.listaDadosPagamento.length > 0) {
+    if (Sessao.listaDadosPagamento.isNotEmpty) {
       listaPagamentos.add(
         pw.Text(
           'Dados de Pagamento',
@@ -499,15 +501,15 @@ class Recibo57 {
     }
 
     for (var itemPagamento in Sessao.listaDadosPagamento) {
-      var tipoFiltrado = Sessao.listaTipoPagamento
+      var tipoFiltrado = Sessao.listaTipoPagamento!
           .where(((tipo) => tipo.id == itemPagamento.idPdvTipoPagamento))
           .toList();
-      if (Sessao.listaDadosPagamento.length > 0) {
+      if (Sessao.listaDadosPagamento.isNotEmpty) {
         listaPagamentos.add(
           pw.Row(
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: [
-              pw.Text(tipoFiltrado[0].descricao),
+              pw.Text(tipoFiltrado[0].descricao!),
               pw.Text(
                   'R\$ ${Constantes.formatoDecimalValor.format(itemPagamento.valor ?? 0)}'),
             ],
@@ -520,7 +522,7 @@ class Recibo57 {
   }
 
   pw.Widget _parcelamentoCabecalho(pw.Context context) {
-    if (Sessao.listaParcelamento.length > 0) {
+    if (Sessao.listaParcelamento.isNotEmpty) {
       return pw.Column(children: [
         pw.Padding(
           padding: const pw.EdgeInsets.only(top: -5, bottom: -5),      
@@ -545,21 +547,21 @@ class Recibo57 {
   }
 
   pw.Widget _conteudoParcelamento(pw.Context context) {
-    if (Sessao.listaParcelamento.length > 0) {
+    if (Sessao.listaParcelamento.isNotEmpty) {
       const tableHeaders = ['Venc', 'Histórico', 'Valor'];
 
       return pw.Table.fromTextArray(
         border: null,
         cellAlignment: pw.Alignment.centerLeft,
         headerDecoration: pw.BoxDecoration(
-          borderRadius: pw.BorderRadius.all(pw.Radius.circular(2)),
+          borderRadius: const pw.BorderRadius.all(pw.Radius.circular(2)),
           color: _baseColor,
         ),
         headerHeight: 20,
         columnWidths: {
-          0: pw.FlexColumnWidth(35),
-          1: pw.FlexColumnWidth(40),
-          2: pw.FlexColumnWidth(25),
+          0: const pw.FlexColumnWidth(35),
+          1: const pw.FlexColumnWidth(40),
+          2: const pw.FlexColumnWidth(25),
         },
         cellAlignments: {
           0: pw.Alignment.centerLeft,
@@ -587,9 +589,9 @@ class Recibo57 {
           tableHeaders.length,
           (col) => tableHeaders[col],
         ),
-        data: List<List<String>>.generate(
+        data: List<List<String?>>.generate(
           Sessao.listaParcelamento.length,
-          (row) => List<String>.generate(
+          (row) => List<String?>.generate(
             tableHeaders.length,
             (col) => Sessao.listaParcelamento[row].getIndex(col),
           ),
@@ -610,7 +612,7 @@ class Recibo57 {
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: [
               pw.Container(
-                margin: pw.EdgeInsets.only(top: 5, bottom: 1),
+                margin: const pw.EdgeInsets.only(top: 5, bottom: 1),
               ),
               pw.Text(
                 'Obrigado. Volte sempre!',

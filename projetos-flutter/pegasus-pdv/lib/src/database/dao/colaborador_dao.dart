@@ -46,16 +46,16 @@ part 'colaborador_dao.g.dart';
 class ColaboradorDao extends DatabaseAccessor<AppDatabase> with _$ColaboradorDaoMixin {
   final AppDatabase db;
 
-  List<Colaborador> listaColaborador; // será usada para popular a grid na janela do colaborador
+  List<Colaborador>? listaColaborador; // será usada para popular a grid na janela do colaborador
 
   ColaboradorDao(this.db) : super(db);
 
-  Future<List<Colaborador>> consultarLista() async {
+  Future<List<Colaborador>?> consultarLista() async {
     listaColaborador = await select(colaboradors).get();
     return listaColaborador;
   }
 
-  Future<List<Colaborador>> consultarListaFiltro(String campo, String valor) async {
+  Future<List<Colaborador>?> consultarListaFiltro(String campo, String valor) async {
     listaColaborador = await (customSelect("SELECT * FROM COLABORADOR WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { colaboradors }).map((row) {
                                   return Colaborador.fromData(row.data, db);  
@@ -65,26 +65,26 @@ class ColaboradorDao extends DatabaseAccessor<AppDatabase> with _$ColaboradorDao
 
   Stream<List<Colaborador>> observarLista() => select(colaboradors).watch();
 
-  Future<Colaborador> consultarObjeto(int pId) {
+  Future<Colaborador?> consultarObjeto(int pId) {
     return (select(colaboradors)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<Colaborador> pObjeto) {
+  Future<int> inserir(Insertable<Colaborador>? pObjeto) {
     return transaction(() async {
-      final idInserido = await into(colaboradors).insert(pObjeto);
+      final idInserido = await into(colaboradors).insert(pObjeto!);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Colaborador> pObjeto) {
+  Future<bool> alterar(Insertable<Colaborador>? pObjeto) {
     return transaction(() async {
-      return update(colaboradors).replace(pObjeto);
+      return update(colaboradors).replace(pObjeto!);
     });    
   } 
 
-  Future<int> excluir(Insertable<Colaborador> pObjeto) {
+  Future<int> excluir(Insertable<Colaborador>? pObjeto) {
     return transaction(() async {
-      return delete(colaboradors).delete(pObjeto);
+      return delete(colaboradors).delete(pObjeto!);
     });    
   }
 

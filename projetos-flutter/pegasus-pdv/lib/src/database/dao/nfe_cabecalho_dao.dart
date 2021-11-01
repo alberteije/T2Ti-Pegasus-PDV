@@ -33,6 +33,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'package:flutter/foundation.dart';
 import 'package:moor/moor.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
@@ -54,14 +55,14 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
 
   NfeCabecalhoDao(this.db) : super(db);
 
-  List<NfeCabecalho> listaNfeCabecalho; 
+  List<NfeCabecalho>? listaNfeCabecalho; 
 
-  Future<List<NfeCabecalho>> consultarLista() async {
+  Future<List<NfeCabecalho>?> consultarLista() async {
     listaNfeCabecalho = await select(nfeCabecalhos).get();
     return listaNfeCabecalho;
   }
 
-  Future<List<NfeCabecalho>> consultarListaFiltro(String campo, String valor) async {
+  Future<List<NfeCabecalho>?> consultarListaFiltro(String campo, String valor) async {
     listaNfeCabecalho = await (customSelect("SELECT * FROM NFE_CABECALHO WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { nfeCabecalhos }).map((row) {
                                   return NfeCabecalho.fromData(row.data, db);  
@@ -69,10 +70,10 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
     return listaNfeCabecalho;
   }
 
-  Future<List<NfeCabecalho>> consultarNotasContingenciadasParaInutilizacao() async {
+  Future<List<NfeCabecalho>?> consultarNotasContingenciadasParaInutilizacao() async {
     // retorna a lista de notas que foram contingenciadas, já foram autorizadas, mas por algum erro de comunicação
     // a nota original não teve seu número inutilizado ou cancelado
-    final sql = "select *, ID_PDV_VENDA_CABECALHO as idvenda from NFE_CABECALHO where STATUS_NOTA='9' "
+    const sql = "select *, ID_PDV_VENDA_CABECALHO as idvenda from NFE_CABECALHO where STATUS_NOTA='9' "
                 " and idvenda in (select ID_PDV_VENDA_CABECALHO from NFE_CABECALHO where status_nota='4' and ID_PDV_VENDA_CABECALHO=idvenda)";
     listaNfeCabecalho = await (customSelect(sql, 
                                 readsFrom: { nfeCabecalhos }).map((row) {
@@ -81,7 +82,7 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
     return listaNfeCabecalho;
   }
 
-  Future<NfeCabecalho> consultarObjetoFiltro(String campo, String valor, {String complemento}) async {
+  Future<NfeCabecalho?> consultarObjetoFiltro(String campo, String valor, {String? complemento}) async {
     var sql = "SELECT * FROM NFE_CABECALHO WHERE " + campo + " = '" + valor + "'";
     if (complemento != null && complemento != '') {
       sql = sql + complemento;
@@ -93,7 +94,7 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
       return retorno;
   }
 
-  Future<NfeCabecalho> consultarNotaPorVenda(int idVenda, {String status}) async {
+  Future<NfeCabecalho?> consultarNotaPorVenda(int? idVenda, {String? status}) async {
     String sql;
     if (status == null) {
       // não retorna as notas com status CONTINGENCIA (será transmitida e passada para 4) E OFFLINE (será cancelada ou inutilizada)
@@ -110,23 +111,23 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
       return retorno;
   }
 
-  Future<NfeCabecalhoMontado> consultarObjetoMontado(String campo, String valor) async {
+  Future<NfeCabecalhoMontado?> consultarObjetoMontado(String campo, String valor) async {
     return transaction(() async {
       final objetoNfeCabecalhoMontado = NfeCabecalhoMontado();
       try {        
         // pega o cabeçalho
-        final complemento = " AND STATUS_NOTA = '4'";
+        const complemento = " AND STATUS_NOTA = '4'";
         objetoNfeCabecalhoMontado.nfeCabecalho = await consultarObjetoFiltro(campo, valor, complemento: complemento);
         if (objetoNfeCabecalhoMontado.nfeCabecalho != null) {
           // pega o destinatário
           objetoNfeCabecalhoMontado.nfeDestinatario = 
-            await customSelect("SELECT * FROM NFE_DESTINATARIO WHERE ID_NFE_CABECALHO = '" + objetoNfeCabecalhoMontado.nfeCabecalho.id.toString() + "'", 
+            await customSelect("SELECT * FROM NFE_DESTINATARIO WHERE ID_NFE_CABECALHO = '" + objetoNfeCabecalhoMontado.nfeCabecalho!.id.toString() + "'", 
               readsFrom: { nfeDestinatarios }).map((row) {
                 return NfeDestinatario.fromData(row.data, db);  
               }).getSingleOrNull();
           // pega os detalhes
           objetoNfeCabecalhoMontado.listaNfeDetalheMontado = [];
-          final detalhes = await customSelect("SELECT * FROM NFE_DETALHE WHERE ID_NFE_CABECALHO = '" + objetoNfeCabecalhoMontado.nfeCabecalho.id.toString() + "'", 
+          final detalhes = await customSelect("SELECT * FROM NFE_DETALHE WHERE ID_NFE_CABECALHO = '" + objetoNfeCabecalhoMontado.nfeCabecalho!.id.toString() + "'", 
                                     readsFrom: { nfeCabecalhos }).map((row) {
                                       return NfeDetalhe.fromData(row.data, db);  
                                     }).get();      
@@ -157,12 +158,12 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
               nfeDetalheImpostoPis: pis,
               nfeDetalheImpostoCofins: cofins,
             );
-            objetoNfeCabecalhoMontado.listaNfeDetalheMontado.add(nfeDetalheMontado);
+            objetoNfeCabecalhoMontado.listaNfeDetalheMontado!.add(nfeDetalheMontado);
           }
         }
         return objetoNfeCabecalhoMontado;
       } catch (e) {
-        print('Ocorreu um problema ao tentar emitir a NFC-e: ' + e.toString());
+        debugPrint('Ocorreu um problema ao tentar emitir a NFC-e: ' + e.toString());
         return null;
       }
     });     
@@ -170,58 +171,58 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
 
   Stream<List<NfeCabecalho>> observarLista() => select(nfeCabecalhos).watch();
 
-  Future<NfeCabecalho> consultarObjeto(int pId) {
+  Future<NfeCabecalho?> consultarObjeto(int pId) {
     return (select(nfeCabecalhos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(NfeCabecalhoMontado nfeCabecalhoMontado) {
+  Future<int> inserir(NfeCabecalhoMontado? nfeCabecalhoMontado) {
     return transaction(() async {
-      final idInserido = await into(nfeCabecalhos).insert(nfeCabecalhoMontado.nfeCabecalho);
+      final idInserido = await into(nfeCabecalhos).insert(nfeCabecalhoMontado!.nfeCabecalho!);
       await inserirFilhos(nfeCabecalhoMontado, idInserido);
       await db.nfeNumeroDao.atualizarNumero();
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(NfeCabecalhoMontado nfeCabecalhoMontado, {bool atualizaFilhos}) {
+  Future<bool> alterar(NfeCabecalhoMontado? nfeCabecalhoMontado, {bool? atualizaFilhos}) {
     return transaction(() async {
-      if (atualizaFilhos) {
-        await excluirFilhos(nfeCabecalhoMontado);
-        await inserirFilhos(nfeCabecalhoMontado, nfeCabecalhoMontado.nfeCabecalho.id);
+      if (atualizaFilhos!) {
+        await excluirFilhos(nfeCabecalhoMontado!);
+        await inserirFilhos(nfeCabecalhoMontado, nfeCabecalhoMontado.nfeCabecalho!.id);
       }
-      return update(nfeCabecalhos).replace(nfeCabecalhoMontado.nfeCabecalho);
+      return update(nfeCabecalhos).replace(nfeCabecalhoMontado!.nfeCabecalho!);
     });    
   } 
 
   Future<void> excluirFilhos(NfeCabecalhoMontado pObjeto) async {
-    await (delete(nfeDestinatarios)..where((t) => t.idNfeCabecalho.equals(pObjeto.nfeCabecalho.id))).go();
-    await (delete(nfeInformacaoPagamentos)..where((t) => t.idNfeCabecalho.equals(pObjeto.nfeCabecalho.id))).go();
-    for (var detalhe in pObjeto.listaNfeDetalheMontado) {
-      await (delete(nfeDetalheImpostoIcmss)..where((t) => t.idNfeDetalhe.equals(detalhe.nfeDetalhe.id))).go();
-      await (delete(nfeDetalheImpostoPiss)..where((t) => t.idNfeDetalhe.equals(detalhe.nfeDetalhe.id))).go();
-      await (delete(nfeDetalheImpostoCofinss)..where((t) => t.idNfeDetalhe.equals(detalhe.nfeDetalhe.id))).go();
+    await (delete(nfeDestinatarios)..where((t) => t.idNfeCabecalho.equals(pObjeto.nfeCabecalho!.id))).go();
+    await (delete(nfeInformacaoPagamentos)..where((t) => t.idNfeCabecalho.equals(pObjeto.nfeCabecalho!.id))).go();
+    for (var detalhe in pObjeto.listaNfeDetalheMontado!) {
+      await (delete(nfeDetalheImpostoIcmss)..where((t) => t.idNfeDetalhe.equals(detalhe.nfeDetalhe!.id))).go();
+      await (delete(nfeDetalheImpostoPiss)..where((t) => t.idNfeDetalhe.equals(detalhe.nfeDetalhe!.id))).go();
+      await (delete(nfeDetalheImpostoCofinss)..where((t) => t.idNfeDetalhe.equals(detalhe.nfeDetalhe!.id))).go();
     }
-    await (delete(nfeDetalhes)..where((t) => t.idNfeCabecalho.equals(pObjeto.nfeCabecalho.id))).go();
+    await (delete(nfeDetalhes)..where((t) => t.idNfeCabecalho.equals(pObjeto.nfeCabecalho!.id))).go();
   }
 
-  Future<void> inserirFilhos(NfeCabecalhoMontado nfeCabecalhoMontado, int idMestre) async {
-    nfeCabecalhoMontado.nfeDestinatario = nfeCabecalhoMontado.nfeDestinatario.copyWith(idNfeCabecalho: idMestre);
-    await into(nfeDestinatarios).insert(nfeCabecalhoMontado.nfeDestinatario);  
+  Future<void> inserirFilhos(NfeCabecalhoMontado nfeCabecalhoMontado, int? idMestre) async {
+    nfeCabecalhoMontado.nfeDestinatario = nfeCabecalhoMontado.nfeDestinatario!.copyWith(idNfeCabecalho: idMestre);
+    await into(nfeDestinatarios).insert(nfeCabecalhoMontado.nfeDestinatario!);  
 
-    for (var pagamento in nfeCabecalhoMontado.listaNfeInformacaoPagamento) {
+    for (var pagamento in nfeCabecalhoMontado.listaNfeInformacaoPagamento!) {
       pagamento = pagamento.copyWith(idNfeCabecalho: idMestre);
       await into(nfeInformacaoPagamentos).insert(pagamento); 
     }
 
-    for (var detalhe in nfeCabecalhoMontado.listaNfeDetalheMontado) {
-      detalhe.nfeDetalhe = detalhe.nfeDetalhe.copyWith(idNfeCabecalho: idMestre);
-      final idDetalhe = await into(nfeDetalhes).insert(detalhe.nfeDetalhe);  
-      detalhe.nfeDetalheImpostoIcms = detalhe.nfeDetalheImpostoIcms.copyWith(idNfeDetalhe: idDetalhe);
-      await into(nfeDetalheImpostoIcmss).insert(detalhe.nfeDetalheImpostoIcms);  
-      detalhe.nfeDetalheImpostoPis = detalhe.nfeDetalheImpostoPis.copyWith(idNfeDetalhe: idDetalhe);
-      await into(nfeDetalheImpostoPiss).insert(detalhe.nfeDetalheImpostoPis);  
-      detalhe.nfeDetalheImpostoCofins = detalhe.nfeDetalheImpostoCofins.copyWith(idNfeDetalhe: idDetalhe);
-      await into(nfeDetalheImpostoCofinss).insert(detalhe.nfeDetalheImpostoCofins);  
+    for (var detalhe in nfeCabecalhoMontado.listaNfeDetalheMontado!) {
+      detalhe.nfeDetalhe = detalhe.nfeDetalhe!.copyWith(idNfeCabecalho: idMestre);
+      final idDetalhe = await into(nfeDetalhes).insert(detalhe.nfeDetalhe!);  
+      detalhe.nfeDetalheImpostoIcms = detalhe.nfeDetalheImpostoIcms!.copyWith(idNfeDetalhe: idDetalhe);
+      await into(nfeDetalheImpostoIcmss).insert(detalhe.nfeDetalheImpostoIcms!);  
+      detalhe.nfeDetalheImpostoPis = detalhe.nfeDetalheImpostoPis!.copyWith(idNfeDetalhe: idDetalhe);
+      await into(nfeDetalheImpostoPiss).insert(detalhe.nfeDetalheImpostoPis!);  
+      detalhe.nfeDetalheImpostoCofins = detalhe.nfeDetalheImpostoCofins!.copyWith(idNfeDetalhe: idDetalhe);
+      await into(nfeDetalheImpostoCofinss).insert(detalhe.nfeDetalheImpostoCofins!);  
     }
   }
    

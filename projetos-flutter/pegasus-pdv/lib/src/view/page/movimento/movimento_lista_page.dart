@@ -47,21 +47,23 @@ import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 class MovimentoListaPage extends StatefulWidget {
+  const MovimentoListaPage({Key? key}) : super(key: key);
+
   @override
   _MovimentoListaPageState createState() => _MovimentoListaPageState();
 }
 
 class _MovimentoListaPageState extends State<MovimentoListaPage> {
-  int _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
-  int _sortColumnIndex;
+  int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
+  int? _sortColumnIndex;
   bool _sortAscending = true;
 
   DateTime _mesAno = DateTime.now();
 
-  var _listaMovimento;
+  List<PdvMovimento>? _listaMovimento;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -74,7 +76,7 @@ class _MovimentoListaPageState extends State<MovimentoListaPage> {
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -90,7 +92,7 @@ class _MovimentoListaPageState extends State<MovimentoListaPage> {
 
     final _PdvMovimentoDataSource _pdvMovimentoDataSource = _PdvMovimentoDataSource(_listaMovimento, context, _refrescarTela);
 
-    void _sort<T>(Comparable<T> getField(PdvMovimento pdvMovimento), int columnIndex, bool ascending) {
+    void _sort<T>(Comparable<T>? Function(PdvMovimento pdvMovimento) getField, int columnIndex, bool ascending) {
       _pdvMovimentoDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
@@ -106,12 +108,12 @@ class _MovimentoListaPageState extends State<MovimentoListaPage> {
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Relação de Movimentos'),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: BottomAppBar(
             color: ViewUtilLib.getBottomAppBarColor(),          
-            shape: CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: Row(              
@@ -124,14 +126,13 @@ class _MovimentoListaPageState extends State<MovimentoListaPage> {
                         'Mês/Ano para o Filtro',
                         'Mês/Ano para o Filtro',
                         true),
-                      isEmpty: _mesAno == null,
                       child: DatePickerItem(
                         mascara: 'MM/yyyy',
                         dateTime: _mesAno,
                         firstDate: DateTime.parse('1900-01-01'),
                         lastDate: DateTime.parse('2050-01-01'),
-                        onChanged: (DateTime value) {
-                          _mesAno = value;
+                        onChanged: (DateTime? value) {
+                          _mesAno = value!;
                           _refrescarTela();
                         },
                       ),
@@ -145,14 +146,14 @@ class _MovimentoListaPageState extends State<MovimentoListaPage> {
             onRefresh: _refrescarTela,
             child: Scrollbar(
               child: _listaMovimento == null
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : ListView(
-                padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
+                padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                 children: <Widget>[
                   PaginatedDataTable(                        
                     header: const Text('Movimentos'),
-                    rowsPerPage: _rowsPerPage,
-                    onRowsPerPageChanged: (int value) {
+                    rowsPerPage: _rowsPerPage!,
+                    onRowsPerPageChanged: (int? value) {
                       setState(() {
                         _rowsPerPage = value;
                       });
@@ -289,84 +290,84 @@ class _MovimentoListaPageState extends State<MovimentoListaPage> {
 
 /// codigo referente a fonte de dados
 class _PdvMovimentoDataSource extends DataTableSource {
-  final List<PdvMovimento> listaProduto;
+  final List<PdvMovimento>? listaProduto;
   final BuildContext context;
   final Function refrescarTela;
  
   _PdvMovimentoDataSource(this.listaProduto, this.context, this.refrescarTela);
 
-  void _sort<T>(Comparable<T> getField(PdvMovimento pdvMovimento), bool ascending) {
-    listaProduto.sort((PdvMovimento a, PdvMovimento b) {
+  void _sort<T>(Comparable<T>? Function(PdvMovimento pdvMovimento) getField, bool ascending) {
+    listaProduto!.sort((PdvMovimento a, PdvMovimento b) {
       if (!ascending) {
         final PdvMovimento c = a;
         a = b;
         b = c;
       }
-      Comparable<T> aValue = getField(a);
-      Comparable<T> bValue = getField(b);
+      Comparable<T>? aValue = getField(a);
+      Comparable<T>? bValue = getField(b);
 
-      if (aValue == null) aValue = '' as Comparable<T>;
-      if (bValue == null) bValue = '' as Comparable<T>;
+      aValue ??= '' as Comparable<T>;
+      bValue ??= '' as Comparable<T>;
 
       return Comparable.compare(aValue, bValue);
     });
   }
 
-  int _selectedCount = 0;
+  final int _selectedCount = 0;
 
   @override
-  DataRow getRow(int index) {
-    if (index >= listaProduto.length) return null;
-    final PdvMovimento pdvMovimento = listaProduto[index];
+  DataRow? getRow(int index) {
+    if (index >= listaProduto!.length) return null;
+    final PdvMovimento pdvMovimento = listaProduto![index];
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
         DataCell(Text('${pdvMovimento.id ?? ''}'), onTap: () {
           _imprimirPdvMovimento(pdvMovimento, context);
         }),
-        DataCell(Text('${pdvMovimento.dataAbertura != null ? DateFormat('dd/MM/yyyy').format(pdvMovimento.dataAbertura) : ''}'), onTap: () {
+        DataCell(Text(pdvMovimento.dataAbertura != null ? DateFormat('dd/MM/yyyy').format(pdvMovimento.dataAbertura!) : ''), onTap: () {
           _imprimirPdvMovimento(pdvMovimento, context);
         }),
-        DataCell(Text('${pdvMovimento.horaAbertura ?? ''}'), onTap: () {
+        DataCell(Text(pdvMovimento.horaAbertura ?? ''), onTap: () {
           _imprimirPdvMovimento(pdvMovimento, context);
         }),
-        DataCell(Text('${pdvMovimento.dataFechamento != null ? DateFormat('dd/MM/yyyy').format(pdvMovimento.dataFechamento) : ''}'), onTap: () {
+        DataCell(Text(pdvMovimento.dataFechamento != null ? DateFormat('dd/MM/yyyy').format(pdvMovimento.dataFechamento!) : ''), onTap: () {
           _imprimirPdvMovimento(pdvMovimento, context);
         }),
-        DataCell(Text('${pdvMovimento.horaFechamento ?? ''}'), onTap: () {
+        DataCell(Text(pdvMovimento.horaFechamento ?? ''), onTap: () {
           _imprimirPdvMovimento(pdvMovimento, context);
         }),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(pdvMovimento.totalSuprimento ?? 0)}'), onTap: () {
+        DataCell(Text(Constantes.formatoDecimalValor.format(pdvMovimento.totalSuprimento ?? 0)), onTap: () {
           _imprimirPdvMovimento(pdvMovimento, context);
         }),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(pdvMovimento.totalSangria ?? 0)}'), onTap: () {
+        DataCell(Text(Constantes.formatoDecimalValor.format(pdvMovimento.totalSangria ?? 0)), onTap: () {
           _imprimirPdvMovimento(pdvMovimento, context);
         }),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(pdvMovimento.totalNaoFiscal ?? 0)}'), onTap: () {
+        DataCell(Text(Constantes.formatoDecimalValor.format(pdvMovimento.totalNaoFiscal ?? 0)), onTap: () {
           _imprimirPdvMovimento(pdvMovimento, context);
         }),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(pdvMovimento.totalVenda ?? 0)}'), onTap: () {
+        DataCell(Text(Constantes.formatoDecimalValor.format(pdvMovimento.totalVenda ?? 0)), onTap: () {
           _imprimirPdvMovimento(pdvMovimento, context);
         }),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(pdvMovimento.totalDesconto ?? 0)}'), onTap: () {
+        DataCell(Text(Constantes.formatoDecimalValor.format(pdvMovimento.totalDesconto ?? 0)), onTap: () {
           _imprimirPdvMovimento(pdvMovimento, context);
         }),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(pdvMovimento.totalAcrescimo ?? 0)}'), onTap: () {
+        DataCell(Text(Constantes.formatoDecimalValor.format(pdvMovimento.totalAcrescimo ?? 0)), onTap: () {
           _imprimirPdvMovimento(pdvMovimento, context);
         }),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(pdvMovimento.totalFinal ?? 0)}'), onTap: () {
+        DataCell(Text(Constantes.formatoDecimalValor.format(pdvMovimento.totalFinal ?? 0)), onTap: () {
           _imprimirPdvMovimento(pdvMovimento, context);
         }),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(pdvMovimento.totalRecebido ?? 0)}'), onTap: () {
+        DataCell(Text(Constantes.formatoDecimalValor.format(pdvMovimento.totalRecebido ?? 0)), onTap: () {
           _imprimirPdvMovimento(pdvMovimento, context);
         }),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(pdvMovimento.totalTroco ?? 0)}'), onTap: () {
+        DataCell(Text(Constantes.formatoDecimalValor.format(pdvMovimento.totalTroco ?? 0)), onTap: () {
           _imprimirPdvMovimento(pdvMovimento, context);
         }),
-        DataCell(Text('${Constantes.formatoDecimalValor.format(pdvMovimento.totalCancelado ?? 0)}'), onTap: () {
+        DataCell(Text(Constantes.formatoDecimalValor.format(pdvMovimento.totalCancelado ?? 0)), onTap: () {
           _imprimirPdvMovimento(pdvMovimento, context);
         }),
-        DataCell(Text('${pdvMovimento.statusMovimento ?? ''}'), onTap: () {
+        DataCell(Text(pdvMovimento.statusMovimento ?? ''), onTap: () {
           _imprimirPdvMovimento(pdvMovimento, context);
         }),
       ],
@@ -374,7 +375,7 @@ class _PdvMovimentoDataSource extends DataTableSource {
   }
 
   @override
-  int get rowCount => listaProduto.length ?? 0;
+  int get rowCount => listaProduto!.length;
 
   @override
   bool get isRowCountApproximate => false;

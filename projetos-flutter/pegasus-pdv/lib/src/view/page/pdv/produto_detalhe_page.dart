@@ -36,7 +36,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 Based on: Flutter UI Challenges by Many - https://github.com/lohanidamodar/flutter_ui_challenges
 *******************************************************************************/
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
@@ -49,10 +49,10 @@ import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 class ProdutoDetalhePage extends StatefulWidget {
-  final String title;
-  final VendaDetalhe item;
+  final String? title;
+  final VendaDetalhe? item;
 
-  const ProdutoDetalhePage({Key key, this.title, this.item}) : super(key: key);
+  const ProdutoDetalhePage({Key? key, this.title, this.item}) : super(key: key);
 
   @override
   _ProdutoDetalhePageState createState() => _ProdutoDetalhePageState();
@@ -63,24 +63,25 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
   final _descontoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: 0);
   final _focusNode = FocusNode();
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
     super.initState();
 
-    _quantidadeController.afterChange = (_, __) {
-      _quantidadeController.selection = TextSelection.collapsed(
-        offset: _quantidadeController.text.length,
-      );
-    };
+    // EIJE - 22102021 - comentado para observar o comportamento do novo widget
+    // _quantidadeController.afterChange = (_, __) {
+    //   _quantidadeController.selection = TextSelection.collapsed(
+    //     offset: _quantidadeController.text.length,
+    //   );
+    // };
 
-    _descontoController.afterChange = (_, __) {
-      _descontoController.selection = TextSelection.collapsed(
-        offset: _descontoController.text.length,
-      );
-    };
+    // _descontoController.afterChange = (_, __) {
+    //   _descontoController.selection = TextSelection.collapsed(
+    //     offset: _descontoController.text.length,
+    //   );
+    // };
 
     _shortcutMap = getAtalhosCaixa();
     _actionMap = <Type, Action<Intent>>{
@@ -106,8 +107,8 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
 
   @override
   Widget build(BuildContext context) {
-    _quantidadeController.updateValue(widget.item.pdvVendaDetalhe.quantidade);
-    _descontoController.updateValue(widget.item.pdvVendaDetalhe.taxaDesconto ?? 0);
+    _quantidadeController.updateValue(widget.item!.pdvVendaDetalhe!.quantidade);
+    _descontoController.updateValue(widget.item!.pdvVendaDetalhe!.taxaDesconto ?? 0);
 
     return FocusableActionDetector(
       actions: _actionMap,
@@ -138,60 +139,60 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
     if (index == 0) return _cabecalhoTela(context);
     // if (index == 1) return conteudoTela(context);
     if (index == 1) return _rodapeTela(context);
-    return null;
+    return const SizedBox();
   }
 
   Container _cabecalhoTela(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 20.0),
+      margin: const EdgeInsets.only(top: 20.0),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
               color: Colors.white,
               child: Column(
                 children: <Widget>[
-                  SizedBox(
+                  const SizedBox(
                     height: 50.0,
                   ),
                   Text(
-                    widget.title,
+                    widget.title!,
                     style: Theme.of(context).textTheme.headline5,
                   ),
-                  Divider(
+                  const Divider(
                     indent: 10,
                     endIndent: 10,
                     thickness: 2,
                   ),
-                  Container(
+                  SizedBox(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Expanded(
                           child: ListTile(
                             title: Text(
-                              widget.item.produto.quantidadeEstoque.toString(),
+                              widget.item!.produto!.quantidadeEstoque.toString(),
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             subtitle: Text("Estoque".toUpperCase(),
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 12.0)),
+                                style: const TextStyle(fontSize: 12.0)),
                           ),
                         ),
                         Expanded(
                           child: ListTile(
                             title: Text(
-                              Constantes.formatoDecimalValor.format(widget.item.produto.valorVenda),
+                              Constantes.formatoDecimalValor.format(widget.item!.produto!.valorVenda),
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             subtitle: Text("Preço".toUpperCase(),
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 12.0)),
+                                style: const TextStyle(fontSize: 12.0)),
                           ),
                         ),
                       ],
@@ -201,7 +202,7 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
                     padding: const EdgeInsets.only(top: 0.0, left: 16.0, right: 16.0, bottom: 0.0),
                     child: Column(
                       children: <Widget>[
-                        Divider(
+                        const Divider(
                           indent: 10,
                           endIndent: 10,
                           thickness: 2,
@@ -211,7 +212,7 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
                           children: <Widget>[
                             Expanded(
                               flex: 1,
-                              child: Container(
+                              child: SizedBox(
                                 child: TextField(
                                   // enableInteractiveSelection: !Biblioteca.isDesktop(),
                                   focusNode: _focusNode,
@@ -236,7 +237,7 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
                             const SizedBox(width: 8),
                             Expanded(
                               flex: 1,
-                              child: Container(
+                              child: SizedBox(
                                 child: TextField(
                                   // enableInteractiveSelection: !Biblioteca.isDesktop(),
                                   keyboardType: TextInputType.number,
@@ -261,7 +262,7 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
                         const SizedBox(height: 8),
                         BootstrapContainer(
                           fluid: true,
-                          decoration: BoxDecoration(color: Colors.white),
+                          decoration: const BoxDecoration(color: Colors.white),
                           padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                           children: <Widget>[			  			  
                             BootstrapRow(
@@ -270,51 +271,51 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
                                 BootstrapCol(
                                   sizes: 'col-12 col-md-4',
                                   child: Padding(
-                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                       child: ListTile(
                                         tileColor: Colors.blue.shade100,
                                         title: Text(
-                                          Constantes.formatoDecimalValor.format(widget.item.pdvVendaDetalhe.valorTotalItem),
+                                          Constantes.formatoDecimalValor.format(widget.item!.pdvVendaDetalhe!.valorTotalItem),
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
                                         ),
                                         subtitle: Text("Total Item".toUpperCase(),
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(fontSize: 12.0)),
+                                            style: const TextStyle(fontSize: 12.0)),
                                       ),
                                   ),
                                 ),
                                 BootstrapCol(
                                   sizes: 'col-12 col-md-4',
                                   child: Padding(
-                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                     child: ListTile(
                                       tileColor: Colors.red.shade100,
                                       title: Text(
-                                        Constantes.formatoDecimalValor.format(widget.item.pdvVendaDetalhe.valorDesconto ?? 0),
+                                        Constantes.formatoDecimalValor.format(widget.item!.pdvVendaDetalhe!.valorDesconto ?? 0),
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
                                       ),
                                       subtitle: Text("Valor Desconto".toUpperCase(),
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(fontSize: 12.0)),
+                                          style: const TextStyle(fontSize: 12.0)),
                                     ),
                                   ),
                                 ),
                                 BootstrapCol(
                                   sizes: 'col-12 col-md-4',
                                   child: Padding(
-                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                                    padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                     child: ListTile(
                                       tileColor: Colors.green.shade100,
                                       title: Text(
-                                        Constantes.formatoDecimalValor.format(widget.item.pdvVendaDetalhe.valorTotal),
+                                        Constantes.formatoDecimalValor.format(widget.item!.pdvVendaDetalhe!.valorTotal),
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
                                       ),
                                       subtitle: Text("Valor Final".toUpperCase(),
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(fontSize: 12.0)),
+                                          style: const TextStyle(fontSize: 12.0)),
                                     ),
                                   ),
                                 ),
@@ -332,7 +333,7 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: const <Widget>[
               Material(
                 elevation: 5.0,
                 shape: CircleBorder(),
@@ -350,11 +351,11 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
 
   Container _rodapeTela(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 0.0),
+      margin: const EdgeInsets.only(top: 0.0),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
+            padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 5.0,
@@ -377,16 +378,16 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
     );
   }
 
-  List<Widget> _getBotoesRodape({BuildContext context}) {
+  List<Widget> _getBotoesRodape({BuildContext? context}) {
     List<Widget> listaBotoes = [];
     listaBotoes.add(
-      Container(
+      SizedBox(
         width: 200,
         child: getBotaoGenericoPdv(
           descricao: Biblioteca.isMobile() ? 'Sair' : 'Sair [ESC]',
           cor: Colors.green, 
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context!);
           }
         ),
       )
@@ -395,12 +396,12 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
   }
 
   void _atualizarTotais() {
-    double _valorDesconto = Biblioteca.calcularDesconto(widget.item.pdvVendaDetalhe.valorTotalItem, _descontoController.numberValue);
-    double _valorTotalItem = _quantidadeController.numberValue * widget.item.pdvVendaDetalhe.valorUnitario;
-    double _valorTotal = _quantidadeController.numberValue * widget.item.pdvVendaDetalhe.valorUnitario - _valorDesconto;
+    double _valorDesconto = Biblioteca.calcularDesconto(widget.item!.pdvVendaDetalhe!.valorTotalItem, _descontoController.numberValue);
+    double _valorTotalItem = _quantidadeController.numberValue * widget.item!.pdvVendaDetalhe!.valorUnitario!;
+    double _valorTotal = _quantidadeController.numberValue * widget.item!.pdvVendaDetalhe!.valorUnitario! - _valorDesconto;
 
     setState(() {      
-      widget.item.pdvVendaDetalhe = widget.item.pdvVendaDetalhe.copyWith(
+      widget.item!.pdvVendaDetalhe = widget.item!.pdvVendaDetalhe!.copyWith(
         quantidade: _quantidadeController.numberValue,
         taxaDesconto: _descontoController.numberValue,
         valorDesconto: _valorDesconto,
@@ -408,7 +409,7 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
         valorTotal: _valorTotal,
       );
       // remove o desconto do cabeçalho da venda
-      Sessao.vendaAtual = Sessao.vendaAtual.copyWith(
+      Sessao.vendaAtual = Sessao.vendaAtual!.copyWith(
         taxaDesconto: 0,
         valorDesconto: 0,
       );

@@ -49,22 +49,26 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 import 'compra_pedido_cabecalho_page.dart';
 
 class CompraPedidoCabecalhoListaPage extends StatefulWidget {
-  static CompraPedidoCabecalho compraPedidoCabecalho; //usado quando esta tela for chamada pelo Estoque para fazer um pedido
-  static List<CompraDetalhe> listaCompraDetalhe; //usado quando esta tela for chamada pelo Estoque para fazer um pedido
+  static CompraPedidoCabecalho? compraPedidoCabecalho; //usado quando esta tela for chamada pelo Estoque para fazer um pedido
+  static List<CompraDetalhe>? listaCompraDetalhe;
+
+  const CompraPedidoCabecalhoListaPage({Key? key}) : super(key: key); //usado quando esta tela for chamada pelo Estoque para fazer um pedido
 
   @override
   _CompraPedidoCabecalhoListaPageState createState() => _CompraPedidoCabecalhoListaPageState();
 }
 
 class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoListaPage> {
-  int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
-  int _sortColumnIndex;
+  int? _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
+  int? _sortColumnIndex;
   bool _sortAscending = true;
 
   DateTime _mesAno = DateTime.now();
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
+
+  final ScrollController controllerScroll = ScrollController();
 
   @override
   void initState() {
@@ -77,7 +81,7 @@ class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoLi
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -96,7 +100,7 @@ class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoLi
 
     final _CompraPedidoCabecalhoDataSource _compraPedidoCabecalhoDataSource = _CompraPedidoCabecalhoDataSource(_listaCompraPedidoCabecalhoMontado, context, _refrescarTela);
 
-    void _sort<T>(Comparable<T> getField(CompraPedidoCabecalhoMontado compraPedidoCabecalhoMontado), int columnIndex, bool ascending) {
+    void _sort<T>(Comparable<T>? Function(CompraPedidoCabecalhoMontado compraPedidoCabecalhoMontado) getField, int columnIndex, bool ascending) {
       _compraPedidoCabecalhoDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
@@ -112,7 +116,7 @@ class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoLi
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Pedido de Compra'),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           ),
           floatingActionButton: FloatingActionButton(
             focusColor: ViewUtilLib.getBotaoFocusColor(),
@@ -125,7 +129,7 @@ class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoLi
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: BottomAppBar(
             color: ViewUtilLib.getBottomAppBarColor(),
-            shape: CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 90, 10),
               child: Row(
@@ -138,14 +142,13 @@ class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoLi
                         'Mês/Ano para o Filtro',
                         'Selecione um dia dentro do mês desejado',
                         true),
-                      isEmpty: _mesAno == null,
                       child: DatePickerItem(
                         mascara: 'MM/yyyy',
                         dateTime: _mesAno,
                         firstDate: DateTime.parse('1900-01-01'),
                         lastDate: DateTime.parse('2050-01-01'),
-                        onChanged: (DateTime value) {
-                          _mesAno = value;
+                        onChanged: (DateTime? value) {
+                          _mesAno = value!;
                           _refrescarTela();
                         },
                       ),
@@ -159,14 +162,15 @@ class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoLi
             onRefresh: _refrescarTela,
             child: Scrollbar(
               child: _listaCompraPedidoCabecalhoMontado == null
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : ListView(
-                padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
+                controller: controllerScroll,
+                padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                 children: <Widget>[
                   PaginatedDataTable(
                     header: const Text('Relação - Pedido de Compra'),
-                    rowsPerPage: _rowsPerPage,
-                    onRowsPerPageChanged: (int value) {
+                    rowsPerPage: _rowsPerPage!,
+                    onRowsPerPageChanged: (int? value) {
                       setState(() {
                         _rowsPerPage = value;
                       });
@@ -179,7 +183,7 @@ class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoLi
                         label: const Text('Id'),
                         tooltip: 'Id',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<num>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.id, columnIndex, ascending),
+                          _sort<num>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.id, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Colaborador'),
@@ -197,127 +201,127 @@ class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoLi
                         label: const Text('Data do Pedido'),
                         tooltip: 'Data do Pedido',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<DateTime>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.dataPedido, columnIndex, ascending),
+                          _sort<DateTime>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.dataPedido, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Data Prevista para Entrega'),
                         tooltip: 'Data Prevista para Entrega',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<DateTime>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.dataPrevisaoEntrega, columnIndex, ascending),
+                          _sort<DateTime>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.dataPrevisaoEntrega, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Data Previsão Pagamento'),
                         tooltip: 'Data Previsão Pagamento',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<DateTime>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.dataPrevisaoPagamento, columnIndex, ascending),
+                          _sort<DateTime>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.dataPrevisaoPagamento, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Local de Entrega'),
                         tooltip: 'Local de Entrega',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.localEntrega, columnIndex, ascending),
+                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.localEntrega, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Local de Cobrança'),
                         tooltip: 'Local de Cobrança',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.localCobranca, columnIndex, ascending),
+                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.localCobranca, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Nome do Contato'),
                         tooltip: 'Nome do Contato',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.contato, columnIndex, ascending),
+                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.contato, columnIndex, ascending),
                       ),
                       DataColumn(
                         numeric: true,
                         label: const Text('Valor Subtotal'),
                         tooltip: 'Valor Subtotal',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<num>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.valorSubtotal, columnIndex, ascending),
+                          _sort<num>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.valorSubtotal, columnIndex, ascending),
                       ),
                       DataColumn(
                         numeric: true,
                         label: const Text('Taxa Desconto'),
                         tooltip: 'Taxa Desconto',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<num>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.taxaDesconto, columnIndex, ascending),
+                          _sort<num>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.taxaDesconto, columnIndex, ascending),
                       ),
                       DataColumn(
                         numeric: true,
                         label: const Text('Valor Desconto'),
                         tooltip: 'Valor Desconto',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<num>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.valorDesconto, columnIndex, ascending),
+                          _sort<num>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.valorDesconto, columnIndex, ascending),
                       ),
                       DataColumn(
                         numeric: true,
                         label: const Text('Valor Total'),
                         tooltip: 'Valor Total',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<num>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.valorTotal, columnIndex, ascending),
+                          _sort<num>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.valorTotal, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Forma de Pagamento'),
                         tooltip: 'Forma de Pagamento de Pessoa',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.formaPagamento, columnIndex, ascending),
+                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.formaPagamento, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Gera Financeiro'),
                         tooltip: 'Conteúdo para o campo Gera Financeiro',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.geraFinanceiro, columnIndex, ascending),
+                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.geraFinanceiro, columnIndex, ascending),
                       ),
                       DataColumn(
                         numeric: true,
                         label: const Text('Quantidade de Parcelas'),
                         tooltip: 'Quantidade de Parcelas',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<num>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.quantidadeParcelas, columnIndex, ascending),
+                          _sort<num>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.quantidadeParcelas, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Dia Primeiro Vencimento'),
                         tooltip: 'Dia Primeiro Vencimento',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<DateTime>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.diaPrimeiroVencimento, columnIndex, ascending),
+                          _sort<DateTime>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.diaPrimeiroVencimento, columnIndex, ascending),
                       ),
                       DataColumn(
                         numeric: true,
                         label: const Text('Intervalo entre Parcelas'),
                         tooltip: 'Intervalo entre Parcelas',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<num>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.intervaloEntreParcelas, columnIndex, ascending),
+                          _sort<num>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.intervaloEntreParcelas, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Dia Fixo da Parcela'),
                         tooltip: 'Dia Fixo da Parcela',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.diaFixoParcela, columnIndex, ascending),
+                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.diaFixoParcela, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Data Recebimento Itens'),
                         tooltip: 'Conteúdo para o campo Data Recebimento Itens',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<DateTime>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.dataRecebimentoItens, columnIndex, ascending),
+                          _sort<DateTime>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.dataRecebimentoItens, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Hora Recebimento Itens'),
                         tooltip: 'Conteúdo para o campo Hora Recebimento Itens',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.horaRecebimentoItens, columnIndex, ascending),
+                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.horaRecebimentoItens, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Atualizou Estoque'),
                         tooltip: 'Conteúdo para o campo Atualizou Estoque',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.atualizouEstoque, columnIndex, ascending),
+                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.atualizouEstoque, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Numero Documento Entrada'),
                         tooltip: 'Conteúdo para o campo Numero Documento Entrada',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho.numeroDocumentoEntrada, columnIndex, ascending),
+                          _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.numeroDocumentoEntrada, columnIndex, ascending),
                       ),
                     ],
                     source: _compraPedidoCabecalhoDataSource,
@@ -333,7 +337,7 @@ class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoLi
 
   void _inserir() async {
     final _colaborador = await Sessao.db.colaboradorDao.consultarObjeto(1);
-    CompraPedidoCabecalhoController.listaCompraDetalhe = CompraPedidoCabecalhoListaPage.listaCompraDetalhe == null ? [] : CompraPedidoCabecalhoListaPage.listaCompraDetalhe;
+    CompraPedidoCabecalhoController.listaCompraDetalhe = CompraPedidoCabecalhoListaPage.listaCompraDetalhe ?? [];
     Navigator.of(context)
       .push(MaterialPageRoute(
         builder: (BuildContext context) => 
@@ -364,83 +368,83 @@ class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoLi
 
 /// codigo referente a fonte de dados
 class _CompraPedidoCabecalhoDataSource extends DataTableSource {
-  final List<CompraPedidoCabecalhoMontado> listaCompraPedidoCabecalho;
+  final List<CompraPedidoCabecalhoMontado>? listaCompraPedidoCabecalho;
   final BuildContext context;
   final Function refrescarTela;
  
   _CompraPedidoCabecalhoDataSource(this.listaCompraPedidoCabecalho, this.context, this.refrescarTela);
 
-  void _sort<T>(Comparable<T> getField(CompraPedidoCabecalhoMontado compraPedidoCabecalho), bool ascending) {
-    listaCompraPedidoCabecalho.sort((CompraPedidoCabecalhoMontado a, CompraPedidoCabecalhoMontado b) {
+  void _sort<T>(Comparable<T>? Function(CompraPedidoCabecalhoMontado compraPedidoCabecalho) getField, bool ascending) {
+    listaCompraPedidoCabecalho!.sort((CompraPedidoCabecalhoMontado a, CompraPedidoCabecalhoMontado b) {
       if (!ascending) {
         final CompraPedidoCabecalhoMontado c = a;
         a = b;
         b = c;
       }
-      Comparable<T> aValue = getField(a);
-      Comparable<T> bValue = getField(b);
+      Comparable<T>? aValue = getField(a);
+      Comparable<T>? bValue = getField(b);
 
-      if (aValue == null) aValue = '' as Comparable<T>;
-      if (bValue == null) bValue = '' as Comparable<T>;
+      aValue ??= '' as Comparable<T>;
+      bValue ??= '' as Comparable<T>;
 
       return Comparable.compare(aValue, bValue);
     });
   }
 
-  int _selectedCount = 0;
+  final int _selectedCount = 0;
 
   @override
-  DataRow getRow(int index) {
+  DataRow? getRow(int index) {
     assert(index >= 0);
-    if (index >= listaCompraPedidoCabecalho.length) return null;
-    final CompraPedidoCabecalhoMontado compraPedidoCabecalhoMontado = listaCompraPedidoCabecalho[index];
-    final CompraPedidoCabecalho compraPedidoCabecalho = compraPedidoCabecalhoMontado.compraPedidoCabecalho;
+    if (index >= listaCompraPedidoCabecalho!.length) return null;
+    final CompraPedidoCabecalhoMontado compraPedidoCabecalhoMontado = listaCompraPedidoCabecalho![index];
+    final CompraPedidoCabecalho compraPedidoCabecalho = compraPedidoCabecalhoMontado.compraPedidoCabecalho!;
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
         DataCell(Text('${compraPedidoCabecalho.id ?? ''}'), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalhoMontado.colaborador?.nome ?? ''}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalhoMontado.colaborador?.nome ?? ''), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalhoMontado.fornecedor?.nome ?? ''}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalhoMontado.fornecedor?.nome ?? ''), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalho.dataPedido != null ? DateFormat('dd/MM/yyyy').format(compraPedidoCabecalho.dataPedido) : ''}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalho.dataPedido != null ? DateFormat('dd/MM/yyyy').format(compraPedidoCabecalho.dataPedido!) : ''), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalho.dataPrevisaoEntrega != null ? DateFormat('dd/MM/yyyy').format(compraPedidoCabecalho.dataPrevisaoEntrega) : ''}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalho.dataPrevisaoEntrega != null ? DateFormat('dd/MM/yyyy').format(compraPedidoCabecalho.dataPrevisaoEntrega!) : ''), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalho.dataPrevisaoPagamento != null ? DateFormat('dd/MM/yyyy').format(compraPedidoCabecalho.dataPrevisaoPagamento) : ''}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalho.dataPrevisaoPagamento != null ? DateFormat('dd/MM/yyyy').format(compraPedidoCabecalho.dataPrevisaoPagamento!) : ''), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalho.localEntrega ?? ''}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalho.localEntrega ?? ''), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalho.localCobranca ?? ''}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalho.localCobranca ?? ''), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalho.contato ?? ''}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalho.contato ?? ''), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalho.valorSubtotal != null ? Constantes.formatoDecimalValor.format(compraPedidoCabecalho.valorSubtotal) : 0.toStringAsFixed(Constantes.decimaisValor)}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalho.valorSubtotal != null ? Constantes.formatoDecimalValor.format(compraPedidoCabecalho.valorSubtotal) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalho.taxaDesconto != null ? Constantes.formatoDecimalTaxa.format(compraPedidoCabecalho.taxaDesconto) : 0.toStringAsFixed(Constantes.decimaisTaxa)}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalho.taxaDesconto != null ? Constantes.formatoDecimalTaxa.format(compraPedidoCabecalho.taxaDesconto) : 0.toStringAsFixed(Constantes.decimaisTaxa)), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalho.valorDesconto != null ? Constantes.formatoDecimalValor.format(compraPedidoCabecalho.valorDesconto) : 0.toStringAsFixed(Constantes.decimaisValor)}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalho.valorDesconto != null ? Constantes.formatoDecimalValor.format(compraPedidoCabecalho.valorDesconto) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalho.valorTotal != null ? Constantes.formatoDecimalValor.format(compraPedidoCabecalho.valorTotal) : 0.toStringAsFixed(Constantes.decimaisValor)}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalho.valorTotal != null ? Constantes.formatoDecimalValor.format(compraPedidoCabecalho.valorTotal) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalho.formaPagamento ?? ''}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalho.formaPagamento ?? ''), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalho.geraFinanceiro ?? ''}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalho.geraFinanceiro ?? ''), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
         DataCell(Text('${compraPedidoCabecalho.quantidadeParcelas ?? ''}'), onTap: () {
@@ -452,19 +456,19 @@ class _CompraPedidoCabecalhoDataSource extends DataTableSource {
         DataCell(Text('${compraPedidoCabecalho.intervaloEntreParcelas ?? ''}'), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalho.diaFixoParcela ?? ''}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalho.diaFixoParcela ?? ''), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalho.dataRecebimentoItens != null ? DateFormat('dd/MM/yyyy').format(compraPedidoCabecalho.dataRecebimentoItens) : ''}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalho.dataRecebimentoItens != null ? DateFormat('dd/MM/yyyy').format(compraPedidoCabecalho.dataRecebimentoItens!) : ''), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalho.horaRecebimentoItens ?? ''}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalho.horaRecebimentoItens ?? ''), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalho.atualizouEstoque ?? ''}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalho.atualizouEstoque ?? ''), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
-        DataCell(Text('${compraPedidoCabecalho.numeroDocumentoEntrada ?? ''}'), onTap: () {
+        DataCell(Text(compraPedidoCabecalho.numeroDocumentoEntrada ?? ''), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
       ],
@@ -472,7 +476,7 @@ class _CompraPedidoCabecalhoDataSource extends DataTableSource {
   }
 
   @override
-  int get rowCount => listaCompraPedidoCabecalho.length ?? 0;
+  int get rowCount => listaCompraPedidoCabecalho!.length;
 
   @override
   bool get isRowCountApproximate => false;
@@ -484,7 +488,7 @@ class _CompraPedidoCabecalhoDataSource extends DataTableSource {
 void _detalharCompraPedidoCabecalho(CompraPedidoCabecalhoMontado compraPedidoCabecalhoMontado, BuildContext context, Function refrescarTela) async {
   //carrega lista de detalhes
   CompraPedidoCabecalhoController.listaCompraDetalhe = 
-    await Sessao.db.compraPedidoDetalheDao.consultarListaComProduto(compraPedidoCabecalhoMontado.compraPedidoCabecalho.id);
+    await Sessao.db.compraPedidoDetalheDao.consultarListaComProduto(compraPedidoCabecalhoMontado.compraPedidoCabecalho!.id);
   Navigator.of(context)
     .push(MaterialPageRoute(
       builder: (BuildContext context) => CompraPedidoCabecalhoPage(

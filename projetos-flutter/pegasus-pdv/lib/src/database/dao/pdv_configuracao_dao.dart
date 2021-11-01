@@ -59,7 +59,7 @@ class PdvConfiguracaoDao extends DatabaseAccessor<AppDatabase> with _$PdvConfigu
 
   Stream<List<PdvConfiguracao>> observarLista() => select(pdvConfiguracaos).watch();
 
-  Future<PdvConfiguracao> consultarObjeto(int pId) {
+  Future<PdvConfiguracao?> consultarObjeto(int pId) {
     return (select(pdvConfiguracaos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
@@ -70,9 +70,9 @@ class PdvConfiguracaoDao extends DatabaseAccessor<AppDatabase> with _$PdvConfigu
     });    
   } 
 
-  Future<bool> alterar(Insertable<PdvConfiguracao> pObjeto) {
+  Future<bool> alterar(Insertable<PdvConfiguracao>? pObjeto) {
     return transaction(() async {
-      return update(pdvConfiguracaos).replace(pObjeto);
+      return update(pdvConfiguracaos).replace(pObjeto!);
     });    
   } 
 

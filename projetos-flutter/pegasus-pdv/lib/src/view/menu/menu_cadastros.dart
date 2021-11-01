@@ -47,11 +47,13 @@ import 'package:pegasus_pdv/src/view/menu/menu_interno_botoes.dart';
 import 'package:pegasus_pdv/src/view/menu/menu_titulo_grupo_menu_interno.dart';
 
 class MenuCadastros extends StatelessWidget {
+  const MenuCadastros({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("T2Ti Pegasus PDV - Cadastros"),
+        title: const Text("T2Ti Pegasus PDV - Cadastros"),
         backgroundColor: Colors.black87,
       ),
       // drawer: CommonDrawer(),
@@ -71,14 +73,14 @@ class MenuCadastros extends StatelessWidget {
         child: Column(
           children: <Widget>[
             appBarColumn(context),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             actionMenuGrupoPessoa(),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             actionMenuGrupoGeral(),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             // só apresenta o cadastro da tributação se não for o módulo gratuito
-            Sessao.configuracaoPdv.modulo == 'G' ? SizedBox(height: 1,) : actionMenuGrupoTributacao(), 
-            Sessao.configuracaoPdv.modulo == 'G' ? SizedBox(height: 1,) : SizedBox(height: 20,),
+            Sessao.configuracaoPdv!.modulo == 'G' ? const SizedBox(height: 1,) : actionMenuGrupoTributacao(), 
+            Sessao.configuracaoPdv!.modulo == 'G' ? const SizedBox(height: 1,) : const SizedBox(height: 20,),
           ],
         ),
       );
@@ -90,7 +92,7 @@ class MenuCadastros extends StatelessWidget {
             children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
+                children: const <Widget>[
                   ProfileTile(
                     title: "T2Ti Pegasus PDV",
                     subtitle: "Módulo Cadastros",
@@ -114,7 +116,7 @@ class MenuCadastros extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  MenuTituloGrupoMenuInterno(titulo: "Grupo Pessoa"),
+                  const MenuTituloGrupoMenuInterno(titulo: "Grupo Pessoa"),
                   MenuInternoBotoes(
                     primeiroBotao: BotaoMenu(
                         icon: FontAwesomeIcons.addressCard,
@@ -152,7 +154,7 @@ class MenuCadastros extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  MenuTituloGrupoMenuInterno(titulo: "Grupo Geral"),
+                  const MenuTituloGrupoMenuInterno(titulo: "Grupo Geral"),
                   MenuInternoBotoes(
                     primeiroBotao: BotaoMenu(
                         icon: FontAwesomeIcons.building,
@@ -200,7 +202,7 @@ class MenuCadastros extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  MenuTituloGrupoMenuInterno(titulo: "Cadastros - Tributação"),
+                  const MenuTituloGrupoMenuInterno(titulo: "Cadastros - Tributação"),
                   MenuInternoBotoes(
                     primeiroBotao: BotaoMenu(
                         icon: FontAwesomeIcons.solidUser,

@@ -33,12 +33,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:pegasus_pdv/src/controller/controller.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
@@ -55,13 +56,13 @@ import 'package:pegasus_pdv/src/view/shared/widgets_abas.dart';
 import 'package:pegasus_pdv/src/view/shared/page/lookup_local_page.dart';
 
 class CompraPedidoDetalhePersistePage extends StatefulWidget {
-  final CompraPedidoCabecalho compraPedidoCabecalho;
-  final CompraDetalhe compraDetalhe;
-  final String title;
-  final String operacao;
+  final CompraPedidoCabecalho? compraPedidoCabecalho;
+  final CompraDetalhe? compraDetalhe;
+  final String? title;
+  final String? operacao;
 
   const CompraPedidoDetalhePersistePage(
-      {Key key, this.compraPedidoCabecalho, this.compraDetalhe, this.title, this.operacao})
+      {Key? key, this.compraPedidoCabecalho, this.compraDetalhe, this.title, this.operacao})
       : super(key: key);
 
   @override
@@ -74,8 +75,8 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   bool _formFoiAlterado = false;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -91,9 +92,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
       ),
     };
 
-    if (widget.compraDetalhe.compraPedidoDetalhe == null) {
-      widget.compraDetalhe.compraPedidoDetalhe = CompraPedidoDetalhe(id: null);
-    }
+    widget.compraDetalhe!.compraPedidoDetalhe ??= CompraPedidoDetalhe(id: null);
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -109,19 +108,19 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
   @override
   Widget build(BuildContext context) {
 	final _importaCfopController = TextEditingController();
-	_importaCfopController.text = widget.compraDetalhe.compraPedidoDetalhe?.cfop ?? '';
+	_importaCfopController.text = widget.compraDetalhe!.compraPedidoDetalhe?.cfop as String? ?? '';
 	final _importaProdutoController = TextEditingController();
-	_importaProdutoController.text = widget.compraDetalhe.produto?.nome ?? '';
-  final _quantidadeController = MoneyMaskedTextController(precision: Constantes.decimaisQuantidade, initialValue: widget.compraDetalhe.compraPedidoDetalhe?.quantidade ?? 1);
-	final _valorUnitarioController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.compraDetalhe.compraPedidoDetalhe?.valorUnitario ?? 0);
-	final _valorSubtotalController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.compraDetalhe.compraPedidoDetalhe?.valorSubtotal ?? 0);
-	final _taxaDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.compraDetalhe.compraPedidoDetalhe?.taxaDesconto ?? 0);
-	final _valorDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.compraDetalhe.compraPedidoDetalhe?.valorDesconto ?? 0);
-	final _valorTotalController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.compraDetalhe.compraPedidoDetalhe?.valorTotal ?? 0);
+	_importaProdutoController.text = widget.compraDetalhe!.produto?.nome ?? '';
+  final _quantidadeController = MoneyMaskedTextController(precision: Constantes.decimaisQuantidade, initialValue: widget.compraDetalhe!.compraPedidoDetalhe?.quantidade ?? 1);
+	final _valorUnitarioController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.compraDetalhe!.compraPedidoDetalhe?.valorUnitario ?? 0);
+	final _valorSubtotalController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.compraDetalhe!.compraPedidoDetalhe?.valorSubtotal ?? 0);
+	final _taxaDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.compraDetalhe!.compraPedidoDetalhe?.taxaDesconto ?? 0);
+	final _valorDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.compraDetalhe!.compraPedidoDetalhe?.valorDesconto ?? 0);
+	final _valorTotalController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.compraDetalhe!.compraPedidoDetalhe?.valorTotal ?? 0);
 	final _importaCstIcmsController = TextEditingController();
-	_importaCstIcmsController.text = widget.compraDetalhe.compraPedidoDetalhe?.cst ?? '';
+	_importaCstIcmsController.text = widget.compraDetalhe!.compraPedidoDetalhe?.cst ?? '';
 	final _importaCsosnController = TextEditingController();
-	_importaCsosnController.text = widget.compraDetalhe.compraPedidoDetalhe?.csosn ?? '';
+	_importaCsosnController.text = widget.compraDetalhe!.compraPedidoDetalhe?.csosn ?? '';
 
     return FocusableActionDetector(
       actions: _actionMap,
@@ -132,7 +131,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
           drawerDragStartBehavior: DragStartBehavior.down,
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text(widget.title), 
+            title: Text(widget.title!), 
             actions: widget.operacao == 'I' 
               ? getBotoesAppBarPersistePage(context: context, salvar: _salvar,)
               : getBotoesAppBarPersistePageComExclusao(context: context, salvar: _salvar, excluir: _excluir),
@@ -149,10 +148,10 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                   dragStartBehavior: DragStartBehavior.down,
                   child: BootstrapContainer(
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,                    // children: [
                     children: <Widget>[			  			  
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -162,7 +161,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                               children: <Widget>[
                                 Expanded(
                                   flex: 1,
-                                  child: Container(
+                                  child: SizedBox(
                                     child: TextFormField(
                                       validator: ValidaCampoFormulario.validarObrigatorio,
                                       controller: _importaProdutoController,
@@ -171,7 +170,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                         'Conteúdo para o campo Produto',
                                         'Produto *',
                                         false),
-                                      onSaved: (String value) {
+                                      onSaved: (String? value) {
                                       },
                                       onChanged: (text) {
                                         // widget.compraDetalhe.compraPedidoDetalhe?.produto?.nome = text;
@@ -188,7 +187,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                     icon: ViewUtilLib.getIconBotaoLookup(),
                                     onPressed: () async {
                                       ///chamando o lookup
-                                      Map<String, dynamic> _objetoJsonRetorno =
+                                      Map<String, dynamic>? _objetoJsonRetorno =
                                         await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -208,9 +207,9 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                       if (_objetoJsonRetorno != null) {
                                         if (_objetoJsonRetorno['nome'] != null) {
                                           _importaProdutoController.text = _objetoJsonRetorno['nome'];
-                                          widget.compraDetalhe.produto = Produto(id: _objetoJsonRetorno['id'], nome: _objetoJsonRetorno['nome']);
-                                          widget.compraDetalhe.compraPedidoDetalhe = 
-                                            widget.compraDetalhe.compraPedidoDetalhe.copyWith
+                                          widget.compraDetalhe!.produto = Produto(id: _objetoJsonRetorno['id'], nome: _objetoJsonRetorno['nome']);
+                                          widget.compraDetalhe!.compraPedidoDetalhe = 
+                                            widget.compraDetalhe!.compraPedidoDetalhe!.copyWith
                                             (
                                               idProduto: _objetoJsonRetorno['id'],
                                               quantidade: 1,
@@ -227,14 +226,14 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -244,10 +243,10 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                   '',
                                   'Quantidade',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  widget.compraDetalhe.compraPedidoDetalhe = widget.compraDetalhe.compraPedidoDetalhe.copyWith(quantidade: _quantidadeController.numberValue);
+                                  widget.compraDetalhe!.compraPedidoDetalhe = widget.compraDetalhe!.compraPedidoDetalhe!.copyWith(quantidade: _quantidadeController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
@@ -258,7 +257,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -271,10 +270,10 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                   false,
                                   // cor: ViewUtilLib.getTextFieldReadOnlyColor()
                                   ),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  widget.compraDetalhe.compraPedidoDetalhe = widget.compraDetalhe.compraPedidoDetalhe.copyWith(valorUnitario: _valorUnitarioController.numberValue);
+                                  widget.compraDetalhe!.compraPedidoDetalhe = widget.compraDetalhe!.compraPedidoDetalhe!.copyWith(valorUnitario: _valorUnitarioController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
@@ -284,14 +283,14 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-3',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -303,10 +302,10 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                   'Valor Subtotal',
                                   false,
                                   cor: ViewUtilLib.getTextFieldReadOnlyColor()),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  widget.compraDetalhe.compraPedidoDetalhe = widget.compraDetalhe.compraPedidoDetalhe.copyWith(valorSubtotal: _valorSubtotalController.numberValue);
+                                  widget.compraDetalhe!.compraPedidoDetalhe = widget.compraDetalhe!.compraPedidoDetalhe!.copyWith(valorSubtotal: _valorSubtotalController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                   _formFoiAlterado = true;
                                 },
@@ -316,7 +315,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                           BootstrapCol(
                             sizes: 'col-12 col-md-3',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -326,13 +325,13 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                   '',
                                   'Taxa Desconto',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
                                   if (_taxaDescontoController.numberValue >= 100) {
                                     _taxaDescontoController.updateValue(99.9);
                                   }
-                                  widget.compraDetalhe.compraPedidoDetalhe = widget.compraDetalhe.compraPedidoDetalhe.copyWith(taxaDesconto: _taxaDescontoController.numberValue);
+                                  widget.compraDetalhe!.compraPedidoDetalhe = widget.compraDetalhe!.compraPedidoDetalhe!.copyWith(taxaDesconto: _taxaDescontoController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
@@ -343,7 +342,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                           BootstrapCol(
                             sizes: 'col-12 col-md-3',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -355,10 +354,10 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                   'Valor Desconto',
                                   false,
                                   cor: ViewUtilLib.getTextFieldReadOnlyColor()),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  widget.compraDetalhe.compraPedidoDetalhe = widget.compraDetalhe.compraPedidoDetalhe.copyWith(valorDesconto: _valorDescontoController.numberValue);
+                                  widget.compraDetalhe!.compraPedidoDetalhe = widget.compraDetalhe!.compraPedidoDetalhe!.copyWith(valorDesconto: _valorDescontoController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                   _formFoiAlterado = true;
                                 },
@@ -368,7 +367,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                           BootstrapCol(
                             sizes: 'col-12 col-md-3',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
@@ -380,10 +379,10 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                   'Valor Total',
                                   false,
                                   cor: ViewUtilLib.getTextFieldReadOnlyColor()),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  widget.compraDetalhe.compraPedidoDetalhe = widget.compraDetalhe.compraPedidoDetalhe.copyWith(valorTotal: _valorTotalController.numberValue);
+                                  widget.compraDetalhe!.compraPedidoDetalhe = widget.compraDetalhe!.compraPedidoDetalhe!.copyWith(valorTotal: _valorTotalController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                   _formFoiAlterado = true;
                                 },
@@ -392,7 +391,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -406,7 +405,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                     ],
                   ),
                 ),
@@ -424,7 +423,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
   }
 
   Future<void> _salvar() async {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (!form.validate()) {
       _autoValidate = AutovalidateMode.always;
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
@@ -435,18 +434,21 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
   }
   
   Future<bool> _avisarUsuarioFormAlterado() async {
-    final FormState form = _formKey.currentState;
-    if (form == null || !_formFoiAlterado) return true;
-
-    return await gerarDialogBoxFormAlterado(context);
+    final FormState? form = _formKey.currentState;
+    if (form == null || !_formFoiAlterado) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
   }
 
   _atualizarTotais() {
-    double subTotal = Biblioteca.multiplicarMonetario(widget.compraDetalhe.compraPedidoDetalhe.quantidade, widget.compraDetalhe.compraPedidoDetalhe.valorUnitario);
-    double desconto = Biblioteca.calcularDesconto(widget.compraDetalhe.compraPedidoDetalhe.valorSubtotal, widget.compraDetalhe.compraPedidoDetalhe.taxaDesconto);
+    double subTotal = Biblioteca.multiplicarMonetario(widget.compraDetalhe!.compraPedidoDetalhe!.quantidade, widget.compraDetalhe!.compraPedidoDetalhe!.valorUnitario);
+    double desconto = Biblioteca.calcularDesconto(widget.compraDetalhe!.compraPedidoDetalhe!.valorSubtotal, widget.compraDetalhe!.compraPedidoDetalhe!.taxaDesconto);
     setState(() {
-      widget.compraDetalhe.compraPedidoDetalhe = 
-        widget.compraDetalhe.compraPedidoDetalhe.copyWith(
+      widget.compraDetalhe!.compraPedidoDetalhe = 
+        widget.compraDetalhe!.compraPedidoDetalhe!.copyWith(
           valorSubtotal: subTotal,
           valorDesconto: desconto,
           valorTotal: subTotal - desconto,

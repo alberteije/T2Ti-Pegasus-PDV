@@ -37,17 +37,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'dart:convert';
 
 class NfcePlanoPagamentoModel {
-	int id;
-	DateTime dataSolicitacao;
-	DateTime dataPagamento;
-  String plano;
-  double valor;
-  String statusPagamento;
-  String codigoTransacao;
-  String metodoPagamento;
-  String codigoTipoPagamento;
-	DateTime dataPlanoExpira;
-  String emailPagamento;
+	int? id;
+	DateTime? dataSolicitacao;
+	DateTime? dataPagamento;
+  String? plano;
+  double? valor;
+  String? statusPagamento;
+  String? codigoTransacao;
+  String? metodoPagamento;
+  String? codigoTipoPagamento;
+	DateTime? dataPlanoExpira;
+  String? emailPagamento;
 
 	NfcePlanoPagamentoModel({
 			this.id,
@@ -68,7 +68,7 @@ class NfcePlanoPagamentoModel {
     dataSolicitacao = jsonDados['dataSolicitacao'] != null ? DateTime.tryParse(jsonDados['dataSolicitacao'].toString().substring(0,10)) : null;
     dataPagamento = jsonDados['dataPagamento'] != null ? DateTime.tryParse(jsonDados['dataPagamento'].toString().substring(0,10)) : null;
     plano = jsonDados['plano'];
-    valor = jsonDados['valor'] != null ? jsonDados['valor'].toDouble() : null;
+    valor = jsonDados['valor']?.toDouble();
     statusPagamento = jsonDados['statusPagamento'];
     codigoTransacao = jsonDados['codigoTransacao'];
     metodoPagamento = jsonDados['metodoPagamento'];
@@ -78,9 +78,9 @@ class NfcePlanoPagamentoModel {
 	}
 
 	Map<String, dynamic> get toJson {
-		Map<String, dynamic> jsonDados = Map<String, dynamic>();
+		Map<String, dynamic> jsonDados = <String, dynamic>{};
 
-		jsonDados['id'] = this.id ?? 0;
+		jsonDados['id'] = id ?? 0;
 
     jsonDados['dataSolicitacao'] = dataSolicitacao;
     jsonDados['dataPagamento'] = dataPagamento;

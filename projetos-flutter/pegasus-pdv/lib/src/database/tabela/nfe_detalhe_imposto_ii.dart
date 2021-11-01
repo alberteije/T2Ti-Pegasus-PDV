@@ -37,12 +37,13 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeDetalheImpostoIi")
 class NfeDetalheImpostoIis extends Table {
+  @override
   String get tableName => 'NFE_DETALHE_IMPOSTO_II';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')();
-  RealColumn get valorBcIi => real().named('VALOR_BC_II').nullable()();
-  RealColumn get valorDespesasAduaneiras => real().named('VALOR_DESPESAS_ADUANEIRAS').nullable()();
-  RealColumn get valorImpostoImportacao => real().named('VALOR_IMPOSTO_IMPORTACAO').nullable()();
-  RealColumn get valorIof => real().named('VALOR_IOF').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')() as Column<int>?;
+  RealColumn? get valorBcIi => real().named('VALOR_BC_II').nullable()() as Column<double>?;
+  RealColumn? get valorDespesasAduaneiras => real().named('VALOR_DESPESAS_ADUANEIRAS').nullable()() as Column<double>?;
+  RealColumn? get valorImpostoImportacao => real().named('VALOR_IMPOSTO_IMPORTACAO').nullable()() as Column<double>?;
+  RealColumn? get valorIof => real().named('VALOR_IOF').nullable()() as Column<double>?;
 }

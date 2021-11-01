@@ -37,16 +37,17 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeInformacaoPagamento")
 class NfeInformacaoPagamentos extends Table {
+  @override
   String get tableName => 'NFE_INFORMACAO_PAGAMENTO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')();
-  TextColumn get indicadorPagamento => text().named('INDICADOR_PAGAMENTO').withLength(min: 0, max: 1).nullable()();
-  TextColumn get meioPagamento => text().named('MEIO_PAGAMENTO').withLength(min: 0, max: 2).nullable()();
-  RealColumn get valor => real().named('VALOR').nullable()();
-  TextColumn get tipoIntegracao => text().named('TIPO_INTEGRACAO').withLength(min: 0, max: 1).nullable()();
-  TextColumn get cnpjOperadoraCartao => text().named('CNPJ_OPERADORA_CARTAO').withLength(min: 0, max: 14).nullable()();
-  TextColumn get bandeira => text().named('BANDEIRA').withLength(min: 0, max: 2).nullable()();
-  TextColumn get numeroAutorizacao => text().named('NUMERO_AUTORIZACAO').withLength(min: 0, max: 20).nullable()();
-  RealColumn get troco => real().named('TROCO').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')();
+  TextColumn? get indicadorPagamento => text().named('INDICADOR_PAGAMENTO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get meioPagamento => text().named('MEIO_PAGAMENTO').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  RealColumn? get valor => real().named('VALOR').nullable()() as Column<double>?;
+  TextColumn? get tipoIntegracao => text().named('TIPO_INTEGRACAO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get cnpjOperadoraCartao => text().named('CNPJ_OPERADORA_CARTAO').withLength(min: 0, max: 14).nullable()() as Column<String>?;
+  TextColumn? get bandeira => text().named('BANDEIRA').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  TextColumn? get numeroAutorizacao => text().named('NUMERO_AUTORIZACAO').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  RealColumn? get troco => real().named('TROCO').nullable()() as Column<double>?;
 }

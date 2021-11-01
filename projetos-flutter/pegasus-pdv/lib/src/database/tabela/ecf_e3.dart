@@ -37,15 +37,16 @@ import 'package:moor/moor.dart';
 
 @DataClassName("EcfE3")
 class EcfE3s extends Table {
+  @override
   String get tableName => 'ECF_E3';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get serieEcf => text().named('SERIE_ECF').withLength(min: 0, max: 20).nullable()();
-  TextColumn get mfAdicional => text().named('MF_ADICIONAL').withLength(min: 0, max: 1).nullable()();
-  TextColumn get tipoEcf => text().named('TIPO_ECF').withLength(min: 0, max: 7).nullable()();
-  TextColumn get marcaEcf => text().named('MARCA_ECF').withLength(min: 0, max: 20).nullable()();
-  TextColumn get modeloEcf => text().named('MODELO_ECF').withLength(min: 0, max: 20).nullable()();
-  DateTimeColumn get dataEstoque => dateTime().named('DATA_ESTOQUE').nullable()();
-  TextColumn get horaEstoque => text().named('HORA_ESTOQUE').withLength(min: 0, max: 8).nullable()();
-  TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  TextColumn? get serieEcf => text().named('SERIE_ECF').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  TextColumn? get mfAdicional => text().named('MF_ADICIONAL').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get tipoEcf => text().named('TIPO_ECF').withLength(min: 0, max: 7).nullable()() as Column<String>?;
+  TextColumn? get marcaEcf => text().named('MARCA_ECF').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  TextColumn? get modeloEcf => text().named('MODELO_ECF').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  DateTimeColumn? get dataEstoque => dateTime().named('DATA_ESTOQUE').nullable()() as Column<DateTime>?;
+  TextColumn? get horaEstoque => text().named('HORA_ESTOQUE').withLength(min: 0, max: 8).nullable()() as Column<String>?;
+  TextColumn? get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()() as Column<String>?;
 }

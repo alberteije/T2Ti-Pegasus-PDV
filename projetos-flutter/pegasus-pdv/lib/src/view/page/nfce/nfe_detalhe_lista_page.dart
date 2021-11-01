@@ -34,7 +34,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
@@ -44,18 +43,18 @@ import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
 
 class NfeDetalheListaPage extends StatefulWidget {
-  final NfeCabecalhoMontado nfeCabecalhoMontado;
-  final FocusNode foco;
+  final NfeCabecalhoMontado? nfeCabecalhoMontado;
+  final FocusNode? foco;
 
-  const NfeDetalheListaPage({Key key, this.nfeCabecalhoMontado, this.foco}) : super(key: key);
+  const NfeDetalheListaPage({Key? key, this.nfeCabecalhoMontado, this.foco}) : super(key: key);
 
   @override
   _NfeDetalheListaPageState createState() => _NfeDetalheListaPageState();
 }
 
 class _NfeDetalheListaPageState extends State<NfeDetalheListaPage> {
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -117,34 +116,34 @@ class _NfeDetalheListaPageState extends State<NfeDetalheListaPage> {
   List<DataColumn> _getColumns() {
     List<DataColumn> lista = [];
     // lista.add(DataColumn(numeric: true, label: Text('Número do Item')));
-    lista.add(DataColumn(label: Text('Produto')));
-    lista.add(DataColumn(label: Text('Código do Produto')));
-    lista.add(DataColumn(label: Text('GTIN')));
-    lista.add(DataColumn(label: Text('Unidade')));
-    lista.add(DataColumn(numeric: true, label: Text('Quantidade')));
-    lista.add(DataColumn(numeric: true, label: Text('Valor Unitário')));
-    lista.add(DataColumn(numeric: true, label: Text('Valor Desconto')));
-    lista.add(DataColumn(numeric: true, label: Text('Valor Subtotal')));
-    lista.add(DataColumn(numeric: true, label: Text('Valor Total')));
+    lista.add(const DataColumn(label: Text('Produto')));
+    lista.add(const DataColumn(label: Text('Código do Produto')));
+    lista.add(const DataColumn(label: Text('GTIN')));
+    lista.add(const DataColumn(label: Text('Unidade')));
+    lista.add(const DataColumn(numeric: true, label: Text('Quantidade')));
+    lista.add(const DataColumn(numeric: true, label: Text('Valor Unitário')));
+    lista.add(const DataColumn(numeric: true, label: Text('Valor Desconto')));
+    lista.add(const DataColumn(numeric: true, label: Text('Valor Subtotal')));
+    lista.add(const DataColumn(numeric: true, label: Text('Valor Total')));
     return lista;
   }
 
   List<DataRow> _getRows() {
     List<DataRow> lista = [];
-    for (var nfeDetalheMontado in widget.nfeCabecalhoMontado.listaNfeDetalheMontado) {
+    for (var nfeDetalheMontado in widget.nfeCabecalhoMontado!.listaNfeDetalheMontado!) {
       List<DataCell> _celulas = [];
 
       _celulas = [
         // DataCell(Text('${nfeDetalheMontado.nfeDetalhe.numeroItem ?? ''}'), ),
-        DataCell(Text('${nfeDetalheMontado.nfeDetalhe.nomeProduto ?? ''}'), ),
-        DataCell(Text('${nfeDetalheMontado.nfeDetalhe.codigoProduto ?? ''}'), ),
-        DataCell(Text('${nfeDetalheMontado.nfeDetalhe.gtin ?? ''}'), ),
-        DataCell(Text('${nfeDetalheMontado.nfeDetalhe.unidadeComercial ?? ''}'), ),
-        DataCell(Text('${Biblioteca.formatarValorDecimal(nfeDetalheMontado.nfeDetalhe.quantidadeComercial)}'), ),
-        DataCell(Text('${Biblioteca.formatarValorDecimal(nfeDetalheMontado.nfeDetalhe.valorUnitarioComercial)}'), ),
-        DataCell(Text('${Biblioteca.formatarValorDecimal(nfeDetalheMontado.nfeDetalhe.valorDesconto)}'), ),
-        DataCell(Text('${Biblioteca.formatarValorDecimal(nfeDetalheMontado.nfeDetalhe.valorSubtotal)}'), ),
-        DataCell(Text('${Biblioteca.formatarValorDecimal(nfeDetalheMontado.nfeDetalhe.valorTotal)}'),),
+        DataCell(Text(nfeDetalheMontado.nfeDetalhe!.nomeProduto ?? ''), ),
+        DataCell(Text(nfeDetalheMontado.nfeDetalhe!.codigoProduto ?? ''), ),
+        DataCell(Text(nfeDetalheMontado.nfeDetalhe!.gtin ?? ''), ),
+        DataCell(Text(nfeDetalheMontado.nfeDetalhe!.unidadeComercial ?? ''), ),
+        DataCell(Text(Biblioteca.formatarValorDecimal(nfeDetalheMontado.nfeDetalhe!.quantidadeComercial)), ),
+        DataCell(Text(Biblioteca.formatarValorDecimal(nfeDetalheMontado.nfeDetalhe!.valorUnitarioComercial)), ),
+        DataCell(Text(Biblioteca.formatarValorDecimal(nfeDetalheMontado.nfeDetalhe!.valorDesconto)), ),
+        DataCell(Text(Biblioteca.formatarValorDecimal(nfeDetalheMontado.nfeDetalhe!.valorSubtotal)), ),
+        DataCell(Text(Biblioteca.formatarValorDecimal(nfeDetalheMontado.nfeDetalhe!.valorTotal)),),
       ];
 
       lista.add(DataRow(cells: _celulas));

@@ -37,19 +37,20 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeDeclaracaoImportacao")
 class NfeDeclaracaoImportacaos extends Table {
+  @override
   String get tableName => 'NFE_DECLARACAO_IMPORTACAO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')();
-  TextColumn get numeroDocumento => text().named('NUMERO_DOCUMENTO').withLength(min: 0, max: 12).nullable()();
-  DateTimeColumn get dataRegistro => dateTime().named('DATA_REGISTRO').nullable()();
-  TextColumn get localDesembaraco => text().named('LOCAL_DESEMBARACO').withLength(min: 0, max: 60).nullable()();
-  TextColumn get ufDesembaraco => text().named('UF_DESEMBARACO').withLength(min: 0, max: 2).nullable()();
-  DateTimeColumn get dataDesembaraco => dateTime().named('DATA_DESEMBARACO').nullable()();
-  TextColumn get viaTransporte => text().named('VIA_TRANSPORTE').withLength(min: 0, max: 1).nullable()();
-  RealColumn get valorAfrmm => real().named('VALOR_AFRMM').nullable()();
-  TextColumn get formaIntermediacao => text().named('FORMA_INTERMEDIACAO').withLength(min: 0, max: 1).nullable()();
-  TextColumn get cnpj => text().named('CNPJ').withLength(min: 0, max: 14).nullable()();
-  TextColumn get ufTerceiro => text().named('UF_TERCEIRO').withLength(min: 0, max: 2).nullable()();
-  TextColumn get codigoExportador => text().named('CODIGO_EXPORTADOR').withLength(min: 0, max: 60).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeDetalhe => integer().named('ID_NFE_DETALHE').nullable().customConstraint('NULLABLE REFERENCES NFE_DETALHE(ID)')() as Column<int>?;
+  TextColumn? get numeroDocumento => text().named('NUMERO_DOCUMENTO').withLength(min: 0, max: 12).nullable()() as Column<String>?;
+  DateTimeColumn? get dataRegistro => dateTime().named('DATA_REGISTRO').nullable()() as Column<DateTime>?;
+  TextColumn? get localDesembaraco => text().named('LOCAL_DESEMBARACO').withLength(min: 0, max: 60).nullable()() as Column<String>?;
+  TextColumn? get ufDesembaraco => text().named('UF_DESEMBARACO').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  DateTimeColumn? get dataDesembaraco => dateTime().named('DATA_DESEMBARACO').nullable()() as Column<DateTime>?;
+  TextColumn? get viaTransporte => text().named('VIA_TRANSPORTE').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  RealColumn? get valorAfrmm => real().named('VALOR_AFRMM').nullable()() as Column<double>?;
+  TextColumn? get formaIntermediacao => text().named('FORMA_INTERMEDIACAO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get cnpj => text().named('CNPJ').withLength(min: 0, max: 14).nullable()() as Column<String>?;
+  TextColumn? get ufTerceiro => text().named('UF_TERCEIRO').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  TextColumn? get codigoExportador => text().named('CODIGO_EXPORTADOR').withLength(min: 0, max: 60).nullable()() as Column<String>?;
 }

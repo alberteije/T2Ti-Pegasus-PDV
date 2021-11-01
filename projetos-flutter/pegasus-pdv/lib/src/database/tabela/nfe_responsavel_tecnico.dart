@@ -37,14 +37,15 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeResponsavelTecnico")
 class NfeResponsavelTecnicos extends Table {
+  @override
   String get tableName => 'NFE_RESPONSAVEL_TECNICO';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')();
-  TextColumn get cnpj => text().named('CNPJ').withLength(min: 0, max: 14).nullable()();
-  TextColumn get contato => text().named('CONTATO').withLength(min: 0, max: 60).nullable()();
-  TextColumn get email => text().named('EMAIL').withLength(min: 0, max: 60).nullable()();
-  TextColumn get telefone => text().named('TELEFONE').withLength(min: 0, max: 14).nullable()();
-  TextColumn get identificadorCsrt => text().named('IDENTIFICADOR_CSRT').withLength(min: 0, max: 2).nullable()();
-  TextColumn get hashCsrt => text().named('HASH_CSRT').withLength(min: 0, max: 28).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')() as Column<int>?;
+  TextColumn? get cnpj => text().named('CNPJ').withLength(min: 0, max: 14).nullable()() as Column<String>?;
+  TextColumn? get contato => text().named('CONTATO').withLength(min: 0, max: 60).nullable()() as Column<String>?;
+  TextColumn? get email => text().named('EMAIL').withLength(min: 0, max: 60).nullable()() as Column<String>?;
+  TextColumn? get telefone => text().named('TELEFONE').withLength(min: 0, max: 14).nullable()() as Column<String>?;
+  TextColumn? get identificadorCsrt => text().named('IDENTIFICADOR_CSRT').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  TextColumn? get hashCsrt => text().named('HASH_CSRT').withLength(min: 0, max: 28).nullable()() as Column<String>?;
 }

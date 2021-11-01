@@ -59,7 +59,7 @@ class EcfR01Dao extends DatabaseAccessor<AppDatabase> with _$EcfR01DaoMixin {
 
   Stream<List<EcfR01>> observarLista() => select(ecfR01s).watch();
 
-  Future<EcfR01> consultarObjeto(int pId) {
+  Future<EcfR01?> consultarObjeto(int pId) {
     return (select(ecfR01s)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

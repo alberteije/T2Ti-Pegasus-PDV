@@ -46,16 +46,16 @@ part 'pdv_tipo_pagamento_dao.g.dart';
 class PdvTipoPagamentoDao extends DatabaseAccessor<AppDatabase> with _$PdvTipoPagamentoDaoMixin {
   final AppDatabase db;
 
-  List<PdvTipoPagamento> listaPdvTipoPagamento; // será usada para popular a grid na janela do pdvTipoPagamento
+  List<PdvTipoPagamento>? listaPdvTipoPagamento; // será usada para popular a grid na janela do pdvTipoPagamento
 
   PdvTipoPagamentoDao(this.db) : super(db);
 
-  Future<List<PdvTipoPagamento>> consultarLista() async {
+  Future<List<PdvTipoPagamento>?> consultarLista() async {
     listaPdvTipoPagamento = await select(pdvTipoPagamentos).get();
     return listaPdvTipoPagamento;
   }
 
-  Future<List<PdvTipoPagamento>> consultarListaFiltro(String campo, String valor) async {
+  Future<List<PdvTipoPagamento>?> consultarListaFiltro(String campo, String valor) async {
     listaPdvTipoPagamento = await (customSelect("SELECT * FROM PDV_TIPO_PAGAMENTO WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { pdvTipoPagamentos }).map((row) {
                                   return PdvTipoPagamento.fromData(row.data, db);  
@@ -63,7 +63,7 @@ class PdvTipoPagamentoDao extends DatabaseAccessor<AppDatabase> with _$PdvTipoPa
     return listaPdvTipoPagamento;
   }
 
-  Future<PdvTipoPagamento> consultarObjetoFiltro(String campo, String valor) async {
+  Future<PdvTipoPagamento?> consultarObjetoFiltro(String campo, String valor) async {
     return (customSelect("SELECT * FROM PDV_TIPO_PAGAMENTO WHERE " + campo + " = '" + valor + "'", 
                                 readsFrom: { pdvTipoPagamentos }).map((row) {
                                   return PdvTipoPagamento.fromData(row.data, db);  
@@ -72,26 +72,26 @@ class PdvTipoPagamentoDao extends DatabaseAccessor<AppDatabase> with _$PdvTipoPa
 
   Stream<List<PdvTipoPagamento>> observarLista() => select(pdvTipoPagamentos).watch();
 
-  Future<PdvTipoPagamento> consultarObjeto(int pId) {
+  Future<PdvTipoPagamento?> consultarObjeto(int pId) {
     return (select(pdvTipoPagamentos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<PdvTipoPagamento> pObjeto) {
+  Future<int> inserir(Insertable<PdvTipoPagamento>? pObjeto) {
     return transaction(() async {
-      final idInserido = await into(pdvTipoPagamentos).insert(pObjeto);
+      final idInserido = await into(pdvTipoPagamentos).insert(pObjeto!);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<PdvTipoPagamento> pObjeto) {
+  Future<bool> alterar(Insertable<PdvTipoPagamento>? pObjeto) {
     return transaction(() async {
-      return update(pdvTipoPagamentos).replace(pObjeto);
+      return update(pdvTipoPagamentos).replace(pObjeto!);
     });    
   } 
 
-  Future<int> excluir(Insertable<PdvTipoPagamento> pObjeto) {
+  Future<int> excluir(Insertable<PdvTipoPagamento>? pObjeto) {
     return transaction(() async {
-      return delete(pdvTipoPagamentos).delete(pObjeto);
+      return delete(pdvTipoPagamentos).delete(pObjeto!);
     });    
   }
 

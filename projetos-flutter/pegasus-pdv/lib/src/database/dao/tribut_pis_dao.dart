@@ -59,7 +59,7 @@ class TributPisDao extends DatabaseAccessor<AppDatabase> with _$TributPisDaoMixi
 
   Stream<List<TributPis>> observarLista() => select(tributPiss).watch();
 
-  Future<TributPis> consultarObjeto(int pId) {
+  Future<TributPis?> consultarObjeto(int pId) {
     return (select(tributPiss)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

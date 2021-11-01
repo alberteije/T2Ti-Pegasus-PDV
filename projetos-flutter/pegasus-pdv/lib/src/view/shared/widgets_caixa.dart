@@ -36,9 +36,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:flutter/material.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 
-Container getItemResumoValor({String descricao, String valor, Color corFundo,}) {
+Container getItemResumoValor({required String descricao, required String valor, Color? corFundo,}) {
   return Container(
-    padding: EdgeInsets.only(top: 0.0, left: 10.0, right: 10.0, bottom: 3.0),
+    padding: const EdgeInsets.only(top: 0.0, left: 10.0, right: 10.0, bottom: 3.0),
     child: Card(
       color: corFundo,
       elevation: 3.0,
@@ -46,12 +46,12 @@ Container getItemResumoValor({String descricao, String valor, Color corFundo,}) 
         padding: const EdgeInsets.all(5.0),
         child: Row(
           children: <Widget>[
-            Text(descricao, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-            SizedBox(
+            Text(descricao, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+            const SizedBox(
               width: 5,
             ),
-            Spacer(),
-            Text(valor, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)
+            const Spacer(),
+            Text(valor, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)
           ],
         ),
       ),
@@ -59,11 +59,11 @@ Container getItemResumoValor({String descricao, String valor, Color corFundo,}) 
   );
 }
 
-Card getCardValorUnitario({BuildContext context, double valorUnitario}) {
+Card getCardValorUnitario({required BuildContext context, double? valorUnitario}) {
   return Card(
     elevation: 0.5,
-    child: Container(
-      width: Biblioteca.isTelaPequena(context) ? 60 : 120,
+    child: SizedBox(
+      width: Biblioteca.isTelaPequena(context)! ? 60 : 120,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Text(
@@ -71,7 +71,7 @@ Card getCardValorUnitario({BuildContext context, double valorUnitario}) {
           textAlign: TextAlign.right,
           style: TextStyle(
             fontWeight: FontWeight.w600, 
-            fontSize: Biblioteca.isTelaPequena(context) ? 11.0 : 14.0,
+            fontSize: Biblioteca.isTelaPequena(context)! ? 11.0 : 14.0,
           ),
         )
       ),
@@ -79,10 +79,10 @@ Card getCardValorUnitario({BuildContext context, double valorUnitario}) {
   );
 }
 
-Card getCardQuantidade({BuildContext context, double quantidade}) {
+Card getCardQuantidade({required BuildContext context, double? quantidade}) {
   return Card(
-    child: Container(
-      width: Biblioteca.isTelaPequena(context) ? 50 : 100,
+    child: SizedBox(
+      width: Biblioteca.isTelaPequena(context)! ? 50 : 100,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Text(
@@ -90,7 +90,7 @@ Card getCardQuantidade({BuildContext context, double quantidade}) {
           textAlign: TextAlign.right,
           style: TextStyle(
             fontWeight: FontWeight.w600, 
-            fontSize: Biblioteca.isTelaPequena(context) ? 11.0 : 14.0,
+            fontSize: Biblioteca.isTelaPequena(context)! ? 11.0 : 14.0,
           ),
         )
       ),
@@ -98,11 +98,11 @@ Card getCardQuantidade({BuildContext context, double quantidade}) {
   );
 }
 
-Card getCardValorTotal({BuildContext context, double valorTotal}) {
+Card getCardValorTotal({required BuildContext context, double? valorTotal}) {
   return Card(
     elevation: 0.5,
-    child: Container(
-      width: Biblioteca.isTelaPequena(context) ? 80 : 120,
+    child: SizedBox(
+      width: Biblioteca.isTelaPequena(context)! ? 80 : 120,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Text(
@@ -110,7 +110,7 @@ Card getCardValorTotal({BuildContext context, double valorTotal}) {
           textAlign: TextAlign.right,
           style: TextStyle(
             fontWeight: FontWeight.w800, 
-            fontSize: Biblioteca.isTelaPequena(context) ? 13.0 : 16.0,
+            fontSize: Biblioteca.isTelaPequena(context)! ? 13.0 : 16.0,
           ),
         ),
       ),

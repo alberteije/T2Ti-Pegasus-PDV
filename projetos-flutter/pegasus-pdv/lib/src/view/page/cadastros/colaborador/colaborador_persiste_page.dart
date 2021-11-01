@@ -33,10 +33,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 
@@ -50,11 +52,11 @@ import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 
 class ColaboradorPersistePage extends StatefulWidget {
-  final Colaborador colaborador;
-  final String title;
-  final String operacao;
+  final Colaborador? colaborador;
+  final String? title;
+  final String? operacao;
 
-  const ColaboradorPersistePage({Key key, this.colaborador, this.title, this.operacao})
+  const ColaboradorPersistePage({Key? key, this.colaborador, this.title, this.operacao})
       : super(key: key);
 
   @override
@@ -67,11 +69,11 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   bool _formFoiAlterado = false;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
 
-  Colaborador colaborador;
+  Colaborador? colaborador;
 
   @override
   void initState() {
@@ -129,7 +131,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
         child: Scaffold(drawerDragStartBehavior: DragStartBehavior.down,
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text(widget.title), 
+            title: Text(widget.title!), 
             actions: widget.operacao == 'I' 
               ? getBotoesAppBarPersistePage(context: context, salvar: _salvar,)
               : getBotoesAppBarPersistePageComExclusao(context: context, salvar: _salvar, excluir: _excluir),
@@ -146,17 +148,17 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                   dragStartBehavior: DragStartBehavior.down,
                   child: BootstrapContainer(
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,                    // children: [
                     children: <Widget>[			  			  
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 focusNode: _foco,
                                 validator: ValidaCampoFormulario.validarObrigatorio,
@@ -167,10 +169,10 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                                   'Conteúdo para o campo Nome',
                                   'Nome',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  colaborador = colaborador.copyWith(nome: text);
+                                  colaborador = colaborador!.copyWith(nome: text);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -179,7 +181,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 14,
                                 keyboardType: TextInputType.number,
@@ -188,10 +190,10 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                                   'Conteúdo para o campo Cpf',
                                   'Cpf',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  colaborador = colaborador.copyWith(cpf: Biblioteca.removerMascara(text));
+                                  colaborador = colaborador!.copyWith(cpf: Biblioteca.removerMascara(text));
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -199,14 +201,14 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 14,
                                 keyboardType: TextInputType.number,
@@ -215,10 +217,10 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                                   'Conteúdo para o campo Telefone',
                                   'Telefone',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  colaborador = colaborador.copyWith(telefone: Biblioteca.removerMascara(text));
+                                  colaborador = colaborador!.copyWith(telefone: Biblioteca.removerMascara(text));
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -227,7 +229,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 maxLength: 14,
                                 keyboardType: TextInputType.number,
@@ -236,10 +238,10 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                                   'Conteúdo para o campo Celular',
                                   'Celular',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  colaborador = colaborador.copyWith(celular: Biblioteca.removerMascara(text));
+                                  colaborador = colaborador!.copyWith(celular: Biblioteca.removerMascara(text));
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -247,7 +249,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -262,24 +264,24 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                                 'Conteúdo para o campo Email',
                                 'Email',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                colaborador = colaborador.copyWith(email: text);
+                                colaborador = colaborador!.copyWith(email: text);
                                 _formFoiAlterado = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 textAlign: TextAlign.end,
@@ -288,10 +290,10 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                                   'Conteúdo para o campo Comissao Vista',
                                   'Comissao Vista',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  colaborador = colaborador.copyWith(comissaoVista: _comissaoVistaController.numberValue);
+                                  colaborador = colaborador!.copyWith(comissaoVista: _comissaoVistaController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -300,7 +302,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12 col-md-6',
                             child: Padding(
-                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context),
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 textAlign: TextAlign.end,
@@ -309,10 +311,10 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                                   'Conteúdo para o campo Comissao Prazo',
                                   'Comissao Prazo',
                                   false),
-                                onSaved: (String value) {
+                                onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  colaborador = colaborador.copyWith(comissaoPrazo: _comissaoPrazoController.numberValue);
+                                  colaborador = colaborador!.copyWith(comissaoPrazo: _comissaoPrazoController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -320,7 +322,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -334,7 +336,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                     ],        
                   ),
                 ),
@@ -347,7 +349,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
   }
 
   Future<void> _salvar() async {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (!form.validate()) {
       _autoValidate = AutovalidateMode.always;
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
@@ -365,10 +367,13 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
   }
 
   Future<bool> _avisarUsuarioFormAlterado() async {
-    final FormState form = _formKey.currentState;
-    if (form == null || !_formFoiAlterado) return true;
-
-    return await gerarDialogBoxFormAlterado(context);
+    final FormState? form = _formKey.currentState;
+    if (form == null || !_formFoiAlterado) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
   }
 
   void _excluir() {

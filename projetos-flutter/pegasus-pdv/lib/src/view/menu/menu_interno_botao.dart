@@ -39,28 +39,30 @@ import 'package:flutter/material.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 
 class MenuInternoBotao extends StatelessWidget {
-  final label;
-  final IconData icon;
-  final iconColor;
-  final onPressed;
-  final circleColor;
-  final isCircleEnabled;
-  final betweenHeight;
-  final String rota;
+  final String? label;
+  final IconData? icon;
+  final Color iconColor;
+  final Function? onPressed;
+  final Color? circleColor;
+  final bool isCircleEnabled;
+  final double betweenHeight;
+  final String? rota;
 
-  MenuInternoBotao(
-      {this.label,
+  // ignore: use_key_in_widget_constructors
+  const MenuInternoBotao(
+      {Key? key,
+      this.label,
       this.icon,
       this.onPressed,
       this.iconColor = Colors.white,
       this.circleColor,
       this.isCircleEnabled = true,
       this.rota,
-      this.betweenHeight = 5.0});
+      this.betweenHeight = 5.0}): super(key: key);
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => abrirJanela(context, this.rota),
+      onTap: () => abrirJanela(context, rota),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -84,9 +86,9 @@ class MenuInternoBotao extends StatelessWidget {
             height: betweenHeight,
           ),
           Text(
-            label,
+            label!,
             textAlign: TextAlign.center,
-            style: TextStyle(fontFamily: Constantes.ralewayFont),
+            style: const TextStyle(fontFamily: Constantes.ralewayFont),
           )
         ],
       ),
@@ -94,7 +96,7 @@ class MenuInternoBotao extends StatelessWidget {
   }
 }
 
-abrirJanela(BuildContext context, String rota) {
+abrirJanela(BuildContext context, String? rota) {
   if (rota != '' && rota != null) {
     Navigator.pushNamed(
       context,

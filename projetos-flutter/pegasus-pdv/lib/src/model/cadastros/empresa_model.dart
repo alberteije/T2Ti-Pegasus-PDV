@@ -40,35 +40,35 @@ import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 
 class EmpresaModel {
-  int id;
-  String razaoSocial;
-  String nomeFantasia;
-  String cnpj;
-  String inscricaoEstadual;
-  String inscricaoMunicipal;
-  String tipoRegime;
-  String crt;
-  DateTime dataConstituicao;
-  String tipo;		
-  String email;
-  String logradouro;
-  String numero;
-  String complemento;
-  String cep;
-  String bairro;
-  String cidade;
-  String uf;
-  String fone;
-  String contato;
-  int codigoIbgeCidade;
-  int codigoIbgeUf;
-  String logotipo;
-  String registrado;
-  String naturezaJuridica;
-  String simei;
-  String emailPagamento;
-  DateTime dataRegistro;
-  String horaRegistro;
+  int? id;
+  String? razaoSocial;
+  String? nomeFantasia;
+  String? cnpj;
+  String? inscricaoEstadual;
+  String? inscricaoMunicipal;
+  String? tipoRegime;
+  String? crt;
+  DateTime? dataConstituicao;
+  String? tipo;		
+  String? email;
+  String? logradouro;
+  String? numero;
+  String? complemento;
+  String? cep;
+  String? bairro;
+  String? cidade;
+  String? uf;
+  String? fone;
+  String? contato;
+  int? codigoIbgeCidade;
+  int? codigoIbgeUf;
+  String? logotipo;
+  String? registrado;
+  String? naturezaJuridica;
+  String? simei;
+  String? emailPagamento;
+  DateTime? dataRegistro;
+  String? horaRegistro;
 
 	EmpresaModel({
 		this.id,
@@ -103,34 +103,34 @@ class EmpresaModel {
 	});
 
   EmpresaModel.fromDB(Empresa empresa) {
-		this.razaoSocial = empresa.razaoSocial;
-		this.nomeFantasia = empresa.nomeFantasia;
-		this.cnpj = empresa.cnpj;
-		this.inscricaoEstadual = empresa.inscricaoEstadual;
-		this.inscricaoMunicipal = empresa.inscricaoMunicipal;
-		this.tipoRegime = empresa.tipoRegime;
-		this.crt = empresa.crt;
-		this.dataConstituicao = empresa.dataConstituicao;
-		this.tipo = empresa.tipo;		
-    this.email = empresa.email;
-		this.logradouro = empresa.logradouro;
-		this.numero = empresa.numero;
-		this.complemento = empresa.complemento;
-		this.cep = empresa.cep;
-		this.bairro = empresa.bairro;
-		this.cidade = empresa.cidade;
-		this.uf = empresa.uf;
-		this.fone = empresa.fone;
-		this.contato = empresa.contato;
-		this.codigoIbgeCidade = empresa.codigoIbgeCidade;
-		this.codigoIbgeUf = empresa.codigoIbgeUf;
-		this.logotipo = empresa.logotipo.toString();
-		this.registrado = empresa.registrado == true ? 'S' : 'N';
-		this.naturezaJuridica = empresa.naturezaJuridica;
-		this.simei = empresa.simei == true ? 'S' : 'N';
-		this.emailPagamento = empresa.emailPagamento;
-    this.dataRegistro = empresa.dataRegistro;
-    this.horaRegistro = empresa.horaRegistro;
+		razaoSocial = empresa.razaoSocial;
+		nomeFantasia = empresa.nomeFantasia;
+		cnpj = empresa.cnpj;
+		inscricaoEstadual = empresa.inscricaoEstadual;
+		inscricaoMunicipal = empresa.inscricaoMunicipal;
+		tipoRegime = empresa.tipoRegime;
+		crt = empresa.crt;
+		dataConstituicao = empresa.dataConstituicao;
+		tipo = empresa.tipo;		
+    email = empresa.email;
+		logradouro = empresa.logradouro;
+		numero = empresa.numero;
+		complemento = empresa.complemento;
+		cep = empresa.cep;
+		bairro = empresa.bairro;
+		cidade = empresa.cidade;
+		uf = empresa.uf;
+		fone = empresa.fone;
+		contato = empresa.contato;
+		codigoIbgeCidade = empresa.codigoIbgeCidade;
+		codigoIbgeUf = empresa.codigoIbgeUf;
+		logotipo = empresa.logotipo.toString();
+		registrado = empresa.registrado == true ? 'S' : 'N';
+		naturezaJuridica = empresa.naturezaJuridica;
+		simei = empresa.simei == true ? 'S' : 'N';
+		emailPagamento = empresa.emailPagamento;
+    dataRegistro = empresa.dataRegistro;
+    horaRegistro = empresa.horaRegistro;
   }
 
 	EmpresaModel.fromJson(Map<String, dynamic> jsonDados) {
@@ -166,81 +166,73 @@ class EmpresaModel {
 	}
 
 	Map<String, dynamic> get toJson {
-		Map<String, dynamic> jsonDados = Map<String, dynamic>();
+		Map<String, dynamic> jsonDados = <String, dynamic>{};
 
-		jsonDados['id'] = this.id ?? 0;
-		jsonDados['razaoSocial'] = this.razaoSocial;
-		jsonDados['nomeFantasia'] = this.nomeFantasia;
-		jsonDados['cnpj'] = Biblioteca.removerMascara(this.cnpj);
-		jsonDados['inscricaoEstadual'] = this.inscricaoEstadual;
-		jsonDados['inscricaoMunicipal'] = this.inscricaoMunicipal;
-		jsonDados['tipoRegime'] = setTipoRegime(this.tipoRegime);
-		jsonDados['crt'] = setCrt(this.crt);
-		jsonDados['dataConstituicao'] = this.dataConstituicao != null ? DateFormat('yyyy-MM-ddT00:00:00').format(this.dataConstituicao) : null;
-		jsonDados['tipo'] = setTipo(this.tipo);
-		jsonDados['email'] = this.email;
-		jsonDados['logradouro'] = this.logradouro;
-		jsonDados['numero'] = this.numero;
-		jsonDados['complemento'] = this.complemento;
-		jsonDados['cep'] = Biblioteca.removerMascara(this.cep);
-		jsonDados['bairro'] = this.bairro;
-		jsonDados['cidade'] = this.cidade;
-		jsonDados['uf'] = this.uf;
-		jsonDados['fone'] = this.fone;
-		jsonDados['contato'] = this.contato;
-		jsonDados['codigoIbgeCidade'] = this.codigoIbgeCidade ?? 0;
-		jsonDados['codigoIbgeUf'] = this.codigoIbgeUf ?? 0;
-		jsonDados['logotipo'] = this.logotipo;
-		jsonDados['registrado'] = this.registrado;
+		jsonDados['id'] = id ?? 0;
+		jsonDados['razaoSocial'] = razaoSocial;
+		jsonDados['nomeFantasia'] = nomeFantasia;
+		jsonDados['cnpj'] = Biblioteca.removerMascara(cnpj);
+		jsonDados['inscricaoEstadual'] = inscricaoEstadual;
+		jsonDados['inscricaoMunicipal'] = inscricaoMunicipal;
+		jsonDados['tipoRegime'] = setTipoRegime(tipoRegime);
+		jsonDados['crt'] = setCrt(crt);
+		jsonDados['dataConstituicao'] = dataConstituicao != null ? DateFormat('yyyy-MM-ddT00:00:00').format(dataConstituicao!) : null;
+		jsonDados['tipo'] = setTipo(tipo);
+		jsonDados['email'] = email;
+		jsonDados['logradouro'] = logradouro;
+		jsonDados['numero'] = numero;
+		jsonDados['complemento'] = complemento;
+		jsonDados['cep'] = Biblioteca.removerMascara(cep);
+		jsonDados['bairro'] = bairro;
+		jsonDados['cidade'] = cidade;
+		jsonDados['uf'] = uf;
+		jsonDados['fone'] = fone;
+		jsonDados['contato'] = contato;
+		jsonDados['codigoIbgeCidade'] = codigoIbgeCidade ?? 0;
+		jsonDados['codigoIbgeUf'] = codigoIbgeUf ?? 0;
+		jsonDados['logotipo'] = logotipo;
+		jsonDados['registrado'] = registrado;
 		jsonDados['naturezaJuridica'] = naturezaJuridica;
 		jsonDados['simei'] = simei;
 		jsonDados['emailPagamento'] = emailPagamento;
-		jsonDados['dataRegistro'] = this.dataRegistro != null ? DateFormat('yyyy-MM-ddT00:00:00').format(this.dataRegistro) : null;
+		jsonDados['dataRegistro'] = dataRegistro != null ? DateFormat('yyyy-MM-ddT00:00:00').format(dataRegistro!) : null;
 		jsonDados['horaRegistro'] = horaRegistro;
 
 		return jsonDados;
 	}
 
-  setTipoRegime(String tipoRegime) {
+  setTipoRegime(String? tipoRegime) {
     switch (tipoRegime) {
       case '1-Lucro REAL':
         return '1';
-        break;
       case '2-Lucro presumido':
         return '2';
-        break;
       case '3-Simples nacional':
         return '3';
-        break;
       default:
         return null;
     }
   }
 
-  setCrt(String crt) {
+  setCrt(String? crt) {
     switch (crt) {
       case '1-Simples Nacional':
         return '1';
-        break;
       case '2-Simples Nacional - excesso de sublimite da receita bruta':
         return '2';
-        break;
       case '3-Regime Normal':
         return '3';
-        break;
       default:
         return null;
     }
   }
 
-  setTipo(String tipo) {
+  setTipo(String? tipo) {
     switch (tipo) {
       case 'Matriz':
         return 'M';
-        break;
       case 'Filial':
         return 'F';
-        break;
       default:
         return null;
     }

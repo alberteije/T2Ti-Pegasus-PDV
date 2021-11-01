@@ -59,7 +59,7 @@ class PdvConfiguracaoLeitorSerialDao extends DatabaseAccessor<AppDatabase> with 
 
   Stream<List<PdvConfiguracaoLeitorSerial>> observarLista() => select(pdvConfiguracaoLeitorSerials).watch();
 
-  Future<PdvConfiguracaoLeitorSerial> consultarObjeto(int pId) {
+  Future<PdvConfiguracaoLeitorSerial?> consultarObjeto(int pId) {
     return (select(pdvConfiguracaoLeitorSerials)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

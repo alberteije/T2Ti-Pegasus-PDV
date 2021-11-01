@@ -37,9 +37,10 @@ import 'package:moor/moor.dart';
 
 @DataClassName("TributIcmsCustomCab")
 class TributIcmsCustomCabs extends Table {
+  @override
   String get tableName => 'TRIBUT_ICMS_CUSTOM_CAB';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 0, max: 100).nullable()();
-  TextColumn get origemMercadoria => text().named('ORIGEM_MERCADORIA').withLength(min: 0, max: 1).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  TextColumn? get descricao => text().named('DESCRICAO').withLength(min: 0, max: 100).nullable()() as Column<String>?;
+  TextColumn? get origemMercadoria => text().named('ORIGEM_MERCADORIA').withLength(min: 0, max: 1).nullable()() as Column<String>?;
 }

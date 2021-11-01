@@ -42,9 +42,9 @@ import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
 
 class MovimentoIniciaPage extends StatefulWidget {
-  final String title;
+  final String? title;
 
-  const MovimentoIniciaPage({Key key, this.title}) : super(key: key);
+  const MovimentoIniciaPage({Key? key, this.title}) : super(key: key);
 
   @override
   MovimentoIniciaPageState createState() => MovimentoIniciaPageState();
@@ -77,17 +77,17 @@ class MovimentoIniciaPageState extends State<MovimentoIniciaPage> {
     if (index == 1) return dadosOperador(context);
     if (index == 2) return dadosGerente(context);
     if (index == 3) return rodapeTela(context);
-    return null;
+    return const SizedBox();
   }
 
   Container cabecalhoTela(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 50.0),
+      margin: const EdgeInsets.only(top: 50.0),
       height: 180.0,
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
                 top: 40.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(
@@ -96,23 +96,23 @@ class MovimentoIniciaPageState extends State<MovimentoIniciaPage> {
               color: Colors.white,
               child: Column(
                 children: <Widget>[
-                  SizedBox(
+                  const SizedBox(
                     height: 50.0,
                   ),
                   Text(
-                    widget.title,
+                    widget.title!,
                     style: Theme.of(context).textTheme.headline5,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5.0,
                   ),
-                  Text("Informe os dados para iniciar o movimento"),
-                  Divider(
+                  const Text("Informe os dados para iniciar o movimento"),
+                  const Divider(
                     indent: 10,
                     endIndent: 10,
                     thickness: 2,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 16.0,
                   ),
                 ],
@@ -121,7 +121,7 @@ class MovimentoIniciaPageState extends State<MovimentoIniciaPage> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: const <Widget>[
               Material(
                 elevation: 5.0,
                 shape: CircleBorder(),
@@ -139,12 +139,12 @@ class MovimentoIniciaPageState extends State<MovimentoIniciaPage> {
 
   Container dadosOperador(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 0.0),
+      margin: const EdgeInsets.only(top: 0.0),
       height: 220.0,
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
                 top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(
@@ -155,24 +155,24 @@ class MovimentoIniciaPageState extends State<MovimentoIniciaPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: <Widget>[
-                    Text("Informe os dados do operador"),
-                    Divider(
+                    const Text("Informe os dados do operador"),
+                    const Divider(
                       indent: 10,
                       endIndent: 10,
                       thickness: 2,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 16.0,
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 0),
+                      padding: const EdgeInsets.symmetric(horizontal: 0),
                       child: Material(
                         elevation: 2.0,
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        borderRadius: const BorderRadius.all(Radius.circular(30)),
                         child: TextField(
                           onChanged: (String value) {},
                           cursorColor: Colors.deepOrange,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                               hintText: "Login do operador",
                               prefixIcon: Material(
                                 elevation: 0,
@@ -191,15 +191,15 @@ class MovimentoIniciaPageState extends State<MovimentoIniciaPage> {
                     ),
                     const SizedBox(height: 16.0),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 0),
+                      padding: const EdgeInsets.symmetric(horizontal: 0),
                       child: Material(
                         elevation: 2.0,
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        borderRadius: const BorderRadius.all(Radius.circular(30)),
                         child: TextField(
                           obscureText: true,
                           onChanged: (String value) {},
                           cursorColor: Colors.deepOrange,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                               hintText: "Senha do operador",
                               prefixIcon: Material(
                                 elevation: 0,
@@ -229,12 +229,12 @@ class MovimentoIniciaPageState extends State<MovimentoIniciaPage> {
 
   Container dadosGerente(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 0.0),
+      margin: const EdgeInsets.only(top: 0.0),
       height: 220.0,
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
                 top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(
@@ -245,24 +245,24 @@ class MovimentoIniciaPageState extends State<MovimentoIniciaPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: <Widget>[
-                    Text("Informe os dados do gerente"),
-                    Divider(
+                    const Text("Informe os dados do gerente"),
+                    const Divider(
                       indent: 10,
                       endIndent: 10,
                       thickness: 2,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 16.0,
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 0),
+                      padding: const EdgeInsets.symmetric(horizontal: 0),
                       child: Material(
                         elevation: 2.0,
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        borderRadius: const BorderRadius.all(Radius.circular(30)),
                         child: TextField(
                           onChanged: (String value) {},
                           cursorColor: Colors.deepOrange,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                               hintText: "Login do gerente",
                               prefixIcon: Material(
                                 elevation: 0,
@@ -281,15 +281,15 @@ class MovimentoIniciaPageState extends State<MovimentoIniciaPage> {
                     ),
                     const SizedBox(height: 16.0),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 0),
+                      padding: const EdgeInsets.symmetric(horizontal: 0),
                       child: Material(
                         elevation: 2.0,
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        borderRadius: const BorderRadius.all(Radius.circular(30)),
                         child: TextField(
                           obscureText: true,
                           onChanged: (String value) {},
                           cursorColor: Colors.deepOrange,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                               hintText: "Senha do gerente",
                               prefixIcon: Material(
                                 elevation: 0,
@@ -319,12 +319,12 @@ class MovimentoIniciaPageState extends State<MovimentoIniciaPage> {
 
   Container rodapeTela(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 0.0),
+      margin: const EdgeInsets.only(top: 0.0),
       height: 100.0,
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
                 top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
             child: Material(
               shape: RoundedRectangleBorder(
@@ -346,7 +346,7 @@ class MovimentoIniciaPageState extends State<MovimentoIniciaPage> {
                             }
                           ),                                  
                         ),
-                        SizedBox(width: 10.0),
+                        const SizedBox(width: 10.0),
                         Expanded(
                           child: getBotaoGenericoPdv(
                             descricao: 'Confirmar',

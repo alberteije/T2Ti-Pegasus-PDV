@@ -51,20 +51,22 @@ import 'package:pegasus_pdv/src/view/shared/page/filtro_page.dart';
 import 'colaborador_persiste_page.dart';
 
 class ColaboradorListaPage extends StatefulWidget {
+  const ColaboradorListaPage({Key? key}) : super(key: key);
+
   @override
   _ColaboradorListaPageState createState() => _ColaboradorListaPageState();
 }
 
 class _ColaboradorListaPageState extends State<ColaboradorListaPage> {
-  int _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
-  int _sortColumnIndex;
+  int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
+  int? _sortColumnIndex;
   bool _sortAscending = true;
-  var _filtro = Filtro();
+  Filtro? _filtro = Filtro();
   final _colunas = ColaboradorDao.colunas;
   final _campos = ColaboradorDao.campos;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -77,7 +79,7 @@ class _ColaboradorListaPageState extends State<ColaboradorListaPage> {
       ),
     };
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -102,7 +104,7 @@ class _ColaboradorListaPageState extends State<ColaboradorListaPage> {
 
     final _ColaboradorDataSource _colaboradorDataSource = _ColaboradorDataSource(_listaColaborador, context, _refrescarTela);
 
-    void _sort<T>(Comparable<T> getField(Colaborador colaborador), int columnIndex, bool ascending) {
+    void _sort<T>(Comparable<T>? Function(Colaborador colaborador) getField, int columnIndex, bool ascending) {
       _colaboradorDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
@@ -118,7 +120,7 @@ class _ColaboradorListaPageState extends State<ColaboradorListaPage> {
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Cadastro - Colaborador'),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           ),
           floatingActionButton: FloatingActionButton(
             focusColor: ViewUtilLib.getBotaoFocusColor(),
@@ -131,7 +133,7 @@ class _ColaboradorListaPageState extends State<ColaboradorListaPage> {
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: BottomAppBar(
             color: ViewUtilLib.getBottomAppBarColor(),          
-            shape: CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),
             child: Row(
               children: getBotoesNavigationBarListaPage(
                 context: context, 
@@ -144,14 +146,14 @@ class _ColaboradorListaPageState extends State<ColaboradorListaPage> {
             onRefresh: _refrescarTela,
             child: Scrollbar(
               child: _listaColaborador == null
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : ListView(
-                padding: EdgeInsets.all(Constantes.paddingListViewListaPage),
+                padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                 children: <Widget>[
                   PaginatedDataTable(                        
                     header: const Text('Relação - Colaborador'),
-                    rowsPerPage: _rowsPerPage,
-                    onRowsPerPageChanged: (int value) {
+                    rowsPerPage: _rowsPerPage!,
+                    onRowsPerPageChanged: (int? value) {
                       setState(() {
                         _rowsPerPage = value;
                       });
@@ -245,9 +247,9 @@ class _ColaboradorListaPageState extends State<ColaboradorListaPage> {
           fullscreenDialog: true,
         ));
     if (_filtro != null) {
-      if (_filtro.campo != null) {
-        _filtro.campo = _campos[int.parse(_filtro.campo)];
-        await Sessao.db.colaboradorDao.consultarListaFiltro(_filtro.campo, _filtro.valor);
+      if (_filtro!.campo != null) {
+        _filtro!.campo = _campos[int.parse(_filtro!.campo!)];
+        await Sessao.db.colaboradorDao.consultarListaFiltro(_filtro!.campo!, _filtro!.valor!);
         setState(() {
         });
       }
@@ -268,61 +270,61 @@ class _ColaboradorListaPageState extends State<ColaboradorListaPage> {
 
 /// codigo referente a fonte de dados
 class _ColaboradorDataSource extends DataTableSource {
-  final List<Colaborador> listaColaborador;
+  final List<Colaborador>? listaColaborador;
   final BuildContext context;
   final Function refrescarTela;
  
   _ColaboradorDataSource(this.listaColaborador, this.context, this.refrescarTela);
 
-  void _sort<T>(Comparable<T> getField(Colaborador colaborador), bool ascending) {
-    listaColaborador.sort((Colaborador a, Colaborador b) {
+  void _sort<T>(Comparable<T>? Function(Colaborador colaborador) getField, bool ascending) {
+    listaColaborador!.sort((Colaborador a, Colaborador b) {
       if (!ascending) {
         final Colaborador c = a;
         a = b;
         b = c;
       }
-      Comparable<T> aValue = getField(a);
-      Comparable<T> bValue = getField(b);
+      Comparable<T>? aValue = getField(a);
+      Comparable<T>? bValue = getField(b);
 
-      if (aValue == null) aValue = '' as Comparable<T>;
-      if (bValue == null) bValue = '' as Comparable<T>;
+      aValue ??= '' as Comparable<T>;
+      bValue ??= '' as Comparable<T>;
 
       return Comparable.compare(aValue, bValue);
     });
   }
 
-  int _selectedCount = 0;
+  final int _selectedCount = 0;
 
   @override
-  DataRow getRow(int index) {
+  DataRow? getRow(int index) {
     assert(index >= 0);
-    if (index >= listaColaborador.length) return null;
-    final Colaborador colaborador = listaColaborador[index];
+    if (index >= listaColaborador!.length) return null;
+    final Colaborador colaborador = listaColaborador![index];
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
         DataCell(Text('${colaborador.id ?? ''}'), onTap: () {
           _detalharColaborador(colaborador, context, refrescarTela);
         }),
-        DataCell(Text('${colaborador.nome ?? ''}'), onTap: () {
+        DataCell(Text(colaborador.nome ?? ''), onTap: () {
           _detalharColaborador(colaborador, context, refrescarTela);
         }),
-        DataCell(Text('${colaborador.cpf ?? ''}'), onTap: () {
+        DataCell(Text(colaborador.cpf ?? ''), onTap: () {
           _detalharColaborador(colaborador, context, refrescarTela);
         }),
-        DataCell(Text('${colaborador.telefone ?? ''}'), onTap: () {
+        DataCell(Text(colaborador.telefone ?? ''), onTap: () {
           _detalharColaborador(colaborador, context, refrescarTela);
         }),
-        DataCell(Text('${colaborador.celular ?? ''}'), onTap: () {
+        DataCell(Text(colaborador.celular ?? ''), onTap: () {
           _detalharColaborador(colaborador, context, refrescarTela);
         }),
-        DataCell(Text('${colaborador.email ?? ''}'), onTap: () {
+        DataCell(Text(colaborador.email ?? ''), onTap: () {
           _detalharColaborador(colaborador, context, refrescarTela);
         }),
-        DataCell(Text('${colaborador.comissaoVista != null ? Constantes.formatoDecimalValor.format(colaborador.comissaoVista) : 0.toStringAsFixed(Constantes.decimaisValor)}'), onTap: () {
+        DataCell(Text(colaborador.comissaoVista != null ? Constantes.formatoDecimalValor.format(colaborador.comissaoVista) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
           _detalharColaborador(colaborador, context, refrescarTela);
         }),
-        DataCell(Text('${colaborador.comissaoPrazo != null ? Constantes.formatoDecimalValor.format(colaborador.comissaoPrazo) : 0.toStringAsFixed(Constantes.decimaisValor)}'), onTap: () {
+        DataCell(Text(colaborador.comissaoPrazo != null ? Constantes.formatoDecimalValor.format(colaborador.comissaoPrazo) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
           _detalharColaborador(colaborador, context, refrescarTela);
         }),
       ],
@@ -330,7 +332,7 @@ class _ColaboradorDataSource extends DataTableSource {
   }
 
   @override
-  int get rowCount => listaColaborador.length ?? 0;
+  int get rowCount => listaColaborador!.length;
 
   @override
   bool get isRowCountApproximate => false;

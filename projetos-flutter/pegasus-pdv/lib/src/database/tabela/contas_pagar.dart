@@ -39,30 +39,31 @@ import '../database.dart';
 
 @DataClassName("ContasPagar")
 class ContasPagars extends Table {
+  @override
   String get tableName => 'CONTAS_PAGAR';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idFornecedor => integer().named('ID_FORNECEDOR').nullable().customConstraint('NULLABLE REFERENCES FORNECEDOR(ID)')();
-  IntColumn get idCompraPedidoCabecalho => integer().named('ID_COMPRA_PEDIDO_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES COMPRA_PEDIDO_CABECALHO(ID)')();
-  DateTimeColumn get dataLancamento => dateTime().named('DATA_LANCAMENTO').nullable()();
-  DateTimeColumn get dataVencimento => dateTime().named('DATA_VENCIMENTO').nullable()();
-  DateTimeColumn get dataPagamento => dateTime().named('DATA_PAGAMENTO').nullable()();
-  RealColumn get valorAPagar => real().named('VALOR_A_PAGAR').nullable()();
-  RealColumn get taxaJuro => real().named('TAXA_JURO').nullable()();
-  RealColumn get taxaMulta => real().named('TAXA_MULTA').nullable()();
-  RealColumn get taxaDesconto => real().named('TAXA_DESCONTO').nullable()();
-  RealColumn get valorJuro => real().named('VALOR_JURO').nullable()();
-  RealColumn get valorMulta => real().named('VALOR_MULTA').nullable()();
-  RealColumn get valorDesconto => real().named('VALOR_DESCONTO').nullable()();
-  RealColumn get valorPago => real().named('VALOR_PAGO').nullable()();
-  TextColumn get numeroDocumento => text().named('NUMERO_DOCUMENTO').withLength(min: 0, max: 50).nullable()();
-  TextColumn get historico => text().named('HISTORICO').withLength(min: 0, max: 250).nullable()();
-  TextColumn get statusPagamento => text().named('STATUS_PAGAMENTO').withLength(min: 0, max: 1).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idFornecedor => integer().named('ID_FORNECEDOR').nullable().customConstraint('NULLABLE REFERENCES FORNECEDOR(ID)')() as Column<int>?;
+  IntColumn? get idCompraPedidoCabecalho => integer().named('ID_COMPRA_PEDIDO_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES COMPRA_PEDIDO_CABECALHO(ID)')();
+  DateTimeColumn? get dataLancamento => dateTime().named('DATA_LANCAMENTO').nullable()() as Column<DateTime>?;
+  DateTimeColumn? get dataVencimento => dateTime().named('DATA_VENCIMENTO').nullable()() as Column<DateTime>?;
+  DateTimeColumn? get dataPagamento => dateTime().named('DATA_PAGAMENTO').nullable()() as Column<DateTime>?;
+  RealColumn? get valorAPagar => real().named('VALOR_A_PAGAR').nullable()() as Column<double>?;
+  RealColumn? get taxaJuro => real().named('TAXA_JURO').nullable()() as Column<double>?;
+  RealColumn? get taxaMulta => real().named('TAXA_MULTA').nullable()() as Column<double>?;
+  RealColumn? get taxaDesconto => real().named('TAXA_DESCONTO').nullable()() as Column<double>?;
+  RealColumn? get valorJuro => real().named('VALOR_JURO').nullable()() as Column<double>?;
+  RealColumn? get valorMulta => real().named('VALOR_MULTA').nullable()() as Column<double>?;
+  RealColumn? get valorDesconto => real().named('VALOR_DESCONTO').nullable()() as Column<double>?;
+  RealColumn? get valorPago => real().named('VALOR_PAGO').nullable()() as Column<double>?;
+  TextColumn? get numeroDocumento => text().named('NUMERO_DOCUMENTO').withLength(min: 0, max: 50).nullable()() as Column<String>?;
+  TextColumn? get historico => text().named('HISTORICO').withLength(min: 0, max: 250).nullable()() as Column<String>?;
+  TextColumn? get statusPagamento => text().named('STATUS_PAGAMENTO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
 }
 
 class ContasPagarMontado {
-  Fornecedor fornecedor;
-  ContasPagar contasPagar;
+  Fornecedor? fornecedor;
+  ContasPagar? contasPagar;
 
   ContasPagarMontado({
     this.fornecedor,

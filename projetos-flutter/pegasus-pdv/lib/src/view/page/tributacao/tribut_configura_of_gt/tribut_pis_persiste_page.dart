@@ -36,7 +36,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
@@ -49,14 +49,14 @@ import 'package:pegasus_pdv/src/view/shared/widgets_abas.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 class TributPisPersistePage extends StatefulWidget {
-  final TributConfiguraOfGtMontado tributConfiguraOfGtMontado;
-  final GlobalKey<FormState> formKey;
-  final GlobalKey<ScaffoldState> scaffoldKey;
-  final FocusNode foco;
-  final Function salvarTributConfiguraOfGtCallBack;
+  final TributConfiguraOfGtMontado? tributConfiguraOfGtMontado;
+  final GlobalKey<FormState>? formKey;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
+  final FocusNode? foco;
+  final Function? salvarTributConfiguraOfGtCallBack;
 
   const TributPisPersistePage(
-      {Key key, this.formKey, this.scaffoldKey, this.tributConfiguraOfGtMontado, this.foco, this.salvarTributConfiguraOfGtCallBack})
+      {Key? key, this.formKey, this.scaffoldKey, this.tributConfiguraOfGtMontado, this.foco, this.salvarTributConfiguraOfGtCallBack})
       : super(key: key);
 
   @override
@@ -64,8 +64,8 @@ class TributPisPersistePage extends StatefulWidget {
 }
 
 class _TributPisPersistePageState extends State<TributPisPersistePage> {
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
 
   @override
@@ -88,7 +88,7 @@ class _TributPisPersistePageState extends State<TributPisPersistePage> {
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
     switch (intent.type) {
       case AtalhoTelaType.salvar:
-        widget.salvarTributConfiguraOfGtCallBack();
+        widget.salvarTributConfiguraOfGtCallBack!();
         break;
       default:
         break;
@@ -97,11 +97,9 @@ class _TributPisPersistePageState extends State<TributPisPersistePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _aliquotaPorcentoController = new MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributPis?.aliquotaPorcento ?? 0);
+    final _aliquotaPorcentoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributPis?.aliquotaPorcento ?? 0);
 
-    if (widget.tributConfiguraOfGtMontado.tributPis == null) {
-      widget.tributConfiguraOfGtMontado.tributPis = TributPis(id: null);
-    }
+    widget.tributConfiguraOfGtMontado!.tributPis ??= TributPis(id: null);
 
     return FocusableActionDetector(
       actions: _actionMap,
@@ -122,10 +120,10 @@ class _TributPisPersistePageState extends State<TributPisPersistePage> {
                   padding: ViewUtilLib.paddingAbaPersistePage,
                   child: BootstrapContainer(
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                     children: <Widget>[			  			  
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -140,18 +138,18 @@ class _TributPisPersistePageState extends State<TributPisPersistePage> {
                                 'Informe o CST PIS',
                                 'CST PIS',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                widget.tributConfiguraOfGtMontado.tributPis = 
-                                widget.tributConfiguraOfGtMontado.tributPis.copyWith(cstPis: text);
+                                widget.tributConfiguraOfGtMontado!.tributPis = 
+                                widget.tributConfiguraOfGtMontado!.tributPis!.copyWith(cstPis: text);
                                 paginaMestreDetalheFoiAlterada = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -166,18 +164,18 @@ class _TributPisPersistePageState extends State<TributPisPersistePage> {
                                 'Informe a Modalidade Base Cálculo',
                                 'Modalidade Base Cálculo',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                widget.tributConfiguraOfGtMontado.tributPis = 
-                                widget.tributConfiguraOfGtMontado.tributPis.copyWith(modalidadeBaseCalculo: text);
+                                widget.tributConfiguraOfGtMontado!.tributPis = 
+                                widget.tributConfiguraOfGtMontado!.tributPis!.copyWith(modalidadeBaseCalculo: text);
                                 paginaMestreDetalheFoiAlterada = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -191,18 +189,18 @@ class _TributPisPersistePageState extends State<TributPisPersistePage> {
                                 'Informe a Alíquota do Porcento',
                                 'Alíquota Porcento',
                                 false),
-                              onSaved: (String value) {
+                              onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                widget.tributConfiguraOfGtMontado.tributPis = 
-                                widget.tributConfiguraOfGtMontado.tributPis.copyWith(aliquotaPorcento: _aliquotaPorcentoController.numberValue);
+                                widget.tributConfiguraOfGtMontado!.tributPis = 
+                                widget.tributConfiguraOfGtMontado!.tributPis!.copyWith(aliquotaPorcento: _aliquotaPorcentoController.numberValue);
                                 paginaMestreDetalheFoiAlterada = true;
                               },
                             ),
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                       height: 60,
                       children: <BootstrapCol>[
@@ -216,7 +214,7 @@ class _TributPisPersistePageState extends State<TributPisPersistePage> {
                         ),
                       ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                     ],
                   ),
                 ),

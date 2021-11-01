@@ -45,15 +45,15 @@ class Biblioteca {
   /// singleton
   factory Biblioteca() {
     _this ??= Biblioteca._();
-    return _this;
+    return _this!;
   }
-  static Biblioteca _this;
+  static Biblioteca? _this;
   Biblioteca._() : super();
 
 
   /// remove a máscara de uma string
   /// útil para campos do tipo: CPF, CNPJ, CEP, etc
-  static String removerMascara(dynamic value) {
+  static String? removerMascara(dynamic value) {
     if (value != null) {
       return value.replaceAll(RegExp(r'[^\w\s]+'), '');
     } else {
@@ -62,109 +62,85 @@ class Biblioteca {
   }
 
   /// calcula valor de juros
-  static double calcularJuros(double valor, double taxaJuros, DateTime dataVencimento) {
+  static double calcularJuros(double? valor, double? taxaJuros, DateTime? dataVencimento) {
     if (dataVencimento == null) {
       return 0;
     }
-    if (valor == null) {
-      valor = 0;
-    }
-    if (taxaJuros == null) {
-      taxaJuros = 0;
-    }
+    valor ??= 0;
+    taxaJuros ??= 0;
     double valorJuros = (valor * (taxaJuros / 30) / 100) * (DateTime.now().difference(dataVencimento).inDays);
-    valorJuros = num.parse(valorJuros.toStringAsFixed(Constantes.decimaisValor));
+    valorJuros = num.parse(valorJuros.toStringAsFixed(Constantes.decimaisValor)) as double;
     return valorJuros;
   }
 
   /// calcula valor de multa
-  static double calcularMulta(double valor, double taxaMulta) {
-    if (valor == null) {
-      valor = 0;
-    }
-    if (taxaMulta == null) {
-      taxaMulta = 0;
-    }
+  static double calcularMulta(double? valor, double? taxaMulta) {
+    valor ??= 0;
+    taxaMulta ??= 0;
     double valorMulta = (valor * (taxaMulta / 100));
-    valorMulta = num.parse(valorMulta.toStringAsFixed(Constantes.decimaisValor));
+    valorMulta = num.parse(valorMulta.toStringAsFixed(Constantes.decimaisValor)) as double;
     return valorMulta;
   }
 
   /// calcula valor de desconto
-  static double calcularDesconto(double valor, double taxaDesconto) {
-    if (valor == null) {
-      valor = 0;
-    }
-    if (taxaDesconto == null) {
-      taxaDesconto = 0;
-    }
+  static double calcularDesconto(double? valor, double? taxaDesconto) {
+    valor ??= 0;
+    taxaDesconto ??= 0;
     double valorDesconto = (valor * (taxaDesconto / 100));
-    valorDesconto = num.parse(valorDesconto.toStringAsFixed(Constantes.decimaisValor));
+    valorDesconto = num.parse(valorDesconto.toStringAsFixed(Constantes.decimaisValor)) as double;
     return valorDesconto;
   }
 
   /// calcula valor da comissão
-  static double calcularComissao(double valor, double taxaComissao) {
-    if (valor == null) {
-      valor = 0;
-    }
-    if (taxaComissao == null) {
-      taxaComissao = 0;
-    }
+  static double calcularComissao(double? valor, double? taxaComissao) {
+    valor ??= 0;
+    taxaComissao ??= 0;
     double valorComissao = (valor * (taxaComissao / 100));
-    valorComissao = num.parse(valorComissao.toStringAsFixed(Constantes.decimaisValor));
+    valorComissao = num.parse(valorComissao.toStringAsFixed(Constantes.decimaisValor)) as double;
     return valorComissao;
   }
 
   /// calcula a multiplicacao entre dois números e retorna o valor com as devidas casas decimais
-  static double multiplicarMonetario(double valor1, double valor2) {
-    if (valor1 == null) {
-      valor1 = 0;
-    }
-    if (valor2 == null) {
-      valor2 = 0;
-    }
+  static double multiplicarMonetario(double? valor1, double? valor2) {
+    valor1 ??= 0;
+    valor2 ??= 0;
 
-    double resultado = num.parse((valor1 * valor2).toStringAsFixed(Constantes.decimaisValor));
+    double resultado = num.parse((valor1 * valor2).toStringAsFixed(Constantes.decimaisValor)) as double;
     return resultado;
   }
 
   /// calcula a divisão entre dois números e retorna o valor com as devidas casas decimais
   static double dividirMonetario(dynamic valor1, dynamic valor2) {
-    if (valor1 == null) {
-      valor1 = 0;
-    }
-    if (valor2 == null) {
-      valor2 = 0;
-    }
+    valor1 ??= 0;
+    valor2 ??= 0;
 
-    double resultado = num.parse((valor1 / valor2).toStringAsFixed(Constantes.decimaisValor));
+    double resultado = num.parse((valor1 / valor2).toStringAsFixed(Constantes.decimaisValor)) as double;
     return resultado;
   }
 
   /// pega um período anterior com a máscara MM/AAAA
   static String periodoAnterior(String mesAno) {
-    int mes = int.tryParse(mesAno.substring(0, 2));
-    int ano = int.tryParse(mesAno.substring(3, 7));
+    int? mes = int.tryParse(mesAno.substring(0, 2));
+    int? ano = int.tryParse(mesAno.substring(3, 7));
 
     if (mes == 1) {
       mes = 12;
-      ano = ano - 1;
+      ano = ano! - 1;
       return mes.toString() + '/' + ano.toString();
     } else {
-      mes = mes - 1;
+      mes = mes! - 1;
       return mes.toString().padLeft(2, '0') + '/' + ano.toString();
     }
   }
 
-  static String formatarCampoLookup(String conteudoCampo, {bool formatoTimeStamp}) {
+  static String formatarCampoLookup(String conteudoCampo, {required bool formatoTimeStamp}) {
     var retorno = conteudoCampo;
     if (retorno == 'null') {
       retorno = '';
     }
 
     // tenta parssar o campo para inteiro
-    int inteiro = int.tryParse(conteudoCampo);
+    int? inteiro = int.tryParse(conteudoCampo);
 
     // se estivermos trabalhando com o Moor, a data será colocada num formato timestamp
     if (formatoTimeStamp && inteiro != null) {
@@ -174,12 +150,12 @@ class Biblioteca {
       // se inteiro é nulo, temos que verificar se é data ou double
       if (inteiro == null) {
           // trata o double
-          double valor = double.tryParse(conteudoCampo);
+          double? valor = double.tryParse(conteudoCampo);
           if (valor != null) {
             retorno = Constantes.formatoDecimalValor.format(valor);
           } else {
             // tratando tipos data
-            DateTime data = DateTime.tryParse(conteudoCampo);
+            DateTime? data = DateTime.tryParse(conteudoCampo);
             if (data != null) {
               retorno = DateFormat('dd/MM/yyyy').format(data);
             }
@@ -195,7 +171,7 @@ class Biblioteca {
     return horaFormatada;
   }
 
-  static String formatarData(DateTime data) {
+  static String formatarData(DateTime? data) {
     if (data == null) {
       return '';
     } else {
@@ -205,7 +181,7 @@ class Biblioteca {
     }
   }
 
-  static String formatarDataHora(DateTime data) {
+  static String formatarDataHora(DateTime? data) {
     if (data == null) {
       return '';
     } else {    
@@ -215,7 +191,7 @@ class Biblioteca {
     }
   }
 
-  static String formatarDataAAAAMM(DateTime data) {
+  static String formatarDataAAAAMM(DateTime? data) {
     if (data == null) {
       return '';
     } else {    
@@ -231,12 +207,12 @@ class Biblioteca {
     return mesFormatado;
   }
 
-  static String formatarValorDecimal(double valor) {
+  static String formatarValorDecimal(double? valor) {
     return Constantes.formatoDecimalValor.format(valor ?? 0);
   }
 
   /// define o que é a tela pequena e se o dispositivo utilizado tem a tela pequena
-  static bool isTelaPequena(BuildContext context) {
+  static bool? isTelaPequena(BuildContext context) {
 	  return bootStrapValueBasedOnSize(
       sizes: {
         "xl": false,
@@ -268,14 +244,14 @@ class Biblioteca {
   }
 
   /// define a distância entre as colunas caso haja uma quebra de linha
-	static EdgeInsets distanciaEntreColunasQuebraLinha(BuildContext context) { 
+	static EdgeInsets? distanciaEntreColunasQuebraLinha(BuildContext context) { 
     return bootStrapValueBasedOnSize(
       sizes: {
         "xl": EdgeInsets.zero,
         "lg": EdgeInsets.zero,
         "md": EdgeInsets.zero,
         "sm": EdgeInsets.zero,
-        "": EdgeInsets.only(top: 5.0, bottom: 10.0),
+        "": const EdgeInsets.only(top: 5.0, bottom: 10.0),
       },
       context: context,
     );
@@ -290,7 +266,7 @@ class Biblioteca {
     }
   }
 
-  static int retornarCodigoIbgeUf(String uf) {
+  static int retornarCodigoIbgeUf(String? uf) {
     int codigoUf = 0;
     switch (uf) {
       case 'AC' :

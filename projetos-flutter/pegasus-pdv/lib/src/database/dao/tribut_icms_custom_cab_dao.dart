@@ -60,7 +60,7 @@ class TributIcmsCustomCabDao extends DatabaseAccessor<AppDatabase> with _$Tribut
 
   Stream<List<TributIcmsCustomCab>> observarLista() => select(tributIcmsCustomCabs).watch();
 
-  Future<TributIcmsCustomCab> consultarObjeto(int pId) {
+  Future<TributIcmsCustomCab?> consultarObjeto(int pId) {
     return (select(tributIcmsCustomCabs)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
@@ -75,7 +75,7 @@ class TributIcmsCustomCabDao extends DatabaseAccessor<AppDatabase> with _$Tribut
   Future<bool> alterar(Insertable<TributIcmsCustomCab> pObjeto, List<TributIcmsCustomDet> listaTributIcmsCustomDet) {
     return transaction(() async {
       await excluirFilhos(pObjeto as TributIcmsCustomCab);
-      await inserirFilhos(pObjeto as TributIcmsCustomCab, listaTributIcmsCustomDet);
+      await inserirFilhos(pObjeto, listaTributIcmsCustomDet);
       return update(tributIcmsCustomCabs).replace(pObjeto);
     });    
   } 

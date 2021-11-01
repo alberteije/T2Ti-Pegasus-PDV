@@ -37,18 +37,19 @@ import 'package:moor/moor.dart';
 
 @DataClassName("PdvConfiguracaoBalanca")
 class PdvConfiguracaoBalancas extends Table {
+  @override
   String get tableName => 'PDV_CONFIGURACAO_BALANCA';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idPdvConfiguracao => integer().named('ID_PDV_CONFIGURACAO').nullable().customConstraint('NULLABLE REFERENCES PDV_CONFIGURACAO(ID)')();
-  IntColumn get modelo => integer().named('MODELO').nullable()();
-  TextColumn get identificador => text().named('IDENTIFICADOR').withLength(min: 0, max: 1).nullable()();
-  IntColumn get handShake => integer().named('HAND_SHAKE').nullable()();
-  IntColumn get parity => integer().named('PARITY').nullable()();
-  IntColumn get stopBits => integer().named('STOP_BITS').nullable()();
-  IntColumn get dataBits => integer().named('DATA_BITS').nullable()();
-  IntColumn get baudRate => integer().named('BAUD_RATE').nullable()();
-  TextColumn get porta => text().named('PORTA').withLength(min: 0, max: 4).nullable()();
-  IntColumn get timeout => integer().named('TIMEOUT').nullable()();
-  TextColumn get tipoConfiguracao => text().named('TIPO_CONFIGURACAO').withLength(min: 0, max: 20).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idPdvConfiguracao => integer().named('ID_PDV_CONFIGURACAO').nullable().customConstraint('NULLABLE REFERENCES PDV_CONFIGURACAO(ID)')() as Column<int>?;
+  IntColumn? get modelo => integer().named('MODELO').nullable()() as Column<int>?;
+  TextColumn? get identificador => text().named('IDENTIFICADOR').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  IntColumn? get handShake => integer().named('HAND_SHAKE').nullable()() as Column<int>?;
+  IntColumn? get parity => integer().named('PARITY').nullable()() as Column<int>?;
+  IntColumn? get stopBits => integer().named('STOP_BITS').nullable()() as Column<int>?;
+  IntColumn? get dataBits => integer().named('DATA_BITS').nullable()() as Column<int>?;
+  IntColumn? get baudRate => integer().named('BAUD_RATE').nullable()() as Column<int>?;
+  TextColumn? get porta => text().named('PORTA').withLength(min: 0, max: 4).nullable()() as Column<String>?;
+  IntColumn? get timeout => integer().named('TIMEOUT').nullable()() as Column<int>?;
+  TextColumn? get tipoConfiguracao => text().named('TIPO_CONFIGURACAO').withLength(min: 0, max: 20).nullable()() as Column<String>?;
 }

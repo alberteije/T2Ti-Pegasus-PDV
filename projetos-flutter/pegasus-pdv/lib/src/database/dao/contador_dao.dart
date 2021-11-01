@@ -59,7 +59,7 @@ class ContadorDao extends DatabaseAccessor<AppDatabase> with _$ContadorDaoMixin 
 
   Stream<List<Contador>> observarLista() => select(contadors).watch();
 
-  Future<Contador> consultarObjeto(int pId) {
+  Future<Contador?> consultarObjeto(int pId) {
     return (select(contadors)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

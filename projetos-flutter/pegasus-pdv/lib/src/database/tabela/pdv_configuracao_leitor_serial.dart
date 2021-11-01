@@ -37,21 +37,22 @@ import 'package:moor/moor.dart';
 
 @DataClassName("PdvConfiguracaoLeitorSerial")
 class PdvConfiguracaoLeitorSerials extends Table {
+  @override
   String get tableName => 'PDV_CONFIGURACAO_LEITOR_SERIAL';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idPdvConfiguracao => integer().named('ID_PDV_CONFIGURACAO').nullable().customConstraint('NULLABLE REFERENCES PDV_CONFIGURACAO(ID)')();
-  TextColumn get usa => text().named('USA').withLength(min: 0, max: 1).nullable()();
-  TextColumn get porta => text().named('PORTA').withLength(min: 0, max: 4).nullable()();
-  IntColumn get baud => integer().named('BAUD').nullable()();
-  IntColumn get handShake => integer().named('HAND_SHAKE').nullable()();
-  IntColumn get parity => integer().named('PARITY').nullable()();
-  IntColumn get stopBits => integer().named('STOP_BITS').nullable()();
-  IntColumn get dataBits => integer().named('DATA_BITS').nullable()();
-  IntColumn get intervalo => integer().named('INTERVALO').nullable()();
-  TextColumn get usarFila => text().named('USAR_FILA').withLength(min: 0, max: 1).nullable()();
-  TextColumn get hardFlow => text().named('HARD_FLOW').withLength(min: 0, max: 1).nullable()();
-  TextColumn get softFlow => text().named('SOFT_FLOW').withLength(min: 0, max: 1).nullable()();
-  TextColumn get sufixo => text().named('SUFIXO').withLength(min: 0, max: 20).nullable()();
-  TextColumn get excluirSufixo => text().named('EXCLUIR_SUFIXO').withLength(min: 0, max: 1).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idPdvConfiguracao => integer().named('ID_PDV_CONFIGURACAO').nullable().customConstraint('NULLABLE REFERENCES PDV_CONFIGURACAO(ID)')() as Column<int>?;
+  TextColumn? get usa => text().named('USA').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get porta => text().named('PORTA').withLength(min: 0, max: 4).nullable()() as Column<String>?;
+  IntColumn? get baud => integer().named('BAUD').nullable()() as Column<int>?;
+  IntColumn? get handShake => integer().named('HAND_SHAKE').nullable()() as Column<int>?;
+  IntColumn? get parity => integer().named('PARITY').nullable()() as Column<int>?;
+  IntColumn? get stopBits => integer().named('STOP_BITS').nullable()() as Column<int>?;
+  IntColumn? get dataBits => integer().named('DATA_BITS').nullable()() as Column<int>?;
+  IntColumn? get intervalo => integer().named('INTERVALO').nullable()() as Column<int>?;
+  TextColumn? get usarFila => text().named('USAR_FILA').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get hardFlow => text().named('HARD_FLOW').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get softFlow => text().named('SOFT_FLOW').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get sufixo => text().named('SUFIXO').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  TextColumn? get excluirSufixo => text().named('EXCLUIR_SUFIXO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
 }

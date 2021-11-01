@@ -37,14 +37,15 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeTransporteVolume")
 class NfeTransporteVolumes extends Table {
+  @override
   String get tableName => 'NFE_TRANSPORTE_VOLUME';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeTransporte => integer().named('ID_NFE_TRANSPORTE').nullable().customConstraint('NULLABLE REFERENCES NFE_TRANSPORTE(ID)')();
-  IntColumn get quantidade => integer().named('QUANTIDADE').nullable()();
-  TextColumn get especie => text().named('ESPECIE').withLength(min: 0, max: 60).nullable()();
-  TextColumn get marca => text().named('MARCA').withLength(min: 0, max: 60).nullable()();
-  TextColumn get numeracao => text().named('NUMERACAO').withLength(min: 0, max: 60).nullable()();
-  RealColumn get pesoLiquido => real().named('PESO_LIQUIDO').nullable()();
-  RealColumn get pesoBruto => real().named('PESO_BRUTO').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeTransporte => integer().named('ID_NFE_TRANSPORTE').nullable().customConstraint('NULLABLE REFERENCES NFE_TRANSPORTE(ID)')() as Column<int>?;
+  IntColumn? get quantidade => integer().named('QUANTIDADE').nullable()() as Column<int>?;
+  TextColumn? get especie => text().named('ESPECIE').withLength(min: 0, max: 60).nullable()() as Column<String>?;
+  TextColumn? get marca => text().named('MARCA').withLength(min: 0, max: 60).nullable()() as Column<String>?;
+  TextColumn? get numeracao => text().named('NUMERACAO').withLength(min: 0, max: 60).nullable()() as Column<String>?;
+  RealColumn? get pesoLiquido => real().named('PESO_LIQUIDO').nullable()() as Column<double>?;
+  RealColumn? get pesoBruto => real().named('PESO_BRUTO').nullable()() as Column<double>?;
 }

@@ -56,17 +56,17 @@ List<Aba> _todasAsAbas = <Aba>[];
 List<Aba> _getAbasAtivas() {
   List<Aba> retorno = [];
   for (var item in _todasAsAbas) {
-    if (item.visible) retorno.add(item);
+    if (item.visible!) retorno.add(item);
   }
   return retorno;
 }
 
 class TributConfiguraOfGtPage extends StatefulWidget {
-  final TributConfiguraOfGtMontado tributConfiguraOfGtMontado;
-  final String title;
-  final String operacao;
+  final TributConfiguraOfGtMontado? tributConfiguraOfGtMontado;
+  final String? title;
+  final String? operacao;
 
-  TributConfiguraOfGtPage({this.tributConfiguraOfGtMontado, this.title, this.operacao, Key key})
+  const TributConfiguraOfGtPage({this.tributConfiguraOfGtMontado, this.title, this.operacao, Key? key})
       : super(key: key);
 
   @override
@@ -74,12 +74,12 @@ class TributConfiguraOfGtPage extends StatefulWidget {
 }
 
 class _TributConfiguraOfGtPageState extends State<TributConfiguraOfGtPage> with SingleTickerProviderStateMixin {
-  TabController _abasController;
+  TabController? _abasController;
   String _estiloBotoesAba = 'iconsAndText';
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
-  FocusNode myFocusNode;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
+  FocusNode? myFocusNode;
   
   // TributConfiguraOfGt
   final GlobalKey<FormState> _tributConfiguraOfGtPersisteFormKey = GlobalKey<FormState>();
@@ -97,7 +97,7 @@ class _TributConfiguraOfGtPageState extends State<TributConfiguraOfGtPage> with 
     super.initState();
     _atualizarAbas();
     _abasController = TabController(vsync: this, length: _getAbasAtivas().length);
-    _abasController.addListener(_salvarForms);
+    _abasController!.addListener(_salvarForms);
     paginaMestreDetalheFoiAlterada = false; // vamos controlar as alterações nas paginas filhas aqui para alertar ao usuario sobre possivel perda de dados
   
     bootstrapGridParameters(
@@ -117,8 +117,8 @@ class _TributConfiguraOfGtPageState extends State<TributConfiguraOfGtPage> with 
 
   @override
   void dispose() {
-    myFocusNode.dispose();
-    _abasController.dispose();
+    myFocusNode!.dispose();
+    _abasController!.dispose();
     super.dispose();
   }
   
@@ -140,7 +140,7 @@ class _TributConfiguraOfGtPageState extends State<TributConfiguraOfGtPage> with 
       child: Focus(
         autofocus: false, //o foco deve ser enviado para as páginas filhas e elas devem chamar o método salvar
         child: getScaffoldAbaPage(
-          widget.title,
+          widget.title!,
           context,
           _abasController,
           _getAbasAtivas(),
@@ -214,10 +214,10 @@ class _TributConfiguraOfGtPageState extends State<TributConfiguraOfGtPage> with 
 
   bool _salvarForms() {  
     // valida e salva o form TributConfiguraOfGtDetalhe
-    FormState formTributConfiguraOfGt = _tributConfiguraOfGtPersisteFormKey.currentState;
+    FormState? formTributConfiguraOfGt = _tributConfiguraOfGtPersisteFormKey.currentState;
     if (formTributConfiguraOfGt != null) {
       if (!formTributConfiguraOfGt.validate()) {
-        _abasController.animateTo(0);
+        _abasController!.animateTo(0);
 		    return false;
       } else {
         _tributConfiguraOfGtPersisteFormKey.currentState?.save();
@@ -226,30 +226,30 @@ class _TributConfiguraOfGtPageState extends State<TributConfiguraOfGtPage> with 
     }
 
     // valida e salva os forms OneToOne
-    FormState formTributIcmsUf = _tributIcmsUfPersisteFormKey.currentState;
+    FormState? formTributIcmsUf = _tributIcmsUfPersisteFormKey.currentState;
     if (formTributIcmsUf != null) {
       if (!formTributIcmsUf.validate()) {
-        _abasController.animateTo(1);
+        _abasController!.animateTo(1);
         return false;
       } else {
         _tributIcmsUfPersisteFormKey.currentState?.save();
         return true;
       }
     }
-    FormState formTributCofins = _tributCofinsPersisteFormKey.currentState;
+    FormState? formTributCofins = _tributCofinsPersisteFormKey.currentState;
     if (formTributCofins != null) {
       if (!formTributCofins.validate()) {
-        _abasController.animateTo(1);
+        _abasController!.animateTo(1);
         return false;
       } else {
         _tributCofinsPersisteFormKey.currentState?.save();
         return true;
       }
     }
-    FormState formTributPis = _tributPisPersisteFormKey.currentState;
+    FormState? formTributPis = _tributPisPersisteFormKey.currentState;
     if (formTributPis != null) {
       if (!formTributPis.validate()) {
-        _abasController.animateTo(1);
+        _abasController!.animateTo(1);
         return false;
       } else {
         _tributPisPersisteFormKey.currentState?.save();
@@ -289,12 +289,16 @@ class _TributConfiguraOfGtPageState extends State<TributConfiguraOfGtPage> with 
     });
   }
 
-  Decoration _getIndicator() {
+  Decoration? _getIndicator() {
     return getShapeDecorationAbaPage(_estiloBotoesAba);
   }
 
   Future<bool> _avisarUsuarioAlteracoesNaPagina() async {
-    if (!paginaMestreDetalheFoiAlterada) return true;
-    return await gerarDialogBoxFormAlterado(context);
+    if (!paginaMestreDetalheFoiAlterada) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
   }
 }

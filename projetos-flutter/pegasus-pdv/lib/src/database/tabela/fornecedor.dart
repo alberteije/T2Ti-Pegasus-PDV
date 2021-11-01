@@ -37,32 +37,33 @@ import 'package:moor/moor.dart';
 
 @DataClassName("Fornecedor")
 class Fornecedors extends Table {
+  @override
   String get tableName => 'FORNECEDOR';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get nome => text().named('NOME').withLength(min: 0, max: 150).nullable()();
-  TextColumn get fantasia => text().named('FANTASIA').withLength(min: 0, max: 150).nullable()();
-  TextColumn get email => text().named('EMAIL').withLength(min: 0, max: 250).nullable()();
-  TextColumn get url => text().named('URL').withLength(min: 0, max: 250).nullable()();
-  TextColumn get cpfCnpj => text().named('CPF_CNPJ').withLength(min: 0, max: 14).nullable()();
-  TextColumn get rg => text().named('RG').withLength(min: 0, max: 20).nullable()();
-  TextColumn get orgaoRg => text().named('ORGAO_RG').withLength(min: 0, max: 20).nullable()();
-  DateTimeColumn get dataEmissaoRg => dateTime().named('DATA_EMISSAO_RG').nullable()();
-  TextColumn get sexo => text().named('SEXO').withLength(min: 0, max: 1).nullable()();
-  TextColumn get inscricaoEstadual => text().named('INSCRICAO_ESTADUAL').withLength(min: 0, max: 30).nullable()();
-  TextColumn get inscricaoMunicipal => text().named('INSCRICAO_MUNICIPAL').withLength(min: 0, max: 30).nullable()();
-  TextColumn get tipoPessoa => text().named('TIPO_PESSOA').withLength(min: 0, max: 10).nullable()();
-  DateTimeColumn get dataCadastro => dateTime().named('DATA_CADASTRO').nullable()();
-  TextColumn get logradouro => text().named('LOGRADOURO').withLength(min: 0, max: 250).nullable()();
-  TextColumn get numero => text().named('NUMERO').withLength(min: 0, max: 10).nullable()();
-  TextColumn get complemento => text().named('COMPLEMENTO').withLength(min: 0, max: 100).nullable()();
-  TextColumn get cep => text().named('CEP').withLength(min: 0, max: 8).nullable()();
-  TextColumn get bairro => text().named('BAIRRO').withLength(min: 0, max: 100).nullable()();
-  TextColumn get cidade => text().named('CIDADE').withLength(min: 0, max: 100).nullable()();
-  TextColumn get uf => text().named('UF').withLength(min: 0, max: 2).nullable()();
-  TextColumn get telefone => text().named('TELEFONE').withLength(min: 0, max: 15).nullable()();
-  TextColumn get celular => text().named('CELULAR').withLength(min: 0, max: 15).nullable()();
-  TextColumn get contato => text().named('CONTATO').withLength(min: 0, max: 50).nullable()();
-  IntColumn get codigoIbgeCidade => integer().named('CODIGO_IBGE_CIDADE').nullable()();
-  IntColumn get codigoIbgeUf => integer().named('CODIGO_IBGE_UF').nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  TextColumn? get nome => text().named('NOME').withLength(min: 0, max: 150).nullable()() as Column<String>?;
+  TextColumn? get fantasia => text().named('FANTASIA').withLength(min: 0, max: 150).nullable()() as Column<String>?;
+  TextColumn? get email => text().named('EMAIL').withLength(min: 0, max: 250).nullable()() as Column<String>?;
+  TextColumn? get url => text().named('URL').withLength(min: 0, max: 250).nullable()() as Column<String>?;
+  TextColumn? get cpfCnpj => text().named('CPF_CNPJ').withLength(min: 0, max: 14).nullable()() as Column<String>?;
+  TextColumn? get rg => text().named('RG').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  TextColumn? get orgaoRg => text().named('ORGAO_RG').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  DateTimeColumn? get dataEmissaoRg => dateTime().named('DATA_EMISSAO_RG').nullable()() as Column<DateTime>?;
+  TextColumn? get sexo => text().named('SEXO').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get inscricaoEstadual => text().named('INSCRICAO_ESTADUAL').withLength(min: 0, max: 30).nullable()() as Column<String>?;
+  TextColumn? get inscricaoMunicipal => text().named('INSCRICAO_MUNICIPAL').withLength(min: 0, max: 30).nullable()() as Column<String>?;
+  TextColumn? get tipoPessoa => text().named('TIPO_PESSOA').withLength(min: 0, max: 10).nullable()() as Column<String>?;
+  DateTimeColumn? get dataCadastro => dateTime().named('DATA_CADASTRO').nullable()() as Column<DateTime>?;
+  TextColumn? get logradouro => text().named('LOGRADOURO').withLength(min: 0, max: 250).nullable()() as Column<String>?;
+  TextColumn? get numero => text().named('NUMERO').withLength(min: 0, max: 10).nullable()() as Column<String>?;
+  TextColumn? get complemento => text().named('COMPLEMENTO').withLength(min: 0, max: 100).nullable()() as Column<String>?;
+  TextColumn? get cep => text().named('CEP').withLength(min: 0, max: 8).nullable()() as Column<String>?;
+  TextColumn? get bairro => text().named('BAIRRO').withLength(min: 0, max: 100).nullable()() as Column<String>?;
+  TextColumn? get cidade => text().named('CIDADE').withLength(min: 0, max: 100).nullable()() as Column<String>?;
+  TextColumn? get uf => text().named('UF').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  TextColumn? get telefone => text().named('TELEFONE').withLength(min: 0, max: 15).nullable()() as Column<String>?;
+  TextColumn? get celular => text().named('CELULAR').withLength(min: 0, max: 15).nullable()() as Column<String>?;
+  TextColumn? get contato => text().named('CONTATO').withLength(min: 0, max: 50).nullable()() as Column<String>?;
+  IntColumn? get codigoIbgeCidade => integer().named('CODIGO_IBGE_CIDADE').nullable()() as Column<int>?;
+  IntColumn? get codigoIbgeUf => integer().named('CODIGO_IBGE_UF').nullable()() as Column<int>?;
 }

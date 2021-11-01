@@ -33,6 +33,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
+
 import 'package:moor/moor.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
@@ -48,21 +50,21 @@ part 'pdv_venda_cabecalho_dao.g.dart';
 class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVendaCabecalhoDaoMixin {
   final AppDatabase db;
 
-  List<PdvVendaCabecalho> listaPdvVendaCabecalho; // será usada para popular a grid na janela do resumo das vendas
+  List<PdvVendaCabecalho>? listaPdvVendaCabecalho; // será usada para popular a grid na janela do resumo das vendas
 
   PdvVendaCabecalhoDao(this.db) : super(db);
 
-  Future<List<PdvVendaCabecalho>> consultarLista() async {
+  Future<List<PdvVendaCabecalho>?> consultarLista() async {
     listaPdvVendaCabecalho = await select(pdvVendaCabecalhos).get();
     return listaPdvVendaCabecalho;
   }
 
   Future<int> consultarTotalRegistros() async {
     final lista = await select(pdvVendaCabecalhos).get();
-    return (lista?.length ?? 0);
+    return (lista.length);
   }
 
-  Future<List<PdvVendaCabecalho>> consultarListaFiltro(String campo, String valor, {String filtroAdicional}) async {
+  Future<List<PdvVendaCabecalho>?> consultarListaFiltro(String campo, String valor, {String? filtroAdicional}) async {
     String sql = "SELECT * FROM PDV_VENDA_CABECALHO WHERE " + campo + " like '%" + valor + "%' ";
     if (filtroAdicional != null) {
       sql += " AND " + filtroAdicional;
@@ -74,7 +76,7 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
     return listaPdvVendaCabecalho;
   }
 
-  Future<List<PdvVendaCabecalho>> consultarVendasPorPeriodoEStatus({String mes, int ano, String status}) async {
+  Future<List<PdvVendaCabecalho>?> consultarVendasPorPeriodoEStatus({String? mes, int? ano, String? status}) async {
     var sql = "select * FROM PDV_VENDA_CABECALHO WHERE ";
 
     if (status != null) {
@@ -112,7 +114,7 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
     return listaPdvVendaCabecalho;
   }
 
-  Future<PdvVendaCabecalho> consultarTotaisDia(int idMovimento) async {
+  Future<PdvVendaCabecalho?> consultarTotaisDia(int? idMovimento) async {
     return (customSelect("SELECT "  
     " sum(VALOR_VENDA) as VALOR_VENDA, "
     " sum(VALOR_DESCONTO) as VALOR_DESCONTO, "
@@ -127,8 +129,8 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
       }).getSingleOrNull());
   }
 
-  Future<double> consultarVendas({String periodo}) async {
-    var diasPeriodo;
+  Future<double> consultarVendas({required String periodo}) async {
+    late String diasPeriodo;
     if (periodo.contains('Semana')) {
       diasPeriodo = '7';
     } else if (periodo.contains('Mês')) {
@@ -147,12 +149,12 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
                 "date('now','-"+ diasPeriodo + " day') AND date('now') "
                 ")";
     final resultado = await customSelect(sql).getSingleOrNull();
-    return resultado.data["TOTAL"] ?? 0;
+    return resultado?.data["TOTAL"] ?? 0;
   }
 
-  Future<List<double>> consultarVendasParaGrafico({String periodo}) async {
+  Future<List<double>> consultarVendasParaGrafico({required String periodo}) async {
     List<double> listaRetorno = [];
-    var diasPeriodo;
+    late String diasPeriodo;
     if (periodo.contains('Semana')) {
       diasPeriodo = '7';
     } else if (periodo.contains('Mês')) {
@@ -175,7 +177,7 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
     for (QueryRow registro in resultado) {
       listaRetorno.add(registro.data["TOTAL"]); 
     }
-    if (listaRetorno.length == 0) {
+    if (listaRetorno.isEmpty) {
       listaRetorno.add(0);
     }
     return listaRetorno;
@@ -183,22 +185,22 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
 
   Stream<List<PdvVendaCabecalho>> observarLista() => select(pdvVendaCabecalhos).watch();
 
-  Future<PdvVendaCabecalho> consultarObjeto(int pId) {
+  Future<PdvVendaCabecalho?> consultarObjeto(int? pId) {
     return (select(pdvVendaCabecalhos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<PdvVendaCabecalho> pObjeto) {
+  Future<int> inserir(Insertable<PdvVendaCabecalho>? pObjeto) {
     return transaction(() async {
-      final idInserido = await into(pdvVendaCabecalhos).insert(pObjeto);
+      final idInserido = await into(pdvVendaCabecalhos).insert(pObjeto!);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<PdvVendaCabecalho> pObjeto, List<VendaDetalhe> listaVendaDetalhe, 
-  {List<PdvTotalTipoPagamento> listaDadosPagamento}) {
+  Future<bool> alterar(Insertable<PdvVendaCabecalho>? pObjeto, List<VendaDetalhe> listaVendaDetalhe, 
+  {List<PdvTotalTipoPagamento>? listaDadosPagamento}) {
     return transaction(() async {
-      await excluirFilhos(pObjeto as PdvVendaCabecalho);
-      await inserirFilhos(pObjeto as PdvVendaCabecalho, listaVendaDetalhe, listaDadosPagamento);
+      await excluirFilhos(pObjeto as PdvVendaCabecalho?);
+      await inserirFilhos(pObjeto, listaVendaDetalhe, listaDadosPagamento);
       if ((pObjeto as PdvVendaCabecalho).statusVenda == 'F') {
         await db.produtoDao.decrementarEstoque(listaVendaDetalhe: listaVendaDetalhe);
       }
@@ -206,9 +208,9 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
     });    
   } 
 
-  Future<bool> cancelarVenda(PdvVendaCabecalho pdvVendaCabecalho) {
+  Future<bool> cancelarVenda(PdvVendaCabecalho? pdvVendaCabecalho) {
     return transaction(() async {
-      final listaVendaDetalhe = await db.pdvVendaDetalheDao.consultarListaComProduto(pdvVendaCabecalho.id);
+      final listaVendaDetalhe = await db.pdvVendaDetalheDao.consultarListaComProduto(pdvVendaCabecalho!.id);
       await db.produtoDao.incrementarEstoque(listaVendaDetalhe: listaVendaDetalhe);
       await db.contasReceberDao.excluirReceitasDeUmaVenda(pdvVendaCabecalho.id);
       return update(pdvVendaCabecalhos).replace(pdvVendaCabecalho);
@@ -222,24 +224,24 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
     });    
   }
 
-  Future<void> inserirFilhos(PdvVendaCabecalho pdvVendaCabecalho, List<VendaDetalhe> listaVendaDetalhe, List<PdvTotalTipoPagamento> listaDadosPagamento) async {
+  Future<void> inserirFilhos(PdvVendaCabecalho? pdvVendaCabecalho, List<VendaDetalhe> listaVendaDetalhe, List<PdvTotalTipoPagamento>? listaDadosPagamento) async {
     // items da venda
     for (var objeto in listaVendaDetalhe) {
-      objeto.pdvVendaDetalhe = objeto.pdvVendaDetalhe.copyWith(idPdvVendaCabecalho: pdvVendaCabecalho.id);
-      await into(pdvVendaDetalhes).insert(objeto.pdvVendaDetalhe);  
+      objeto.pdvVendaDetalhe = objeto.pdvVendaDetalhe!.copyWith(idPdvVendaCabecalho: pdvVendaCabecalho!.id);
+      await into(pdvVendaDetalhes).insert(objeto.pdvVendaDetalhe!);  
     }
     // pagamentos
     if (listaDadosPagamento != null) {
       for (var objeto in listaDadosPagamento) {
-        objeto = objeto.copyWith(idPdvVendaCabecalho: pdvVendaCabecalho.id);
+        objeto = objeto.copyWith(idPdvVendaCabecalho: pdvVendaCabecalho!.id);
         await into(pdvTotalTipoPagamentos).insert(objeto);  
       }
     }
   }
   
-  Future<void> excluirFilhos(PdvVendaCabecalho pdvVendaCabecalho) async {
-    await (delete(pdvVendaDetalhes)..where((t) => t.idPdvVendaCabecalho.equals(pdvVendaCabecalho.id))).go();
-    await (delete(pdvTotalTipoPagamentos)..where((t) => t.idPdvVendaCabecalho.equals(pdvVendaCabecalho.id))).go();
+  Future<void> excluirFilhos(PdvVendaCabecalho? pdvVendaCabecalho) async {
+    await (delete(pdvVendaDetalhes)..where((t) => t.idPdvVendaCabecalho.equals(pdvVendaCabecalho!.id))).go();
+    await (delete(pdvTotalTipoPagamentos)..where((t) => t.idPdvVendaCabecalho.equals(pdvVendaCabecalho!.id))).go();
   }
 
 	static List<String> campos = <String>[

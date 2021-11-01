@@ -37,19 +37,20 @@ import 'package:moor/moor.dart';
 
 @DataClassName("EcfR06")
 class EcfR06s extends Table {
+  @override
   String get tableName => 'ECF_R06';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idPdvOperador => integer().named('ID_PDV_OPERADOR').nullable().customConstraint('NULLABLE REFERENCES PDV_OPERADOR(ID)')();
-  IntColumn get idEcfImpressora => integer().named('ID_ECF_IMPRESSORA').nullable().customConstraint('NULLABLE REFERENCES ECF_IMPRESSORA(ID)')();
-  IntColumn get idEcfCaixa => integer().named('ID_ECF_CAIXA').nullable().customConstraint('NULLABLE REFERENCES ECF_CAIXA(ID)')();
-  TextColumn get serieEcf => text().named('SERIE_ECF').withLength(min: 0, max: 20).nullable()();
-  IntColumn get coo => integer().named('COO').nullable()();
-  IntColumn get gnf => integer().named('GNF').nullable()();
-  IntColumn get grg => integer().named('GRG').nullable()();
-  IntColumn get cdc => integer().named('CDC').nullable()();
-  TextColumn get denominacao => text().named('DENOMINACAO').withLength(min: 0, max: 2).nullable()();
-  DateTimeColumn get dataEmissao => dateTime().named('DATA_EMISSAO').nullable()();
-  TextColumn get horaEmissao => text().named('HORA_EMISSAO').withLength(min: 0, max: 8).nullable()();
-  TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idPdvOperador => integer().named('ID_PDV_OPERADOR').nullable().customConstraint('NULLABLE REFERENCES PDV_OPERADOR(ID)')() as Column<int>?;
+  IntColumn? get idEcfImpressora => integer().named('ID_ECF_IMPRESSORA').nullable().customConstraint('NULLABLE REFERENCES ECF_IMPRESSORA(ID)')() as Column<int>?;
+  IntColumn? get idEcfCaixa => integer().named('ID_ECF_CAIXA').nullable().customConstraint('NULLABLE REFERENCES ECF_CAIXA(ID)')() as Column<int>?;
+  TextColumn? get serieEcf => text().named('SERIE_ECF').withLength(min: 0, max: 20).nullable()() as Column<String>?;
+  IntColumn? get coo => integer().named('COO').nullable()() as Column<int>?;
+  IntColumn? get gnf => integer().named('GNF').nullable()() as Column<int>?;
+  IntColumn? get grg => integer().named('GRG').nullable()() as Column<int>?;
+  IntColumn? get cdc => integer().named('CDC').nullable()() as Column<int>?;
+  TextColumn? get denominacao => text().named('DENOMINACAO').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  DateTimeColumn? get dataEmissao => dateTime().named('DATA_EMISSAO').nullable()() as Column<DateTime>?;
+  TextColumn? get horaEmissao => text().named('HORA_EMISSAO').withLength(min: 0, max: 8).nullable()() as Column<String>?;
+  TextColumn? get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()() as Column<String>?;
 }

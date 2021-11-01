@@ -37,25 +37,26 @@ import 'package:moor/moor.dart';
 
 @DataClassName("NfeTransporte")
 class NfeTransportes extends Table {
+  @override
   String get tableName => 'NFE_TRANSPORTE';
 
-  IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')();
-  TextColumn get modalidadeFrete => text().named('MODALIDADE_FRETE').withLength(min: 0, max: 1).nullable()();
-  TextColumn get cnpj => text().named('CNPJ').withLength(min: 0, max: 14).nullable()();
-  TextColumn get cpf => text().named('CPF').withLength(min: 0, max: 11).nullable()();
-  TextColumn get nome => text().named('NOME').withLength(min: 0, max: 60).nullable()();
-  TextColumn get inscricaoEstadual => text().named('INSCRICAO_ESTADUAL').withLength(min: 0, max: 14).nullable()();
-  TextColumn get endereco => text().named('ENDERECO').withLength(min: 0, max: 60).nullable()();
-  TextColumn get nomeMunicipio => text().named('NOME_MUNICIPIO').withLength(min: 0, max: 60).nullable()();
-  TextColumn get uf => text().named('UF').withLength(min: 0, max: 2).nullable()();
-  RealColumn get valorServico => real().named('VALOR_SERVICO').nullable()();
-  RealColumn get valorBcRetencaoIcms => real().named('VALOR_BC_RETENCAO_ICMS').nullable()();
-  RealColumn get aliquotaRetencaoIcms => real().named('ALIQUOTA_RETENCAO_ICMS').nullable()();
-  RealColumn get valorIcmsRetido => real().named('VALOR_ICMS_RETIDO').nullable()();
-  IntColumn get cfop => integer().named('CFOP').nullable()();
-  IntColumn get municipio => integer().named('MUNICIPIO').nullable()();
-  TextColumn get placaVeiculo => text().named('PLACA_VEICULO').withLength(min: 0, max: 7).nullable()();
-  TextColumn get ufVeiculo => text().named('UF_VEICULO').withLength(min: 0, max: 2).nullable()();
-  TextColumn get rntcVeiculo => text().named('RNTC_VEICULO').withLength(min: 0, max: 20).nullable()();
+  IntColumn? get id => integer().named('ID').autoIncrement()();
+  IntColumn? get idNfeCabecalho => integer().named('ID_NFE_CABECALHO').nullable().customConstraint('NULLABLE REFERENCES NFE_CABECALHO(ID)')() as Column<int>?;
+  TextColumn? get modalidadeFrete => text().named('MODALIDADE_FRETE').withLength(min: 0, max: 1).nullable()() as Column<String>?;
+  TextColumn? get cnpj => text().named('CNPJ').withLength(min: 0, max: 14).nullable()() as Column<String>?;
+  TextColumn? get cpf => text().named('CPF').withLength(min: 0, max: 11).nullable()() as Column<String>?;
+  TextColumn? get nome => text().named('NOME').withLength(min: 0, max: 60).nullable()() as Column<String>?;
+  TextColumn? get inscricaoEstadual => text().named('INSCRICAO_ESTADUAL').withLength(min: 0, max: 14).nullable()() as Column<String>?;
+  TextColumn? get endereco => text().named('ENDERECO').withLength(min: 0, max: 60).nullable()() as Column<String>?;
+  TextColumn? get nomeMunicipio => text().named('NOME_MUNICIPIO').withLength(min: 0, max: 60).nullable()() as Column<String>?;
+  TextColumn? get uf => text().named('UF').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  RealColumn? get valorServico => real().named('VALOR_SERVICO').nullable()() as Column<double>?;
+  RealColumn? get valorBcRetencaoIcms => real().named('VALOR_BC_RETENCAO_ICMS').nullable()() as Column<double>?;
+  RealColumn? get aliquotaRetencaoIcms => real().named('ALIQUOTA_RETENCAO_ICMS').nullable()() as Column<double>?;
+  RealColumn? get valorIcmsRetido => real().named('VALOR_ICMS_RETIDO').nullable()() as Column<double>?;
+  IntColumn? get cfop => integer().named('CFOP').nullable()() as Column<int>?;
+  IntColumn? get municipio => integer().named('MUNICIPIO').nullable()() as Column<int>?;
+  TextColumn? get placaVeiculo => text().named('PLACA_VEICULO').withLength(min: 0, max: 7).nullable()() as Column<String>?;
+  TextColumn? get ufVeiculo => text().named('UF_VEICULO').withLength(min: 0, max: 2).nullable()() as Column<String>?;
+  TextColumn? get rntcVeiculo => text().named('RNTC_VEICULO').withLength(min: 0, max: 20).nullable()() as Column<String>?;
 }
