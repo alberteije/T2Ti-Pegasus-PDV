@@ -54,11 +54,11 @@ import 'package:fenix/src/view/shared/botoes.dart';
 {{/imports}}
 
 class {{class}}PersistePage extends StatefulWidget {
-  final {{class}} {{objetoPrincipal}};
-  final String title;
-  final String operacao;
+  final {{class}}? {{objetoPrincipal}};
+  final String? title;
+  final String? operacao;
 
-  const {{class}}PersistePage({Key key, this.{{objetoPrincipal}}, this.title, this.operacao})
+  const {{class}}PersistePage({Key? key, this.{{objetoPrincipal}}, this.title, this.operacao})
       : super(key: key);
 
   @override
@@ -70,10 +70,10 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   bool _formFoiAlterado = false;
-  var _{{objetoPrincipal}}Provider;
+  late {{class}}ViewModel _{{objetoPrincipal}}Provider;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -120,10 +120,10 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
         child: Scaffold(drawerDragStartBehavior: DragStartBehavior.down,
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text(widget.title), 
+            title: Text(widget.title!), 
             actions: widget.operacao == "I"
-			  ? getBotoesAppBarPersistePage(context: context, salvar: _salvar,)
-			  : getBotoesAppBarPersistePageComExclusao(context: context, salvar: _salvar, excluir: _excluir),
+              ? getBotoesAppBarPersistePage(context: context, salvar: _salvar,)
+              : getBotoesAppBarPersistePageComExclusao(context: context, salvar: _salvar, excluir: _excluir),
           ),      
           body: SafeArea(
             top: false,
@@ -135,10 +135,10 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
               child: Scrollbar(
                 child: SingleChildScrollView(
                   dragStartBehavior: DragStartBehavior.down,
-				  child: BootstrapContainer(
+                  child: BootstrapContainer(
                     fluid: true,
-                    decoration: BoxDecoration(color: Colors.white),
-					padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
+                    decoration: const BoxDecoration(color: Colors.white),
+                    padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                     children: <Widget>[
                       {{#inputLookup}}
                       {{{.}}}
@@ -146,7 +146,7 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
                       {{#inputNormal}}
                       {{{.}}}
                       {{/inputNormal}}				
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
@@ -160,7 +160,7 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
                           ),
                         ],
                       ),
-                      Divider(color: Colors.white,),
+                      const Divider(color: Colors.white,),
                     ],        
                   ),
                 ),
@@ -173,7 +173,7 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
   }
 
   Future<void> _salvar() async {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (!form.validate()) {
       _autoValidate = AutovalidateMode.always;
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
@@ -181,26 +181,29 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
         form.save();
         if (widget.operacao == 'A') {
-          await _{{objetoPrincipal}}Provider.alterar(widget.{{objetoPrincipal}});
+          await _{{objetoPrincipal}}Provider.alterar(widget.{{objetoPrincipal}}!);
         } else {
-          await _{{objetoPrincipal}}Provider.inserir(widget.{{objetoPrincipal}});
+          await _{{objetoPrincipal}}Provider.inserir(widget.{{objetoPrincipal}}!);
         }
         Navigator.of(context).pop();
-		showInSnackBar("Registro salvo com sucesso!", context, corFundo: Colors.green);
+        showInSnackBar("Registro salvo com sucesso!", context, corFundo: Colors.green);
       });
     }
   }
 
   Future<bool> _avisarUsuarioFormAlterado() async {
-    final FormState form = _formKey.currentState;
-    if (form == null || !_formFoiAlterado) return true;
-
-    return await gerarDialogBoxFormAlterado(context);
+    final FormState? form = _formKey.currentState;
+    if (form == null || !_formFoiAlterado) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
   }
   
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-      await _{{objetoPrincipal}}Provider.excluir(widget.{{objetoPrincipal}}.id);
+      await _{{objetoPrincipal}}Provider.excluir(widget.{{objetoPrincipal}}!.id!);
       Navigator.of(context).pop();
       showInSnackBar("Registro excluído com sucesso!", context, corFundo: Colors.green);
     });

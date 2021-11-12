@@ -53,13 +53,13 @@ import 'package:fenix/src/view/shared/botoes.dart';
 {{/imports}}
 
 class {{class}}PersistePage extends StatefulWidget {
-  final {{classeMestre}} {{objetoMestre}};
-  final {{class}} {{objetoPrincipal}};
-  final String title;
-  final String operacao;
+  final {{classeMestre}}? {{objetoMestre}};
+  final {{class}}? {{objetoPrincipal}};
+  final String? title;
+  final String? operacao;
 
   const {{class}}PersistePage(
-      {Key key, this.{{objetoMestre}}, this.{{objetoPrincipal}}, this.title, this.operacao})
+      {Key? key, this.{{objetoMestre}}, this.{{objetoPrincipal}}, this.title, this.operacao})
       : super(key: key);
 
   @override
@@ -72,8 +72,8 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   bool _formFoiAlterado = false;
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -116,7 +116,7 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
           drawerDragStartBehavior: DragStartBehavior.down,
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text(widget.title), 
+            title: Text(widget.title!), 
             actions: widget.operacao == 'I'
               ? getBotoesAppBarPersistePage(context: context, salvar: _salvar)
               : getBotoesAppBarPersistePageComExclusao(context: context, salvar: _salvar, excluir: _excluir),
@@ -133,7 +133,7 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
                     dragStartBehavior: DragStartBehavior.down,
                     child: BootstrapContainer(
                       fluid: true,
-                      decoration: BoxDecoration(color: Colors.white),
+                      decoration: const BoxDecoration(color: Colors.white),
                       padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                       children: <Widget>[			  			  
                         {{#inputLookup}}
@@ -142,7 +142,7 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
                         {{#inputNormal}}
                         {{{.}}}
                         {{/inputNormal}}				
-                        Divider(color: Colors.white,),
+                        const Divider(color: Colors.white,),
                         BootstrapRow(
                           height: 60,
                           children: <BootstrapCol>[
@@ -155,7 +155,7 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
                             ),
                           ],
                         ),
-                        Divider(color: Colors.white,),
+                        const Divider(color: Colors.white,),
                       ],
                     ),
                   ),
@@ -168,7 +168,7 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
   }
 
   Future<void> _salvar() async {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (!form.validate()) {
       _autoValidate = AutovalidateMode.always;
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
@@ -180,15 +180,18 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
   
   void _excluir() {
     gerarDialogBoxExclusao(context, () {
-      widget.{{objetoMestre}}.lista{{class}}.remove(widget.{{objetoPrincipal}});
+      widget.{{objetoMestre}}!.lista{{class}}!.remove(widget.{{objetoPrincipal}});
       Navigator.of(context).pop();
     });
   }
   
   Future<bool> _avisarUsuarioFormAlterado() async {
-    final FormState form = _formKey.currentState;
-    if (form == null || !_formFoiAlterado) return true;
-
-    return await gerarDialogBoxFormAlterado(context);
+    final FormState? form = _formKey.currentState;
+    if (form == null || !_formFoiAlterado) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
   }
 }

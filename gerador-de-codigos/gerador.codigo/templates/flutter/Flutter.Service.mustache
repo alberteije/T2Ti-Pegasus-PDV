@@ -46,16 +46,16 @@ import 'package:fenix/src/model/model.dart';
 class {{class}}Service extends ServiceBase {
   var clienteHTTP = Client();
 
-  Future<List<{{class}}>> consultarLista({Filtro filtro}) async {
+  Future<List<{{class}}>?> consultarLista({Filtro? filtro}) async {
     List<{{class}}> lista{{class}} = [];
 
     try {
       tratarFiltro(filtro, '/{{path}}/');
 	  	
-      final response = await clienteHTTP.get(Uri.tryParse(url), headers: ServiceBase.cabecalhoRequisicao);
+      final response = await clienteHTTP.get(Uri.tryParse(url)!, headers: ServiceBase.cabecalhoRequisicao);
 
       if (response.statusCode == 200) {
-        if (response.headers["content-type"].contains("html")) {
+        if (response.headers["content-type"]!.contains("html")) {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
@@ -71,16 +71,16 @@ class {{class}}Service extends ServiceBase {
       }
     } on Exception catch (e) {
       tratarRetornoErro(null, null, exception: e);
+      return null;
     }
-    return null;
   }
 
-  Future<{{class}}> consultarObjeto(int id) async {
+  Future<{{class}}?> consultarObjeto(int id) async {
     try {
-      final response = await clienteHTTP.get(Uri.tryParse('$endpoint/{{path}}/$id'), headers: ServiceBase.cabecalhoRequisicao);
+      final response = await clienteHTTP.get(Uri.tryParse('$endpoint/{{path}}/$id')!, headers: ServiceBase.cabecalhoRequisicao);
 
       if (response.statusCode == 200) {
-        if (response.headers["content-type"].contains("html")) {
+        if (response.headers["content-type"]!.contains("html")) {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
@@ -93,20 +93,20 @@ class {{class}}Service extends ServiceBase {
       }
     } on Exception catch (e) {
       tratarRetornoErro(null, null, exception: e);
+      return null;
     }
-    return null;
   }
 
-  Future<{{class}}> inserir({{class}} {{objetoPrincipal}}) async {
+  Future<{{class}}?> inserir({{class}} {{objetoPrincipal}}) async {
     try {
       final response = await clienteHTTP.post(
-        Uri.tryParse('$endpoint/{{path}}'),
+        Uri.tryParse('$endpoint/{{path}}')!,
         headers: ServiceBase.cabecalhoRequisicao,
         body: {{objetoPrincipal}}.objetoEncodeJson({{objetoPrincipal}}),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        if (response.headers["content-type"].contains("html")) {
+        if (response.headers["content-type"]!.contains("html")) {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
@@ -119,21 +119,21 @@ class {{class}}Service extends ServiceBase {
       }
     } on Exception catch (e) {
       tratarRetornoErro(null, null, exception: e);
+      return null;
     }
-    return null;
   }
 
-  Future<{{class}}> alterar({{class}} {{objetoPrincipal}}) async {
+  Future<{{class}}?> alterar({{class}} {{objetoPrincipal}}) async {
     try {
       var id = {{objetoPrincipal}}.id;
       final response = await clienteHTTP.put(
-        Uri.tryParse('$endpoint/{{path}}/$id'),
+        Uri.tryParse('$endpoint/{{path}}/$id')!,
         headers: ServiceBase.cabecalhoRequisicao,
         body: {{objetoPrincipal}}.objetoEncodeJson({{objetoPrincipal}}),
       );
 
       if (response.statusCode == 200) {
-        if (response.headers["content-type"].contains("html")) {
+        if (response.headers["content-type"]!.contains("html")) {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
@@ -146,14 +146,14 @@ class {{class}}Service extends ServiceBase {
       }
     } on Exception catch (e) {
       tratarRetornoErro(null, null, exception: e);
+      return null;
     }
-    return null;
   }
 
-  Future<bool> excluir(int id) async {
+  Future<bool?> excluir(int id) async {
     try {
       final response = await clienteHTTP.delete(
-        Uri.tryParse('$endpoint/{{path}}/$id'),
+        Uri.tryParse('$endpoint/{{path}}/$id')!,
         headers: ServiceBase.cabecalhoRequisicao,
       );
 
@@ -165,16 +165,16 @@ class {{class}}Service extends ServiceBase {
       }
     } on Exception catch (e) {
       tratarRetornoErro(null, null, exception: e);
+      return null;
     }
-    return null;
   }
   
-  Future<Uint8List> visualizarPdf({Filtro filtro}) async {
+  Future<Uint8List?> visualizarPdf({Filtro? filtro}) async {
     try {
       tratarFiltroRelatorio(filtro, '{{class}}');
-      final response = await clienteHTTP.get(Uri.tryParse(urlRelatorios));
+      final response = await clienteHTTP.get(Uri.tryParse(urlRelatorios)!);
       if (response.statusCode == 200) {
-        if (response.headers["content-type"].contains("html")) {
+        if (response.headers["content-type"]!.contains("html")) {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
@@ -187,11 +187,11 @@ class {{class}}Service extends ServiceBase {
       }
     } on Exception catch (e) {
       tratarRetornoErro(null, null, exception: e);
+      return null;
     }
-    return null;
   }
 
-  Future<void> visualizarPdfWeb({Filtro filtro}) async {
+  Future<void> visualizarPdfWeb({Filtro? filtro}) async {
     try {
       tratarFiltroRelatorio(filtro, '{{class}}');
       visualizarRelatorioPdfWeb(filtro, 'Relatório {{tituloRelatorio}}');

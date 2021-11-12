@@ -87,7 +87,7 @@ class {{class}} {
 	}
 
 	Map<String, dynamic> get toJson {
-		Map<String, dynamic> jsonDados = Map<String, dynamic>();
+		Map<String, dynamic> jsonDados = <String, dynamic>{};
 
 		{{#atributToJson}}
 		{{{.}}}

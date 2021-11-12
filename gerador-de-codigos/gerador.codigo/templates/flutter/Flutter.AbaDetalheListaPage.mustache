@@ -34,7 +34,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 
 import 'package:fenix/src/infra/constantes.dart';
 
@@ -51,19 +50,19 @@ import 'package:fenix/src/infra/atalhos_desktop_web.dart';
 import '{{nomeArquivo}}_persiste_page.dart';
 
 class {{class}}ListaPage extends StatefulWidget {
-  final {{classeMestre}} {{objetoMestre}};
-  final FocusNode foco;
-  final Function salvar{{classeMestre}}CallBack;
+  final {{classeMestre}}? {{objetoMestre}};
+  final FocusNode? foco;
+  final Function? salvar{{classeMestre}}CallBack;
 
-  const {{class}}ListaPage({Key key, this.{{objetoMestre}}, this.foco, this.salvar{{classeMestre}}CallBack}) : super(key: key);
+  const {{class}}ListaPage({Key? key, this.{{objetoMestre}}, this.foco, this.salvar{{classeMestre}}CallBack}) : super(key: key);
 
   @override
   _{{class}}ListaPageState createState() => _{{class}}ListaPageState();
 }
 
 class _{{class}}ListaPageState extends State<{{class}}ListaPage> {
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
 
   @override
   void initState() {
@@ -83,7 +82,7 @@ class _{{class}}ListaPageState extends State<{{class}}ListaPage> {
         _inserir();
         break;
       case AtalhoTelaType.salvar:
-        widget.salvar{{classeMestre}}CallBack();
+        widget.salvar{{classeMestre}}CallBack!();
         break;
       default:
         break;
@@ -130,7 +129,7 @@ class _{{class}}ListaPageState extends State<{{class}}ListaPage> {
 
   void _inserir() {
     var _{{objetoPrincipal}} = {{class}}();
-    widget.{{objetoMestre}}.lista{{class}}.add(_{{objetoPrincipal}});
+    widget.{{objetoMestre}}!.lista{{class}}!.add(_{{objetoPrincipal}});
     Navigator.of(context)
       .push(MaterialPageRoute(
         builder: (BuildContext context) =>
@@ -142,7 +141,7 @@ class _{{class}}ListaPageState extends State<{{class}}ListaPage> {
       .then((_) {
         setState(() {
           if (_{{objetoPrincipal}}.nome == null) { // se esse atributo estiver vazio, o objeto será removido
-            widget.{{objetoMestre}}.lista{{class}}.remove(_{{objetoPrincipal}});
+            widget.{{objetoMestre}}!.lista{{class}}!.remove(_{{objetoPrincipal}});
           }
           _getRows();
         });
@@ -151,7 +150,7 @@ class _{{class}}ListaPageState extends State<{{class}}ListaPage> {
   
   List<DataColumn> _getColumns() {
     List<DataColumn> lista = [];
-    lista.add(DataColumn(numeric: true, label: Text('Id')));
+    lista.add(const DataColumn(numeric: true, label: Text('Id')));
     {{#dataColumn}}
     {{{.}}}
     {{/dataColumn}}
@@ -159,11 +158,11 @@ class _{{class}}ListaPageState extends State<{{class}}ListaPage> {
   }
 
   List<DataRow> _getRows() {
-    if (widget.{{objetoMestre}}.lista{{class}} == null) {
-      widget.{{objetoMestre}}.lista{{class}} = [];
+    if (widget.{{objetoMestre}}!.lista{{class}} == null) {
+      widget.{{objetoMestre}}!.lista{{class}} = [];
     }
     List<DataRow> lista = [];
-    for (var {{objetoPrincipal}} in widget.{{objetoMestre}}.lista{{class}}) {
+    for (var {{objetoPrincipal}} in widget.{{objetoMestre}}!.lista{{class}}!) {
       List<DataCell> _celulas = [];
 
       _celulas = [
@@ -180,7 +179,7 @@ class _{{class}}ListaPageState extends State<{{class}}ListaPage> {
     return lista;
   }
 
-  void _detalhar{{class}}({{classeMestre}} {{objetoMestre}}, {{class}} {{objetoPrincipal}}, BuildContext context) {
+  void _detalhar{{class}}({{classeMestre}}? {{objetoMestre}}, {{class}} {{objetoPrincipal}}, BuildContext context) {
         Navigator.of(context)
           .push(MaterialPageRoute(
             builder: (BuildContext context) => {{class}}PersistePage(

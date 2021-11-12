@@ -51,14 +51,14 @@ import 'package:fenix/src/infra/atalhos_desktop_web.dart';
 {{/imports}}
 
 class {{class}}PersistePage extends StatefulWidget {
-  final {{classeMestre}} {{objetoMestre}};
-  final GlobalKey<FormState> formKey;
-  final GlobalKey<ScaffoldState> scaffoldKey;
-  final FocusNode foco;
-  final Function salvar{{classeMestre}}CallBack;
+  final {{classeMestre}}? {{objetoMestre}};
+  final GlobalKey<FormState>? formKey;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
+  final FocusNode? foco;
+  final Function? salvar{{classeMestre}}CallBack;
 
   const {{class}}PersistePage(
-      {Key key, this.formKey, this.scaffoldKey, this.{{objetoMestre}}, this.foco, this.salvar{{classeMestre}}CallBack})
+      {Key? key, this.formKey, this.scaffoldKey, this.{{objetoMestre}}, this.foco, this.salvar{{classeMestre}}CallBack})
       : super(key: key);
 
   @override
@@ -66,8 +66,8 @@ class {{class}}PersistePage extends StatefulWidget {
 }
 
 class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
 
   @override
@@ -90,7 +90,7 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
     switch (intent.type) {
       case AtalhoTelaType.salvar:
-        widget.salvar{{classeMestre}}CallBack();
+        widget.salvar{{classeMestre}}CallBack!();
         break;
       default:
         break;
@@ -103,8 +103,8 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
     {{{.}}}
     {{/inputController}}
 	
-    if (widget.{{objetoMestre}}.{{objetoPrincipal}} == null) {
-      widget.{{objetoMestre}}.{{objetoPrincipal}} = {{class}}();
+    if (widget.{{objetoMestre}}!.{{objetoPrincipal}} == null) {
+      widget.{{objetoMestre}}!.{{objetoPrincipal}} = {{class}}();
     }
 
     return FocusableActionDetector(
@@ -126,7 +126,7 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
                   padding: ViewUtilLib.paddingAbaPersistePage,
                   child: BootstrapContainer(
 					fluid: true,
-					decoration: BoxDecoration(color: Colors.white),
+					decoration: const BoxDecoration(color: Colors.white),
 					padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
 					children: <Widget>[			  			  
 					  {{#inputLookup}}
@@ -135,7 +135,7 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
 					  {{#inputNormal}}
 					  {{{.}}}
 					  {{/inputNormal}}				
-					  Divider(color: Colors.white,),
+					  const Divider(color: Colors.white,),
 					  BootstrapRow(
 						height: 60,
 						children: <BootstrapCol>[
@@ -149,7 +149,7 @@ class _{{class}}PersistePageState extends State<{{class}}PersistePage> {
 						  ),
 						],
 					  ),
-					  Divider(color: Colors.white,),
+					  const Divider(color: Colors.white,),
 					],
                   ),
                 ),

@@ -43,53 +43,53 @@ import 'package:fenix/src/model/retorno_json_erro.dart';
 import 'package:fenix/src/service/service.dart';
 
 class {{class}}ViewModel extends ChangeNotifier {
-  {{class}}Service _{{objetoPrincipal}}Service = locator<{{class}}Service>();
-  List<{{class}}> lista{{class}};
-  {{class}} {{objetoPrincipal}};
-  RetornoJsonErro objetoJsonErro;
+  final {{class}}Service? _{{objetoPrincipal}}Service = locator<{{class}}Service>();
+  List<{{class}}>? lista{{class}};
+  {{class}}? {{objetoPrincipal}};
+  RetornoJsonErro? objetoJsonErro;
 
   {{class}}ViewModel();
 
-  Future<List<{{class}}>> consultarLista({Filtro filtro}) async {
-    lista{{class}} = await _{{objetoPrincipal}}Service.consultarLista(filtro: filtro);
+  Future<List<{{class}}>?> consultarLista({Filtro? filtro}) async {
+    lista{{class}} = await _{{objetoPrincipal}}Service!.consultarLista(filtro: filtro);
     if (lista{{class}} == null) {
-      objetoJsonErro = _{{objetoPrincipal}}Service.objetoJsonErro;
+      objetoJsonErro = _{{objetoPrincipal}}Service!.objetoJsonErro;
     }
     notifyListeners();
     return lista{{class}};
   }
 
-  Future<{{class}}> consultarObjeto(int id) async {
-    {{objetoPrincipal}} = await _{{objetoPrincipal}}Service.consultarObjeto(id);
+  Future<{{class}}?> consultarObjeto(int id) async {
+    {{objetoPrincipal}} = await _{{objetoPrincipal}}Service!.consultarObjeto(id);
     if ({{objetoPrincipal}} == null) {
-      objetoJsonErro = _{{objetoPrincipal}}Service.objetoJsonErro;
+      objetoJsonErro = _{{objetoPrincipal}}Service!.objetoJsonErro;
     }
     notifyListeners();
     return {{objetoPrincipal}};
   }
 
-  Future<{{class}}> inserir({{class}} {{objetoPrincipal}}) async {
-    var result = await _{{objetoPrincipal}}Service.inserir({{objetoPrincipal}});
+  Future<{{class}}?> inserir({{class}} {{objetoPrincipal}}) async {
+    var result = await _{{objetoPrincipal}}Service!.inserir({{objetoPrincipal}});
     if (result == null) {
-      objetoJsonErro = _{{objetoPrincipal}}Service.objetoJsonErro;
+      objetoJsonErro = _{{objetoPrincipal}}Service!.objetoJsonErro;
     }
     notifyListeners();
     return result;
   }
 
-  Future<{{class}}> alterar({{class}} {{objetoPrincipal}}) async {
-    var result = await _{{objetoPrincipal}}Service.alterar({{objetoPrincipal}});
+  Future<{{class}}?> alterar({{class}} {{objetoPrincipal}}) async {
+    var result = await _{{objetoPrincipal}}Service!.alterar({{objetoPrincipal}});
     if (result == null) {
-      objetoJsonErro = _{{objetoPrincipal}}Service.objetoJsonErro;
+      objetoJsonErro = _{{objetoPrincipal}}Service!.objetoJsonErro;
     }
     notifyListeners();
     return result;
   }
 
-  Future<bool> excluir(int id) async {
-    var result = await _{{objetoPrincipal}}Service.excluir(id);
+  Future<bool?> excluir(int id) async {
+    var result = await _{{objetoPrincipal}}Service!.excluir(id);
     if (result == false) {
-      objetoJsonErro = _{{objetoPrincipal}}Service.objetoJsonErro;
+      objetoJsonErro = _{{objetoPrincipal}}Service!.objetoJsonErro;
       notifyListeners();
     } else {
       consultarLista();
@@ -97,17 +97,17 @@ class {{class}}ViewModel extends ChangeNotifier {
     return result;
   }
   
-  Future<Uint8List> visualizarPdf({Filtro filtro}) async {
-    var result = await _{{objetoPrincipal}}Service.visualizarPdf(filtro: filtro);
+  Future<Uint8List?> visualizarPdf({Filtro? filtro}) async {
+    var result = await _{{objetoPrincipal}}Service!.visualizarPdf(filtro: filtro);
     if (result == null) {
-      objetoJsonErro = _{{objetoPrincipal}}Service.objetoJsonErro;
+      objetoJsonErro = _{{objetoPrincipal}}Service!.objetoJsonErro;
     }
     notifyListeners();
     return result;
   }
 
-  Future<void> visualizarPdfWeb({Filtro filtro}) async {
-    await _{{objetoPrincipal}}Service.visualizarPdfWeb(filtro: filtro);
+  Future<void> visualizarPdfWeb({Filtro? filtro}) async {
+    await _{{objetoPrincipal}}Service!.visualizarPdfWeb(filtro: filtro);
   }
   
 }

@@ -39,7 +39,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 
-import 'package:fenix/src/infra/constantes.dart';
+import 'package:fenix/src/infra/infra.dart';
 import 'package:fenix/src/infra/atalhos_desktop_web.dart';
 
 import 'package:fenix/src/model/model.dart';
@@ -58,17 +58,17 @@ List<Aba> _todasAsAbas = <Aba>[];
 List<Aba> _getAbasAtivas() {
   List<Aba> retorno = [];
   for (var item in _todasAsAbas) {
-    if (item.visible) retorno.add(item);
+    if (item.visible!) retorno.add(item);
   }
   return retorno;
 }
 
 class {{class}}Page extends StatefulWidget {
-  final {{class}} {{objetoPrincipal}};
-  final String title;
-  final String operacao;
+  final {{class}}? {{objetoPrincipal}};
+  final String? title;
+  final String? operacao;
 
-  {{class}}Page({this.{{objetoPrincipal}}, this.title, this.operacao, Key key})
+  const {{class}}Page({this.{{objetoPrincipal}}, this.title, this.operacao, Key? key})
       : super(key: key);
 
   @override
@@ -76,12 +76,12 @@ class {{class}}Page extends StatefulWidget {
 }
 
 class _{{class}}PageState extends State<{{class}}Page> with SingleTickerProviderStateMixin {
-  TabController _abasController;
+  TabController? _abasController;
   String _estiloBotoesAba = 'iconsAndText';
 
-  Map<LogicalKeySet, Intent> _shortcutMap; 
-  Map<Type, Action<Intent>> _actionMap;
-  FocusNode myFocusNode;
+  Map<LogicalKeySet, Intent>? _shortcutMap; 
+  Map<Type, Action<Intent>>? _actionMap;
+  FocusNode? myFocusNode;
   
   // {{class}}
   final GlobalKey<FormState> _{{objetoPrincipal}}PersisteFormKey = GlobalKey<FormState>();
@@ -96,7 +96,7 @@ class _{{class}}PageState extends State<{{class}}Page> with SingleTickerProvider
     super.initState();
     _atualizarAbas();
     _abasController = TabController(vsync: this, length: _getAbasAtivas().length);
-    _abasController.addListener(_salvarForms);
+    _abasController!.addListener(_salvarForms);
     paginaMestreDetalheFoiAlterada = false; // vamos controlar as alterações nas paginas filhas aqui para alertar ao usuario sobre possivel perda de dados
   
     bootstrapGridParameters(
@@ -116,8 +116,8 @@ class _{{class}}PageState extends State<{{class}}Page> with SingleTickerProvider
 
   @override
   void dispose() {
-    myFocusNode.dispose();
-    _abasController.dispose();
+    myFocusNode!.dispose();
+    _abasController!.dispose();
     super.dispose();
   }
   
@@ -139,7 +139,7 @@ class _{{class}}PageState extends State<{{class}}Page> with SingleTickerProvider
       child: Focus(
         autofocus: false, //o foco deve ser enviado para as páginas filhas e elas devem chamar o método salvar
         child: getScaffoldAbaPage(
-        widget.title,
+        widget.title!,
         context,
         _abasController,
         _getAbasAtivas(),
@@ -185,14 +185,14 @@ class _{{class}}PageState extends State<{{class}}Page> with SingleTickerProvider
   bool _salvarForms() {
 	  
     // valida e salva o form {{class}}Detalhe
-    FormState form{{class}} = _{{objetoPrincipal}}PersisteFormKey.currentState;
+    FormState? form{{class}} = _{{objetoPrincipal}}PersisteFormKey.currentState;
     if (form{{class}} != null) {
       if (!form{{class}}.validate()) {
-        _abasController.animateTo(0);
+        _abasController!.animateTo(0);
 		return false;
       } else {
         _{{objetoPrincipal}}PersisteFormKey.currentState?.save();
-		return true;
+        return true;
       }
     }
 
@@ -209,10 +209,10 @@ class _{{class}}PageState extends State<{{class}}Page> with SingleTickerProvider
 		gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
 		  var _{{objetoPrincipal}}Provider = Provider.of<{{class}}ViewModel>(context, listen: false);
 		  if (widget.operacao == 'A') {
-            await _{{objetoPrincipal}}Provider.alterar(widget.{{objetoPrincipal}});
+            await _{{objetoPrincipal}}Provider.alterar(widget.{{objetoPrincipal}}!);
             showInSnackBar("Registro alterado com sucesso.", context, corFundo: Colors.green);
 		  } else {
-            await _{{objetoPrincipal}}Provider.inserir(widget.{{objetoPrincipal}});
+            await _{{objetoPrincipal}}Provider.inserir(widget.{{objetoPrincipal}}!);
             showInSnackBar("Registro salvo com sucesso.", context, corFundo: Colors.green);
 		  }
 		  Navigator.pop(context);
@@ -226,7 +226,7 @@ class _{{class}}PageState extends State<{{class}}Page> with SingleTickerProvider
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
       var _{{objetoPrincipal}}Provider = Provider.of<{{class}}ViewModel>(context, listen: false);
-      await _{{objetoPrincipal}}Provider.excluir(widget.{{objetoPrincipal}}.id);
+      await _{{objetoPrincipal}}Provider.excluir(widget.{{objetoPrincipal}}!.id!);
       Navigator.of(context).pop();
       Navigator.of(context).pop();
   	  showInSnackBar("Registro excluído com sucesso!", context, corFundo: Colors.green);
@@ -239,12 +239,16 @@ class _{{class}}PageState extends State<{{class}}Page> with SingleTickerProvider
     });
   }
 
-  Decoration _getIndicator() {
+  Decoration? _getIndicator() {
     return getShapeDecorationAbaPage(_estiloBotoesAba);
   }
 
   Future<bool> _avisarUsuarioAlteracoesNaPagina() async {
-    if (!paginaMestreDetalheFoiAlterada) return true;
-    return await gerarDialogBoxFormAlterado(context);
+    if (!paginaMestreDetalheFoiAlterada) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
   }
 }
