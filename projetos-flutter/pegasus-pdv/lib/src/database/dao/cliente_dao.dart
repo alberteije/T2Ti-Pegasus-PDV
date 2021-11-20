@@ -65,26 +65,26 @@ class ClienteDao extends DatabaseAccessor<AppDatabase> with _$ClienteDaoMixin {
 
   Stream<List<Cliente>> observarLista() => select(clientes).watch();
 
-  Future<Cliente?> consultarObjeto(int? pId) {
+  Future<Cliente?> consultarObjeto(int pId) {
     return (select(clientes)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<Cliente>? pObjeto) {
+  Future<int> inserir(Insertable<Cliente> pObjeto) {
     return transaction(() async {
-      final idInserido = await into(clientes).insert(pObjeto!);
+      final idInserido = await into(clientes).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Cliente>? pObjeto) {
+  Future<bool> alterar(Insertable<Cliente> pObjeto) {
     return transaction(() async {
-      return update(clientes).replace(pObjeto!);
+      return update(clientes).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<Cliente>? pObjeto) {
+  Future<int> excluir(Insertable<Cliente> pObjeto) {
     return transaction(() async {
-      return delete(clientes).delete(pObjeto!);
+      return delete(clientes).delete(pObjeto);
     });    
   }
 

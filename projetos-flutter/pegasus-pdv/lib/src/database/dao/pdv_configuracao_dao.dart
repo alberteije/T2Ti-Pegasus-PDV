@@ -70,9 +70,9 @@ class PdvConfiguracaoDao extends DatabaseAccessor<AppDatabase> with _$PdvConfigu
     });    
   } 
 
-  Future<bool> alterar(Insertable<PdvConfiguracao>? pObjeto) {
+  Future<bool> alterar(Insertable<PdvConfiguracao> pObjeto) {
     return transaction(() async {
-      return update(pdvConfiguracaos).replace(pObjeto!);
+      return update(pdvConfiguracaos).replace(pObjeto);
     });    
   } 
 

@@ -119,6 +119,8 @@ export 'package:pegasus_pdv/src/database/tabela/produto_ficha_tecnica.dart';
 export 'package:pegasus_pdv/src/database/dao/produto_ficha_tecnica_dao.dart';
 export 'package:pegasus_pdv/src/database/tabela/produto_promocao.dart';
 export 'package:pegasus_pdv/src/database/dao/produto_promocao_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/produto_tipo.dart';
+export 'package:pegasus_pdv/src/database/dao/produto_tipo_dao.dart';
 export 'package:pegasus_pdv/src/database/tabela/produto_unidade.dart';
 export 'package:pegasus_pdv/src/database/dao/produto_unidade_dao.dart';
 export 'package:pegasus_pdv/src/database/tabela/nfe_acesso_xml.dart';
@@ -191,3 +193,56 @@ export 'package:pegasus_pdv/src/database/dao/tribut_pis_dao.dart';
 
 export 'package:pegasus_pdv/src/database/tabela/nfce_plano_pagamento.dart';
 export 'package:pegasus_pdv/src/database/dao/nfce_plano_pagamento_dao.dart';
+
+export 'package:pegasus_pdv/src/database/tabela/cardapio.dart';
+export 'package:pegasus_pdv/src/database/dao/cardapio_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/cardapio_pergunta_padrao.dart';
+export 'package:pegasus_pdv/src/database/dao/cardapio_pergunta_padrao_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/cardapio_resposta_padrao.dart';
+export 'package:pegasus_pdv/src/database/dao/cardapio_resposta_padrao_dao.dart';
+
+export 'package:pegasus_pdv/src/database/tabela/comanda.dart';
+export 'package:pegasus_pdv/src/database/dao/comanda_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/comanda_detalhe.dart';
+export 'package:pegasus_pdv/src/database/dao/comanda_detalhe_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/comanda_observacao_padrao.dart';
+export 'package:pegasus_pdv/src/database/dao/comanda_observacao_padrao_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/comanda_pedido.dart';
+export 'package:pegasus_pdv/src/database/dao/comanda_pedido_dao.dart';
+
+export 'package:pegasus_pdv/src/database/tabela/cozinha.dart';
+export 'package:pegasus_pdv/src/database/dao/cozinha_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/delivery.dart';
+export 'package:pegasus_pdv/src/database/dao/delivery_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/delivery_acerto.dart';
+export 'package:pegasus_pdv/src/database/dao/delivery_acerto_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/delivery_acerto_comanda.dart';
+export 'package:pegasus_pdv/src/database/dao/delivery_acerto_comanda_dao.dart';
+
+export 'package:pegasus_pdv/src/database/tabela/empresa_delivery_pedido.dart';
+export 'package:pegasus_pdv/src/database/dao/empresa_delivery_pedido_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/empresa_segmento.dart';
+export 'package:pegasus_pdv/src/database/dao/empresa_segmento_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/entregador_rota.dart';
+export 'package:pegasus_pdv/src/database/dao/entregador_rota_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/entregador_rota_detalhe.dart';
+export 'package:pegasus_pdv/src/database/dao/entregador_rota_detalhe_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/fidelidade_historico.dart';
+export 'package:pegasus_pdv/src/database/dao/fidelidade_historico_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/fidelidade_utilizado.dart';
+export 'package:pegasus_pdv/src/database/dao/fidelidade_utilizado_dao.dart';
+
+export 'package:pegasus_pdv/src/database/tabela/mesa.dart';
+export 'package:pegasus_pdv/src/database/dao/mesa_dao.dart';
+
+export 'package:pegasus_pdv/src/database/tabela/produto_grupo.dart';
+export 'package:pegasus_pdv/src/database/dao/produto_grupo_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/produto_subgrupo.dart';
+export 'package:pegasus_pdv/src/database/dao/produto_subgrupo_dao.dart';
+
+export 'package:pegasus_pdv/src/database/tabela/reserva.dart';
+export 'package:pegasus_pdv/src/database/dao/reserva_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/reserva_mesa.dart';
+export 'package:pegasus_pdv/src/database/dao/reserva_mesa_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/taxa_entrega.dart';
+export 'package:pegasus_pdv/src/database/dao/taxa_entrega_dao.dart';

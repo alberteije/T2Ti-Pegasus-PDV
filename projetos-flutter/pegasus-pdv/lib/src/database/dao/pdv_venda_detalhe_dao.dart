@@ -66,7 +66,7 @@ class PdvVendaDetalheDao extends DatabaseAccessor<AppDatabase> with _$PdvVendaDe
         leftOuterJoin(produtos, produtos.id.equalsExp(pdvVendaDetalhes.idProduto)),
       ]);
 
-    consulta.where(pdvVendaDetalhes.idPdvVendaCabecalho.equals(pId));
+    consulta.where(pdvVendaDetalhes.idPdvVendaCabecalho.equals(pId!));
 
     return consulta.map((row) {
         final vendaDetalhe = row.readTableOrNull(pdvVendaDetalhes);

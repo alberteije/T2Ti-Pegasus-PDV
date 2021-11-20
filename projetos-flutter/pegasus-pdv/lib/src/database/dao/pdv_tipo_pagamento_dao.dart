@@ -76,22 +76,22 @@ class PdvTipoPagamentoDao extends DatabaseAccessor<AppDatabase> with _$PdvTipoPa
     return (select(pdvTipoPagamentos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<PdvTipoPagamento>? pObjeto) {
+  Future<int> inserir(Insertable<PdvTipoPagamento> pObjeto) {
     return transaction(() async {
-      final idInserido = await into(pdvTipoPagamentos).insert(pObjeto!);
+      final idInserido = await into(pdvTipoPagamentos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<PdvTipoPagamento>? pObjeto) {
+  Future<bool> alterar(Insertable<PdvTipoPagamento> pObjeto) {
     return transaction(() async {
-      return update(pdvTipoPagamentos).replace(pObjeto!);
+      return update(pdvTipoPagamentos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<PdvTipoPagamento>? pObjeto) {
+  Future<int> excluir(Insertable<PdvTipoPagamento> pObjeto) {
     return transaction(() async {
-      return delete(pdvTipoPagamentos).delete(pObjeto!);
+      return delete(pdvTipoPagamentos).delete(pObjeto);
     });    
   }
 

@@ -76,22 +76,22 @@ class ProdutoUnidadeDao extends DatabaseAccessor<AppDatabase> with _$ProdutoUnid
     return (select(produtoUnidades)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<ProdutoUnidade>? pObjeto) {
+  Future<int> inserir(Insertable<ProdutoUnidade> pObjeto) {
     return transaction(() async {
-      final idInserido = await into(produtoUnidades).insert(pObjeto!);
+      final idInserido = await into(produtoUnidades).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<ProdutoUnidade>? pObjeto) {
+  Future<bool> alterar(Insertable<ProdutoUnidade> pObjeto) {
     return transaction(() async {
-      return update(produtoUnidades).replace(pObjeto!);
+      return update(produtoUnidades).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<ProdutoUnidade>? pObjeto) {
+  Future<int> excluir(Insertable<ProdutoUnidade> pObjeto) {
     return transaction(() async {
-      return delete(produtoUnidades).delete(pObjeto!);
+      return delete(produtoUnidades).delete(pObjeto);
     });    
   }
 

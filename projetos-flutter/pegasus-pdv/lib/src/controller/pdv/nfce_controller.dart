@@ -35,7 +35,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'dart:async';
 import 'dart:io';
-import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:ini/ini.dart';
@@ -99,7 +98,7 @@ class NfceController {
     instanciarNfceMontado();
 
     // verfifica se já existe nfce vinculada à venda
-    final cabecalho = await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(Sessao.vendaAtual!.id);
+    final cabecalho = await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(Sessao.vendaAtual!.id!);
 
     if (cabecalho == null) {
       Sessao.numeroNfce= await Sessao.db.nfeNumeroDao.consultarObjeto(1);
@@ -143,7 +142,7 @@ class NfceController {
     // DESTINATARIO
     Cliente? cliente;
     if (Sessao.vendaAtual!.idCliente != null) {
-      cliente = await Sessao.db.clienteDao.consultarObjeto(Sessao.vendaAtual!.idCliente);
+      cliente = await Sessao.db.clienteDao.consultarObjeto(Sessao.vendaAtual!.idCliente!);
     }
     nfeCabecalhoMontado!.nfeDestinatario = nfeCabecalhoMontado!.nfeDestinatario!.copyWith(
       cpf: (Sessao.vendaAtual!.cpfCnpjCliente ?? ''),                                    // CNPJCPF
@@ -167,20 +166,20 @@ class NfceController {
     for (var vendaDetalhe in Sessao.listaVendaAtualDetalhe) {
       final produtoMontado = await Sessao.db.produtoDao.consultarObjetoMontado(vendaDetalhe.produto!.id);
       final tributacao = await Sessao.db.tributConfiguraOfGtDao.consultarObjetoMontado(
-        Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao, produtoMontado?.tributGrupoTributario!.id); 
+        Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao!, produtoMontado!.tributGrupoTributario!.id!); 
 
       // DETALHE
       NfeDetalheMontado nfceDetalheMontado = NfeDetalheMontado();
       NfeDetalhe nfceDetalhe = NfeDetalhe(
         id: null,
         cfop: tributacao?.tributIcmsUf!.cfop,                                                                   // cfop
-        codigoProduto: produtoMontado?.produto!.id.toString(),                                                  // cProd
-        nomeProduto: produtoMontado?.produto!.nome,                                                             // xProd
-        ncm: (produtoMontado?.produto!.codigoNcm ?? '00000000'),                                                // NCM
-        gtin: produtoMontado?.produto!.gtin ?? 'SEM GTIN',                 // cEAN
-        gtinUnidadeTributavel: produtoMontado?.produto!.gtin ?? 'SEM GTIN',// cEANTrib
-        unidadeComercial: produtoMontado?.produtoUnidade!.sigla,                                                // uCom
-        unidadeTributavel: produtoMontado?.produtoUnidade!.sigla,                                               // uTrib
+        codigoProduto: produtoMontado.produto!.id.toString(),                                                  // cProd
+        nomeProduto: produtoMontado.produto!.nome,                                                             // xProd
+        ncm: (produtoMontado.produto!.codigoNcm ?? '00000000'),                                                // NCM
+        gtin: produtoMontado.produto!.gtin ?? 'SEM GTIN',                 // cEAN
+        gtinUnidadeTributavel: produtoMontado.produto!.gtin ?? 'SEM GTIN',// cEANTrib
+        unidadeComercial: produtoMontado.produtoUnidade!.sigla,                                                // uCom
+        unidadeTributavel: produtoMontado.produtoUnidade!.sigla,                                               // uTrib
         quantidadeComercial: vendaDetalhe.pdvVendaDetalhe!.quantidade,                                         // qCom
         quantidadeTributavel: vendaDetalhe.pdvVendaDetalhe!.quantidade,                                        // qTrib
         valorUnitarioComercial: vendaDetalhe.pdvVendaDetalhe!.valorUnitario,                                   // vUnCom
@@ -267,7 +266,7 @@ class NfceController {
   static Future<bool> _atualizarNota() async {
     int? idNfceCabecalho;
     if (nfeCabecalhoMontado!.nfeCabecalho!.statusNota == '0') {
-      idNfceCabecalho = await Sessao.db.nfeCabecalhoDao.inserir(nfeCabecalhoMontado); // só insere a nota se o seu status for '0'
+      idNfceCabecalho = await Sessao.db.nfeCabecalhoDao.inserir(nfeCabecalhoMontado!); // só insere a nota se o seu status for '0'
     } else {
       idNfceCabecalho = _idNotaRecuperada; // venda está sendo recuperada e já existe uma nota armazenada no banco
     }
@@ -276,7 +275,7 @@ class NfceController {
         id: idNfceCabecalho,
         statusNota: '1', // nota salva
       );
-      await Sessao.db.nfeCabecalhoDao.alterar(nfeCabecalhoMontado, atualizaFilhos: true);
+      await Sessao.db.nfeCabecalhoDao.alterar(nfeCabecalhoMontado!, atualizaFilhos: true);
       return Future.value(true);
     } else {
       return Future.value(false);
@@ -522,7 +521,7 @@ class NfceController {
         statusNota: statusNota,
         informacoesAddContribuinte: motivoCancelamento,
       );
-    final retorno = await Sessao.db.nfeCabecalhoDao.alterar(NfceController.nfeCabecalhoMontado, atualizaFilhos: false);
+    final retorno = await Sessao.db.nfeCabecalhoDao.alterar(NfceController.nfeCabecalhoMontado!, atualizaFilhos: false);
     return retorno;
   }
 

@@ -1,6 +1,7 @@
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:desktop_window/desktop_window.dart';
@@ -19,6 +20,16 @@ import 'package:sqlite3/open.dart';
 
 import 'package:pegasus_pdv/src/view/shared/page/splash_screen_page.dart';
 import 'package:pegasus_pdv/src/view/page/page.dart';
+
+// adicionado para corrigir o problema de navegação da paginatedDataTable na Horizontal
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  // Override behavior methods and getters like dragDevices
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
+}
 
 void main() async {  
   await dotenv.load(fileName: ".env");
@@ -132,6 +143,7 @@ class _MyAppState extends State<MyApp> {
 
 Widget _materialApp({bool? splash}) {
   return MaterialApp(
+    scrollBehavior: MyCustomScrollBehavior(),
     navigatorKey: Catcher.navigatorKey,
     localizationsDelegates: const [
       GlobalMaterialLocalizations.delegate,

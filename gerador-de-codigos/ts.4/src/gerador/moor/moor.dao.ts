@@ -61,26 +61,26 @@ export class MoorDao {
                 this.listaTabelaFilha.push(", List<" + nomeCampoGetSet + "> lista" + nomeCampoGetSet);
 
                 // inserir filhos
-                this.inserirFilhos.push("inserirFilhos(pObjeto as " + this.class + ", lista" + nomeCampoGetSet + ");");
+                // this.inserirFilhos.push("await inserirFilhos(pObjeto as " + this.class + ", lista" + nomeCampoGetSet + ");");
+                this.inserirFilhos.push("await inserirFilhos(pObjeto, lista" + nomeCampoGetSet + ");");
                 this.insereFilho.push("for (var objeto in lista" + nomeCampoGetSet + ") {");
-                this.insereFilho.push("  if (objeto.id == null) {");
-                this.insereFilho.push("    objeto = objeto.copyWith(id" + this.class  + ": " + this.objetoPrincipal + ".id);");
-                this.insereFilho.push("  }");
-                this.insereFilho.push("  into(" + nomeCampoAtributo + "s).insert(objeto);  ");
+                this.insereFilho.push("  objeto = objeto.copyWith(id" + this.class  + ": " + this.objetoPrincipal + "!.id);");
+                this.insereFilho.push("  await into(" + nomeCampoAtributo + "s).insert(objeto);  ");
                 this.insereFilho.push("}");
 
                 // excluir filhos
-                this.excluirFilhos.push("excluirFilhos(pObjeto as " + this.class + ");");
-                this.exclusaoFilho.push("(delete(" + nomeCampoAtributo + "s)..where((t) => t.id" + this.class + ".equals(" + this.objetoPrincipal + ".id))).go();");
+                // this.excluirFilhos.push("await excluirFilhos(pObjeto as " + this.class + ");");
+                this.excluirFilhos.push("await excluirFilhos(pObjeto);");
+                this.exclusaoFilho.push("await (delete(" + nomeCampoAtributo + "s)..where((t) => t.id" + this.class + ".equals(" + this.objetoPrincipal + "!.id!))).go();");
             }
         }
 
         // método inserir filhos
-        this.metodoInserirFilhosAbre.push("void inserirFilhos(" + this.class + " " + this.objetoPrincipal + this.listaTabelaFilha + ") {");
+        this.metodoInserirFilhosAbre.push("Future<void> inserirFilhos(" + this.class + this.objetoPrincipal + this.listaTabelaFilha + ") async {");
         this.metodoInserirFilhosFecha.push('}');
     
         // método excluir filhos
-        this.metodoExcluirFilhosAbre.push("void excluirFilhos(" + this.class + " " + this.objetoPrincipal + ") {");
+        this.metodoExcluirFilhosAbre.push("Future<void> excluirFilhos(" + this.class + this.objetoPrincipal + ") async {");
         this.metodoExcluirFilhosFecha.push('}');
     }
 

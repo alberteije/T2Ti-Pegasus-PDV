@@ -33,7 +33,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 
@@ -89,7 +88,7 @@ class CompraPedidoCabecalhoController {
         compraPedidoCabecalho!.copyWith(
           geraFinanceiro: 'S'
         );
-      await Sessao.db.compraPedidoCabecalhoDao.atualizarCabecalho(compraPedidoCabecalho);
+      await Sessao.db.compraPedidoCabecalhoDao.atualizarCabecalho(compraPedidoCabecalho!);
     } 
     return inseriuParcelas;
   }
@@ -100,7 +99,7 @@ class CompraPedidoCabecalhoController {
         atualizouEstoque: 'S'
       );
     return await Sessao.db.compraPedidoCabecalhoDao.alterar(
-      compraPedidoCabecalho, 
+      compraPedidoCabecalho!, 
       listaCompraDetalhe,
       atualizaEstoque: true,
     );

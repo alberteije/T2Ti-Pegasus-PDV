@@ -41,7 +41,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 
-import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
@@ -444,6 +443,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                             child: Padding(
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
+  	                            validator: ValidaCampoFormulario.validarObrigatorio,
                                 controller: _ncmController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo NCM',
@@ -575,12 +575,12 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
         form.save();
         bool tudoCerto = false;
         if (widget.operacao == 'A') {
-          await Sessao.db.produtoDao.alterar(_produto);
+          await Sessao.db.produtoDao.alterar(_produto!);
           tudoCerto = true;
         } else {
           final produto = await Sessao.db.produtoDao.consultarObjetoFiltro('GTIN', _produto!.gtin!);
           if (produto == null) {
-            await Sessao.db.produtoDao.inserir(_produto);
+            await Sessao.db.produtoDao.inserir(_produto!);
             tudoCerto = true;
           } else {
             showInSnackBar('Já existe um produto cadastrado com o GTIN informado.', context);
@@ -605,7 +605,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
 
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-      await Sessao.db.produtoDao.excluir(_produto);
+      await Sessao.db.produtoDao.excluir(_produto!);
       Navigator.of(context).pop();
     });
   }  

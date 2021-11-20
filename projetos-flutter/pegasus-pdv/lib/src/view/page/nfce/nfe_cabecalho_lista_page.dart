@@ -36,7 +36,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
@@ -212,7 +211,7 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
   Future _inutilizarNumero() async {
     // pesquisa pela nota com status igual a 9 - essa nota foi gerada e tentamos emiti-la, mas houve erro e outra foi impressa em contingência
     nfceCabecalhoInicial.nfeCabecalho = 
-      await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(NfceController.nfeCabecalhoMontado!.nfeCabecalho!.idPdvVendaCabecalho, status: '9');
+      await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(NfceController.nfeCabecalhoMontado!.nfeCabecalho!.idPdvVendaCabecalho!, status: '9');
 
     // vamos inutilizar o número
     NfceAcbrService servicoNfce = NfceAcbrService();

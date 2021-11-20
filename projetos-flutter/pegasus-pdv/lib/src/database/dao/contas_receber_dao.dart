@@ -67,7 +67,7 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
     return listaContasReceber;
   }
 
-  Future<List<ContasReceber>?> consultarRecebimentosDeUmaVenda(int? idPdvVendaCabecalho, String status) async {
+  Future<List<ContasReceber>?> consultarRecebimentosDeUmaVenda(int idPdvVendaCabecalho, String status) async {
     listaContasReceber = await (customSelect("SELECT * FROM CONTAS_RECEBER WHERE ID_PDV_VENDA_CABECALHO = " 
                                 + idPdvVendaCabecalho.toString() + " AND STATUS_RECEBIMENTO =  '" + status + "'", 
                                 readsFrom: { contasRecebers }).map((row) {
@@ -175,9 +175,9 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
     return (select(contasRecebers)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<ContasReceber>? pObjeto) {
+  Future<int> inserir(Insertable<ContasReceber> pObjeto) {
     return transaction(() async {
-      final idInserido = await into(contasRecebers).insert(pObjeto!);
+      final idInserido = await into(contasRecebers).insert(pObjeto);
       return idInserido;
     });    
   } 
@@ -192,19 +192,19 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
     });    
   } 
 
-  Future<bool> alterar(Insertable<ContasReceber>? pObjeto) {
+  Future<bool> alterar(Insertable<ContasReceber> pObjeto) {
     return transaction(() async {
-      return update(contasRecebers).replace(pObjeto!);
+      return update(contasRecebers).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<ContasReceber>? pObjeto) {
+  Future<int> excluir(Insertable<ContasReceber> pObjeto) {
     return transaction(() async {
-      return delete(contasRecebers).delete(pObjeto!);
+      return delete(contasRecebers).delete(pObjeto);
     });    
   }
 
-  Future<int> excluirReceitasDeUmaVenda(int? idPdvVendaCabecalho) async {
+  Future<int> excluirReceitasDeUmaVenda(int idPdvVendaCabecalho) async {
     return await (delete(contasRecebers)..where((t) => t.idPdvVendaCabecalho.equals(idPdvVendaCabecalho))).go();
   }
 

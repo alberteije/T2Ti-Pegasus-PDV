@@ -70,9 +70,9 @@ class NfeConfiguracaoDao extends DatabaseAccessor<AppDatabase> with _$NfeConfigu
     });    
   } 
 
-  Future<bool> alterar(Insertable<NfeConfiguracao>? pObjeto) {
+  Future<bool> alterar(Insertable<NfeConfiguracao> pObjeto) {
     return transaction(() async {
-      return update(nfeConfiguracaos).replace(pObjeto!);
+      return update(nfeConfiguracaos).replace(pObjeto);
     });    
   } 
 

@@ -50,18 +50,25 @@ class {{class}}Dao extends DatabaseAccessor<AppDatabase> with _${{class}}DaoMixi
 
   {{class}}Dao(this.db) : super(db);
 
-  Future<List<{{class}}>> consultarLista() => select({{objetoPrincipal}}s).get();
+  Future<List<{{class}}>?> consultarLista() => select({{objetoPrincipal}}s).get();
 
-  Future<List<{{class}}>> consultarListaFiltro(String campo, String valor) async {
+  Future<List<{{class}}>?> consultarListaFiltro(String campo, String valor) async {
     return (customSelect("SELECT * FROM {{table}} WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { {{objetoPrincipal}}s }).map((row) {
                                   return {{class}}.fromData(row.data, db);  
                                 }).get());
   }
 
+  Future<{{class}}?> consultarObjetoFiltro(String campo, String valor) async {
+    return (customSelect("SELECT * FROM {{table}} WHERE " + campo + " = '" + valor + "'", 
+                                readsFrom: { {{objetoPrincipal}}s }).map((row) {
+                                  return {{class}}.fromData(row.data, db);  
+                                }).getSingleOrNull());
+  }  
+  
   Stream<List<{{class}}>> observarLista() => select({{objetoPrincipal}}s).watch();
 
-  Future<{{class}}> consultarObjeto(int pId) {
+  Future<{{class}}?> consultarObjeto(int pId) {
     return (select({{objetoPrincipal}}s)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 

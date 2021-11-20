@@ -114,7 +114,7 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
     return listaPdvVendaCabecalho;
   }
 
-  Future<PdvVendaCabecalho?> consultarTotaisDia(int? idMovimento) async {
+  Future<PdvVendaCabecalho?> consultarTotaisDia(int idMovimento) async {
     return (customSelect("SELECT "  
     " sum(VALOR_VENDA) as VALOR_VENDA, "
     " sum(VALOR_DESCONTO) as VALOR_DESCONTO, "
@@ -185,34 +185,34 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
 
   Stream<List<PdvVendaCabecalho>> observarLista() => select(pdvVendaCabecalhos).watch();
 
-  Future<PdvVendaCabecalho?> consultarObjeto(int? pId) {
+  Future<PdvVendaCabecalho?> consultarObjeto(int pId) {
     return (select(pdvVendaCabecalhos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<PdvVendaCabecalho>? pObjeto) {
+  Future<int> inserir(Insertable<PdvVendaCabecalho> pObjeto) {
     return transaction(() async {
-      final idInserido = await into(pdvVendaCabecalhos).insert(pObjeto!);
+      final idInserido = await into(pdvVendaCabecalhos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<PdvVendaCabecalho>? pObjeto, List<VendaDetalhe> listaVendaDetalhe, 
+  Future<bool> alterar(Insertable<PdvVendaCabecalho> pObjeto, List<VendaDetalhe> listaVendaDetalhe, 
   {List<PdvTotalTipoPagamento>? listaDadosPagamento}) {
     return transaction(() async {
-      await excluirFilhos(pObjeto as PdvVendaCabecalho?);
+      await excluirFilhos(pObjeto as PdvVendaCabecalho);
       await inserirFilhos(pObjeto, listaVendaDetalhe, listaDadosPagamento);
-      if ((pObjeto as PdvVendaCabecalho).statusVenda == 'F') {
+      if (pObjeto.statusVenda == 'F') {
         await db.produtoDao.decrementarEstoque(listaVendaDetalhe: listaVendaDetalhe);
       }
       return update(pdvVendaCabecalhos).replace(pObjeto);
     });    
   } 
 
-  Future<bool> cancelarVenda(PdvVendaCabecalho? pdvVendaCabecalho) {
+  Future<bool> cancelarVenda(PdvVendaCabecalho pdvVendaCabecalho) {
     return transaction(() async {
-      final listaVendaDetalhe = await db.pdvVendaDetalheDao.consultarListaComProduto(pdvVendaCabecalho!.id);
+      final listaVendaDetalhe = await db.pdvVendaDetalheDao.consultarListaComProduto(pdvVendaCabecalho.id);
       await db.produtoDao.incrementarEstoque(listaVendaDetalhe: listaVendaDetalhe);
-      await db.contasReceberDao.excluirReceitasDeUmaVenda(pdvVendaCabecalho.id);
+      await db.contasReceberDao.excluirReceitasDeUmaVenda(pdvVendaCabecalho.id!);
       return update(pdvVendaCabecalhos).replace(pdvVendaCabecalho);
     });    
   }
@@ -224,24 +224,24 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
     });    
   }
 
-  Future<void> inserirFilhos(PdvVendaCabecalho? pdvVendaCabecalho, List<VendaDetalhe> listaVendaDetalhe, List<PdvTotalTipoPagamento>? listaDadosPagamento) async {
+  Future<void> inserirFilhos(PdvVendaCabecalho pdvVendaCabecalho, List<VendaDetalhe> listaVendaDetalhe, List<PdvTotalTipoPagamento>? listaDadosPagamento) async {
     // items da venda
     for (var objeto in listaVendaDetalhe) {
-      objeto.pdvVendaDetalhe = objeto.pdvVendaDetalhe!.copyWith(idPdvVendaCabecalho: pdvVendaCabecalho!.id);
+      objeto.pdvVendaDetalhe = objeto.pdvVendaDetalhe!.copyWith(idPdvVendaCabecalho: pdvVendaCabecalho.id);
       await into(pdvVendaDetalhes).insert(objeto.pdvVendaDetalhe!);  
     }
     // pagamentos
     if (listaDadosPagamento != null) {
       for (var objeto in listaDadosPagamento) {
-        objeto = objeto.copyWith(idPdvVendaCabecalho: pdvVendaCabecalho!.id);
+        objeto = objeto.copyWith(idPdvVendaCabecalho: pdvVendaCabecalho.id);
         await into(pdvTotalTipoPagamentos).insert(objeto);  
       }
     }
   }
   
-  Future<void> excluirFilhos(PdvVendaCabecalho? pdvVendaCabecalho) async {
-    await (delete(pdvVendaDetalhes)..where((t) => t.idPdvVendaCabecalho.equals(pdvVendaCabecalho!.id))).go();
-    await (delete(pdvTotalTipoPagamentos)..where((t) => t.idPdvVendaCabecalho.equals(pdvVendaCabecalho!.id))).go();
+  Future<void> excluirFilhos(PdvVendaCabecalho pdvVendaCabecalho) async {
+    await (delete(pdvVendaDetalhes)..where((t) => t.idPdvVendaCabecalho.equals(pdvVendaCabecalho.id!))).go();
+    await (delete(pdvTotalTipoPagamentos)..where((t) => t.idPdvVendaCabecalho.equals(pdvVendaCabecalho.id!))).go();
   }
 
 	static List<String> campos = <String>[

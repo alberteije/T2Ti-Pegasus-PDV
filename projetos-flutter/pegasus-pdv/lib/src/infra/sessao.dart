@@ -105,6 +105,18 @@ class Sessao {
   */ 
   static late List<List<dynamic>> tabelaIbpt; // vamos carregar os dados do arquivo CSV
 
+  /*
+   [0] = ibge
+   [1] = uf_sigla
+   [2] = uf_codigo
+   [3] = nome_caixa_alta
+   [4] = nome_cursivo
+   [5] = nome_sem_acento
+   [6] = ddd
+   [7] = siafi
+  */ 
+  static late List<List<dynamic>> tabelaMunicipios; // vamos carregar os dados do arquivo CSV
+
 // #endregion objetos globais
 
   /// popula os objetos principais para a sessão
@@ -120,7 +132,7 @@ class Sessao {
       empresa = empresa!.copyWith(
         logotipo: logotipo,
       );
-      await db.empresaDao.alterar(Sessao.empresa, false);
+      await db.empresaDao.alterar(Sessao.empresa!, false);
     }
     configuracaoPdv = await db.pdvConfiguracaoDao.consultarObjeto(1); // pega a configuracao - deve ter apenas um registro no banco de dados
     configuracaoNfce = await db.nfeConfiguracaoDao.consultarObjeto(1); // pega a configuracao da NFC-e - deve ter apenas um registro no banco de dados
@@ -130,6 +142,9 @@ class Sessao {
 
     final arquivoIbptCsv = await rootBundle.loadString('assets/text/ibpt.csv');
     tabelaIbpt = const CsvToListConverter().convert(arquivoIbptCsv, fieldDelimiter: ';');
+
+    final arquivoMunicipiosCsv = await rootBundle.loadString('assets/text/municipios.csv');
+    tabelaMunicipios = const CsvToListConverter().convert(arquivoMunicipiosCsv, fieldDelimiter: ';');
 
     if (kDebugMode && Biblioteca.isDesktop()) {
       await _gerarArquivoEnvProtegido();  
@@ -151,12 +166,12 @@ class Sessao {
     movimento = await db.pdvMovimentoDao.consultarObjeto('A'); 
     if (movimento == null) {
       movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.formatarHora(DateTime.now()), statusMovimento: 'A');
-      movimento = await db.pdvMovimentoDao.iniciarMovimento(movimento);
+      movimento = await db.pdvMovimentoDao.iniciarMovimento(movimento!);
     } else {
       if (Biblioteca.formatarData(movimento!.dataAbertura) != Biblioteca.formatarData(DateTime.now())) {
-        await db.pdvMovimentoDao.encerrarMovimento(movimento);
+        await db.pdvMovimentoDao.encerrarMovimento(movimento!);
         movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.formatarHora(DateTime.now()), statusMovimento: 'A');
-        movimento = await db.pdvMovimentoDao.iniciarMovimento(movimento);
+        movimento = await db.pdvMovimentoDao.iniciarMovimento(movimento!);
       }
     }
   }

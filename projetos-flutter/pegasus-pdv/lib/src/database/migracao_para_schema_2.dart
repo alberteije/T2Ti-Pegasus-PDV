@@ -2,6 +2,8 @@ import 'package:moor/moor.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 
+import 'database_classes.dart';
+
 class MigracaoParaSchema2 extends DatabaseAccessor<AppDatabase> {
 
   final AppDatabase db;

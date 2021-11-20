@@ -277,7 +277,7 @@ class _TributConfiguraOfGtPageState extends State<TributConfiguraOfGtPage> with 
 
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-      await Sessao.db.tributConfiguraOfGtDao.excluir(widget.tributConfiguraOfGtMontado);
+      await Sessao.db.tributConfiguraOfGtDao.excluir(widget.tributConfiguraOfGtMontado!);
       Navigator.of(context).pop();
   	  showInSnackBar("Registro excluído com sucesso!", context, corFundo: Colors.green);
     });

@@ -185,7 +185,7 @@ class NfceService extends ServiceBase {
             acbrMonitorEndereco: enderecoMonitor,
             acbrMonitorPorta: int.tryParse(portaMonitor),
           );
-          await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv);
+          await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv!);
           return NfeConfiguracaoModel.fromJson(configuracaoJson);
         }
       } else {

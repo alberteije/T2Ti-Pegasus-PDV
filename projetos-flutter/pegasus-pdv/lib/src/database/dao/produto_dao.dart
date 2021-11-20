@@ -92,7 +92,7 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
         leftOuterJoin(tributGrupoTributarios, tributGrupoTributarios.id.equalsExp(produtos.idTributGrupoTributario)),
       ]);
 
-    consulta.where(produtos.id.equals(pId));
+    consulta.where(produtos.id.equals(pId!));
 
     final retorno = await consulta.map((row) {
         final produtoUnidade = row.readTableOrNull(produtoUnidades);
@@ -167,7 +167,7 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
     return transaction(() async {
       if (listaCompraDetalhe != null) {
         for (var objeto in listaCompraDetalhe) {
-          Produto? produto = await consultarObjeto(objeto.compraPedidoDetalhe!.idProduto);
+          Produto? produto = await consultarObjeto(objeto.compraPedidoDetalhe!.idProduto!);
           produto = produto?.copyWith(
               quantidadeEstoque: (produto.quantidadeEstoque ?? 0) + objeto.compraPedidoDetalhe!.quantidade!,
               valorCompra: objeto.compraPedidoDetalhe!.valorUnitario,
@@ -176,7 +176,7 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
         }
       } else if (listaVendaDetalhe != null) {
         for (var objeto in listaVendaDetalhe) {
-          Produto? produto = await consultarObjeto(objeto.pdvVendaDetalhe!.idProduto);
+          Produto? produto = await consultarObjeto(objeto.pdvVendaDetalhe!.idProduto!);
           produto = produto?.copyWith(
               quantidadeEstoque: (produto.quantidadeEstoque ?? 0) + objeto.pdvVendaDetalhe!.quantidade!,
             );
@@ -191,13 +191,13 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
     return transaction(() async {
       if (listaVendaDetalhe != null) {
         for (var objeto in listaVendaDetalhe) {
-          Produto? produto = await consultarObjeto(objeto.pdvVendaDetalhe!.idProduto);
+          Produto? produto = await consultarObjeto(objeto.pdvVendaDetalhe!.idProduto!);
           produto = produto?.copyWith(quantidadeEstoque: (produto.quantidadeEstoque ?? 0) - objeto.pdvVendaDetalhe!.quantidade!);
           await update(produtos).replace(produto!);
         }
       } else if (listaCompraDetalhe != null) {
         for (var objeto in listaCompraDetalhe) {
-          Produto? produto = await consultarObjeto(objeto.compraPedidoDetalhe!.idProduto);
+          Produto? produto = await consultarObjeto(objeto.compraPedidoDetalhe!.idProduto!);
           produto = produto?.copyWith(quantidadeEstoque: (produto.quantidadeEstoque ?? 0) - objeto.compraPedidoDetalhe!.quantidade!);
           await update(produtos).replace(produto!);
         }
@@ -212,26 +212,26 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
 
   Stream<List<Produto>> observarLista() => select(produtos).watch();
 
-  Future<Produto?> consultarObjeto(int? pId) {
+  Future<Produto?> consultarObjeto(int pId) {
     return (select(produtos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<Produto>? pObjeto) {
+  Future<int> inserir(Insertable<Produto> pObjeto) {
     return transaction(() async {
-      final idInserido = await into(produtos).insert(pObjeto!);
+      final idInserido = await into(produtos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Produto>? pObjeto) {
+  Future<bool> alterar(Insertable<Produto> pObjeto) {
     return transaction(() async {
-      return update(produtos).replace(pObjeto!);
+      return update(produtos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<Produto>? pObjeto) {
+  Future<int> excluir(Insertable<Produto> pObjeto) {
     return transaction(() async {
-      return delete(produtos).delete(pObjeto!);
+      return delete(produtos).delete(pObjeto);
     });    
   }
 

@@ -39,7 +39,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 
-import 'package:pegasus_pdv/src/database/database.dart';
+import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -255,9 +255,9 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
     if (_validarForm()) {
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
         if (widget.operacao == 'A') {
-          await Sessao.db.tributGrupoTributarioDao.alterar(tributGrupoTributario);
+          await Sessao.db.tributGrupoTributarioDao.alterar(tributGrupoTributario!);
         } else {
-          await Sessao.db.tributGrupoTributarioDao.inserir(tributGrupoTributario);
+          await Sessao.db.tributGrupoTributarioDao.inserir(tributGrupoTributario!);
         }
         Navigator.of(context).pop();
       });
@@ -280,7 +280,7 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
       if (listaProduto!.isNotEmpty) { 
         showInSnackBar('Existem produtos vinculados a este Grupo Tributário.', context);
       } else {
-        await Sessao.db.tributGrupoTributarioDao.excluir(tributGrupoTributario);
+        await Sessao.db.tributGrupoTributarioDao.excluir(tributGrupoTributario!);
         Navigator.of(context).pop();
       }
     });
@@ -306,7 +306,7 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
   Future<void> _atribuirGrupoAProdutos() async {
     if (_validarForm()) {
       if (tributGrupoTributario!.id == null) {
-        final _idInserido = await Sessao.db.tributGrupoTributarioDao.inserir(tributGrupoTributario);
+        final _idInserido = await Sessao.db.tributGrupoTributarioDao.inserir(tributGrupoTributario!);
         tributGrupoTributario = await Sessao.db.tributGrupoTributarioDao.consultarObjeto(_idInserido);
       }
       final _registrosAtualizados = await Sessao.db.produtoDao.atualizarGrupoTributario(tributGrupoTributario!.id);

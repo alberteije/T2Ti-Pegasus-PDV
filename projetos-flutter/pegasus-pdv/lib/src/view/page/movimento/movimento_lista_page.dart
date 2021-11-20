@@ -35,8 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import 'package:pegasus_pdv/src/database/database.dart';
+import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';

@@ -32,7 +32,7 @@ export class TabelaService {
         try {
             let sql = "SELECT TABLE_NAME, COLUMN_NAME " +
                 "FROM information_schema.columns " +
-                "WHERE table_schema='fenix' and COLUMN_NAME = 'ID_" + tabela + "'";
+                "WHERE table_schema='pegasus_pdv' and COLUMN_NAME = 'ID_" + tabela + "'";
             let dados = await (await connection).manager.query(sql);
             return dados;
         } catch (erro) {

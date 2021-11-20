@@ -69,22 +69,22 @@ class ColaboradorDao extends DatabaseAccessor<AppDatabase> with _$ColaboradorDao
     return (select(colaboradors)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<Colaborador>? pObjeto) {
+  Future<int> inserir(Insertable<Colaborador> pObjeto) {
     return transaction(() async {
-      final idInserido = await into(colaboradors).insert(pObjeto!);
+      final idInserido = await into(colaboradors).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Colaborador>? pObjeto) {
+  Future<bool> alterar(Insertable<Colaborador> pObjeto) {
     return transaction(() async {
-      return update(colaboradors).replace(pObjeto!);
+      return update(colaboradors).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<Colaborador>? pObjeto) {
+  Future<int> excluir(Insertable<Colaborador> pObjeto) {
     return transaction(() async {
-      return delete(colaboradors).delete(pObjeto!);
+      return delete(colaboradors).delete(pObjeto);
     });    
   }
 

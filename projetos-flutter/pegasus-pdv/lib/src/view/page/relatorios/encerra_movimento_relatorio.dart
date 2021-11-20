@@ -40,7 +40,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:pegasus_pdv/src/database/database.dart';
+import 'package:pegasus_pdv/src/database/database_classes.dart';
 import 'package:printing/printing.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
@@ -77,8 +77,8 @@ class _EncerraMovimentoRelatorioState extends State<EncerraMovimentoRelatorio> {
   }
 
   Future _carregarListas() async {
-    _listaPagamentosDeclarados = await Sessao.db.pdvFechamentoDao.consultarListaMovimento(_movimento!.id);
-    _listaPagamentosRegistrados = await Sessao.db.pdvTotalTipoPagamentoDao.consultarListaTotaisAgrupado(_movimento!.id);
+    _listaPagamentosDeclarados = await Sessao.db.pdvFechamentoDao.consultarListaMovimento(_movimento!.id!);
+    _listaPagamentosRegistrados = await Sessao.db.pdvTotalTipoPagamentoDao.consultarListaTotaisAgrupado(_movimento!.id!);
     setState(() {
     });
   }

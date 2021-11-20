@@ -70,7 +70,7 @@ class TributGrupoTributarioDao extends DatabaseAccessor<AppDatabase> with _$Trib
     return (select(tributGrupoTributarios)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<TributGrupoTributario>? pObjeto) {
+  Future<int> inserir(Insertable<TributGrupoTributario> pObjeto) {
     return transaction(() async {
       final grupoTributario = removerDomains(pObjeto as TributGrupoTributario);
       final idInserido = await into(tributGrupoTributarios).insert(grupoTributario);
@@ -78,16 +78,16 @@ class TributGrupoTributarioDao extends DatabaseAccessor<AppDatabase> with _$Trib
     });    
   } 
 
-  Future<bool> alterar(Insertable<TributGrupoTributario>? pObjeto) {
+  Future<bool> alterar(Insertable<TributGrupoTributario> pObjeto) {
     return transaction(() async {
       final grupoTributario = removerDomains(pObjeto as TributGrupoTributario);
       return update(tributGrupoTributarios).replace(grupoTributario);
     });    
   } 
 
-  Future<int> excluir(Insertable<TributGrupoTributario>? pObjeto) {
+  Future<int> excluir(Insertable<TributGrupoTributario> pObjeto) {
     return transaction(() async {
-      return delete(tributGrupoTributarios).delete(pObjeto!);
+      return delete(tributGrupoTributarios).delete(pObjeto);
     });    
   }
 

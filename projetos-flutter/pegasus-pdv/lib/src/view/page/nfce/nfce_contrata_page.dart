@@ -39,7 +39,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:crypto/crypto.dart';
-import 'package:pegasus_pdv/src/database/database.dart';
+import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_pdv.dart';
@@ -643,7 +643,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
         dataPlanoExpira: nfcePlanoPagamentoModel.dataPlanoExpira,
         hashRegistro: md5.convert(utf8.encode(dataPlanoExpiraFormatada + Constantes.chave)).toString()
       );
-    await Sessao.db.nfcePlanoPagamentoDao.inserir(Sessao.nfcePlanoPagamento);
+    await Sessao.db.nfcePlanoPagamentoDao.inserir(Sessao.nfcePlanoPagamento!);
     Sessao.nfcePlanoPagamento = await Sessao.db.nfcePlanoPagamentoDao.consultarPlanoAtivo();    
 
     Sessao.configuracaoPdv = 
@@ -654,7 +654,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
         planoValor: nfcePlanoPagamentoModel.valor,
         moduloFiscalPrincipal: 'NFC',
       );
-    await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv);
+    await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv!);
     Sessao.configuracaoPdv = await Sessao.db.pdvConfiguracaoDao.consultarObjeto(1);
 
     // se for a primeira vez que o plano é armazenado, vamos vincular o grupo tributário 2 a todos os produtos
@@ -679,7 +679,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
         dataPlanoExpira: nfcePlanoPagamentoModel.dataPlanoExpira,
         hashRegistro: md5.convert(utf8.encode(dataPlanoExpiraFormatada + Constantes.chave)).toString()
       );
-      await Sessao.db.nfcePlanoPagamentoDao.alterar(Sessao.nfcePlanoPagamento);
+      await Sessao.db.nfcePlanoPagamentoDao.alterar(Sessao.nfcePlanoPagamento!);
       Sessao.nfcePlanoPagamento = await Sessao.db.nfcePlanoPagamentoDao.consultarPlanoAtivo();    
     }  
 
@@ -707,7 +707,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
         planoSituacao: nfcePlanoPagamentoModel.statusPagamento == '2' ? 'B' : 'I',
         moduloFiscalPrincipal: moduloFiscal,
       );
-    await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv);
+    await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv!);
     Sessao.configuracaoPdv = await Sessao.db.pdvConfiguracaoDao.consultarObjeto(1);
   }
 

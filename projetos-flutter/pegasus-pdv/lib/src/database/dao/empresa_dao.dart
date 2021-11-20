@@ -80,7 +80,7 @@ class EmpresaDao extends DatabaseAccessor<AppDatabase> with _$EmpresaDaoMixin {
     });    
   } 
 
-  Future<bool> alterar(Insertable<Empresa>? pObjeto, bool atualizarUfTributacao) {
+  Future<bool> alterar(Insertable<Empresa> pObjeto, bool atualizarUfTributacao) {
     return transaction(() async {
       final empresa = removerDomains(pObjeto as Empresa);
       // atualizar a UF da tributação

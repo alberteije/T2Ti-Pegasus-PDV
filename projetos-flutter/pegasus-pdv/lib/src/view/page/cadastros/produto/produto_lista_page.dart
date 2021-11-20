@@ -35,7 +35,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'package:flutter/material.dart';
 
-import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
@@ -145,12 +144,13 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
+              // isAlwaysShown: true,
               child: _listaProdutoMontado == null
               ? const Center(child: CircularProgressIndicator())
               : ListView(
                 padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                 children: <Widget>[
-                  PaginatedDataTable(                        
+                  PaginatedDataTable(  
                     header: const Text('Relação - Produto'),
                     rowsPerPage: _rowsPerPage!,
                     onRowsPerPageChanged: (int? value) {

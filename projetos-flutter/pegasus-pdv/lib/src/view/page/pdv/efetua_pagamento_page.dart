@@ -38,8 +38,7 @@ Based on: Flutter UI Challenges by Many - https://github.com/lohanidamodar/flutt
 import 'package:flutter/material.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
-
-import 'package:pegasus_pdv/src/database/database.dart';
+import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_pdv.dart';

@@ -39,8 +39,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
-
-import 'package:pegasus_pdv/src/database/database.dart';
+import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -780,9 +779,9 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
         form.save();
         if (widget.operacao == 'A') {
-          Sessao.db.fornecedorDao.alterar(fornecedor);
+          Sessao.db.fornecedorDao.alterar(fornecedor!);
         } else {
-          Sessao.db.fornecedorDao.inserir(fornecedor);
+          Sessao.db.fornecedorDao.inserir(fornecedor!);
        }
         Navigator.of(context).pop();
       });
@@ -801,7 +800,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
 
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-      await Sessao.db.fornecedorDao.excluir(widget.fornecedor);
+      await Sessao.db.fornecedorDao.excluir(widget.fornecedor!);
       Navigator.of(context).pop();
     });
   }  

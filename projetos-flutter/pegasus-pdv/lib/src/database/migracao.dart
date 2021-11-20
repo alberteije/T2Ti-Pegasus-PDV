@@ -37,3 +37,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 export 'package:pegasus_pdv/src/database/migracao_para_schema_2.dart';
 export 'package:pegasus_pdv/src/database/migracao_para_schema_3.dart';
 export 'package:pegasus_pdv/src/database/migracao_para_schema_4.dart';
+export 'package:pegasus_pdv/src/database/migracao_para_schema_5.dart';

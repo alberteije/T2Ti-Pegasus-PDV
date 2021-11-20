@@ -70,9 +70,9 @@ class NfeNumeroDao extends DatabaseAccessor<AppDatabase> with _$NfeNumeroDaoMixi
     });    
   } 
 
-  Future<bool> alterar(Insertable<NfeNumero>? pObjeto) {
+  Future<bool> alterar(Insertable<NfeNumero> pObjeto) {
     return transaction(() async {
-      return update(nfeNumeros).replace(pObjeto!);
+      return update(nfeNumeros).replace(pObjeto);
     });    
   } 
 

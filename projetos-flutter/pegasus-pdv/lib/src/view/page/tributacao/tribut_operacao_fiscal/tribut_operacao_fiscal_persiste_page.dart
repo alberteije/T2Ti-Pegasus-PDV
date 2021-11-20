@@ -38,8 +38,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-
-import 'package:pegasus_pdv/src/database/database.dart';
+import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -220,9 +219,9 @@ class _TributOperacaoFiscalPersistePageState extends State<TributOperacaoFiscalP
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
         form.save();
         if (widget.operacao == 'A') {
-          await Sessao.db.tributOperacaoFiscalDao.alterar(tributOperacaoFiscal);
+          await Sessao.db.tributOperacaoFiscalDao.alterar(tributOperacaoFiscal!);
         } else {
-          await Sessao.db.tributOperacaoFiscalDao.inserir(tributOperacaoFiscal);
+          await Sessao.db.tributOperacaoFiscalDao.inserir(tributOperacaoFiscal!);
         }
         Navigator.of(context).pop();
       });
@@ -241,7 +240,7 @@ class _TributOperacaoFiscalPersistePageState extends State<TributOperacaoFiscalP
   
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-      await Sessao.db.tributOperacaoFiscalDao.excluir(tributOperacaoFiscal);
+      await Sessao.db.tributOperacaoFiscalDao.excluir(tributOperacaoFiscal!);
       Navigator.of(context).pop();
     });
   }  

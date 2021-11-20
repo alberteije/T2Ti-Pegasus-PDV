@@ -79,7 +79,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  moor_generator: any
+  moor_generator: 4.6.0+1
   build_runner: any
   msix: any
   flutter_launcher_icons: any

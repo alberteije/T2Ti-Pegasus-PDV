@@ -37,7 +37,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pegasus_pdv/src/controller/controller.dart';
 
-import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
@@ -488,7 +487,7 @@ class _CompraPedidoCabecalhoDataSource extends DataTableSource {
 void _detalharCompraPedidoCabecalho(CompraPedidoCabecalhoMontado compraPedidoCabecalhoMontado, BuildContext context, Function refrescarTela) async {
   //carrega lista de detalhes
   CompraPedidoCabecalhoController.listaCompraDetalhe = 
-    await Sessao.db.compraPedidoDetalheDao.consultarListaComProduto(compraPedidoCabecalhoMontado.compraPedidoCabecalho!.id);
+    await Sessao.db.compraPedidoDetalheDao.consultarListaComProduto(compraPedidoCabecalhoMontado.compraPedidoCabecalho!.id!);
   Navigator.of(context)
     .push(MaterialPageRoute(
       builder: (BuildContext context) => CompraPedidoCabecalhoPage(

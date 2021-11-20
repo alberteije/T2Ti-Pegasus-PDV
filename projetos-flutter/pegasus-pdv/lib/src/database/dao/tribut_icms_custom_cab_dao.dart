@@ -97,6 +97,6 @@ class TributIcmsCustomCabDao extends DatabaseAccessor<AppDatabase> with _$Tribut
   }
   
   Future<void> excluirFilhos(TributIcmsCustomCab tributIcmsCustomCab) async {
-    await (delete(tributIcmsCustomDets)..where((t) => t.idTributIcmsCustomCab.equals(tributIcmsCustomCab.id))).go();
+    await (delete(tributIcmsCustomDets)..where((t) => t.idTributIcmsCustomCab.equals(tributIcmsCustomCab.id!))).go();
   }
 }

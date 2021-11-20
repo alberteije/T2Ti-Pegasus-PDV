@@ -41,7 +41,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 
-import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
@@ -595,9 +594,9 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
           _contasPagar = _contasPagar!.copyWith(statusPagamento: 'P');
         }
         if (widget.operacao == 'A') {
-          Sessao.db.contasPagarDao.alterar(_contasPagar);
+          Sessao.db.contasPagarDao.alterar(_contasPagar!);
         } else {
-          Sessao.db.contasPagarDao.inserir(_contasPagar);
+          Sessao.db.contasPagarDao.inserir(_contasPagar!);
        }
         // Navigator.of(context).pop();
         Navigator.of(context).pop();
@@ -617,7 +616,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
 
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-      await Sessao.db.contasPagarDao.excluir(_contasPagar);
+      await Sessao.db.contasPagarDao.excluir(_contasPagar!);
       Navigator.of(context).pop();
     });
   }  

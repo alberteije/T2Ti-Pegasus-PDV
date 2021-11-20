@@ -48,15 +48,22 @@ class CfopDao extends DatabaseAccessor<AppDatabase> with _$CfopDaoMixin {
 
   CfopDao(this.db) : super(db);
 
-  Future<List<Cfop>> consultarLista() => select(cfops).get();
+  Future<List<Cfop>?> consultarLista() => select(cfops).get();
 
-  Future<List<Cfop>> consultarListaFiltro(String campo, String valor) async {
+  Future<List<Cfop>?> consultarListaFiltro(String campo, String valor) async {
     return (customSelect("SELECT * FROM CFOP WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { cfops }).map((row) {
                                   return Cfop.fromData(row.data, db);  
                                 }).get());
   }
 
+  Future<Cfop?> consultarObjetoFiltro(String campo, String valor) async {
+    return (customSelect("SELECT * FROM CFOP WHERE " + campo + " = '" + valor + "'", 
+                                readsFrom: { cfops }).map((row) {
+                                  return Cfop.fromData(row.data, db);  
+                                }).getSingleOrNull());
+  }  
+  
   Stream<List<Cfop>> observarLista() => select(cfops).watch();
 
   Future<Cfop?> consultarObjeto(int pId) {
@@ -82,18 +89,5 @@ class CfopDao extends DatabaseAccessor<AppDatabase> with _$CfopDaoMixin {
     });    
   }
 
-	static List<String> campos = <String>[
-		'ID', 
-		'CODIGO', 
-		'DESCRICAO', 
-		'APLICACAO', 
-	];
-	
-	static List<String> colunas = <String>[
-		'Id', 
-		'Codigo', 
-		'Descricao', 
-		'Aplicacao', 
-	];
   
 }

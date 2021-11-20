@@ -1139,7 +1139,7 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
       numero: int.tryParse(_numeroController.text),
       serie: _serieController.text,
     );
-    final retorno = await Sessao.db.nfeNumeroDao.alterar(Sessao.numeroNfce);
+    final retorno = await Sessao.db.nfeNumeroDao.alterar(Sessao.numeroNfce!);
     if (retorno) {
       Sessao.numeroNfce = await Sessao.db.nfeNumeroDao.consultarObjeto(1);
       showInSnackBar('Dados atualizados com sucesso!', context, corFundo: Colors.blue);
@@ -1191,7 +1191,7 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
     NfceService nfceService = NfceService();
     nfeConfiguracao = await nfceService.atualizarConfiguracoesMonitor(nfeConfiguracao, Sessao.empresa!.cnpj);        
     if (nfeConfiguracao != null) {
-      await Sessao.db.nfeConfiguracaoDao.alterar(Sessao.configuracaoNfce);
+      await Sessao.db.nfeConfiguracaoDao.alterar(Sessao.configuracaoNfce!);
       Navigator.pop(context, true); // fecha janela de configuração
       Navigator.pop(context, true); // fecha menu lateral
       showInSnackBar('Dados salvos com sucesso.', context, corFundo: Colors.blue);
@@ -1213,7 +1213,7 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
         certificadoDigitalSerie: _nomeCertificadoController.text,
         certificadoDigitalSenha: Constantes.encrypter.encrypt(_senhaCertificadoController.text, iv: Constantes.iv).base64,
       );
-      await Sessao.db.nfeConfiguracaoDao.alterar(Sessao.configuracaoNfce);
+      await Sessao.db.nfeConfiguracaoDao.alterar(Sessao.configuracaoNfce!);
       showInSnackBar('Certificado enviado com sucesso.', context, corFundo: Colors.blue);
     } else {
       showInSnackBar('Ocorreu um problema ao tentar enviar o certificado para o Servidor.', context, corFundo: Colors.red);

@@ -65,26 +65,26 @@ class TributOperacaoFiscalDao extends DatabaseAccessor<AppDatabase> with _$Tribu
 
   Stream<List<TributOperacaoFiscal>> observarLista() => select(tributOperacaoFiscals).watch();
 
-  Future<TributOperacaoFiscal?> consultarObjeto(int? pId) {
+  Future<TributOperacaoFiscal?> consultarObjeto(int pId) {
     return (select(tributOperacaoFiscals)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<TributOperacaoFiscal>? pObjeto) {
+  Future<int> inserir(Insertable<TributOperacaoFiscal> pObjeto) {
     return transaction(() async {
-      final idInserido = await into(tributOperacaoFiscals).insert(pObjeto!);
+      final idInserido = await into(tributOperacaoFiscals).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<TributOperacaoFiscal>? pObjeto) {
+  Future<bool> alterar(Insertable<TributOperacaoFiscal> pObjeto) {
     return transaction(() async {
-      return update(tributOperacaoFiscals).replace(pObjeto!);
+      return update(tributOperacaoFiscals).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<TributOperacaoFiscal>? pObjeto) {
+  Future<int> excluir(Insertable<TributOperacaoFiscal> pObjeto) {
     return transaction(() async {
-      return delete(tributOperacaoFiscals).delete(pObjeto!);
+      return delete(tributOperacaoFiscals).delete(pObjeto);
     });    
   }
 

@@ -55,15 +55,15 @@ class ContasPagarDao extends DatabaseAccessor<AppDatabase> with _$ContasPagarDao
   ContasPagarDao(this.db) : super(db);
 
   Future<List<ContasPagar>?> consultarLista() async {
-    listaContasPagar = await select(contasPagars).get();
+    listaContasPagar = (await select(contasPagars).get()).cast<ContasPagar>();
     return listaContasPagar;
   }
 
   Future<List<ContasPagar>?> consultarListaFiltro(String campo, String valor) async {
-    listaContasPagar = await (customSelect("SELECT * FROM CONTAS_PAGAR WHERE " + campo + " like '%" + valor + "%'", 
+    listaContasPagar = (await (customSelect("SELECT * FROM CONTAS_PAGAR WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { contasPagars }).map((row) {
                                   return ContasPagar.fromData(row.data, db);  
-                                }).get());
+                                }).get())).cast<ContasPagar>();
     return listaContasPagar;
   }
 
@@ -168,9 +168,9 @@ class ContasPagarDao extends DatabaseAccessor<AppDatabase> with _$ContasPagarDao
     return (select(contasPagars)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<ContasPagar>? pObjeto) {
+  Future<int> inserir(Insertable<ContasPagar> pObjeto) {
     return transaction(() async {
-      final idInserido = await into(contasPagars).insert(pObjeto!);
+      final idInserido = await into(contasPagars).insert(pObjeto);
       return idInserido;
     });    
   } 
@@ -185,19 +185,19 @@ class ContasPagarDao extends DatabaseAccessor<AppDatabase> with _$ContasPagarDao
     });    
   } 
 
-  Future<bool> alterar(Insertable<ContasPagar>? pObjeto) {
+  Future<bool> alterar(Insertable<ContasPagar> pObjeto) {
     return transaction(() async {
-      return update(contasPagars).replace(pObjeto!);
+      return update(contasPagars).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<ContasPagar>? pObjeto) {
+  Future<int> excluir(Insertable<ContasPagar> pObjeto) {
     return transaction(() async {
-      return delete(contasPagars).delete(pObjeto!);
+      return delete(contasPagars).delete(pObjeto);
     });    
   }
 
-  Future<int> excluirContasDePedidoVinculado(int? idPedidoCompra) {
+  Future<int> excluirContasDePedidoVinculado(int idPedidoCompra) {
     return transaction(() async {
       return (delete(contasPagars)..where((t) => t.idCompraPedidoCabecalho.equals(idPedidoCompra))).go();
     });    

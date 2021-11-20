@@ -90,6 +90,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
   final _cnpjController = MaskedTextController(mask: Constantes.mascaraCNPJ);
   final _telefoneController = MaskedTextController(mask: Constantes.mascaraTELEFONE);
   final _cepController = MaskedTextController(mask: Constantes.mascaraCEP);
+  final _ibgeController = MaskedTextController(mask: '0000000');
   
   @override
   void initState() {
@@ -129,8 +130,8 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
     _bairroController.text = Sessao.empresa?.bairro ?? '';
     _complementoController.text = Sessao.empresa?.complemento ?? '';
     _cidadeController.text = Sessao.empresa?.cidade ?? '';
+    _ibgeController.text = Sessao.empresa?.codigoIbgeCidade?.toString() ?? '';
 
-		
     return FocusableActionDetector(
       actions: _actionMap,
       shortcuts: _shortcutMap,
@@ -578,22 +579,47 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                               sizes: 'col-12 col-md-6',
                               child: Padding(
                                 padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
-                                child: TextFormField(
-                                  validator: Sessao.configuracaoPdv!.modulo != 'G' 
-                                    ? ValidaCampoFormulario.validarObrigatorioNumerico 
-                                    : null,
-                                  maxLength: 7,
-                                  maxLines: 1,
-                                  initialValue: Sessao.empresa?.codigoIbgeCidade?.toString() ?? '',
-                                  decoration: getInputDecoration(
-                                    'Conteúdo para o campo IBGE Município',
-                                    'Código Município IBGE',
-                                    false),
-                                  onSaved: (String? value) {
-                                  },
-                                  onChanged: (text) {
-                                    Sessao.empresa = Sessao.empresa!.copyWith(codigoIbgeCidade: int.tryParse(text));
-                                  },
+                                child: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      flex: 1,
+                                      child: TextFormField(
+                                        validator: Sessao.configuracaoPdv!.modulo != 'G' 
+                                          ? ValidaCampoFormulario.validarObrigatorioNumerico 
+                                          : null,
+                                        maxLength: 7,
+                                        maxLines: 1,
+                                        controller: _ibgeController,
+                                        decoration: getInputDecoration(
+                                          'Conteúdo para o campo IBGE Município',
+                                          'Código Município IBGE',
+                                          false),
+                                        onSaved: (String? value) {
+                                        },
+                                        onChanged: (text) {
+                                          Sessao.empresa = Sessao.empresa!.copyWith(codigoIbgeCidade: int.tryParse(text));
+                                        },
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 0,
+                                      child: IconButton(
+                                        tooltip: 'Importar IBGE',
+                                        icon: ViewUtilLib.getIconBotaoLookup(),
+                                        onPressed: () async {
+                                          for (var i = 0; i < Sessao.tabelaMunicipios.length; i++) {
+                                            if (Sessao.tabelaMunicipios[i][3] == _cidadeController.text //nome_caixa_alta
+                                             || Sessao.tabelaMunicipios[i][3].toString().toLowerCase() == _cidadeController.text.toLowerCase()
+                                             || Sessao.tabelaMunicipios[i][4] == _cidadeController.text //nome_cursivo - com acentos
+                                             || Sessao.tabelaMunicipios[i][4].toString().toLowerCase() == _cidadeController.text.toLowerCase()
+                                            ) {
+                                              _ibgeController.text = Sessao.tabelaMunicipios[i][0].toString();
+                                            }
+                                          }        
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -719,6 +745,19 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                   }
                                 ),
                               ), 
+                              const SizedBox(
+                                width: 10,
+                              ), 
+                              SizedBox(
+                                width: 200,
+                                child: getBotaoGenericoPdv(
+                                  descricao: 'Sair sem Salvar',
+                                  cor: Colors.red, 
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  }
+                                ),
+                              ), 
                             ],
                           ),
                         ),
@@ -757,7 +796,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
           tipo: empresaModel.tipo == 'MATRIZ' ? 'M' : 'F',
           naturezaJuridica: empresaModel.naturezaJuridica,
         );
-      await Sessao.db.empresaDao.alterar(Sessao.empresa, true);
+      await Sessao.db.empresaDao.alterar(Sessao.empresa!, true);
       Sessao.empresa = await Sessao.db.empresaDao.consultarObjeto(1);
       setState(() {
       });
@@ -796,7 +835,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
   }
 
   Future _salvarDadosLocais() async {
-    await Sessao.db.empresaDao.alterar(Sessao.empresa, Sessao.configuracaoPdv!.modulo != 'G');
+    await Sessao.db.empresaDao.alterar(Sessao.empresa!, Sessao.configuracaoPdv!.modulo != 'G');
     Sessao.empresa = await Sessao.db.empresaDao.consultarObjeto(1);
     showInSnackBar('Dados salvos com sucesso.', context, corFundo: Colors.blue);
     Navigator.of(context).pop();

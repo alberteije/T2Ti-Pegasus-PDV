@@ -408,6 +408,23 @@ class _RegistroPageState extends State<RegistroPage> {
       );
     }
 
+      listaBotoes.add(
+        const SizedBox(width: 10.0),
+      );
+      listaBotoes.add(
+      SizedBox(
+        width: 200,
+        child: getBotaoGenericoPdv(
+          descricao: 'Dados Empresa',
+          cor: Colors.blueGrey, 
+          onPressed: () {
+            // Navigator.of(context!).pop();
+            Navigator.pushNamed(context!, '/empresaPersiste',);
+          }
+        ),
+      ),
+    );
+      
     return listaBotoes;
   }
 
@@ -424,7 +441,7 @@ class _RegistroPageState extends State<RegistroPage> {
           dataRegistro: empresa.dataRegistro,
           horaRegistro: empresa.horaRegistro,
         );
-        await Sessao.db.empresaDao.alterar(Sessao.empresa, Sessao.configuracaoPdv!.modulo != 'G');
+        await Sessao.db.empresaDao.alterar(Sessao.empresa!, Sessao.configuracaoPdv!.modulo != 'G');
         Sessao.empresa = await Sessao.db.empresaDao.consultarObjeto(1);
         Sessao.fecharDialogBoxEspera(context);
         gerarDialogBoxInformacao(context, 'Código confirmado com sucesso. Sistema liberado.', 
@@ -479,7 +496,7 @@ class _RegistroPageState extends State<RegistroPage> {
               dataRegistro: DateTime.now(),
               horaRegistro: Biblioteca.formatarHora(DateTime.now()),
             );
-            await Sessao.db.empresaDao.alterar(Sessao.empresa, Sessao.configuracaoPdv!.modulo != 'G');
+            await Sessao.db.empresaDao.alterar(Sessao.empresa!, Sessao.configuracaoPdv!.modulo != 'G');
             Sessao.empresa = await Sessao.db.empresaDao.consultarObjeto(1);
             Navigator.of(context).pop();
             showInSnackBar('Registro realizado com sucesso.', context, corFundo: Colors.blue);

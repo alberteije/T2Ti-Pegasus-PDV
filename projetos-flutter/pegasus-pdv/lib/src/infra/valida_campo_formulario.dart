@@ -58,7 +58,7 @@ class ValidaCampoFormulario {
   }
 
   /// valida campos decimais como obrigatórios
-  static String? validarObrigatorioDecimal(String value) {
+  static String? validarObrigatorioDecimal(String? value) {
     if (value == '0,00') return 'Obrigatório informar esse campo.';
     return null;
   }

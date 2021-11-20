@@ -41,9 +41,8 @@ import 'package:backdrop/backdrop.dart';
 import 'package:flutter/gestures.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pegasus_pdv/src/database/database_classes.dart';
 import 'package:share_plus/share_plus.dart';
-
-import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -459,7 +458,7 @@ class _VendasListaPageState extends State<VendasListaPage> {
   }
 
   Future _cancelarVenda() async {
-    final recebimentos = await Sessao.db.contasReceberDao.consultarRecebimentosDeUmaVenda(Sessao.vendaAtual!.id, 'R');
+    final recebimentos = await Sessao.db.contasReceberDao.consultarRecebimentosDeUmaVenda(Sessao.vendaAtual!.id!, 'R');
     if (recebimentos!.isNotEmpty) {
       showInSnackBar("Essa venda não pode ser cancelada, pois já existem parcelas com o status Recebido.", context);          
     } else {
@@ -483,12 +482,12 @@ class _VendasListaPageState extends State<VendasListaPage> {
       cupomCancelado: 'S',
       valorCancelado: Sessao.vendaAtual!.valorFinal,
     );
-    await Sessao.db.pdvVendaCabecalhoDao.cancelarVenda(Sessao.vendaAtual).then((value) async => await _refrescarTela());
+    await Sessao.db.pdvVendaCabecalhoDao.cancelarVenda(Sessao.vendaAtual!).then((value) async => await _refrescarTela());
   }
 
   Future _cancelarNfce(BuildContext context) async {
     // consulta a nota vinculada à venda   
-    final nfceCabecalho = await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(Sessao.vendaAtual!.id);
+    final nfceCabecalho = await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(Sessao.vendaAtual!.id!);
     if (nfceCabecalho == null) {
       gerarDialogBoxErro(context, 'Não existe uma NFC-e vinculada a esta venda ou a nota foi emitida em Contingência e ainda não foi autorizada.');
     } else {
@@ -572,7 +571,7 @@ class _PdvVendaCabecalhoDataSource extends DataTableSource {
           ((pdvVendaCabecalho.cupomCancelado != null) && (pdvVendaCabecalho.cupomCancelado == 'S'))  
           ? const Text('Cancelada')
           : getBotaoGenericoPdv(
-              descricao: 'Cancela',
+              descricao: 'Cancelar',
               cor: Colors.red.shade400, 
               padding: const EdgeInsets.all(5),
               onPressed: () async {

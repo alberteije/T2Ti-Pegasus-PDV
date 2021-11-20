@@ -40,7 +40,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:pegasus_pdv/src/controller/compras/compra_pedido_cabecalho_controller.dart';
-import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 

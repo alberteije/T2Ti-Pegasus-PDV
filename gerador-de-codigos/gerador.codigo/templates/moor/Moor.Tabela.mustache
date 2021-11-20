@@ -36,11 +36,259 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:moor/moor.dart';
 
 @DataClassName("{{class}}")
+@UseRowClass({{class}})
 class {{class}}s extends Table {
+  @override
   String get tableName => '{{table}}';
 
   IntColumn get id => integer().named('ID').autoIncrement()();
   {{#campos}}
   {{{.}}}
   {{/campos}}
+}
+
+class {{class}} extends DataClass implements Insertable<{{class}}> {
+  final int? id;
+  {{#camposClasse}}
+  {{{.}}}
+  {{/camposClasse}}
+
+  {{class}}(
+    {
+      required this.id,
+      {{#camposConstrutor}}
+      {{{.}}}
+      {{/camposConstrutor}}
+    }
+  );
+
+  factory {{class}}.fromData(Map<String, dynamic> data, GeneratedDatabase db, {String? prefix}) {
+    final effectivePrefix = prefix ?? '';
+    return {{class}}(
+      id: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}ID']),
+      {{#camposFromData}}
+      {{{.}}}
+      {{/camposFromData}}
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || id != null) {
+      map['ID'] = Variable<int?>(id);
+    }
+    {{#camposToColumns}}
+    {{{.}}}
+    {{/camposToColumns}}
+    return map;
+  }
+
+  {{class}}sCompanion toCompanion(bool nullToAbsent) {
+    return {{class}}sCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      {{#camposToCompanion}}
+      {{{.}}}
+      {{/camposToCompanion}}
+    );
+  }
+
+  factory {{class}}.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return {{class}}(
+      id: serializer.fromJson<int>(json['id']),
+      {{#camposFromJson}}
+      {{{.}}}
+      {{/camposFromJson}}
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int?>(id),
+      {{#camposToJson}}
+      {{{.}}}
+      {{/camposToJson}}
+    };
+  }
+
+  {{class}} copyWith(
+        {
+		  int? id,
+          {{#construtorCopyWith}}
+          {{{.}}}
+          {{/construtorCopyWith}}
+		}) =>
+      {{class}}(
+        id: id ?? this.id,
+        {{#camposCopyWith}}
+        {{{.}}}
+        {{/camposCopyWith}}
+      );
+  
+  @override
+  String toString() {
+    return (StringBuffer('{{class}}(')
+          ..write('id: $id, ')
+          {{#camposToString}}
+          {{{.}}}
+          {{/camposToString}}
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+      id,
+      {{#camposHashCode}}
+      {{{.}}}
+      {{/camposHashCode}}
+	]);
+  
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is {{class}} &&
+          other.id == id &&
+          {{#camposOperator}}
+          {{{.}}}
+          {{/camposOperator}}
+	   );
+}
+
+class {{class}}sCompanion extends UpdateCompanion<{{class}}> {
+
+  final Value<int?> id;
+  {{#camposUpdateCompanion}}
+  {{{.}}}
+  {{/camposUpdateCompanion}}
+
+  const {{class}}sCompanion({
+    this.id = const Value.absent(),
+    {{#construtorUpdateCompanion}}
+    {{{.}}}
+    {{/construtorUpdateCompanion}}
+  });
+
+  {{class}}sCompanion.insert({
+    this.id = const Value.absent(),
+    {{#camposCompanionInsert}}
+    {{{.}}}
+    {{/camposCompanionInsert}}
+  });
+
+  static Insertable<{{class}}> custom({
+    Expression<int>? id,
+    {{#camposCompanionInsertable}}
+    {{{.}}}
+    {{/camposCompanionInsertable}}
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'ID': id,
+      {{#camposRawValuesInsertable}}
+      {{{.}}}
+      {{/camposRawValuesInsertable}}
+    });
+  }
+
+  {{class}}sCompanion copyWith(
+      {
+	  Value<int>? id,
+      {{#camposCompanionCopyWith}}
+      {{{.}}}
+      {{/camposCompanionCopyWith}}
+	  }) {
+    return {{class}}sCompanion(
+      id: id ?? this.id,
+      {{#construtorCompanionCopyWith}}
+      {{{.}}}
+      {{/construtorCompanionCopyWith}}
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['ID'] = Variable<int?>(id.value);
+    }
+    {{#camposCompanionToColumns}}
+    {{{.}}}
+    {{/camposCompanionToColumns}}	
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('{{class}}sCompanion(')
+          ..write('id: $id, ')
+          {{#camposCompanionToString}}
+          {{{.}}}
+          {{/camposCompanionToString}}
+          ..write(')'))
+        .toString();
+  }
+}
+
+class ${{class}}sTable extends {{class}}s
+    with TableInfo<${{class}}sTable, {{class}}> {
+  final GeneratedDatabase _db;
+  final String? _alias;
+  ${{class}}sTable(this._db, [this._alias]);
+  
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedColumn<int>? _id;
+  @override
+  GeneratedColumn<int> get id =>
+      _id ??= GeneratedColumn<int>('ID', aliasedName, false,
+          typeName: 'INTEGER',
+          requiredDuringInsert: false,
+          defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+
+  {{#camposColunasTabela}}
+  {{{.}}}
+  {{/camposColunasTabela}}
+		    
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        {{#camposGeneratedColumn}}
+        {{{.}}}
+        {{/camposGeneratedColumn}}
+      ];
+
+  @override
+  String get aliasedName => _alias ?? '{{table}}';
+  
+  @override
+  String get actualTableName => '{{table}}';
+  
+  @override
+  VerificationContext validateIntegrity(Insertable<{{class}}> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('ID')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));
+    }
+    {{#camposValidateIntegrity}}
+    {{{.}}}
+    {{/camposValidateIntegrity}}
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  {{class}} map(Map<String, dynamic> data, {String? tablePrefix}) {
+    return {{class}}.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+  }
+
+  @override
+  ${{class}}sTable createAlias(String alias) {
+    return ${{class}}sTable(_db, alias);
+  }
 }

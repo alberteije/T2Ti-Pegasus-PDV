@@ -115,7 +115,7 @@ class TributConfiguraOfGtDao extends DatabaseAccessor<AppDatabase> with _$Tribut
     return (select(tributConfiguraOfGts)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<TributConfiguraOfGtMontado?> consultarObjetoMontado(int? pIdOperacaoFiscal, int? pIdGrupoTributario) async {
+  Future<TributConfiguraOfGtMontado?> consultarObjetoMontado(int pIdOperacaoFiscal, int pIdGrupoTributario) async {
     final consulta = select(tributConfiguraOfGts)
       .join([
         leftOuterJoin(tributGrupoTributarios, tributGrupoTributarios.id.equalsExp(tributConfiguraOfGts.idTributGrupoTributario)),
@@ -175,10 +175,10 @@ class TributConfiguraOfGtDao extends DatabaseAccessor<AppDatabase> with _$Tribut
     });    
   } 
 
-  Future<int> excluir(TributConfiguraOfGtMontado? pObjeto) {
+  Future<int> excluir(TributConfiguraOfGtMontado pObjeto) {
     return transaction(() async {
       await excluirFilhos(pObjeto);
-      return delete(tributConfiguraOfGts).delete(pObjeto!.tributConfiguraOfGt!);
+      return delete(tributConfiguraOfGts).delete(pObjeto.tributConfiguraOfGt!);
     });    
   }
 
@@ -191,10 +191,10 @@ class TributConfiguraOfGtDao extends DatabaseAccessor<AppDatabase> with _$Tribut
     await into(tributCofinss).insert(pObjeto.tributCofins!);  
   }
   
-  Future<void> excluirFilhos(TributConfiguraOfGtMontado? pObjeto) async {
-    await (delete(tributIcmsUfs)..where((t) => t.idTributConfiguraOfGt.equals(pObjeto!.tributConfiguraOfGt!.id))).go();
-    await (delete(tributPiss)..where((t) => t.idTributConfiguraOfGt.equals(pObjeto!.tributConfiguraOfGt!.id))).go();
-    await (delete(tributCofinss)..where((t) => t.idTributConfiguraOfGt.equals(pObjeto!.tributConfiguraOfGt!.id))).go();
+  Future<void> excluirFilhos(TributConfiguraOfGtMontado pObjeto) async {
+    await (delete(tributIcmsUfs)..where((t) => t.idTributConfiguraOfGt.equals(pObjeto.tributConfiguraOfGt!.id!))).go();
+    await (delete(tributPiss)..where((t) => t.idTributConfiguraOfGt.equals(pObjeto.tributConfiguraOfGt!.id!))).go();
+    await (delete(tributCofinss)..where((t) => t.idTributConfiguraOfGt.equals(pObjeto.tributConfiguraOfGt!.id!))).go();
   }
 
   TributConfiguraOfGtMontado removerDomains(TributConfiguraOfGtMontado tributacao) {

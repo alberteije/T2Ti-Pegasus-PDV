@@ -94,7 +94,7 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
       return retorno;
   }
 
-  Future<NfeCabecalho?> consultarNotaPorVenda(int? idVenda, {String? status}) async {
+  Future<NfeCabecalho?> consultarNotaPorVenda(int idVenda, {String? status}) async {
     String sql;
     if (status == null) {
       // não retorna as notas com status CONTINGENCIA (será transmitida e passada para 4) E OFFLINE (será cancelada ou inutilizada)
@@ -175,37 +175,37 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
     return (select(nfeCabecalhos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(NfeCabecalhoMontado? nfeCabecalhoMontado) {
+  Future<int> inserir(NfeCabecalhoMontado nfeCabecalhoMontado) {
     return transaction(() async {
-      final idInserido = await into(nfeCabecalhos).insert(nfeCabecalhoMontado!.nfeCabecalho!);
+      final idInserido = await into(nfeCabecalhos).insert(nfeCabecalhoMontado.nfeCabecalho!);
       await inserirFilhos(nfeCabecalhoMontado, idInserido);
       await db.nfeNumeroDao.atualizarNumero();
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(NfeCabecalhoMontado? nfeCabecalhoMontado, {bool? atualizaFilhos}) {
+  Future<bool> alterar(NfeCabecalhoMontado nfeCabecalhoMontado, {bool? atualizaFilhos}) {
     return transaction(() async {
       if (atualizaFilhos!) {
-        await excluirFilhos(nfeCabecalhoMontado!);
-        await inserirFilhos(nfeCabecalhoMontado, nfeCabecalhoMontado.nfeCabecalho!.id);
+        await excluirFilhos(nfeCabecalhoMontado);
+        await inserirFilhos(nfeCabecalhoMontado, nfeCabecalhoMontado.nfeCabecalho!.id!);
       }
-      return update(nfeCabecalhos).replace(nfeCabecalhoMontado!.nfeCabecalho!);
+      return update(nfeCabecalhos).replace(nfeCabecalhoMontado.nfeCabecalho!);
     });    
   } 
 
   Future<void> excluirFilhos(NfeCabecalhoMontado pObjeto) async {
-    await (delete(nfeDestinatarios)..where((t) => t.idNfeCabecalho.equals(pObjeto.nfeCabecalho!.id))).go();
-    await (delete(nfeInformacaoPagamentos)..where((t) => t.idNfeCabecalho.equals(pObjeto.nfeCabecalho!.id))).go();
+    await (delete(nfeDestinatarios)..where((t) => t.idNfeCabecalho.equals(pObjeto.nfeCabecalho!.id!))).go();
+    await (delete(nfeInformacaoPagamentos)..where((t) => t.idNfeCabecalho.equals(pObjeto.nfeCabecalho!.id!))).go();
     for (var detalhe in pObjeto.listaNfeDetalheMontado!) {
-      await (delete(nfeDetalheImpostoIcmss)..where((t) => t.idNfeDetalhe.equals(detalhe.nfeDetalhe!.id))).go();
-      await (delete(nfeDetalheImpostoPiss)..where((t) => t.idNfeDetalhe.equals(detalhe.nfeDetalhe!.id))).go();
-      await (delete(nfeDetalheImpostoCofinss)..where((t) => t.idNfeDetalhe.equals(detalhe.nfeDetalhe!.id))).go();
+      await (delete(nfeDetalheImpostoIcmss)..where((t) => t.idNfeDetalhe.equals(detalhe.nfeDetalhe!.id!))).go();
+      await (delete(nfeDetalheImpostoPiss)..where((t) => t.idNfeDetalhe.equals(detalhe.nfeDetalhe!.id!))).go();
+      await (delete(nfeDetalheImpostoCofinss)..where((t) => t.idNfeDetalhe.equals(detalhe.nfeDetalhe!.id!))).go();
     }
-    await (delete(nfeDetalhes)..where((t) => t.idNfeCabecalho.equals(pObjeto.nfeCabecalho!.id))).go();
+    await (delete(nfeDetalhes)..where((t) => t.idNfeCabecalho.equals(pObjeto.nfeCabecalho!.id!))).go();
   }
 
-  Future<void> inserirFilhos(NfeCabecalhoMontado nfeCabecalhoMontado, int? idMestre) async {
+  Future<void> inserirFilhos(NfeCabecalhoMontado nfeCabecalhoMontado, int idMestre) async {
     nfeCabecalhoMontado.nfeDestinatario = nfeCabecalhoMontado.nfeDestinatario!.copyWith(idNfeCabecalho: idMestre);
     await into(nfeDestinatarios).insert(nfeCabecalhoMontado.nfeDestinatario!);  
 

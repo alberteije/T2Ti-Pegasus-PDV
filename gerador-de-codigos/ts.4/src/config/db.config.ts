@@ -6,7 +6,7 @@ export const connection = createConnection({
     port: 3306,
     username: "root",
     password: "root",
-    database: "fenix",
+    database: "pegasus_pdv",
     entities: [],
     synchronize: false,
     logging: true

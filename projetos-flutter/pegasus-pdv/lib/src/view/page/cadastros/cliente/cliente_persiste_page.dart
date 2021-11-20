@@ -40,7 +40,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 
-import 'package:pegasus_pdv/src/database/database.dart';
+import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 
@@ -781,9 +781,9 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
         form.save();
         if (widget.operacao == 'A') {
-          Sessao.db.clienteDao.alterar(cliente);
+          Sessao.db.clienteDao.alterar(cliente!);
         } else {
-          Sessao.db.clienteDao.inserir(cliente);
+          Sessao.db.clienteDao.inserir(cliente!);
        }
         Navigator.of(context).pop();
       });
@@ -802,7 +802,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
 
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-      await Sessao.db.clienteDao.excluir(widget.cliente);
+      await Sessao.db.clienteDao.excluir(widget.cliente!);
       Navigator.of(context).pop();
     });
   }  

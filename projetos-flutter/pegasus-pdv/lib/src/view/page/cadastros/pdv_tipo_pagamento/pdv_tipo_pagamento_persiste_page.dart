@@ -38,8 +38,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-
-import 'package:pegasus_pdv/src/database/database.dart';
+import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -278,12 +277,12 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
         form.save();        
         bool tudoCerto = false;
         if (widget.operacao == 'A') {
-          await Sessao.db.pdvTipoPagamentoDao.alterar(pdvTipoPagamento);
+          await Sessao.db.pdvTipoPagamentoDao.alterar(pdvTipoPagamento!);
           tudoCerto = true;
         } else {
           final tipoPagamento = await Sessao.db.pdvTipoPagamentoDao.consultarObjetoFiltro('CODIGO', pdvTipoPagamento!.codigo!);
           if (tipoPagamento == null) {
-            await Sessao.db.pdvTipoPagamentoDao.inserir(pdvTipoPagamento);
+            await Sessao.db.pdvTipoPagamentoDao.inserir(pdvTipoPagamento!);
             tudoCerto = true;
           } else {
             showInSnackBar('Já existe um tipo de pagamento cadastrado com o CÓDIGO informado.', context);
@@ -309,7 +308,7 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
 
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-      await Sessao.db.pdvTipoPagamentoDao.excluir(pdvTipoPagamento);
+      await Sessao.db.pdvTipoPagamentoDao.excluir(pdvTipoPagamento!);
       Navigator.of(context).pop();
     });
   }  

@@ -39,14 +39,25 @@ LazyDatabase _openConnection() {
 
 @UseMoor(
   tables: [
+    Cardapios,
+    CardapioPerguntaPadraos,
+    CardapioRespostaPadraos,
     Cfops,
     Clientes,
     Colaboradors,
+    Comandas,
+    ComandaDetalhes,
+    ComandaObservacaoPadraos,
+    ComandaPedidos,
     CompraPedidoCabecalhos,
     CompraPedidoDetalhes,
     Contadors,
     ContasPagars,
     ContasRecebers,
+    Cozinhas,
+    Deliverys,
+    DeliveryAcertos,
+    DeliveryAcertoComandas,
     EcfAliquotass,
     EcfDocumentosEmitidoss,
     EcfE3s,
@@ -62,26 +73,17 @@ LazyDatabase _openConnection() {
     EcfSintegra60As,
     EcfSintegra60Ms,
     Empresas,
+    EmpresaDeliveryPedidos,
+    EmpresaSegmentos,
+    EntregadorRotas,
+    EntregadorRotaDetalhes,
+    FidelidadeHistoricos,
+    FidelidadeUtilizados,
     Fornecedors,
     Ibpts,
     LogImportacaos,
-    PdvCaixas,
-    PdvConfiguracaos,
-    PdvConfiguracaoBalancas,
-    PdvConfiguracaoLeitorSerials,
-    PdvFechamentos,
-    PdvMovimentos,
-    PdvOperadors,
-    PdvSangrias,
-    PdvSuprimentos,
-    PdvTipoPagamentos,
-    PdvTotalTipoPagamentos,
-    PdvVendaCabecalhos,
-    PdvVendaDetalhes,
-    Produtos,
-    ProdutoFichaTecnicas,
-    ProdutoPromocaos,
-    ProdutoUnidades,
+    Mesas,
+    NfcePlanoPagamentos,
     NfeAcessoXmls,
     NfeCabecalhos,
     NfeCanas,
@@ -126,7 +128,29 @@ LazyDatabase _openConnection() {
     NfeTransporteReboques,
     NfeTransporteVolumes,
     NfeTransporteVolumeLacres,
-    NfcePlanoPagamentos,
+    PdvCaixas,
+    PdvConfiguracaos,
+    PdvConfiguracaoBalancas,
+    PdvConfiguracaoLeitorSerials,
+    PdvFechamentos,
+    PdvMovimentos,
+    PdvOperadors,
+    PdvSangrias,
+    PdvSuprimentos,
+    PdvTipoPagamentos,
+    PdvTotalTipoPagamentos,
+    PdvVendaCabecalhos,
+    PdvVendaDetalhes,
+    Produtos,
+    ProdutoFichaTecnicas,
+    ProdutoGrupos,
+    ProdutoPromocaos,
+    ProdutoSubgrupos,
+    ProdutoTipos,
+    ProdutoUnidades,
+    Reservas,
+    ReservaMesas,
+    TaxaEntregas,
     TributCofinss,
     TributConfiguraOfGts,
     TributGrupoTributarios,
@@ -139,14 +163,25 @@ LazyDatabase _openConnection() {
     TributPiss,
  ], 
   daos: [
+    CardapioDao,
+    CardapioPerguntaPadraoDao,
+    CardapioRespostaPadraoDao,
     CfopDao,
     ClienteDao,
     ColaboradorDao,
+    ComandaDao,
+    ComandaDetalheDao,
+    ComandaObservacaoPadraoDao,
+    ComandaPedidoDao,
     CompraPedidoCabecalhoDao,
     CompraPedidoDetalheDao,
     ContadorDao,
     ContasPagarDao,
     ContasReceberDao,
+    CozinhaDao,
+    DeliveryDao,
+    DeliveryAcertoDao,
+    DeliveryAcertoComandaDao,
     EcfAliquotasDao,
     EcfDocumentosEmitidosDao,
     EcfE3Dao,
@@ -162,9 +197,21 @@ LazyDatabase _openConnection() {
     EcfSintegra60ADao,
     EcfSintegra60MDao,
     EmpresaDao,
+    EmpresaDeliveryPedidoDao,
+    EmpresaSegmentoDao,
+    EntregadorRotaDao,
+    EntregadorRotaDetalheDao,
+    FidelidadeHistoricoDao,
+    FidelidadeUtilizadoDao,
     FornecedorDao,
     IbptDao,
     LogImportacaoDao,
+    MesaDao,
+    NfcePlanoPagamentoDao,
+    NfeCabecalhoDao,
+    NfeConfiguracaoDao,
+    NfeNumeroDao,
+    NfeNumeroInutilizadoDao,
     PdvCaixaDao,
     PdvConfiguracaoDao,
     PdvConfiguracaoBalancaDao,
@@ -180,13 +227,14 @@ LazyDatabase _openConnection() {
     PdvVendaDetalheDao,
     ProdutoDao,
     ProdutoFichaTecnicaDao,
+    ProdutoGrupoDao,
     ProdutoPromocaoDao,
+    ProdutoSubgrupoDao,
+    ProdutoTipoDao,
     ProdutoUnidadeDao,
-    NfeCabecalhoDao,
-    NfeConfiguracaoDao,
-    NfeNumeroDao,
-    NfeNumeroInutilizadoDao,
-    NfcePlanoPagamentoDao,
+    ReservaDao,
+    ReservaMesaDao,
+    TaxaEntregaDao,
     TributConfiguraOfGtDao,
     TributGrupoTributarioDao,
     TributIcmsCustomCabDao,
@@ -203,7 +251,7 @@ class AppDatabase extends _$AppDatabase {
 
   // you should bump this number whenever you change or add a table definition.
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -213,6 +261,7 @@ class AppDatabase extends _$AppDatabase {
       await _popularBancoSchema02(this);
       await _popularBancoSchema03(this);
       await _popularBancoSchema04(this);
+      await _popularBancoSchema05(this);
     },
     onUpgrade: (Migrator m, int from, int to) async {
       if (from == 1) {
@@ -222,20 +271,33 @@ class AppDatabase extends _$AppDatabase {
         await _popularBancoSchema03(this);
         await MigracaoParaSchema4(this).migrarParaSchema4(m, from, to);
         await _popularBancoSchema04(this);
+        await MigracaoParaSchema5(this).migrarParaSchema5(m, from, to);
+        await _popularBancoSchema05(this);
       } 
       if (from == 2) {
         await MigracaoParaSchema3(this).migrarParaSchema3(m, from, to);
         await _popularBancoSchema03(this);
         await MigracaoParaSchema4(this).migrarParaSchema4(m, from, to);
         await _popularBancoSchema04(this);
+        await MigracaoParaSchema5(this).migrarParaSchema5(m, from, to);
+        await _popularBancoSchema05(this);
       }
       if (from == 3) {
         await MigracaoParaSchema4(this).migrarParaSchema4(m, from, to);
         await _popularBancoSchema04(this);
+        await MigracaoParaSchema5(this).migrarParaSchema5(m, from, to);
+        await _popularBancoSchema05(this);
+      }
+      if (from == 4) {
+        await MigracaoParaSchema5(this).migrarParaSchema5(m, from, to);
+        await _popularBancoSchema05(this);
       }
     },    
   );
 
+}
+
+Future<void> _popularBancoSchema05(AppDatabase db) async {
 }
 
 Future<void> _popularBancoSchema04(AppDatabase db) async {

@@ -69,22 +69,22 @@ class FornecedorDao extends DatabaseAccessor<AppDatabase> with _$FornecedorDaoMi
     return (select(fornecedors)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<Fornecedor>? pObjeto) {
+  Future<int> inserir(Insertable<Fornecedor> pObjeto) {
     return transaction(() async {
-      final idInserido = await into(fornecedors).insert(pObjeto!);
+      final idInserido = await into(fornecedors).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Fornecedor>? pObjeto) {
+  Future<bool> alterar(Insertable<Fornecedor> pObjeto) {
     return transaction(() async {
-      return update(fornecedors).replace(pObjeto!);
+      return update(fornecedors).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<Fornecedor>? pObjeto) {
+  Future<int> excluir(Insertable<Fornecedor> pObjeto) {
     return transaction(() async {
-      return delete(fornecedors).delete(pObjeto!);
+      return delete(fornecedors).delete(pObjeto);
     });    
   }
 

@@ -63,7 +63,7 @@ class PdvTotalTipoPagamentoDao extends DatabaseAccessor<AppDatabase> with _$PdvT
     return (select(pdvTotalTipoPagamentos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<List<PdvTotalTipoPagamento>> consultarListaTotaisAgrupado(int? idMovimento) async {
+  Future<List<PdvTotalTipoPagamento>> consultarListaTotaisAgrupado(int idMovimento) async {
     return (customSelect("SELECT "  
     " ID_PDV_TIPO_PAGAMENTO, sum(VALOR) as VALOR "
     " FROM PDV_TOTAL_TIPO_PAGAMENTO "

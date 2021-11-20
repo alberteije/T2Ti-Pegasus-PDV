@@ -444,13 +444,13 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
       reciboMargemPagina: _margensPagina,
       permiteEstoqueNegativo: _permiteEstoqueNegativo ? 'S' : 'N',
     );
-    await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv);
+    await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv!);
     return true;
   }
 
   Future _refrescarTela() async {
     if (Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao != null) {
-      final operacaoFiscal = await Sessao.db.tributOperacaoFiscalDao.consultarObjeto(Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao);
+      final operacaoFiscal = await Sessao.db.tributOperacaoFiscalDao.consultarObjeto(Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao!);
       _importaTributOperacaoFiscalController.text = operacaoFiscal?.descricao ?? '';
       setState(() {
       });

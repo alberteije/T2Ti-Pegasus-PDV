@@ -71,22 +71,22 @@ class NfcePlanoPagamentoDao extends DatabaseAccessor<AppDatabase> with _$NfcePla
     ).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<NfcePlanoPagamento>? pObjeto) {
+  Future<int> inserir(Insertable<NfcePlanoPagamento> pObjeto) {
     return transaction(() async {
-      final idInserido = await into(nfcePlanoPagamentos).insert(pObjeto!);
+      final idInserido = await into(nfcePlanoPagamentos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<NfcePlanoPagamento>? pObjeto) {
+  Future<bool> alterar(Insertable<NfcePlanoPagamento> pObjeto) {
     return transaction(() async {
-      return update(nfcePlanoPagamentos).replace(pObjeto!);
+      return update(nfcePlanoPagamentos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<NfcePlanoPagamento>? pObjeto) {
+  Future<int> excluir(Insertable<NfcePlanoPagamento> pObjeto) {
     return transaction(() async {
-      return delete(nfcePlanoPagamentos).delete(pObjeto!);
+      return delete(nfcePlanoPagamentos).delete(pObjeto);
     });    
   }
 

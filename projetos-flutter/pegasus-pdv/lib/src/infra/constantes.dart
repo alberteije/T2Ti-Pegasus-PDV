@@ -112,6 +112,7 @@ class Constantes {
   static const String menuOsString = 'T2Ti ERP Fenix - Ordem de Serviço';
   static const String menuAfvString = 'T2Ti ERP Fenix - AFV';
   static const String menuNfseString = 'T2Ti ERP Fenix - NFS-e';
+  static const String menuCTeString = "T2Ti ERP Fenix - CT-e";
 
   static const String tituloAbaDetalhePrincipal = 'Detalhes';
 
@@ -136,7 +137,7 @@ class Constantes {
   static final String botaoCaixaDesconto = Biblioteca.isDesktop() ? 'Desconto [F10]' : 'Desconto';
   static final String botaoCaixaVendedor = Biblioteca.isDesktop() ? 'Vendedor [F3]' : 'Vendedor';
   static final String botaoCaixaCliente = Biblioteca.isDesktop() ? 'Cliente [F4]' : 'Cliente';
-  static final String botaoCaixaOpcoes = Biblioteca.isDesktop() ? 'Opções [F5]' : 'Opções';
+  static final String botaoCaixaOpcoes = Biblioteca.isDesktop() ? 'Mais... [F5]' : 'Mais...';
 
   // Dicas botões
   static const String botaoInserirDica = 'Inserir Item [F2]';
@@ -168,7 +169,10 @@ class Constantes {
   static const String mascaraMES_ANO = '00/0000';
   static const String mascaraHORA = '00:00:00';
   static const String mascaraDIA = '00';
+  static const String mascaraMES = '00';
   static const String mascaraANO = '0000';
+  // ignore: constant_identifier_names
+  static const String mascaraDATA_HORA = "00/00/0000 00:00";
   // ignore: constant_identifier_names
   static const String mascaraQUANTIDADE_INTEIRO = '00000';
 // #endregion Máscaras  

@@ -46,7 +46,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
-import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_pdv.dart';
@@ -405,10 +404,10 @@ class _CaixaPageState extends State<CaixaPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SizedBox(
-                  width: Biblioteca.isTelaPequena(context)! ? 130 : 150,
+                  width: Biblioteca.isTelaPequena(context)! ? 130 : 180,
                   child: ElevatedButton(
-                    child: Text("Encerrar Venda", 
-                      style: Biblioteca.isTelaPequena(context)! ? const TextStyle(fontSize: 15) : const TextStyle(fontSize: 18)),
+                    child: Text(Biblioteca.isTelaPequena(context)! ? "Encerrar Venda" : "Encerrar Venda [F7]", 
+                      style: Biblioteca.isTelaPequena(context)! ? const TextStyle(fontSize: 15) : const TextStyle(fontSize: 16)),
                     style: ElevatedButton.styleFrom(
                       elevation: 4,
                       padding: Biblioteca.isTelaPequena(context)! 
@@ -582,7 +581,7 @@ class _CaixaPageState extends State<CaixaPage> {
     if (Sessao.statusCaixa == StatusCaixa.vendaEmAndamento) {
       if (Sessao.listaVendaAtualDetalhe.isNotEmpty) {
         gerarDialogBoxConfirmacao(context, 'Deseja salvar a venda e iniciar uma nova?', () async {
-          await Sessao.db.pdvVendaCabecalhoDao.alterar(Sessao.vendaAtual, Sessao.listaVendaAtualDetalhe);
+          await Sessao.db.pdvVendaCabecalhoDao.alterar(Sessao.vendaAtual!, Sessao.listaVendaAtualDetalhe);
           // Navigator.of(context).pop();
           _configurarDadosTelaPadrao();
         });
@@ -602,7 +601,7 @@ class _CaixaPageState extends State<CaixaPage> {
         Sessao.vendaAtual!.copyWith(
           statusVenda: 'A',
         );        
-        await Sessao.db.pdvVendaCabecalhoDao.alterar(Sessao.vendaAtual, Sessao.listaVendaAtualDetalhe);
+        await Sessao.db.pdvVendaCabecalhoDao.alterar(Sessao.vendaAtual!, Sessao.listaVendaAtualDetalhe);
         _configurarDadosTelaPadrao();
       });
     } else {
@@ -621,7 +620,7 @@ class _CaixaPageState extends State<CaixaPage> {
             Sessao.vendaAtual!.copyWith(
               statusVenda: 'F'
             );
-            await Sessao.db.pdvVendaCabecalhoDao.alterar(Sessao.vendaAtual, Sessao.listaVendaAtualDetalhe, listaDadosPagamento: Sessao.listaDadosPagamento);
+            await Sessao.db.pdvVendaCabecalhoDao.alterar(Sessao.vendaAtual!, Sessao.listaVendaAtualDetalhe, listaDadosPagamento: Sessao.listaDadosPagamento);
             if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
               await _encerrarVendaComNfce();
             } else {
@@ -751,7 +750,8 @@ class _CaixaPageState extends State<CaixaPage> {
         setState(() {
           Sessao.statusCaixa = StatusCaixa.vendaEmAndamento;
         });
-      }          
+      } 
+      _menuController.close!();         
     }
   }
 
@@ -886,7 +886,7 @@ class _CaixaPageState extends State<CaixaPage> {
         statusVenda: 'A'
       );
 
-      int idInserido = await Sessao.db.pdvVendaCabecalhoDao.inserir(Sessao.vendaAtual);
+      int idInserido = await Sessao.db.pdvVendaCabecalhoDao.inserir(Sessao.vendaAtual!);
       Sessao.vendaAtual = await Sessao.db.pdvVendaCabecalhoDao.consultarObjeto(idInserido);
       setState(() {
         _tituloJanela = Constantes.tituloCaixaVendaEmAndamento;
@@ -942,7 +942,7 @@ class _CaixaPageState extends State<CaixaPage> {
           // verifica se a tributação para o produto está OK antes mesmo de incluí-lo na venda
           final produtoMontado = await Sessao.db.produtoDao.consultarObjetoMontado(_produto!.id);
           final tributacao = await Sessao.db.tributConfiguraOfGtDao.consultarObjetoMontado(
-            Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao, produtoMontado?.tributGrupoTributario!.id
+            Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao!, produtoMontado!.tributGrupoTributario!.id!
           ); 
           if (tributacao == null) {
             podeComporItemParaVenda = false;
@@ -1194,8 +1194,8 @@ class _CaixaPageState extends State<CaixaPage> {
               planoValor: 0,
               plano: '',
             );
-            await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv);                 
-            Sessao.db.nfcePlanoPagamentoDao.excluir(Sessao.nfcePlanoPagamento);
+            await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv!);                 
+            Sessao.db.nfcePlanoPagamentoDao.excluir(Sessao.nfcePlanoPagamento!);
             Navigator.of(context)
               .push(MaterialPageRoute(
                   builder: (BuildContext context) =>
@@ -1214,7 +1214,7 @@ class _CaixaPageState extends State<CaixaPage> {
         planoValor: 0,
         plano: '',
       );
-      await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv);    
+      await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv!);    
       setState(() {
       });
     }

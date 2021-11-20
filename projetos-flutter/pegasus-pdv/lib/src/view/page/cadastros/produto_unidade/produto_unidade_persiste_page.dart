@@ -38,8 +38,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-
-import 'package:pegasus_pdv/src/database/database.dart';
+import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -245,12 +244,12 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
         form.save();
         bool tudoCerto = false;
         if (widget.operacao == 'A') {
-          await Sessao.db.produtoUnidadeDao.alterar(produtoUnidade);
+          await Sessao.db.produtoUnidadeDao.alterar(produtoUnidade!);
           tudoCerto = true;
         } else {
           final unidade = await Sessao.db.produtoUnidadeDao.consultarObjetoFiltro('SIGLA', produtoUnidade!.sigla!);
           if (unidade == null) {
-            await Sessao.db.produtoUnidadeDao.inserir(produtoUnidade);
+            await Sessao.db.produtoUnidadeDao.inserir(produtoUnidade!);
             tudoCerto = true;
           } else {
             showInSnackBar('Já existe uma unidade cadastrada com a SIGLA informada.', context);
@@ -275,7 +274,7 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
 
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-      await Sessao.db.produtoUnidadeDao.excluir(produtoUnidade);
+      await Sessao.db.produtoUnidadeDao.excluir(produtoUnidade!);
       Navigator.of(context).pop();
     });
   }  
