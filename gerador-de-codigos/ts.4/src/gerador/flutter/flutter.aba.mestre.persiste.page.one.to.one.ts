@@ -73,7 +73,7 @@ export class FlutterAbaMestrePersistePageOneToOne extends FlutterPersistePageBas
                             if (this.campoSendoMontadoEhLookup) {
                                 this.definirDadosDeLookup();
                                 // variáveis Controller vinculadas aos inputs de lookup
-                                this.inputController.push("var _importa" + this.objetoJsonComentario.classeMestre + "Controller = TextEditingController();");
+                                this.inputController.push("final _importa" + this.objetoJsonComentario.classeMestre + "Controller = TextEditingController();");
                                 if (this.campoModel.nomeCampoTabela.includes('ID_')) {
                                     this.inputController.push("_importa" + this.objetoJsonComentario.classeMestre + "Controller.text = widget." + this.objetoMestre + "?." + this.objetoPrincipal + "?." + this.objetoJsonComentario.objetoMestre + "?." + this.objetoJsonComentario.campoLookup + " ?? '';");
                                 } else { // se é um campo de lookup para simples consulta, não precisa vincular ao objeto mestre, pois o dado será persistido no campo da própria tabela
@@ -168,9 +168,9 @@ export class FlutterAbaMestrePersistePageOneToOne extends FlutterPersistePageBas
             // variável Controller
             if (this.campoModel.tipoCampo.includes('decimal')) {
                 let casasDecimais = lodash.camelCase("decimais" + this.objetoJsonComentario.tipoControle.mascara);                
-                this.inputController.push("var _" + this.campoModel.nomeCampoAtributo + "Controller = MoneyMaskedTextController(precision: Constantes." + casasDecimais + ", initialValue: widget." + this.objetoMestre + "?." + this.objetoPrincipal + "?." + this.campoModel.nomeCampoAtributo + " ?? 0);");
+                this.inputController.push("final _" + this.campoModel.nomeCampoAtributo + "Controller = MoneyMaskedTextController(precision: Constantes." + casasDecimais + ", initialValue: widget." + this.objetoMestre + "?." + this.objetoPrincipal + "?." + this.campoModel.nomeCampoAtributo + " ?? 0);");
             } else {
-                this.inputController.push("var _" + this.campoModel.nomeCampoAtributo + "Controller = MaskedTextController(")
+                this.inputController.push("final _" + this.campoModel.nomeCampoAtributo + "Controller = MaskedTextController(")
                 this.inputController.push("  mask: Constantes.mascara" + this.objetoJsonComentario.tipoControle.mascara + ",")
                 this.inputController.push("  text: widget." + this.objetoMestre + "?." + this.objetoPrincipal + "?." + this.campoModel.nomeCampoAtributo + " ?? '',")
                 this.inputController.push(");")

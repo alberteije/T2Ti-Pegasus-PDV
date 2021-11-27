@@ -66,8 +66,20 @@ export 'package:pegasus_pdv/src/view/page/cadastros/pdv_tipo_pagamento/pdv_tipo_
 export 'package:pegasus_pdv/src/view/page/cadastros/produto_unidade/produto_unidade_lista_page.dart';
 export 'package:pegasus_pdv/src/view/page/cadastros/produto_unidade/produto_unidade_persiste_page.dart';
 
+export 'package:pegasus_pdv/src/view/page/cadastros/produto_tipo/produto_tipo_lista_page.dart';
+export 'package:pegasus_pdv/src/view/page/cadastros/produto_tipo/produto_tipo_persiste_page.dart';
+
+export 'package:pegasus_pdv/src/view/page/cadastros/produto/produto_page.dart';
 export 'package:pegasus_pdv/src/view/page/cadastros/produto/produto_lista_page.dart';
 export 'package:pegasus_pdv/src/view/page/cadastros/produto/produto_persiste_page.dart';
+export 'package:pegasus_pdv/src/view/page/cadastros/produto/produto_ficha_tecnica_lista_page.dart';
+export 'package:pegasus_pdv/src/view/page/cadastros/produto/produto_ficha_tecnica_persiste_page.dart';
+
+export 'package:pegasus_pdv/src/view/page/cadastros/produto_grupo/produto_grupo_lista_page.dart';
+export 'package:pegasus_pdv/src/view/page/cadastros/produto_grupo/produto_grupo_persiste_page.dart';
+
+export 'package:pegasus_pdv/src/view/page/cadastros/produto_subgrupo/produto_subgrupo_lista_page.dart';
+export 'package:pegasus_pdv/src/view/page/cadastros/produto_subgrupo/produto_subgrupo_persiste_page.dart';
 
 
 // Compras
@@ -119,3 +131,11 @@ export 'package:pegasus_pdv/src/view/page/nfce/nfe_cabecalho_persiste_page.dart'
 export 'package:pegasus_pdv/src/view/page/nfce/nfe_detalhe_lista_page.dart';
 export 'package:pegasus_pdv/src/view/page/nfce/nfce_inutiliza_numero_page.dart';
 export 'package:pegasus_pdv/src/view/page/nfce/nfce_contrata_page.dart';
+
+// food
+export 'package:pegasus_pdv/src/view/page/food/cozinha/cozinha_lista_page.dart';
+export 'package:pegasus_pdv/src/view/page/food/cozinha/cozinha_persiste_page.dart';
+
+// delivery
+export 'package:pegasus_pdv/src/view/page/delivery/taxa_entrega/taxa_entrega_lista_page.dart';
+export 'package:pegasus_pdv/src/view/page/delivery/taxa_entrega/taxa_entrega_persiste_page.dart';

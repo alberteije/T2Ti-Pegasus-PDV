@@ -12141,6 +12141,138 @@ part of 'database.dart';
 //   }
 // }
 
+// class EmpresaCnaesCompanion extends UpdateCompanion<EmpresaCnae> {
+//   final Value<int> id;
+//   final Value<String?> codigo;
+//   final Value<String?> principal;
+//   const EmpresaCnaesCompanion({
+//     this.id = const Value.absent(),
+//     this.codigo = const Value.absent(),
+//     this.principal = const Value.absent(),
+//   });
+//   EmpresaCnaesCompanion.insert({
+//     this.id = const Value.absent(),
+//     this.codigo = const Value.absent(),
+//     this.principal = const Value.absent(),
+//   });
+//   static Insertable<EmpresaCnae> custom({
+//     Expression<int>? id,
+//     Expression<String?>? codigo,
+//     Expression<String?>? principal,
+//   }) {
+//     return RawValuesInsertable({
+//       if (id != null) 'ID': id,
+//       if (codigo != null) 'CODIGO': codigo,
+//       if (principal != null) 'PRINCIPAL': principal,
+//     });
+//   }
+
+//   EmpresaCnaesCompanion copyWith(
+//       {Value<int>? id, Value<String?>? codigo, Value<String?>? principal}) {
+//     return EmpresaCnaesCompanion(
+//       id: id ?? this.id,
+//       codigo: codigo ?? this.codigo,
+//       principal: principal ?? this.principal,
+//     );
+//   }
+
+//   @override
+//   Map<String, Expression> toColumns(bool nullToAbsent) {
+//     final map = <String, Expression>{};
+//     if (id.present) {
+//       map['ID'] = Variable<int>(id.value);
+//     }
+//     if (codigo.present) {
+//       map['CODIGO'] = Variable<String?>(codigo.value);
+//     }
+//     if (principal.present) {
+//       map['PRINCIPAL'] = Variable<String?>(principal.value);
+//     }
+//     return map;
+//   }
+
+//   @override
+//   String toString() {
+//     return (StringBuffer('EmpresaCnaesCompanion(')
+//           ..write('id: $id, ')
+//           ..write('codigo: $codigo, ')
+//           ..write('principal: $principal')
+//           ..write(')'))
+//         .toString();
+//   }
+// }
+
+// class $EmpresaCnaesTable extends EmpresaCnaes
+//     with TableInfo<$EmpresaCnaesTable, EmpresaCnae> {
+//   final GeneratedDatabase _db;
+//   final String? _alias;
+//   $EmpresaCnaesTable(this._db, [this._alias]);
+//   final VerificationMeta _idMeta = const VerificationMeta('id');
+//   late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+//       'ID', aliasedName, false,
+//       typeName: 'INTEGER',
+//       requiredDuringInsert: false,
+//       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+//   final VerificationMeta _codigoMeta = const VerificationMeta('codigo');
+//   late final GeneratedColumn<String?> codigo = GeneratedColumn<String?>(
+//       'CODIGO', aliasedName, true,
+//       additionalChecks:
+//           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 7),
+//       typeName: 'TEXT',
+//       requiredDuringInsert: false);
+//   final VerificationMeta _principalMeta = const VerificationMeta('principal');
+//   late final GeneratedColumn<String?> principal = GeneratedColumn<String?>(
+//       'PRINCIPAL', aliasedName, true,
+//       additionalChecks:
+//           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 1),
+//       typeName: 'TEXT',
+//       requiredDuringInsert: false);
+//   @override
+//   List<GeneratedColumn> get $columns => [id, codigo, principal];
+//   @override
+//   String get aliasedName => _alias ?? 'EMPRESA_CNAE';
+//   @override
+//   String get actualTableName => 'EMPRESA_CNAE';
+//   @override
+//   VerificationContext validateIntegrity(Insertable<EmpresaCnae> instance,
+//       {bool isInserting = false}) {
+//     final context = VerificationContext();
+//     final data = instance.toColumns(true);
+//     if (data.containsKey('ID')) {
+//       context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));
+//     }
+//     if (data.containsKey('CODIGO')) {
+//       context.handle(_codigoMeta,
+//           codigo.isAcceptableOrUnknown(data['CODIGO']!, _codigoMeta));
+//     }
+//     if (data.containsKey('PRINCIPAL')) {
+//       context.handle(_principalMeta,
+//           principal.isAcceptableOrUnknown(data['PRINCIPAL']!, _principalMeta));
+//     }
+//     return context;
+//   }
+
+//   @override
+//   Set<GeneratedColumn> get $primaryKey => {id};
+//   @override
+//   EmpresaCnae map(Map<String, dynamic> data, {String? tablePrefix}) {
+//     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+//     return EmpresaCnae(
+//       id: const IntType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}ID'])!,
+//       codigo: const StringType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}CODIGO']),
+//       principal: const StringType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}PRINCIPAL']),
+//     );
+//   }
+
+//   @override
+//   $EmpresaCnaesTable createAlias(String alias) {
+//     return $EmpresaCnaesTable(_db, alias);
+//   }
+// }
+
 // class EmpresaDeliveryPedidosCompanion
 //     extends UpdateCompanion<EmpresaDeliveryPedido> {
 //   final Value<int> id;
@@ -12371,29 +12503,45 @@ part of 'database.dart';
 
 // class EmpresaSegmentosCompanion extends UpdateCompanion<EmpresaSegmento> {
 //   final Value<int> id;
-//   final Value<String?> nome;
+//   final Value<String?> codigo;
+//   final Value<String?> denominacao;
+//   final Value<String?> divisoes;
 //   const EmpresaSegmentosCompanion({
 //     this.id = const Value.absent(),
-//     this.nome = const Value.absent(),
+//     this.codigo = const Value.absent(),
+//     this.denominacao = const Value.absent(),
+//     this.divisoes = const Value.absent(),
 //   });
 //   EmpresaSegmentosCompanion.insert({
 //     this.id = const Value.absent(),
-//     this.nome = const Value.absent(),
+//     this.codigo = const Value.absent(),
+//     this.denominacao = const Value.absent(),
+//     this.divisoes = const Value.absent(),
 //   });
 //   static Insertable<EmpresaSegmento> custom({
 //     Expression<int>? id,
-//     Expression<String?>? nome,
+//     Expression<String?>? codigo,
+//     Expression<String?>? denominacao,
+//     Expression<String?>? divisoes,
 //   }) {
 //     return RawValuesInsertable({
 //       if (id != null) 'ID': id,
-//       if (nome != null) 'NOME': nome,
+//       if (codigo != null) 'CODIGO': codigo,
+//       if (denominacao != null) 'DENOMINACAO': denominacao,
+//       if (divisoes != null) 'DIVISOES': divisoes,
 //     });
 //   }
 
-//   EmpresaSegmentosCompanion copyWith({Value<int>? id, Value<String?>? nome}) {
+//   EmpresaSegmentosCompanion copyWith(
+//       {Value<int>? id,
+//       Value<String?>? codigo,
+//       Value<String?>? denominacao,
+//       Value<String?>? divisoes}) {
 //     return EmpresaSegmentosCompanion(
 //       id: id ?? this.id,
-//       nome: nome ?? this.nome,
+//       codigo: codigo ?? this.codigo,
+//       denominacao: denominacao ?? this.denominacao,
+//       divisoes: divisoes ?? this.divisoes,
 //     );
 //   }
 
@@ -12403,8 +12551,14 @@ part of 'database.dart';
 //     if (id.present) {
 //       map['ID'] = Variable<int>(id.value);
 //     }
-//     if (nome.present) {
-//       map['NOME'] = Variable<String?>(nome.value);
+//     if (codigo.present) {
+//       map['CODIGO'] = Variable<String?>(codigo.value);
+//     }
+//     if (denominacao.present) {
+//       map['DENOMINACAO'] = Variable<String?>(denominacao.value);
+//     }
+//     if (divisoes.present) {
+//       map['DIVISOES'] = Variable<String?>(divisoes.value);
 //     }
 //     return map;
 //   }
@@ -12413,7 +12567,9 @@ part of 'database.dart';
 //   String toString() {
 //     return (StringBuffer('EmpresaSegmentosCompanion(')
 //           ..write('id: $id, ')
-//           ..write('nome: $nome')
+//           ..write('codigo: $codigo, ')
+//           ..write('denominacao: $denominacao, ')
+//           ..write('divisoes: $divisoes')
 //           ..write(')'))
 //         .toString();
 //   }
@@ -12430,15 +12586,30 @@ part of 'database.dart';
 //       typeName: 'INTEGER',
 //       requiredDuringInsert: false,
 //       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
-//   final VerificationMeta _nomeMeta = const VerificationMeta('nome');
-//   late final GeneratedColumn<String?> nome = GeneratedColumn<String?>(
-//       'NOME', aliasedName, true,
+//   final VerificationMeta _codigoMeta = const VerificationMeta('codigo');
+//   late final GeneratedColumn<String?> codigo = GeneratedColumn<String?>(
+//       'CODIGO', aliasedName, true,
+//       additionalChecks:
+//           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 2),
+//       typeName: 'TEXT',
+//       requiredDuringInsert: false);
+//   final VerificationMeta _denominacaoMeta =
+//       const VerificationMeta('denominacao');
+//   late final GeneratedColumn<String?> denominacao = GeneratedColumn<String?>(
+//       'DENOMINACAO', aliasedName, true,
 //       additionalChecks:
 //           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
 //       typeName: 'TEXT',
 //       requiredDuringInsert: false);
+//   final VerificationMeta _divisoesMeta = const VerificationMeta('divisoes');
+//   late final GeneratedColumn<String?> divisoes = GeneratedColumn<String?>(
+//       'DIVISOES', aliasedName, true,
+//       additionalChecks:
+//           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 6),
+//       typeName: 'TEXT',
+//       requiredDuringInsert: false);
 //   @override
-//   List<GeneratedColumn> get $columns => [id, nome];
+//   List<GeneratedColumn> get $columns => [id, codigo, denominacao, divisoes];
 //   @override
 //   String get aliasedName => _alias ?? 'EMPRESA_SEGMENTO';
 //   @override
@@ -12451,9 +12622,19 @@ part of 'database.dart';
 //     if (data.containsKey('ID')) {
 //       context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));
 //     }
-//     if (data.containsKey('NOME')) {
+//     if (data.containsKey('CODIGO')) {
+//       context.handle(_codigoMeta,
+//           codigo.isAcceptableOrUnknown(data['CODIGO']!, _codigoMeta));
+//     }
+//     if (data.containsKey('DENOMINACAO')) {
 //       context.handle(
-//           _nomeMeta, nome.isAcceptableOrUnknown(data['NOME']!, _nomeMeta));
+//           _denominacaoMeta,
+//           denominacao.isAcceptableOrUnknown(
+//               data['DENOMINACAO']!, _denominacaoMeta));
+//     }
+//     if (data.containsKey('DIVISOES')) {
+//       context.handle(_divisoesMeta,
+//           divisoes.isAcceptableOrUnknown(data['DIVISOES']!, _divisoesMeta));
 //     }
 //     return context;
 //   }
@@ -12466,8 +12647,12 @@ part of 'database.dart';
 //     return EmpresaSegmento(
 //       id: const IntType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}ID'])!,
-//       nome: const StringType()
-//           .mapFromDatabaseResponse(data['${effectivePrefix}NOME']),
+//       codigo: const StringType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}CODIGO']),
+//       denominacao: const StringType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}DENOMINACAO']),
+//       divisoes: const StringType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}DIVISOES']),
 //     );
 //   }
 
@@ -41441,6 +41626,138 @@ part of 'database.dart';
 //   }
 // }
 
+// class ProdutoTiposCompanion extends UpdateCompanion<ProdutoTipo> {
+//   final Value<int> id;
+//   final Value<String?> codigo;
+//   final Value<String?> descricao;
+//   const ProdutoTiposCompanion({
+//     this.id = const Value.absent(),
+//     this.codigo = const Value.absent(),
+//     this.descricao = const Value.absent(),
+//   });
+//   ProdutoTiposCompanion.insert({
+//     this.id = const Value.absent(),
+//     this.codigo = const Value.absent(),
+//     this.descricao = const Value.absent(),
+//   });
+//   static Insertable<ProdutoTipo> custom({
+//     Expression<int>? id,
+//     Expression<String?>? codigo,
+//     Expression<String?>? descricao,
+//   }) {
+//     return RawValuesInsertable({
+//       if (id != null) 'ID': id,
+//       if (codigo != null) 'CODIGO': codigo,
+//       if (descricao != null) 'DESCRICAO': descricao,
+//     });
+//   }
+
+//   ProdutoTiposCompanion copyWith(
+//       {Value<int>? id, Value<String?>? codigo, Value<String?>? descricao}) {
+//     return ProdutoTiposCompanion(
+//       id: id ?? this.id,
+//       codigo: codigo ?? this.codigo,
+//       descricao: descricao ?? this.descricao,
+//     );
+//   }
+
+//   @override
+//   Map<String, Expression> toColumns(bool nullToAbsent) {
+//     final map = <String, Expression>{};
+//     if (id.present) {
+//       map['ID'] = Variable<int>(id.value);
+//     }
+//     if (codigo.present) {
+//       map['CODIGO'] = Variable<String?>(codigo.value);
+//     }
+//     if (descricao.present) {
+//       map['DESCRICAO'] = Variable<String?>(descricao.value);
+//     }
+//     return map;
+//   }
+
+//   @override
+//   String toString() {
+//     return (StringBuffer('ProdutoTiposCompanion(')
+//           ..write('id: $id, ')
+//           ..write('codigo: $codigo, ')
+//           ..write('descricao: $descricao')
+//           ..write(')'))
+//         .toString();
+//   }
+// }
+
+// class $ProdutoTiposTable extends ProdutoTipos
+//     with TableInfo<$ProdutoTiposTable, ProdutoTipo> {
+//   final GeneratedDatabase _db;
+//   final String? _alias;
+//   $ProdutoTiposTable(this._db, [this._alias]);
+//   final VerificationMeta _idMeta = const VerificationMeta('id');
+//   late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+//       'ID', aliasedName, false,
+//       typeName: 'INTEGER',
+//       requiredDuringInsert: false,
+//       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+//   final VerificationMeta _codigoMeta = const VerificationMeta('codigo');
+//   late final GeneratedColumn<String?> codigo = GeneratedColumn<String?>(
+//       'CODIGO', aliasedName, true,
+//       additionalChecks:
+//           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 2),
+//       typeName: 'TEXT',
+//       requiredDuringInsert: false);
+//   final VerificationMeta _descricaoMeta = const VerificationMeta('descricao');
+//   late final GeneratedColumn<String?> descricao = GeneratedColumn<String?>(
+//       'DESCRICAO', aliasedName, true,
+//       additionalChecks:
+//           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 50),
+//       typeName: 'TEXT',
+//       requiredDuringInsert: false);
+//   @override
+//   List<GeneratedColumn> get $columns => [id, codigo, descricao];
+//   @override
+//   String get aliasedName => _alias ?? 'PRODUTO_TIPO';
+//   @override
+//   String get actualTableName => 'PRODUTO_TIPO';
+//   @override
+//   VerificationContext validateIntegrity(Insertable<ProdutoTipo> instance,
+//       {bool isInserting = false}) {
+//     final context = VerificationContext();
+//     final data = instance.toColumns(true);
+//     if (data.containsKey('ID')) {
+//       context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));
+//     }
+//     if (data.containsKey('CODIGO')) {
+//       context.handle(_codigoMeta,
+//           codigo.isAcceptableOrUnknown(data['CODIGO']!, _codigoMeta));
+//     }
+//     if (data.containsKey('DESCRICAO')) {
+//       context.handle(_descricaoMeta,
+//           descricao.isAcceptableOrUnknown(data['DESCRICAO']!, _descricaoMeta));
+//     }
+//     return context;
+//   }
+
+//   @override
+//   Set<GeneratedColumn> get $primaryKey => {id};
+//   @override
+//   ProdutoTipo map(Map<String, dynamic> data, {String? tablePrefix}) {
+//     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+//     return ProdutoTipo(
+//       id: const IntType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}ID'])!,
+//       codigo: const StringType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}CODIGO']),
+//       descricao: const StringType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}DESCRICAO']),
+//     );
+//   }
+
+//   @override
+//   $ProdutoTiposTable createAlias(String alias) {
+//     return $ProdutoTiposTable(_db, alias);
+//   }
+// }
+
 // class ProdutoUnidadesCompanion extends UpdateCompanion<ProdutoUnidade> {
 //   final Value<int> id;
 //   final Value<String?> sigla;
@@ -45225,6 +45542,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $EcfSintegra60MsTable ecfSintegra60Ms =
       $EcfSintegra60MsTable(this);
   late final $EmpresasTable empresas = $EmpresasTable(this);
+  late final $EmpresaCnaesTable empresaCnaes = $EmpresaCnaesTable(this);
   late final $EmpresaDeliveryPedidosTable empresaDeliveryPedidos =
       $EmpresaDeliveryPedidosTable(this);
   late final $EmpresaSegmentosTable empresaSegmentos =
@@ -45349,10 +45667,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $ProdutoPromocaosTable(this);
   late final $ProdutoSubgruposTable produtoSubgrupos =
       $ProdutoSubgruposTable(this);
+  late final $ProdutoTiposTable produtoTipos = $ProdutoTiposTable(this);
   late final $ProdutoUnidadesTable produtoUnidades =
       $ProdutoUnidadesTable(this);
-  late final $ProdutoTiposTable produtoTipos =
-      $ProdutoTiposTable(this);
   late final $ReservasTable reservas = $ReservasTable(this);
   late final $ReservaMesasTable reservaMesas = $ReservaMesasTable(this);
   late final $TaxaEntregasTable taxaEntregas = $TaxaEntregasTable(this);
@@ -45425,6 +45742,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final EcfSintegra60MDao ecfSintegra60MDao =
       EcfSintegra60MDao(this as AppDatabase);
   late final EmpresaDao empresaDao = EmpresaDao(this as AppDatabase);
+  late final EmpresaCnaeDao empresaCnaeDao =
+      EmpresaCnaeDao(this as AppDatabase);
   late final EmpresaDeliveryPedidoDao empresaDeliveryPedidoDao =
       EmpresaDeliveryPedidoDao(this as AppDatabase);
   late final EmpresaSegmentoDao empresaSegmentoDao =
@@ -45544,6 +45863,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         ecfSintegra60As,
         ecfSintegra60Ms,
         empresas,
+        empresaCnaes,
         empresaDeliveryPedidos,
         empresaSegmentos,
         entregadorRotas,
@@ -45617,6 +45937,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         produtoGrupos,
         produtoPromocaos,
         produtoSubgrupos,
+        produtoTipos,
         produtoUnidades,
         reservas,
         reservaMesas,

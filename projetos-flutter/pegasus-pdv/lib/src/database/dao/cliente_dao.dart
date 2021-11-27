@@ -52,6 +52,7 @@ class ClienteDao extends DatabaseAccessor<AppDatabase> with _$ClienteDaoMixin {
 
   Future<List<Cliente>?> consultarLista() async {
     listaCliente = await select(clientes).get();
+    aplicarDomains();
     return listaCliente;
   }
 
@@ -60,6 +61,7 @@ class ClienteDao extends DatabaseAccessor<AppDatabase> with _$ClienteDaoMixin {
                                 readsFrom: { clientes }).map((row) {
                                   return Cliente.fromData(row.data, db);  
                                 }).get());
+    aplicarDomains();
     return listaCliente;
   }
 
@@ -71,14 +73,16 @@ class ClienteDao extends DatabaseAccessor<AppDatabase> with _$ClienteDaoMixin {
 
   Future<int> inserir(Insertable<Cliente> pObjeto) {
     return transaction(() async {
-      final idInserido = await into(clientes).insert(pObjeto);
+      final cliente = removerDomains(pObjeto as Cliente);
+      final idInserido = await into(clientes).insert(cliente);
       return idInserido;
     });    
   } 
 
   Future<bool> alterar(Insertable<Cliente> pObjeto) {
     return transaction(() async {
-      return update(clientes).replace(pObjeto);
+      final cliente = removerDomains(pObjeto as Cliente);
+      return update(clientes).replace(cliente);
     });    
   } 
 
@@ -86,6 +90,32 @@ class ClienteDao extends DatabaseAccessor<AppDatabase> with _$ClienteDaoMixin {
     return transaction(() async {
       return delete(clientes).delete(pObjeto);
     });    
+  }
+
+  Cliente removerDomains(Cliente cliente) {
+    if (cliente.fidelidadeAviso!= null) {
+      cliente = 
+      cliente.copyWith(
+        fidelidadeAviso: cliente.fidelidadeAviso!.substring(0,1)
+      );
+    }
+    return cliente;
+  }
+
+  void aplicarDomains() {
+    for (var i = 0; i < listaCliente!.length; i++) {
+      switch (listaCliente![i].fidelidadeAviso) {
+        case 'Q' :
+          listaCliente![i] = listaCliente![i].copyWith(
+            fidelidadeAviso: 'Quantidade',);
+          break;
+        case 'M' :
+          listaCliente![i] = listaCliente![i].copyWith(
+            fidelidadeAviso: 'Valor',);
+          break;
+        default:
+      }       
+    }
   }
 
 	static List<String> campos = <String>[

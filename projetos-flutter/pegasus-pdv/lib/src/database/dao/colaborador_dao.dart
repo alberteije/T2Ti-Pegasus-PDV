@@ -52,6 +52,7 @@ class ColaboradorDao extends DatabaseAccessor<AppDatabase> with _$ColaboradorDao
 
   Future<List<Colaborador>?> consultarLista() async {
     listaColaborador = await select(colaboradors).get();
+    aplicarDomains();
     return listaColaborador;
   }
 
@@ -60,6 +61,7 @@ class ColaboradorDao extends DatabaseAccessor<AppDatabase> with _$ColaboradorDao
                                 readsFrom: { colaboradors }).map((row) {
                                   return Colaborador.fromData(row.data, db);  
                                 }).get());
+    aplicarDomains();
     return listaColaborador;
   }
 
@@ -71,14 +73,16 @@ class ColaboradorDao extends DatabaseAccessor<AppDatabase> with _$ColaboradorDao
 
   Future<int> inserir(Insertable<Colaborador> pObjeto) {
     return transaction(() async {
-      final idInserido = await into(colaboradors).insert(pObjeto);
+      final colaborador = removerDomains(pObjeto as Colaborador);
+      final idInserido = await into(colaboradors).insert(colaborador);
       return idInserido;
     });    
   } 
 
   Future<bool> alterar(Insertable<Colaborador> pObjeto) {
     return transaction(() async {
-      return update(colaboradors).replace(pObjeto);
+      final colaborador = removerDomains(pObjeto as Colaborador);
+      return update(colaboradors).replace(colaborador);
     });    
   } 
 
@@ -86,6 +90,40 @@ class ColaboradorDao extends DatabaseAccessor<AppDatabase> with _$ColaboradorDao
     return transaction(() async {
       return delete(colaboradors).delete(pObjeto);
     });    
+  }
+
+  Colaborador removerDomains(Colaborador colaborador) {
+    if (colaborador.entregadorVeiculo != null) {
+      colaborador = 
+      colaborador.copyWith(
+        entregadorVeiculo: colaborador.entregadorVeiculo!.substring(0,1)
+      );
+    }
+    return colaborador;
+  }
+
+  void aplicarDomains() {
+    for (var i = 0; i < listaColaborador!.length; i++) {
+      switch (listaColaborador![i].entregadorVeiculo) {
+        case 'C' :
+          listaColaborador![i] = listaColaborador![i].copyWith(
+            entregadorVeiculo: 'Carro',);
+          break;
+        case 'M' :
+          listaColaborador![i] = listaColaborador![i].copyWith(
+            entregadorVeiculo: 'Moto',);
+          break;
+        case 'B' :
+          listaColaborador![i] = listaColaborador![i].copyWith(
+            entregadorVeiculo: 'Bicicleta',);
+          break;
+        case 'A' :
+          listaColaborador![i] = listaColaborador![i].copyWith(
+            entregadorVeiculo: 'Aplicativo',);
+          break;
+        default:
+      }       
+    }
   }
 
 	static List<String> campos = <String>[

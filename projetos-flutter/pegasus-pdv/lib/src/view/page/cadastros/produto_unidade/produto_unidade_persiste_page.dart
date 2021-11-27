@@ -106,7 +106,8 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
 
   @override
   Widget build(BuildContext context) {
-    return FocusableActionDetector(
+    
+	return FocusableActionDetector(
       actions: _actionMap,
       shortcuts: _shortcutMap,
       child: Focus(
@@ -196,8 +197,7 @@ class _ProdutoUnidadePersistePageState extends State<ProdutoUnidadePersistePage>
                                 'Pode Fracionar',
                                 true),
                               isEmpty: produtoUnidade!.podeFracionar == null,
-                              child: getDropDownButton(produtoUnidade!.podeFracionar,
-                                (String? newValue) {
+                              child: getDropDownButton(produtoUnidade!.podeFracionar, (String? newValue) {
                                   setState(() {
                                     produtoUnidade = produtoUnidade!.copyWith(podeFracionar: newValue);
                                   });

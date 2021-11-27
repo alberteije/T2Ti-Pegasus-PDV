@@ -81,6 +81,8 @@ export 'package:pegasus_pdv/src/database/tabela/ecf_sintegra_60m.dart';
 export 'package:pegasus_pdv/src/database/dao/ecf_sintegra_60m_dao.dart';
 export 'package:pegasus_pdv/src/database/tabela/empresa.dart';
 export 'package:pegasus_pdv/src/database/dao/empresa_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/empresa_cnae.dart';
+export 'package:pegasus_pdv/src/database/dao/empresa_cnae_dao.dart';
 export 'package:pegasus_pdv/src/database/tabela/fornecedor.dart';
 export 'package:pegasus_pdv/src/database/dao/fornecedor_dao.dart';
 export 'package:pegasus_pdv/src/database/tabela/ibpt.dart';

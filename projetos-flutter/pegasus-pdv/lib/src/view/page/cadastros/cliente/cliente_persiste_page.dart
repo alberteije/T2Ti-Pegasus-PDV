@@ -129,6 +129,14 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
       mask: Constantes.mascaraCNPJ,
       text: cliente?.cpfCnpj ?? '',
     );
+    final _quantidadeFidelidadeController = MaskedTextController(
+      mask: Constantes.mascaraQUANTIDADE_INTEIRO,
+      text: cliente?.fidelidadeQuantidade?.toString() ?? '0',
+    );    
+    final _valorFidelidadeController = MoneyMaskedTextController(
+      precision: Constantes.decimaisValor, 
+      initialValue: cliente?.fidelidadeValor ?? 0
+    );
 
     return FocusableActionDetector(
       actions: _actionMap,
@@ -746,6 +754,89 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                           ),
                         ],
                       ),
+                      const Divider(color: Colors.white,),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 0),
+                        child: Text(
+                          "Dados para o programa de fidelidade", 
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black),
+                        ),
+                      ),
+                      const Divider(
+                        indent: 10,
+                        endIndent: 10,
+                        thickness: 2,
+                      ),
+                      const Divider(color: Colors.white,),
+                      BootstrapRow(
+                        height: 60,
+                        children: <BootstrapCol>[
+                          BootstrapCol(
+                            sizes: 'col-12 col-md-4',
+                            child: Padding(
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
+                              child: InputDecorator(
+                                decoration: getInputDecoration(
+                                  'Conteúdo para o campo Tipo Fidelidade',
+                                  'Tipo Fidelidade',
+                                  true),
+                                isEmpty: cliente!.fidelidadeAviso == null,
+                                child: getDropDownButton(cliente!.fidelidadeAviso,
+                                  (String? newValue) {
+                                    setState(() {
+                                      cliente = cliente!.copyWith(fidelidadeAviso: newValue);
+                                      _formFoiAlterado = true;
+                                    });
+                                }, <String>[
+                                  'Quantidade',
+                                  'Valor',
+                              ])),
+                            ),
+                          ),
+                          BootstrapCol(
+                            sizes: 'col-12 col-md-4',
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              textAlign: TextAlign.end,
+                              controller: _quantidadeFidelidadeController,
+                              decoration: getInputDecoration(
+                                'Quantidade de Vezes para Ativar a Fidelidade',
+                                'Quantidade',
+                                 true,
+                                 paddingVertical: 18),
+                              onSaved: (String? value) {
+                              },
+                              onChanged: (text) {
+                                cliente = cliente!.copyWith(fidelidadeQuantidade: int.tryParse(_quantidadeFidelidadeController.text));
+                                _formFoiAlterado = true;
+                              },
+                            ),
+                          ),
+                          BootstrapCol(
+                            sizes: 'col-12 col-md-4',
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              textAlign: TextAlign.end,
+                              controller: _valorFidelidadeController,
+                              decoration: getInputDecoration(
+                                'Valor Atingido para Ativar a Fidelidade',
+                                'Valor',
+                                 true,
+                                 paddingVertical: 18),
+                              onSaved: (String? value) {
+                              },
+                              onChanged: (text) {
+                                cliente = cliente!.copyWith(fidelidadeValor: _valorFidelidadeController.numberValue);
+                                _formFoiAlterado = true;
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+
                       const Divider(color: Colors.white,),
                       BootstrapRow(
                         height: 60,

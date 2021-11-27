@@ -50,15 +50,21 @@ class {{class}}Dao extends DatabaseAccessor<AppDatabase> with _${{class}}DaoMixi
 
   {{class}}Dao(this.db) : super(db);
 
-  Future<List<{{class}}>?> consultarLista() => select({{objetoPrincipal}}s).get();
+  List<{{class}}>? lista{{class}}; 
+  
+  Future<List<{{class}}>?> consultarLista() async {
+    lista{{class}} = await select({{objetoPrincipal}}s).get();
+    return lista{{class}};
+  }  
 
   Future<List<{{class}}>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM {{table}} WHERE " + campo + " like '%" + valor + "%'", 
+    lista{{class}} = await (customSelect("SELECT * FROM {{table}} WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { {{objetoPrincipal}}s }).map((row) {
                                   return {{class}}.fromData(row.data, db);  
                                 }).get());
+    return lista{{class}};
   }
-
+    
   Future<{{class}}?> consultarObjetoFiltro(String campo, String valor) async {
     return (customSelect("SELECT * FROM {{table}} WHERE " + campo + " = '" + valor + "'", 
                                 readsFrom: { {{objetoPrincipal}}s }).map((row) {
@@ -122,4 +128,16 @@ class {{class}}Dao extends DatabaseAccessor<AppDatabase> with _${{class}}DaoMixi
   {{#metodoExcluirFilhosFecha}}
   {{{.}}}
   {{/metodoExcluirFilhosFecha}}
+  
+  static List<String> campos = <String>[
+    {{#listaDeCampos}}
+    {{{.}}}
+    {{/listaDeCampos}}		
+  ];
+
+  static List<String> colunas = <String>[
+    {{#listaDeColunas}}
+    {{{.}}}
+    {{/listaDeColunas}}		
+  ];  
 }

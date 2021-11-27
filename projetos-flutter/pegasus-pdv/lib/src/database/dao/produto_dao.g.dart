@@ -11,4 +11,9 @@ mixin _$ProdutoDaoMixin on DatabaseAccessor<AppDatabase> {
   $ProdutoUnidadesTable get produtoUnidades => attachedDatabase.produtoUnidades;
   $TributGrupoTributariosTable get tributGrupoTributarios =>
       attachedDatabase.tributGrupoTributarios;
+  $ProdutoTiposTable get produtoTipos => attachedDatabase.produtoTipos;
+  $ProdutoSubgruposTable get produtoSubgrupos =>
+      attachedDatabase.produtoSubgrupos;
+  $ProdutoFichaTecnicasTable get produtoFichaTecnicas =>
+      attachedDatabase.produtoFichaTecnicas;
 }

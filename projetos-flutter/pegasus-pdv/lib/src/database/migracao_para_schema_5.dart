@@ -39,6 +39,7 @@ class MigracaoParaSchema5 extends DatabaseAccessor<AppDatabase> {
   $ReservasTable get	reservas => attachedDatabase.reservas;
   $ReservaMesasTable get	reservaMesas => attachedDatabase.reservaMesas;
   $TaxaEntregasTable get	taxaEntregas => attachedDatabase.taxaEntregas;
+  $EmpresaCnaesTable get	empresaCnaes => attachedDatabase.empresaCnaes;
 
   Future<void> migrarParaSchema5(Migrator m, int from, int to) async {
     // adicionando novas colunas em tabelas existentes
@@ -76,5 +77,6 @@ class MigracaoParaSchema5 extends DatabaseAccessor<AppDatabase> {
     await m.createTable(reservas);
     await m.createTable(reservaMesas);
     await m.createTable(taxaEntregas);
+    await m.createTable(empresaCnaes);
   }
 }

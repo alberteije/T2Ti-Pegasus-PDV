@@ -64,9 +64,9 @@ class ValidaCampoFormulario {
   }
 
   /// validar se os caracteres são alfanumericos
-  static String? validarAlfanumerico(String value) {
+  static String? validarAlfanumerico(String? value) {
     final RegExp nameExp = RegExp(r'^[A-Za-z0-9ãáàâãéèêíïóôõöúçñÃÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ\-\(\)\/ªº,. ]+$');
-    if (!nameExp.hasMatch(value)) {
+    if (!nameExp.hasMatch(value!)) {
       return 'Por favor, informe apenas caracteres alfanuméricos.';
     }
     return null;

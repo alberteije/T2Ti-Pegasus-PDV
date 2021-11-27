@@ -48,15 +48,21 @@ class ProdutoTipoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoTipoDao
 
   ProdutoTipoDao(this.db) : super(db);
 
-  Future<List<ProdutoTipo>?> consultarLista() => select(produtoTipos).get();
+  List<ProdutoTipo>? listaProdutoTipo; 
+  
+  Future<List<ProdutoTipo>?> consultarLista() async {
+    listaProdutoTipo = await select(produtoTipos).get();
+    return listaProdutoTipo;
+  }  
 
   Future<List<ProdutoTipo>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM PRODUTO_TIPO WHERE " + campo + " like '%" + valor + "%'", 
+    listaProdutoTipo = await (customSelect("SELECT * FROM PRODUTO_TIPO WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { produtoTipos }).map((row) {
                                   return ProdutoTipo.fromData(row.data, db);  
                                 }).get());
+    return listaProdutoTipo;
   }
-
+    
   Future<ProdutoTipo?> consultarObjetoFiltro(String campo, String valor) async {
     return (customSelect("SELECT * FROM PRODUTO_TIPO WHERE " + campo + " = '" + valor + "'", 
                                 readsFrom: { produtoTipos }).map((row) {
@@ -90,4 +96,16 @@ class ProdutoTipoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoTipoDao
   }
 
   
+  
+  static List<String> campos = <String>[
+    'ID', 
+    'CODIGO', 
+    'DESCRICAO', 
+  ];
+
+  static List<String> colunas = <String>[
+    'Id', 
+    'Código', 
+    'Descrição', 
+  ];  
 }

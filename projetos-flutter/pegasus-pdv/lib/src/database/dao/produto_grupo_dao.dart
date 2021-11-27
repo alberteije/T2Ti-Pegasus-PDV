@@ -42,21 +42,28 @@ part 'produto_grupo_dao.g.dart';
 
 @UseDao(tables: [
           ProdutoGrupos,
+          ProdutoSubgrupos,
 		])
 class ProdutoGrupoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoGrupoDaoMixin {
   final AppDatabase db;
 
   ProdutoGrupoDao(this.db) : super(db);
 
-  Future<List<ProdutoGrupo>?> consultarLista() => select(produtoGrupos).get();
+  List<ProdutoGrupo>? listaProdutoGrupo; 
+  
+  Future<List<ProdutoGrupo>?> consultarLista() async {
+    listaProdutoGrupo = await select(produtoGrupos).get();
+    return listaProdutoGrupo;
+  }  
 
   Future<List<ProdutoGrupo>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM PRODUTO_GRUPO WHERE " + campo + " like '%" + valor + "%'", 
+    listaProdutoGrupo = await (customSelect("SELECT * FROM PRODUTO_GRUPO WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { produtoGrupos }).map((row) {
                                   return ProdutoGrupo.fromData(row.data, db);  
                                 }).get());
+    return listaProdutoGrupo;
   }
-
+    
   Future<ProdutoGrupo?> consultarObjetoFiltro(String campo, String valor) async {
     return (customSelect("SELECT * FROM PRODUTO_GRUPO WHERE " + campo + " = '" + valor + "'", 
                                 readsFrom: { produtoGrupos }).map((row) {
@@ -89,5 +96,15 @@ class ProdutoGrupoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoGrupoD
     });    
   }
 
-  
+  static List<String> campos = <String>[
+    'ID', 
+    'NOME', 
+    'DESCRICAO', 
+  ];
+
+  static List<String> colunas = <String>[
+    'Id', 
+    'Nome', 
+    'Descrição', 
+  ];  
 }

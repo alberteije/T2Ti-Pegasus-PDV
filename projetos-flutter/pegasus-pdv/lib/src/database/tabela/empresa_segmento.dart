@@ -42,17 +42,23 @@ class EmpresaSegmentos extends Table {
   String get tableName => 'EMPRESA_SEGMENTO';
 
   IntColumn get id => integer().named('ID').autoIncrement()();
-  TextColumn get nome => text().named('NOME').withLength(min: 0, max: 100).nullable()();
+  TextColumn get codigo => text().named('CODIGO').withLength(min: 0, max: 2).nullable()();
+  TextColumn get denominacao => text().named('DENOMINACAO').withLength(min: 0, max: 100).nullable()();
+  TextColumn get divisoes => text().named('DIVISOES').withLength(min: 0, max: 6).nullable()();
 }
 
 class EmpresaSegmento extends DataClass implements Insertable<EmpresaSegmento> {
   final int? id;
-  final String? nome;
+  final String? codigo;
+  final String? denominacao;
+  final String? divisoes;
 
   EmpresaSegmento(
     {
       required this.id,
-      this.nome,
+      this.codigo,
+      this.denominacao,
+      this.divisoes,
     }
   );
 
@@ -60,7 +66,9 @@ class EmpresaSegmento extends DataClass implements Insertable<EmpresaSegmento> {
     final effectivePrefix = prefix ?? '';
     return EmpresaSegmento(
       id: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}ID']),
-      nome: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}NOME']),
+      codigo: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}CODIGO']),
+      denominacao: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}DENOMINACAO']),
+      divisoes: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}DIVISOES']),
     );
   }
 
@@ -70,8 +78,14 @@ class EmpresaSegmento extends DataClass implements Insertable<EmpresaSegmento> {
     if (!nullToAbsent || id != null) {
       map['ID'] = Variable<int?>(id);
     }
-    if (!nullToAbsent || nome != null) {
-      map['NOME'] = Variable<String?>(nome);
+    if (!nullToAbsent || codigo != null) {
+      map['CODIGO'] = Variable<String?>(codigo);
+    }
+    if (!nullToAbsent || denominacao != null) {
+      map['DENOMINACAO'] = Variable<String?>(denominacao);
+    }
+    if (!nullToAbsent || divisoes != null) {
+      map['DIVISOES'] = Variable<String?>(divisoes);
     }
     return map;
   }
@@ -79,9 +93,15 @@ class EmpresaSegmento extends DataClass implements Insertable<EmpresaSegmento> {
   EmpresaSegmentosCompanion toCompanion(bool nullToAbsent) {
     return EmpresaSegmentosCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
-      nome: nome == null && nullToAbsent
+      codigo: codigo == null && nullToAbsent
         ? const Value.absent()
-        : Value(nome),
+        : Value(codigo),
+      denominacao: denominacao == null && nullToAbsent
+        ? const Value.absent()
+        : Value(denominacao),
+      divisoes: divisoes == null && nullToAbsent
+        ? const Value.absent()
+        : Value(divisoes),
     );
   }
 
@@ -89,7 +109,9 @@ class EmpresaSegmento extends DataClass implements Insertable<EmpresaSegmento> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return EmpresaSegmento(
       id: serializer.fromJson<int>(json['id']),
-      nome: serializer.fromJson<String>(json['nome']),
+      codigo: serializer.fromJson<String>(json['codigo']),
+      denominacao: serializer.fromJson<String>(json['denominacao']),
+      divisoes: serializer.fromJson<String>(json['divisoes']),
     );
   }
 
@@ -98,25 +120,33 @@ class EmpresaSegmento extends DataClass implements Insertable<EmpresaSegmento> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int?>(id),
-      'nome': serializer.toJson<String?>(nome),
+      'codigo': serializer.toJson<String?>(codigo),
+      'denominacao': serializer.toJson<String?>(denominacao),
+      'divisoes': serializer.toJson<String?>(divisoes),
     };
   }
 
   EmpresaSegmento copyWith(
         {
 		  int? id,
-          String? nome,
+          String? codigo,
+          String? denominacao,
+          String? divisoes,
 		}) =>
       EmpresaSegmento(
         id: id ?? this.id,
-        nome: nome ?? this.nome,
+        codigo: codigo ?? this.codigo,
+        denominacao: denominacao ?? this.denominacao,
+        divisoes: divisoes ?? this.divisoes,
       );
   
   @override
   String toString() {
     return (StringBuffer('EmpresaSegmento(')
           ..write('id: $id, ')
-          ..write('nome: $nome, ')
+          ..write('codigo: $codigo, ')
+          ..write('denominacao: $denominacao, ')
+          ..write('divisoes: $divisoes, ')
           ..write(')'))
         .toString();
   }
@@ -124,7 +154,9 @@ class EmpresaSegmento extends DataClass implements Insertable<EmpresaSegmento> {
   @override
   int get hashCode => Object.hashAll([
       id,
-      nome,
+      codigo,
+      denominacao,
+      divisoes,
 	]);
   
   @override
@@ -132,43 +164,59 @@ class EmpresaSegmento extends DataClass implements Insertable<EmpresaSegmento> {
       identical(this, other) ||
       (other is EmpresaSegmento &&
           other.id == id &&
-          other.nome == nome 
+          other.codigo == codigo &&
+          other.denominacao == denominacao &&
+          other.divisoes == divisoes 
 	   );
 }
 
 class EmpresaSegmentosCompanion extends UpdateCompanion<EmpresaSegmento> {
 
   final Value<int?> id;
-  final Value<String?> nome;
+  final Value<String?> codigo;
+  final Value<String?> denominacao;
+  final Value<String?> divisoes;
 
   const EmpresaSegmentosCompanion({
     this.id = const Value.absent(),
-    this.nome = const Value.absent(),
+    this.codigo = const Value.absent(),
+    this.denominacao = const Value.absent(),
+    this.divisoes = const Value.absent(),
   });
 
   EmpresaSegmentosCompanion.insert({
     this.id = const Value.absent(),
-    this.nome = const Value.absent(),
+    this.codigo = const Value.absent(),
+    this.denominacao = const Value.absent(),
+    this.divisoes = const Value.absent(),
   });
 
   static Insertable<EmpresaSegmento> custom({
     Expression<int>? id,
-    Expression<String>? nome,
+    Expression<String>? codigo,
+    Expression<String>? denominacao,
+    Expression<String>? divisoes,
   }) {
     return RawValuesInsertable({
       if (id != null) 'ID': id,
-      if (nome != null) 'NOME': nome,
+      if (codigo != null) 'CODIGO': codigo,
+      if (denominacao != null) 'DENOMINACAO': denominacao,
+      if (divisoes != null) 'DIVISOES': divisoes,
     });
   }
 
   EmpresaSegmentosCompanion copyWith(
       {
 	  Value<int>? id,
-      Value<String>? nome,
+      Value<String>? codigo,
+      Value<String>? denominacao,
+      Value<String>? divisoes,
 	  }) {
     return EmpresaSegmentosCompanion(
       id: id ?? this.id,
-      nome: nome ?? this.nome,
+      codigo: codigo ?? this.codigo,
+      denominacao: denominacao ?? this.denominacao,
+      divisoes: divisoes ?? this.divisoes,
     );
   }
 
@@ -178,8 +226,14 @@ class EmpresaSegmentosCompanion extends UpdateCompanion<EmpresaSegmento> {
     if (id.present) {
       map['ID'] = Variable<int?>(id.value);
     }
-    if (nome.present) {
-      map['NOME'] = Variable<String?>(nome.value);
+    if (codigo.present) {
+      map['CODIGO'] = Variable<String?>(codigo.value);
+    }
+    if (denominacao.present) {
+      map['DENOMINACAO'] = Variable<String?>(denominacao.value);
+    }
+    if (divisoes.present) {
+      map['DIVISOES'] = Variable<String?>(divisoes.value);
     }
     return map;
   }
@@ -188,7 +242,9 @@ class EmpresaSegmentosCompanion extends UpdateCompanion<EmpresaSegmento> {
   String toString() {
     return (StringBuffer('EmpresaSegmentosCompanion(')
           ..write('id: $id, ')
-          ..write('nome: $nome, ')
+          ..write('codigo: $codigo, ')
+          ..write('denominacao: $denominacao, ')
+          ..write('divisoes: $divisoes, ')
           ..write(')'))
         .toString();
   }
@@ -209,18 +265,34 @@ class $EmpresaSegmentosTable extends EmpresaSegmentos
           requiredDuringInsert: false,
           defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
 
-  final VerificationMeta _nomeMeta =
-      const VerificationMeta('nome');
-  GeneratedColumn<String>? _nome;
+  final VerificationMeta _codigoMeta =
+      const VerificationMeta('codigo');
+  GeneratedColumn<String>? _codigo;
   @override
-  GeneratedColumn<String> get nome => _nome ??=
-      GeneratedColumn<String>('NOME', aliasedName, true,
+  GeneratedColumn<String> get codigo => _codigo ??=
+      GeneratedColumn<String>('CODIGO', aliasedName, true,
+          typeName: 'TEXT', requiredDuringInsert: false);
+  final VerificationMeta _denominacaoMeta =
+      const VerificationMeta('denominacao');
+  GeneratedColumn<String>? _denominacao;
+  @override
+  GeneratedColumn<String> get denominacao => _denominacao ??=
+      GeneratedColumn<String>('DENOMINACAO', aliasedName, true,
+          typeName: 'TEXT', requiredDuringInsert: false);
+  final VerificationMeta _divisoesMeta =
+      const VerificationMeta('divisoes');
+  GeneratedColumn<String>? _divisoes;
+  @override
+  GeneratedColumn<String> get divisoes => _divisoes ??=
+      GeneratedColumn<String>('DIVISOES', aliasedName, true,
           typeName: 'TEXT', requiredDuringInsert: false);
 		    
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        nome,
+        codigo,
+        denominacao,
+        divisoes,
       ];
 
   @override
@@ -237,9 +309,17 @@ class $EmpresaSegmentosTable extends EmpresaSegmentos
     if (data.containsKey('ID')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));
     }
-    if (data.containsKey('NOME')) {
-        context.handle(_nomeMeta,
-            nome.isAcceptableOrUnknown(data['NOME']!, _nomeMeta));
+    if (data.containsKey('CODIGO')) {
+        context.handle(_codigoMeta,
+            codigo.isAcceptableOrUnknown(data['CODIGO']!, _codigoMeta));
+    }
+    if (data.containsKey('DENOMINACAO')) {
+        context.handle(_denominacaoMeta,
+            denominacao.isAcceptableOrUnknown(data['DENOMINACAO']!, _denominacaoMeta));
+    }
+    if (data.containsKey('DIVISOES')) {
+        context.handle(_divisoesMeta,
+            divisoes.isAcceptableOrUnknown(data['DIVISOES']!, _divisoesMeta));
     }
     return context;
   }

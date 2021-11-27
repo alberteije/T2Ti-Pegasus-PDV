@@ -42,21 +42,28 @@ part 'cozinha_dao.g.dart';
 
 @UseDao(tables: [
           Cozinhas,
+          ComandaPedidos,
 		])
 class CozinhaDao extends DatabaseAccessor<AppDatabase> with _$CozinhaDaoMixin {
   final AppDatabase db;
 
   CozinhaDao(this.db) : super(db);
 
-  Future<List<Cozinha>?> consultarLista() => select(cozinhas).get();
+  List<Cozinha>? listaCozinha; 
+  
+  Future<List<Cozinha>?> consultarLista() async {
+    listaCozinha = await select(cozinhas).get();
+    return listaCozinha;
+  }  
 
   Future<List<Cozinha>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM COZINHA WHERE " + campo + " like '%" + valor + "%'", 
+    listaCozinha = await (customSelect("SELECT * FROM COZINHA WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { cozinhas }).map((row) {
                                   return Cozinha.fromData(row.data, db);  
                                 }).get());
+    return listaCozinha;
   }
-
+    
   Future<Cozinha?> consultarObjetoFiltro(String campo, String valor) async {
     return (customSelect("SELECT * FROM COZINHA WHERE " + campo + " = '" + valor + "'", 
                                 readsFrom: { cozinhas }).map((row) {
@@ -89,5 +96,17 @@ class CozinhaDao extends DatabaseAccessor<AppDatabase> with _$CozinhaDaoMixin {
     });    
   }
 
-  
+  static List<String> campos = <String>[
+    'ID', 
+    'NOME', 
+    'IMPRESSORA_NOME', 
+    'IMPRESSORA_ENDERECO', 
+  ];
+
+  static List<String> colunas = <String>[
+    'Id', 
+    'Nome', 
+    'Nome Impressora', 
+    'Endereço Impressora', 
+  ];  
 }

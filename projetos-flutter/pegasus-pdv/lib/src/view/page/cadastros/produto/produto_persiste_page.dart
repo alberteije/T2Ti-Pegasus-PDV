@@ -33,7 +33,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -47,18 +46,20 @@ import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
-import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
-import 'package:pegasus_pdv/src/view/shared/botoes.dart';
+import 'package:pegasus_pdv/src/view/shared/widgets_abas.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 import 'package:pegasus_pdv/src/view/shared/page/lookup_local_page.dart';
 
 class ProdutoPersistePage extends StatefulWidget {
   final ProdutoMontado? produtoMontado;
-  final String? title;
-  final String? operacao;
+  final GlobalKey<FormState>? formKey;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
+  final FocusNode? foco;
+  final Function? salvarProdutoCallBack;
+  final Function? atualizarProdutoCallBack;
 
-  const ProdutoPersistePage({Key? key, this.produtoMontado, this.title, this.operacao})
+  const ProdutoPersistePage({Key? key, this.formKey, this.scaffoldKey, this.produtoMontado, this.foco, this.salvarProdutoCallBack, this.atualizarProdutoCallBack})
       : super(key: key);
 
   @override
@@ -66,11 +67,6 @@ class ProdutoPersistePage extends StatefulWidget {
 }
 
 class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  AutovalidateMode _autoValidate = AutovalidateMode.disabled;
-  bool _formFoiAlterado = false;
-
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
@@ -98,11 +94,11 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
     switch (intent.type) {
-      case AtalhoTelaType.excluir:
-        _excluir();
-        break;
+      // case AtalhoTelaType.excluir:
+      //   _excluir();
+      //   break;
       case AtalhoTelaType.salvar:
-        _salvar();
+        widget.salvarProdutoCallBack!();
         break;
       default:
         break;
@@ -115,9 +111,14 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
     _importaProdutoUnidadeController.text = widget.produtoMontado?.produtoUnidade?.sigla ?? '';
     final _importaTributGrupoTributarioController = TextEditingController();
     _importaTributGrupoTributarioController.text = widget.produtoMontado?.tributGrupoTributario?.descricao ?? '';
+    final _importaProdutoTipoController = TextEditingController();
+    _importaProdutoTipoController.text = widget.produtoMontado?.produtoTipo?.descricao ?? '';
+    final _importaProdutoSubgrupoController = TextEditingController();
+    _importaProdutoSubgrupoController.text = widget.produtoMontado?.produtoSubgrupo?.nome ?? '';
 	
     final _valorCompraController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _produto?.valorCompra ?? 0);
     final _valorVendaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _produto?.valorVenda ?? 0);
+    final _valorCustoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _produto?.valorCusto ?? 0);
     final _quantidadeEstoqueController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _produto?.quantidadeEstoque ?? 0);
     final _estoqueMinimoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _produto?.estoqueMinimo ?? 0);
     final _estoqueMaximoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _produto?.estoqueMaximo ?? 0);
@@ -131,22 +132,14 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
       actions: _actionMap,
       shortcuts: _shortcutMap,
       child: Focus(
-        autofocus: true,
         child: Scaffold(drawerDragStartBehavior: DragStartBehavior.down,
-          key: _scaffoldKey,
-          appBar: AppBar(
-            title: Text(widget.title!), 
-            actions: widget.operacao == 'I' 
-              ? getBotoesAppBarPersistePage(context: context, salvar: _salvar,)
-              : getBotoesAppBarPersistePageComExclusao(context: context, salvar: _salvar, excluir: _excluir),
-          ),      
+          key: widget.scaffoldKey,
           body: SafeArea(
             top: false,
             bottom: false,
             child: Form(
-              key: _formKey,
-              autovalidateMode: _autoValidate,
-              onWillPop: _avisarUsuarioFormAlterado,
+              key: widget.formKey,
+              autovalidateMode: AutovalidateMode.always,
               child: Scrollbar(
                 child: SingleChildScrollView(
                   dragStartBehavior: DragStartBehavior.down,
@@ -160,7 +153,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
-                            sizes: 'col-12',
+                              sizes: 'col-12',
                             child: Row(
                               children: <Widget>[
                                 Expanded(
@@ -177,7 +170,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                     onSaved: (String? value) {
                                     },
                                     onChanged: (text) {
-                                      _formFoiAlterado = true;
+                                      paginaMestreDetalheFoiAlterada = true;
                                     },
                                   ),
                                 ),
@@ -221,6 +214,138 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                           ),
                         ],
                       ),
+                      const Divider(color: Colors.white,),
+                      BootstrapRow(
+                        height: 60,
+                        children: <BootstrapCol>[
+                          BootstrapCol(
+                            sizes: 'col-12',
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 1,
+                                  child: TextFormField(
+                                    focusNode: _foco,
+                                    validator: ValidaCampoFormulario.validarObrigatorio,
+                                    controller: _importaProdutoTipoController,
+                                    readOnly: true,
+                                    decoration: getInputDecoration(
+                                      'Conteúdo para o campo Tipo',
+                                      'Tipo *',
+                                      false),
+                                    onSaved: (String? value) {
+                                    },
+                                    onChanged: (text) {
+                                      paginaMestreDetalheFoiAlterada = true;
+                                    },
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 0,
+                                  child: IconButton(
+                                    tooltip: 'Importar Tipo',
+                                    icon: ViewUtilLib.getIconBotaoLookup(),
+                                    onPressed: () async {
+                                      ///chamando o lookup
+                                      Map<String, dynamic>? _objetoJsonRetorno =
+                                        await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                          builder: (BuildContext context) => LookupLocalPage(
+                                            title: 'Importar Tipo',
+                                            colunas: ProdutoTipoDao.colunas,
+                                            campos: ProdutoTipoDao.campos,
+                                            campoPesquisaPadrao: 'descricao',
+                                            valorPesquisaPadrao: '%',
+                                            metodoConsultaCallBack: _filtrarTipoLookup,                                             
+                                            permiteCadastro: true,
+                                            metodoCadastroCallBack: () { Navigator.pushNamed(context, '/produtoTipoLista',); },
+                                          ),
+                                          fullscreenDialog: true,
+                                        ));
+                                      if (_objetoJsonRetorno != null) {
+                                        if (_objetoJsonRetorno['descricao'] != null) {
+                                          _importaProdutoTipoController.text = _objetoJsonRetorno['descricao'];
+                                          _produto = _produto!.copyWith(idProdutoTipo: _objetoJsonRetorno['id']);
+                                          widget.produtoMontado!.produtoTipo = widget.produtoMontado!.produtoTipo!.copyWith(
+                                            descricao: _objetoJsonRetorno['descricao'],
+                                          );
+                                        }
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),                    
+                      const Divider(color: Colors.white,),
+                      BootstrapRow(
+                        height: 60,
+                        children: <BootstrapCol>[
+                          BootstrapCol(
+                            sizes: 'col-12',
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 1,
+                                  child: TextFormField(
+                                    focusNode: _foco,
+                                    validator: ValidaCampoFormulario.validarObrigatorio,
+                                    controller: _importaProdutoSubgrupoController,
+                                    readOnly: true,
+                                    decoration: getInputDecoration(
+                                      'Conteúdo para o campo Subgrupo',
+                                      'Subgrupo *',
+                                      false),
+                                    onSaved: (String? value) {
+                                    },
+                                    onChanged: (text) {
+                                      paginaMestreDetalheFoiAlterada = true;
+                                    },
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 0,
+                                  child: IconButton(
+                                    tooltip: 'Importar Subgrupo',
+                                    icon: ViewUtilLib.getIconBotaoLookup(),
+                                    onPressed: () async {
+                                      ///chamando o lookup
+                                      Map<String, dynamic>? _objetoJsonRetorno =
+                                        await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                          builder: (BuildContext context) => LookupLocalPage(
+                                            title: 'Importar Subgrupo',
+                                            colunas: ProdutoSubgrupoDao.colunas,
+                                            campos: ProdutoSubgrupoDao.campos,
+                                            campoPesquisaPadrao: 'nome',
+                                            valorPesquisaPadrao: '%',
+                                            metodoConsultaCallBack: _filtrarSubgrupoLookup,                                             
+                                            permiteCadastro: true,
+                                            metodoCadastroCallBack: () { Navigator.pushNamed(context, '/produtoSubgrupoLista',); },
+                                          ),
+                                          fullscreenDialog: true,
+                                        ));
+                                      if (_objetoJsonRetorno != null) {
+                                        if (_objetoJsonRetorno['nome'] != null) {
+                                          _importaProdutoSubgrupoController.text = _objetoJsonRetorno['nome'];
+                                          _produto = _produto!.copyWith(idProdutoSubgrupo: _objetoJsonRetorno['id']);
+                                          widget.produtoMontado!.produtoSubgrupo = widget.produtoMontado!.produtoSubgrupo!.copyWith(
+                                            nome: _objetoJsonRetorno['nome'],
+                                          );
+                                        }
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),                        
                       Visibility(
                         visible: Sessao.configuracaoPdv!.modulo != 'G',
                         child: const Divider(color: Colors.white,),
@@ -248,7 +373,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                       onSaved: (String? value) {
                                       },
                                       onChanged: (text) {
-                                        _formFoiAlterado = true;
+                                        paginaMestreDetalheFoiAlterada = true;
                                       },
                                     ),
                                   ),
@@ -314,7 +439,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 },
                                 onChanged: (text) {
                                   _produto = _produto!.copyWith(gtin: text);
-                                  _formFoiAlterado = true;
+                                  paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
                             ),
@@ -335,7 +460,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 },
                                 onChanged: (text) {
                                   _produto = _produto!.copyWith(codigoInterno: text);
-                                  _formFoiAlterado = true;
+                                  paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
                             ),
@@ -361,7 +486,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                               },
                               onChanged: (text) {
                                 _produto = _produto!.copyWith(nome: text);
-                                _formFoiAlterado = true;
+                                paginaMestreDetalheFoiAlterada = true;
                               },
                             ),
                           ),
@@ -385,8 +510,62 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                               },
                               onChanged: (text) {
                                 _produto = _produto!.copyWith(descricao: text);
-                                _formFoiAlterado = true;
+                                paginaMestreDetalheFoiAlterada = true;
                               },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Divider(color: Colors.white,),
+
+                      BootstrapRow(
+                        height: 60,
+                        children: <BootstrapCol>[
+                          BootstrapCol(
+                            sizes: 'col-12 col-md-6',
+                            child: Padding(
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
+                              child: TextFormField(
+                                validator: ValidaCampoFormulario.validarObrigatorio,
+                                controller: _ncmController,
+                                decoration: getInputDecoration(
+                                  'Conteúdo para o campo NCM',
+                                  'Código NCM',
+                                  true,
+                                  paddingVertical: 18),
+                                onSaved: (String? value) {
+                                },
+                                onChanged: (text) {
+                                  _produto = _produto!.copyWith(codigoNcm: text);
+                                  paginaMestreDetalheFoiAlterada = true;
+                                },
+                              ),
+                            ),
+                          ),
+                          BootstrapCol(
+                            sizes: 'col-12 col-md-6',
+                            child: Padding(
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
+                              child: InputDecorator(
+                                decoration: getInputDecoration(
+                                  'Indicador de Produção Própria ou de Terceiros',
+                                  'Produção [P]rópria ou [T]erceiros',
+                                  true),
+                                isEmpty: _produto!.ippt == null,
+                                child: getDropDownButton(_produto!.ippt,
+                                  (String? newValue) {
+                                    setState(() {
+                                      widget.produtoMontado!.produto = _produto!.copyWith(ippt: newValue);
+                                      _produto = _produto!.copyWith(ippt: newValue);
+                                      widget.atualizarProdutoCallBack!();
+                                    });
+                                }, <String>[
+                                  'P',
+                                  'T',
+                                  ],
+                                  validator: ValidaCampoFormulario.validarObrigatorio,
+                                ),
+                              ),
                             ),
                           ),
                         ],
@@ -411,7 +590,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 },
                                 onChanged: (text) {
                                   _produto = _produto!.copyWith(valorCompra: _valorCompraController.numberValue);
-                                  _formFoiAlterado = true;
+                                  paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
                             ),
@@ -433,7 +612,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 },
                                 onChanged: (text) {
                                   _produto = _produto!.copyWith(valorVenda: _valorVendaController.numberValue);
-                                  _formFoiAlterado = true;
+                                  paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
                             ),
@@ -443,17 +622,19 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                             child: Padding(
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
-  	                            validator: ValidaCampoFormulario.validarObrigatorio,
-                                controller: _ncmController,
+                                enableInteractiveSelection: !Biblioteca.isDesktop(),
+                                // validator: ValidaCampoFormulario.validarObrigatorioDouble,
+                                textAlign: TextAlign.end,
+                                controller: _valorCustoController,
                                 decoration: getInputDecoration(
-                                  'Conteúdo para o campo NCM',
-                                  'Código NCM',
+                                  'Conteúdo para o campo Valor Custo',
+                                  'Valor Custo',
                                   false),
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto!.copyWith(codigoNcm: text);
-                                  _formFoiAlterado = true;
+                                  _produto = _produto!.copyWith(valorCusto: _valorCustoController.numberValue);
+                                  paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
                             ),
@@ -480,7 +661,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 },
                                 onChanged: (text) {
                                   _produto = _produto!.copyWith(quantidadeEstoque: _quantidadeEstoqueController.numberValue);
-                                  _formFoiAlterado = true;
+                                  paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
                             ),
@@ -501,7 +682,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 },
                                 onChanged: (text) {
                                   _produto = _produto!.copyWith(estoqueMinimo: _estoqueMinimoController.numberValue);
-                                  _formFoiAlterado = true;
+                                  paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
                             ),
@@ -522,7 +703,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 },
                                 onChanged: (text) {
                                   _produto = _produto!.copyWith(estoqueMaximo: _estoqueMaximoController.numberValue);
-                                  _formFoiAlterado = true;
+                                  paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
                             ),
@@ -543,7 +724,6 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                           ),
                         ],
                       ),
-                      const Divider(color: Colors.white,),
                     ],
                   ),
                 ),
@@ -553,10 +733,15 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
         ),
       ),
     );
-  }
+  }  
 
   void _filtrarUnidadeLookup(String campo, String valor) async {
     final listaFiltrada = await Sessao.db.produtoUnidadeDao.consultarListaFiltro(campo, valor);
+    Sessao.retornoJsonLookup = jsonEncode(listaFiltrada);
+  }
+
+  void _filtrarTipoLookup(String campo, String valor) async {
+    final listaFiltrada = await Sessao.db.produtoTipoDao.consultarListaFiltro(campo, valor);
     Sessao.retornoJsonLookup = jsonEncode(listaFiltrada);
   }
 
@@ -565,49 +750,9 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
     Sessao.retornoJsonLookup = jsonEncode(listaFiltrada);
   }
 
-  Future<void> _salvar() async {
-    final FormState form = _formKey.currentState!;
-    if (!form.validate()) {
-      _autoValidate = AutovalidateMode.always;
-      showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
-    } else {
-      gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
-        form.save();
-        bool tudoCerto = false;
-        if (widget.operacao == 'A') {
-          await Sessao.db.produtoDao.alterar(_produto!);
-          tudoCerto = true;
-        } else {
-          final produto = await Sessao.db.produtoDao.consultarObjetoFiltro('GTIN', _produto!.gtin!);
-          if (produto == null) {
-            await Sessao.db.produtoDao.inserir(_produto!);
-            tudoCerto = true;
-          } else {
-            showInSnackBar('Já existe um produto cadastrado com o GTIN informado.', context);
-          }
-        }
-        if (tudoCerto) {
-          Navigator.of(context).pop();
-        }
-      });
-    }
+  void _filtrarSubgrupoLookup(String campo, String valor) async {
+    final listaFiltrada = await Sessao.db.produtoSubgrupoDao.consultarListaFiltro(campo, valor);
+    Sessao.retornoJsonLookup = jsonEncode(listaFiltrada);
   }
-
-  Future<bool> _avisarUsuarioFormAlterado() async {
-    final FormState? form = _formKey.currentState;
-    if (form == null || !_formFoiAlterado) {
-      return true;
-    } else {
-      await (gerarDialogBoxFormAlterado(context));
-      return false;
-    }
-  }
-
-  void _excluir() {
-    gerarDialogBoxExclusao(context, () async {
-      await Sessao.db.produtoDao.excluir(_produto!);
-      Navigator.of(context).pop();
-    });
-  }  
 
 }

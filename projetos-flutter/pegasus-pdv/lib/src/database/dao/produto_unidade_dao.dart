@@ -46,9 +46,9 @@ part 'produto_unidade_dao.g.dart';
 class ProdutoUnidadeDao extends DatabaseAccessor<AppDatabase> with _$ProdutoUnidadeDaoMixin {
   final AppDatabase db;
 
-  List<ProdutoUnidade>? listaProdutoUnidade; // será usada para popular a grid na janela do produtoUnidade
-
   ProdutoUnidadeDao(this.db) : super(db);
+
+  List<ProdutoUnidade>? listaProdutoUnidade; 
 
   Future<List<ProdutoUnidade>?> consultarLista() async {
     listaProdutoUnidade = await select(produtoUnidades).get();

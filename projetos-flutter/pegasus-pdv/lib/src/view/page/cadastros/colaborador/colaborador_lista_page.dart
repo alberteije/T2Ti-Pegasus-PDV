@@ -211,6 +211,12 @@ class _ColaboradorListaPageState extends State<ColaboradorListaPage> {
                         onSort: (int columnIndex, bool ascending) =>
                           _sort<num>((Colaborador colaborador) => colaborador.comissaoPrazo, columnIndex, ascending),
                       ),
+                      DataColumn(
+                        label: const Text('Entregador Veículo'),
+                        tooltip: 'Informa o tipo de veículo do entregador',
+                        onSort: (int columnIndex, bool ascending) =>
+                          _sort<String>((Colaborador colaborador) => colaborador.entregadorVeiculo, columnIndex, ascending),
+                      ),
                     ],
                     source: _colaboradorDataSource,
                   ),
@@ -320,10 +326,13 @@ class _ColaboradorDataSource extends DataTableSource {
         DataCell(Text(colaborador.email ?? ''), onTap: () {
           _detalharColaborador(colaborador, context, refrescarTela);
         }),
-        DataCell(Text(colaborador.comissaoVista != null ? Constantes.formatoDecimalValor.format(colaborador.comissaoVista) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
+        DataCell(Text(Biblioteca.formatarValorDecimal(colaborador.comissaoVista)), onTap: () {
           _detalharColaborador(colaborador, context, refrescarTela);
         }),
-        DataCell(Text(colaborador.comissaoPrazo != null ? Constantes.formatoDecimalValor.format(colaborador.comissaoPrazo) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
+        DataCell(Text(Biblioteca.formatarValorDecimal(colaborador.comissaoPrazo)), onTap: () {
+          _detalharColaborador(colaborador, context, refrescarTela);
+        }),
+        DataCell(Text(colaborador.entregadorVeiculo ?? ''), onTap: () {
           _detalharColaborador(colaborador, context, refrescarTela);
         }),
       ],

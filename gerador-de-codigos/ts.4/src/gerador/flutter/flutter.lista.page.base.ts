@@ -46,7 +46,7 @@ export class FlutterListaPageBase {
         this.tituloJanela = lodash.startCase(this.class);
     }
 
-    montarPagina(dataPacket: CamposModel[]) {
+    montarPagina(dataPacket: CamposModel[], gerandoParaOMoor = false) {
         // laço nos campos da tabela para montar a página
         for (let i = 0; i < dataPacket.length; i++) {
             this.definirDadosIniciais(dataPacket[i]);
@@ -77,13 +77,16 @@ export class FlutterListaPageBase {
                             this.definirDataColumn(false);
 
                             // DataCell
-                            this.definirDataCell(false, false);
+                            this.definirDataCell(false, false, gerandoParaOMoor);
                         }
                     } catch (erro) {
                         this.objetoJsonComentario = null;
                     }
                 }
-            } else { // caso esteja gerando a tela a partir de uma view - a princípcio só precisa desse código na lista-page principal
+            } else { 
+                // caso esteja gerando a tela a partir de uma view - a princípcio só precisa desse código na lista-page principal
+                // ele também cairá aqui caso não existam comentários nas tabelas
+
                 // pega o tipo de dado
                 this.definirTipoDado();
 
@@ -91,7 +94,7 @@ export class FlutterListaPageBase {
                 this.definirDataColumn(true);
 
                 // DataCell
-                this.definirDataCell(true, false);
+                this.definirDataCell(true, false, gerandoParaOMoor);
             }
         }
         
@@ -151,7 +154,7 @@ export class FlutterListaPageBase {
 
     }
 
-    definirDataCell(viewDB: boolean, abaDetalhe: boolean) {
+    definirDataCell(viewDB: boolean, abaDetalhe: boolean, gerandoParaOMoor = false) {
         if (this.objetoJsonComentario?.tipoControle?.mascara != null
                 && this.objetoJsonComentario?.tipoControle?.mascara != '' 
                 && this.objetoJsonComentario?.tipoControle?.mascara != 'VALOR'
@@ -183,6 +186,8 @@ export class FlutterListaPageBase {
 
         if (abaDetalhe) {
             this.dataCell.push("  _detalhar" + this.class + "(widget." + this.objetoMestre + ", " + this.objetoPrincipal + ", context);");
+        } else if (gerandoParaOMoor) {
+            this.dataCell.push("  _detalhar" + this.class + "(" + this.objetoPrincipal + ", context, refrescarTela);");
         } else {
             this.dataCell.push("  _detalhar" + this.class + "(" + this.objetoPrincipal + ", context);");
         }

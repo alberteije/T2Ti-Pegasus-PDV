@@ -192,7 +192,7 @@ export class GeradorFlutter extends GeradorBase {
         let nomeArquivo = this.tabela.toLowerCase() + '_lista_page';
 
         return super.gravarArquivo(this.caminhoFontes + this.tabela + '/' + nomeArquivo + '.dart', modelGerado);
-    }
+    }  
 
     /**
      * Gera a DetalhePage para a tabela principal

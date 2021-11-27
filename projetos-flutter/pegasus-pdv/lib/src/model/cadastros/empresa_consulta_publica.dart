@@ -51,7 +51,8 @@ class EmpresaConsultaPublica {
   String? municipio;
   String? porte;
   String? naturezaJuridica;
-
+  List<AtividadePrincipal> listaAtividadePrincipal = [];
+  List<AtividadeSecundaria> listaAtividadeSecundaria = [];
 
 	EmpresaConsultaPublica({
       this.cnpj,
@@ -71,6 +72,8 @@ class EmpresaConsultaPublica {
       this.municipio,
       this.porte,
       this.naturezaJuridica,
+      required this.listaAtividadePrincipal,
+      required this.listaAtividadeSecundaria,
 		});
 
 	EmpresaConsultaPublica.fromJson(Map<String, dynamic> jsonDados) {
@@ -91,6 +94,38 @@ class EmpresaConsultaPublica {
     municipio = jsonDados['municipio'];
     porte = jsonDados['porte'];
     naturezaJuridica = jsonDados['natureza_juridica'];
+    listaAtividadePrincipal = (jsonDados['atividade_principal'] as Iterable?)?.map((m) => AtividadePrincipal.fromJson(m)).toList() ?? [];
+    listaAtividadeSecundaria = (jsonDados['atividades_secundarias'] as Iterable?)?.map((m) => AtividadeSecundaria.fromJson(m)).toList() ?? [];
 	}
 	
+}
+
+class AtividadePrincipal {
+  String? codigo;
+	String? descricao;
+
+	AtividadePrincipal({
+      this.codigo,
+      this.descricao,
+  });
+
+	AtividadePrincipal.fromJson(Map<String, dynamic> jsonDados) {
+    codigo = jsonDados['code'].toString().replaceAll('.', '').replaceAll('-', '');
+    descricao = jsonDados['text'];
+  }
+}
+
+class AtividadeSecundaria {
+  String? codigo;
+	String? descricao;
+
+	AtividadeSecundaria({
+      this.codigo,
+      this.descricao,
+  });
+
+	AtividadeSecundaria.fromJson(Map<String, dynamic> jsonDados) {
+    codigo = jsonDados['code'].toString().replaceAll('.', '').replaceAll('-', '');
+    descricao = jsonDados['text'];
+  }
 }

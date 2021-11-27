@@ -41,13 +41,12 @@ import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
 import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/view/page/page.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
 import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
 import 'package:pegasus_pdv/src/view/shared/page/filtro_page.dart';
-
-import 'produto_persiste_page.dart';
 
 class ProdutoListaPage extends StatefulWidget {
   const ProdutoListaPage({Key? key}) : super(key: key);
@@ -185,6 +184,22 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
     );
     _colunas.add(
       DataColumn(
+        label: const Text('Tipo'),
+        tooltip: 'Conteúdo para o campo Tipo',
+        onSort: (int columnIndex, bool ascending) =>
+          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produtoTipo!.descricao, columnIndex, ascending),
+      ),
+    );
+    _colunas.add(
+      DataColumn(
+        label: const Text('Subgrupo'),
+        tooltip: 'Conteúdo para o campo Subgrupo',
+        onSort: (int columnIndex, bool ascending) =>
+          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produtoSubgrupo!.nome, columnIndex, ascending),
+      ),
+    );
+    _colunas.add(
+      DataColumn(
         label: const Text('Unidade'),
         tooltip: 'Conteúdo para o campo Unidade',
         onSort: (int columnIndex, bool ascending) =>
@@ -254,6 +269,15 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
     _colunas.add(
       DataColumn(
         numeric: true,
+        label: const Text('Valor Custo'),
+        tooltip: 'Conteúdo para o campo Valor Custo',
+        onSort: (int columnIndex, bool ascending) =>
+          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.valorCusto, columnIndex, ascending),
+      ),
+    );
+    _colunas.add(
+      DataColumn(
+        numeric: true,
         label: const Text('Quantidade Estoque'),
         tooltip: 'Conteúdo para o campo Quantidade Estoque',
         onSort: (int columnIndex, bool ascending) =>
@@ -278,6 +302,15 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
           _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.estoqueMaximo, columnIndex, ascending),
       ),
     );
+    _colunas.add(
+      DataColumn(
+        numeric: true,
+        label: const Text('IPPT'),
+        tooltip: 'Produção [P]rópria ou [T]erceiros',
+        onSort: (int columnIndex, bool ascending) =>
+          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.ippt, columnIndex, ascending),
+      ),
+    );
     return _colunas;
   }
 
@@ -285,7 +318,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
     Navigator.of(context)
       .push(MaterialPageRoute(
         builder: (BuildContext context) => 
-            ProdutoPersistePage(
+            ProdutoPage(
               produtoMontado: ProdutoMontado(
                 produto: Produto(id: null,), 
                 produtoUnidade: ProdutoUnidade(id: null,),
@@ -380,6 +413,16 @@ class _ProdutoDataSource extends DataTableSource {
       }),
     );
     _celulas.add(
+      DataCell(Text(produtoMontado.produtoTipo?.descricao ?? ''), onTap: () {
+        _detalharProduto(produtoMontado, context, refrescarTela);
+      }),
+    );
+    _celulas.add(
+      DataCell(Text(produtoMontado.produtoSubgrupo?.nome ?? ''), onTap: () {
+        _detalharProduto(produtoMontado, context, refrescarTela);
+      }),
+    );
+    _celulas.add(
       DataCell(Text(produtoMontado.produtoUnidade?.sigla ?? ''), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
@@ -412,27 +455,37 @@ class _ProdutoDataSource extends DataTableSource {
       }),
     );
     _celulas.add(
-      DataCell(Text(produto.valorCompra != null ? Constantes.formatoDecimalValor.format(produto.valorCompra) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
+      DataCell(Text(Biblioteca.formatarValorDecimal(produto.valorCompra)), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
     _celulas.add(
-      DataCell(Text(produto.valorVenda != null ? Constantes.formatoDecimalValor.format(produto.valorVenda) : 0.toStringAsFixed(Constantes.decimaisValor)), onTap: () {
+      DataCell(Text(Biblioteca.formatarValorDecimal(produto.valorVenda)), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
     _celulas.add(
-      DataCell(Text(produto.quantidadeEstoque != null ? Constantes.formatoDecimalQuantidade.format(produto.quantidadeEstoque) : 0.toStringAsFixed(Constantes.decimaisQuantidade)), onTap: () {
+      DataCell(Text(Biblioteca.formatarValorDecimal(produto.valorCusto)), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
     _celulas.add(
-      DataCell(Text(produto.estoqueMinimo != null ? Constantes.formatoDecimalQuantidade.format(produto.estoqueMinimo) : 0.toStringAsFixed(Constantes.decimaisQuantidade)), onTap: () {
+      DataCell(Text(Biblioteca.formatarValorDecimal(produto.quantidadeEstoque)), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
     _celulas.add(
-      DataCell(Text(produto.estoqueMaximo != null ? Constantes.formatoDecimalQuantidade.format(produto.estoqueMaximo) : 0.toStringAsFixed(Constantes.decimaisQuantidade)), onTap: () {
+      DataCell(Text(Biblioteca.formatarValorDecimal(produto.estoqueMinimo)), onTap: () {
+        _detalharProduto(produtoMontado, context, refrescarTela);
+      }),
+    );
+    _celulas.add(
+      DataCell(Text(Biblioteca.formatarValorDecimal(produto.estoqueMaximo)), onTap: () {
+        _detalharProduto(produtoMontado, context, refrescarTela);
+      }),
+    );
+    _celulas.add(
+      DataCell(Text(produto.ippt ?? ''), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
@@ -453,7 +506,7 @@ void _detalharProduto(ProdutoMontado produtoMontado, BuildContext context, Funct
   produtoMontado.tributGrupoTributario ??= TributGrupoTributario(id: null); // se tributGrupoTributario for nulo, instancia
   Navigator.of(context)
     .push(MaterialPageRoute(
-      builder: (BuildContext context) => ProdutoPersistePage(
+      builder: (BuildContext context) => ProdutoPage(
       produtoMontado: produtoMontado, title: 'Produto - Editando', operacao: 'A')))
     .then((_) async {    
       await refrescarTela();

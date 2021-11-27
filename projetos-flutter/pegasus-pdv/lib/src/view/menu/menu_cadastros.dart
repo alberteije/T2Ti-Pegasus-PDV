@@ -76,11 +76,16 @@ class MenuCadastros extends StatelessWidget {
             const SizedBox(height: 10,),
             actionMenuGrupoPessoa(),
             const SizedBox(height: 10,),
+            actionMenuGrupoProduto(),
+            const SizedBox(height: 10,),
             actionMenuGrupoGeral(),
             const SizedBox(height: 10,),
             // só apresenta o cadastro da tributação se não for o módulo gratuito
             Sessao.configuracaoPdv!.modulo == 'G' ? const SizedBox(height: 1,) : actionMenuGrupoTributacao(), 
             Sessao.configuracaoPdv!.modulo == 'G' ? const SizedBox(height: 1,) : const SizedBox(height: 20,),
+            // só apresenta o cadastro do Food se o CNAE da empresa for de alimentação
+            Sessao.cnaePermiteModuloFood ? actionMenuGrupoFood() : const SizedBox(height: 1,), 
+            Sessao.cnaePermiteModuloFood ? const SizedBox(height: 20,) : const SizedBox(height: 1,),
           ],
         ),
       );
@@ -142,6 +147,58 @@ class MenuCadastros extends StatelessWidget {
         ),
       );
 
+  Widget actionMenuGrupoProduto() => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Card(
+          color: Colors.amber[50],
+          elevation: 2.0,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  const MenuTituloGrupoMenuInterno(titulo: "Grupo Produto"),
+                  MenuInternoBotoes(
+                    primeiroBotao: BotaoMenu(
+                        icon: FontAwesomeIcons.archive,
+                        label: "Tipo Produto",
+                        circleColor: Colors.indigo,
+                        rota: "/produtoTipoLista"),
+                    segundoBotao: BotaoMenu(
+                        icon: FontAwesomeIcons.archive,
+                        label: "Unidade",
+                        circleColor: Colors.orange,
+                        rota: "/produtoUnidadeLista"),
+                    terceiroBotao: null,
+                    quartoBotao: null,
+                  ),
+                  MenuInternoBotoes(
+                    primeiroBotao: BotaoMenu(
+                        icon: FontAwesomeIcons.boxes,
+                        label: "Grupo",
+                        circleColor: Colors.purple,
+                        rota: "/produtoGrupoLista"),
+                    segundoBotao: BotaoMenu(
+                        icon: FontAwesomeIcons.cube,
+                        label: "Subgrupo",
+                        circleColor: Colors.indigo,
+                        rota: "/produtoSubgrupoLista"),
+                    terceiroBotao: BotaoMenu(
+                        icon: FontAwesomeIcons.boxOpen,
+                        label: "Produto",
+                        circleColor: Colors.red,
+                        rota: '/produtoLista'),
+                    quartoBotao: null,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
   Widget actionMenuGrupoGeral() => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Card(
@@ -168,21 +225,7 @@ class MenuCadastros extends StatelessWidget {
                         rota: "/pdvTipoPagamentoLista"),
                     terceiroBotao: null,
                     quartoBotao: null,
-                  ),
-                  MenuInternoBotoes(
-                    primeiroBotao: null,
-                    segundoBotao: null,
-                    terceiroBotao: BotaoMenu(
-                        icon: FontAwesomeIcons.archive,
-                        label: "Unidade",
-                        circleColor: Colors.indigo,
-                        rota: "/produtoUnidadeLista"),
-                    quartoBotao: BotaoMenu(
-                        icon: FontAwesomeIcons.boxOpen,
-                        label: "Produto",
-                        circleColor: Colors.red,
-                        rota: '/produtoLista'),
-                  ),
+                  ),                  
                 ],
               ),
             ),
@@ -233,4 +276,42 @@ class MenuCadastros extends StatelessWidget {
           ),
         ),
       );
+
+  Widget actionMenuGrupoFood() => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Card(
+          elevation: 2.0,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  const MenuTituloGrupoMenuInterno(titulo: "Cadastros - Módulo Food"),
+                  MenuInternoBotoes(
+                    primeiroBotao: BotaoMenu(
+                        icon: FontAwesomeIcons.hamburger,
+                        label: "Cozinha",
+                        circleColor: Colors.blue,
+                        rota: "/cozinhaLista"),
+                    segundoBotao: BotaoMenu(
+                        icon: FontAwesomeIcons.utensils,
+                        label: "Mesa",
+                        circleColor: Colors.orange,
+                        rota: "/mesaLista"),
+                    terceiroBotao: BotaoMenu(
+                        icon: FontAwesomeIcons.motorcycle,
+                        label: "Taxa Entrega",
+                        circleColor: Colors.purple,
+                        rota: "/taxaEntregaLista"),
+                    quartoBotao: null,
+                  ),
+               ],
+              ),
+            ),
+          ),
+        ),
+      );
+
 }

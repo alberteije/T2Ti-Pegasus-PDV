@@ -48,15 +48,28 @@ class ProdutoFichaTecnicaDao extends DatabaseAccessor<AppDatabase> with _$Produt
 
   ProdutoFichaTecnicaDao(this.db) : super(db);
 
-  Future<List<ProdutoFichaTecnica>> consultarLista() => select(produtoFichaTecnicas).get();
+  List<ProdutoFichaTecnica>? listaProdutoFichaTecnica; 
+  
+  Future<List<ProdutoFichaTecnica>?> consultarLista() async {
+    listaProdutoFichaTecnica = await select(produtoFichaTecnicas).get();
+    return listaProdutoFichaTecnica;
+  }  
 
-  Future<List<ProdutoFichaTecnica>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM PRODUTO_FICHA_TECNICA WHERE " + campo + " like '%" + valor + "%'", 
+  Future<List<ProdutoFichaTecnica>?> consultarListaFiltro(String campo, String valor) async {
+    listaProdutoFichaTecnica = await (customSelect("SELECT * FROM PRODUTO_FICHA_TECNICA WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { produtoFichaTecnicas }).map((row) {
                                   return ProdutoFichaTecnica.fromData(row.data, db);  
                                 }).get());
+    return listaProdutoFichaTecnica;
   }
-
+    
+  Future<ProdutoFichaTecnica?> consultarObjetoFiltro(String campo, String valor) async {
+    return (customSelect("SELECT * FROM PRODUTO_FICHA_TECNICA WHERE " + campo + " = '" + valor + "'", 
+                                readsFrom: { produtoFichaTecnicas }).map((row) {
+                                  return ProdutoFichaTecnica.fromData(row.data, db);  
+                                }).getSingleOrNull());
+  }  
+  
   Stream<List<ProdutoFichaTecnica>> observarLista() => select(produtoFichaTecnicas).watch();
 
   Future<ProdutoFichaTecnica?> consultarObjeto(int pId) {
@@ -83,4 +96,20 @@ class ProdutoFichaTecnicaDao extends DatabaseAccessor<AppDatabase> with _$Produt
   }
 
   
+  
+  static List<String> campos = <String>[
+    'ID', 
+    'DESCRICAO', 
+    'QUANTIDADE', 
+    'VALOR_CUSTO', 
+    'PERCENTUAL_CUSTO', 
+  ];
+
+  static List<String> colunas = <String>[
+    'Id', 
+    'Descrição', 
+    'Quantidade', 
+    'Valor Custo', 
+    'Percentual Custo', 
+  ];  
 }

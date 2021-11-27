@@ -325,6 +325,37 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                       BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
+                           BootstrapCol(
+                            sizes: 'col-12',
+                            child: Padding(
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
+                              child: InputDecorator(
+                                decoration: getInputDecoration(
+                                  'Tipo de veículo do entregador',
+                                  'Entregador Veículo',
+                                  true),
+                                isEmpty: colaborador!.entregadorVeiculo == null,
+                                child: getDropDownButton(colaborador!.entregadorVeiculo,
+                                  (String? newValue) {
+                                    setState(() {
+                                      colaborador = colaborador!.copyWith(entregadorVeiculo: newValue);
+                                    });
+                                }, <String>[
+                                  'Moto',
+                                  'Carro',
+                                  'Biclicleta',
+                                  'Aplicativo',
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                     const Divider(color: Colors.white,),
+                      BootstrapRow(
+                        height: 60,
+                        children: <BootstrapCol>[
                           BootstrapCol(
                             sizes: 'col-12',
                             child: 

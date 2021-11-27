@@ -60,7 +60,7 @@ class Produtos extends Table {
   RealColumn get estoqueMaximo => real().named('ESTOQUE_MAXIMO').nullable()();
   TextColumn get codigoNcm => text().named('CODIGO_NCM').withLength(min: 0, max: 8).nullable()();
   TextColumn get iat => text().named('IAT').withLength(min: 0, max: 1).nullable()();
-  TextColumn get ippt => text().named('IPPT').withLength(min: 0, max: 1).nullable()();
+  TextColumn get ippt => text().named('IPPT').withLength(min: 0, max: 1).nullable()(); // T=Terceiro | P=Própria
   TextColumn get tipoItemSped => text().named('TIPO_ITEM_SPED').withLength(min: 0, max: 2).nullable()();
   RealColumn get taxaIpi => real().named('TAXA_IPI').nullable()();
   RealColumn get taxaIssqn => real().named('TAXA_ISSQN').nullable()();
@@ -81,11 +81,15 @@ class ProdutoMontado {
   ProdutoUnidade? produtoUnidade;
   Produto? produto;
   TributGrupoTributario? tributGrupoTributario;
+  ProdutoTipo? produtoTipo;
+  ProdutoSubgrupo? produtoSubgrupo;
 
   ProdutoMontado({
     this.produtoUnidade,
     this.produto,
     this.tributGrupoTributario,
+    this.produtoTipo,
+    this.produtoSubgrupo,
   });
 }
 

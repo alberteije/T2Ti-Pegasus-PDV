@@ -34,6 +34,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 import 'package:moor/moor.dart';
+import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 @DataClassName("ProdutoSubgrupo")
 @UseRowClass(ProdutoSubgrupo)
@@ -45,6 +46,16 @@ class ProdutoSubgrupos extends Table {
   IntColumn get idProdutoGrupo => integer().named('ID_PRODUTO_GRUPO').nullable().customConstraint('NULLABLE REFERENCES PRODUTO_GRUPO(ID)')();
   TextColumn get nome => text().named('NOME').withLength(min: 0, max: 100).nullable()();
   TextColumn get descricao => text().named('DESCRICAO').withLength(min: 0, max: 250).nullable()();
+}
+
+class ProdutoSubgrupoMontado {
+  ProdutoSubgrupo? produtoSubgrupo;
+  ProdutoGrupo? produtoGrupo;
+
+  ProdutoSubgrupoMontado({
+    this.produtoSubgrupo,
+    this.produtoGrupo,
+  });
 }
 
 class ProdutoSubgrupo extends DataClass implements Insertable<ProdutoSubgrupo> {

@@ -432,16 +432,6 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
     }
   }
   
-  Future<bool> _avisarUsuarioFormAlterado() async {
-    final FormState? form = _formKey.currentState;
-    if (form == null || !_formFoiAlterado) {
-      return true;
-    } else {
-      await (gerarDialogBoxFormAlterado(context));
-      return false;
-    }
-  }
-
   _atualizarTotais() {
     double subTotal = Biblioteca.multiplicarMonetario(widget.compraDetalhe!.compraPedidoDetalhe!.quantidade, widget.compraDetalhe!.compraPedidoDetalhe!.valorUnitario);
     double desconto = Biblioteca.calcularDesconto(widget.compraDetalhe!.compraPedidoDetalhe!.valorSubtotal, widget.compraDetalhe!.compraPedidoDetalhe!.taxaDesconto);
@@ -462,4 +452,13 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
     });
   }  
 
+  Future<bool> _avisarUsuarioFormAlterado() async {
+    final FormState? form = _formKey.currentState;
+    if (form == null || !_formFoiAlterado) {
+      return true;
+    } else {
+      await (gerarDialogBoxFormAlterado(context));
+      return false;
+    }
+  }
 }

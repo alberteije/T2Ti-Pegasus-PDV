@@ -73,6 +73,7 @@ LazyDatabase _openConnection() {
     EcfSintegra60As,
     EcfSintegra60Ms,
     Empresas,
+	EmpresaCnaes,
     EmpresaDeliveryPedidos,
     EmpresaSegmentos,
     EntregadorRotas,
@@ -197,6 +198,7 @@ LazyDatabase _openConnection() {
     EcfSintegra60ADao,
     EcfSintegra60MDao,
     EmpresaDao,
+	EmpresaCnaeDao,
     EmpresaDeliveryPedidoDao,
     EmpresaSegmentoDao,
     EntregadorRotaDao,
@@ -298,6 +300,48 @@ class AppDatabase extends _$AppDatabase {
 }
 
 Future<void> _popularBancoSchema05(AppDatabase db) async {
+  // ---> TAXA_ENTREGA
+  await db.customStatement("INSERT INTO TAXA_ENTREGA (ID, NOME, VALOR, ESTIMATIVA_MINUTOS) values (1, 'Perto - até 05 Km', '5', '15')");
+  await db.customStatement("INSERT INTO TAXA_ENTREGA (ID, NOME, VALOR, ESTIMATIVA_MINUTOS) values (2, 'Intermediária - De 05 até 10 KM', '8', '20')");
+  await db.customStatement("INSERT INTO TAXA_ENTREGA (ID, NOME, VALOR, ESTIMATIVA_MINUTOS) values (3, 'Longe - De 10 até 20 KM', '15', '40')");
+  await db.customStatement("INSERT INTO TAXA_ENTREGA (ID, NOME, VALOR, ESTIMATIVA_MINUTOS) values (4, 'Perto Fidelizado', '2', '15')");
+  await db.customStatement("INSERT INTO TAXA_ENTREGA (ID, NOME, VALOR, ESTIMATIVA_MINUTOS) values (5, 'Intermediária Fidelizado', '4', '20')");
+  await db.customStatement("INSERT INTO TAXA_ENTREGA (ID, NOME, VALOR, ESTIMATIVA_MINUTOS) values (6, 'Longe Fidelizado', '8', '40')");
+  await db.customStatement("INSERT INTO TAXA_ENTREGA (ID, NOME, VALOR, ESTIMATIVA_MINUTOS) values (7, 'Isento - sem taxa de entrega', '0', '0')");
+  // ---> EMPRESA_SEGMENTO
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (1, 'A', '01..03', 'AGRICULTURA, PECUÁRIA, PRODUÇÃO FLORESTAL, PESCA E AQÜICULTURA')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (2, 'B', '05..09', 'INDÚSTRIAS EXTRATIVAS')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (3, 'C', '10..33', 'INDÚSTRIAS DE TRANSFORMAÇÃO')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (4, 'D', '35..35', 'ELETRICIDADE E GÁS')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (5, 'E', '36..39', 'ÁGUA, ESGOTO, ATIVIDADES DE GESTÃO DE RESÍDUOS E DESCONTAMINAÇÃO')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (6, 'F', '41..43', 'CONSTRUÇÃO')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (7, 'G', '45..47', 'COMÉRCIO; REPARAÇÃO DE VEÍCULOS AUTOMOTORES E MOTOCICLETAS')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (8, 'H', '49..53', 'TRANSPORTE, ARMAZENAGEM E CORREIO')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (9, 'I', '55..56', 'ALOJAMENTO E ALIMENTAÇÃO')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (10, 'J', '58..63', 'INFORMAÇÃO E COMUNICAÇÃO')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (11, 'K', '64..66', 'ATIVIDADES FINANCEIRAS, DE SEGUROS E SERVIÇOS RELACIONADOS')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (12, 'L', '68..68', 'ATIVIDADES IMOBILIÁRIAS')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (13, 'M', '69..75', 'ATIVIDADES PROFISSIONAIS, CIENTÍFICAS E TÉCNICAS')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (14, 'N', '77..82', 'ATIVIDADES ADMINISTRATIVAS E SERVIÇOS COMPLEMENTARES')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (15, 'O', '84..84', 'ADMINISTRAÇÃO PÚBLICA, DEFESA E SEGURIDADE SOCIAL')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (16, 'P', '85..85', 'EDUCAÇÃO')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (17, 'Q', '86..88', 'SAÚDE HUMANA E SERVIÇOS SOCIAIS')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (18, 'R', '90..93', 'ARTES, CULTURA, ESPORTE E RECREAÇÃO')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (19, 'S', '94..96', 'OUTRAS ATIVIDADES DE SERVIÇOS')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (20, 'T', '97..97', 'SERVIÇOS DOMÉSTICOS')");
+  await db.customStatement("INSERT INTO EMPRESA_SEGMENTO (ID, CODIGO, DENOMINACAO, DIVISOES) values (21, 'U', '99..99', 'ORGANISMOS INTERNACIONAIS E OUTRAS INSTITUIÇÕES EXTRATERRITORIAIS')");
+  // ---> PRODUTO_TIPO
+  await db.customStatement("INSERT INTO PRODUTO_TIPO (ID, CODIGO, DESCRICAO) VALUES (1, '01', 'PRODUTO')");
+  await db.customStatement("INSERT INTO PRODUTO_TIPO (ID, CODIGO, DESCRICAO) VALUES (2, '02', 'SERVIÇO')");
+  await db.customStatement("INSERT INTO PRODUTO_TIPO (ID, CODIGO, DESCRICAO) VALUES (3, '03', 'INSUMO')");
+  await db.customStatement("INSERT INTO PRODUTO_TIPO (ID, CODIGO, DESCRICAO) VALUES (4, '04', 'COMPLEMENTO')");
+  await db.customStatement("INSERT INTO PRODUTO_TIPO (ID, CODIGO, DESCRICAO) VALUES (5, '05', 'COMBO')");
+  // ---> PRODUTO_GRUPO
+  await db.customStatement("INSERT INTO PRODUTO_GRUPO (ID, NOME, DESCRICAO) VALUES (1, 'GRUPO GERAL', 'GRUPO GERAL DE PRODUTOS')");
+  // ---> PRODUTO_SUBGRUPO
+  await db.customStatement("INSERT INTO PRODUTO_SUBGRUPO (ID, ID_PRODUTO_GRUPO, NOME, DESCRICAO) VALUES (1, 1, 'SUBGRUPO GERAL', 'SUBGRUPO GERAL DE PRODUTOS')");
+  // ---> PRODUTO - ATUALIZA O TIPO E O SUBGRUPO
+  db.customStatement("UPDATE PRODUTO SET ID_PRODUTO_TIPO = '1', ID_PRODUTO_SUBGRUPO = '1'");
 }
 
 Future<void> _popularBancoSchema04(AppDatabase db) async {

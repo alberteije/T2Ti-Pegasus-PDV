@@ -74,6 +74,7 @@ class Sessao {
   static String? retornoJsonNfce; //objeto retornado pelo ACBrMonitor
   static late String caminhoBancoDados; // guarda o caminho para o banco de dados
   static late String ultimoIniNfceEnviado; // guarda a string do último arquivo INI de NFC-e enviado para o ACBrMonitor
+  static bool cnaePermiteModuloFood = false; // se for true, o sistema permite a utilização do módulo Food
 
   static PdvMovimento? movimento;
   static Empresa? empresa;
@@ -139,6 +140,14 @@ class Sessao {
     numeroNfce = await db.nfeNumeroDao.consultarObjeto(1); // pega o numero da nfc-e
     nfcePlanoPagamento = await db.nfcePlanoPagamentoDao.consultarPlanoAtivo(); 
     listaTipoPagamento = await db.pdvTipoPagamentoDao.consultarLista(); // pega os tipos de pagamento e poe numa lista
+
+    // módulo Food
+    final _listaCnae = await db.empresaCnaeDao.consultarLista();
+    for (var cnae in _listaCnae) {
+      if (cnae.codigo!.startsWith('56')) { // Alimentação
+        cnaePermiteModuloFood = true;  
+      }
+    }
 
     final arquivoIbptCsv = await rootBundle.loadString('assets/text/ibpt.csv');
     tabelaIbpt = const CsvToListConverter().convert(arquivoIbptCsv, fieldDelimiter: ';');

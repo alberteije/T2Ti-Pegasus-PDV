@@ -46,6 +46,9 @@ part 'produto_dao.g.dart';
           Produtos,
           ProdutoUnidades,
           TributGrupoTributarios,
+          ProdutoTipos,
+          ProdutoSubgrupos,
+          ProdutoFichaTecnicas,
 		])
 class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
   final AppDatabase db;
@@ -90,6 +93,12 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
       ])
       .join([
         leftOuterJoin(tributGrupoTributarios, tributGrupoTributarios.id.equalsExp(produtos.idTributGrupoTributario)),
+      ])
+      .join([
+        leftOuterJoin(produtoSubgrupos, produtoSubgrupos.id.equalsExp(produtos.idProdutoSubgrupo)),
+      ])
+      .join([
+        leftOuterJoin(produtoTipos, produtoTipos.id.equalsExp(produtos.idProdutoTipo)),
       ]);
 
     consulta.where(produtos.id.equals(pId!));
@@ -98,11 +107,15 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
         final produtoUnidade = row.readTableOrNull(produtoUnidades);
         final produto = row.readTableOrNull(produtos);
         final tributGrupoTributario = row.readTableOrNull(tributGrupoTributarios);
+        final produtoTipo = row.readTableOrNull(produtoTipos);
+        final produtoSubgrupo = row.readTableOrNull(produtoSubgrupos);
 
         return ProdutoMontado(
           produtoUnidade: produtoUnidade, 
           produto: produto,
           tributGrupoTributario: tributGrupoTributario,
+          produtoTipo: produtoTipo, 
+          produtoSubgrupo: produtoSubgrupo, 
         );
       }).getSingleOrNull();
     return retorno;
@@ -115,6 +128,12 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
       ])
       .join([
         leftOuterJoin(tributGrupoTributarios, tributGrupoTributarios.id.equalsExp(produtos.idTributGrupoTributario)),
+      ])
+      .join([
+        leftOuterJoin(produtoSubgrupos, produtoSubgrupos.id.equalsExp(produtos.idProdutoSubgrupo)),
+      ])
+      .join([
+        leftOuterJoin(produtoTipos, produtoTipos.id.equalsExp(produtos.idProdutoTipo)),
       ]);
 
     if (campo != null && campo != '') {      
@@ -126,13 +145,6 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
       } else if (coluna is RealColumn) {
         consulta.where(coluna.equals(double.tryParse(valor)));
       }
-      // if (coluna is GeneratedTextColumn) {
-      //   consulta.where(coluna.like('%'  + valor + '%'));
-      // } else if (coluna is GeneratedIntColumn) {
-      //   consulta.where(coluna.equals(int.tryParse(valor)));
-      // } else if (coluna is GeneratedRealColumn) {
-      //   consulta.where(coluna.equals(double.tryParse(valor)));
-      // }
     }
 
     if (status != null) {
@@ -148,11 +160,15 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
         final produtoUnidade = row.readTableOrNull(produtoUnidades);
         final produto = row.readTableOrNull(produtos);
         final tributGrupoTributario = row.readTableOrNull(tributGrupoTributarios);
+        final produtoTipo = row.readTableOrNull(produtoTipos);
+        final produtoSubgrupo = row.readTableOrNull(produtoSubgrupos);
 
         return ProdutoMontado(
           produtoUnidade: produtoUnidade, 
           produto: produto,
           tributGrupoTributario: tributGrupoTributario,
+          produtoTipo: produtoTipo, 
+          produtoSubgrupo: produtoSubgrupo, 
         );
       }).get();
     return listaProdutoMontado;
@@ -216,18 +232,31 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
     return (select(produtos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<Produto> pObjeto) {
+  Future<int> inserir(Insertable<Produto> pObjeto, List<ProdutoFichaTecnica> listaProdutoFichaTecnica) {
     return transaction(() async {
       final idInserido = await into(produtos).insert(pObjeto);
+      await inserirFilhos(idInserido, listaProdutoFichaTecnica);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Produto> pObjeto) {
+  Future<bool> alterar(Insertable<Produto> pObjeto, List<ProdutoFichaTecnica> listaProdutoFichaTecnica) {
     return transaction(() async {
+      await excluirFilhos((pObjeto as Produto).id!);
+      await inserirFilhos(pObjeto.id!, listaProdutoFichaTecnica);
       return update(produtos).replace(pObjeto);
     });    
   } 
+
+  Future<void> inserirFilhos(int idMestre, List<ProdutoFichaTecnica> listaProdutoFichaTecnica) async {
+    for (var objeto in listaProdutoFichaTecnica) {
+      await into(produtoFichaTecnicas).insert(objeto);  
+    }
+  }
+  
+  Future<void> excluirFilhos(int idMestre) async {
+    await (delete(produtoFichaTecnicas)..where((t) => t.idProduto.equals(idMestre))).go();
+  }
 
   Future<int> excluir(Insertable<Produto> pObjeto) {
     return transaction(() async {

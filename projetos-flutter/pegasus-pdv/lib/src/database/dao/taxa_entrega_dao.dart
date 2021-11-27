@@ -48,15 +48,21 @@ class TaxaEntregaDao extends DatabaseAccessor<AppDatabase> with _$TaxaEntregaDao
 
   TaxaEntregaDao(this.db) : super(db);
 
-  Future<List<TaxaEntrega>?> consultarLista() => select(taxaEntregas).get();
+  List<TaxaEntrega>? listaTaxaEntrega; 
+  
+  Future<List<TaxaEntrega>?> consultarLista() async {
+    listaTaxaEntrega = await select(taxaEntregas).get();
+    return listaTaxaEntrega;
+  }  
 
   Future<List<TaxaEntrega>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM TAXA_ENTREGA WHERE " + campo + " like '%" + valor + "%'", 
+    listaTaxaEntrega = await (customSelect("SELECT * FROM TAXA_ENTREGA WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { taxaEntregas }).map((row) {
                                   return TaxaEntrega.fromData(row.data, db);  
                                 }).get());
+    return listaTaxaEntrega;
   }
-
+    
   Future<TaxaEntrega?> consultarObjetoFiltro(String campo, String valor) async {
     return (customSelect("SELECT * FROM TAXA_ENTREGA WHERE " + campo + " = '" + valor + "'", 
                                 readsFrom: { taxaEntregas }).map((row) {
@@ -90,4 +96,18 @@ class TaxaEntregaDao extends DatabaseAccessor<AppDatabase> with _$TaxaEntregaDao
   }
 
   
+  
+  static List<String> campos = <String>[
+    'ID', 
+    'NOME', 
+    'VALOR', 
+    'ESTIMATIVA_MINUTOS', 
+  ];
+
+  static List<String> colunas = <String>[
+    'Id', 
+    'Nome', 
+    'Valor', 
+    'Estimativa Minutos', 
+  ];  
 }

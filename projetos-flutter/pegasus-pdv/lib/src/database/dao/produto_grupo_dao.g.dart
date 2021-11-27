@@ -8,4 +8,6 @@ part of 'produto_grupo_dao.dart';
 
 mixin _$ProdutoGrupoDaoMixin on DatabaseAccessor<AppDatabase> {
   $ProdutoGruposTable get produtoGrupos => attachedDatabase.produtoGrupos;
+  $ProdutoSubgruposTable get produtoSubgrupos =>
+      attachedDatabase.produtoSubgrupos;
 }

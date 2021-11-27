@@ -42,6 +42,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -91,6 +92,8 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
   final _telefoneController = MaskedTextController(mask: Constantes.mascaraTELEFONE);
   final _cepController = MaskedTextController(mask: Constantes.mascaraCEP);
   final _ibgeController = MaskedTextController(mask: '0000000');
+
+  List<EmpresaCnae> _listaCnae = [];
   
   @override
   void initState() {
@@ -105,6 +108,14 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
       ),
     };
     _foco.requestFocus();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _consultarCnae());
+  }
+
+  Future _consultarCnae() async {
+    await Sessao.db.empresaCnaeDao.consultarLista();
+    setState(() {
+    });
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -131,6 +142,8 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
     _complementoController.text = Sessao.empresa?.complemento ?? '';
     _cidadeController.text = Sessao.empresa?.cidade ?? '';
     _ibgeController.text = Sessao.empresa?.codigoIbgeCidade?.toString() ?? '';
+
+    _listaCnae = Sessao.db.empresaCnaeDao.listaEmpresaCnae;
 
     return FocusableActionDetector(
       actions: _actionMap,
@@ -670,6 +683,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             ),
                           ],
                         ),
+
                         const Divider(color: Colors.white,),
                         const Padding(
                           padding: EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 0),
@@ -709,6 +723,66 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             ),
                           ],
                         ),
+                        const Divider(color: Colors.white,),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 0),
+                          child: Text(
+                            "CNAEs vinculados à empresa", 
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black),
+                          ),
+                        ),
+                        const Divider(
+                          indent: 10,
+                          endIndent: 10,
+                          thickness: 2,
+                        ),
+
+                        SizedBox(
+                          height: 170.0,
+                          child: Scrollbar(
+                            child: ListView(
+                              padding: const EdgeInsets.all(2.0),
+                              children: <Widget>[
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Card(
+                                    color: Colors.white,
+                                    elevation: 2.0,
+                                    child:
+                                    DataTable(
+                                      columns: getColumnsCnae(),
+                                      rows: getRowsCnae()),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: 200,
+                              child: getBotaoGenericoPdv(
+                                descricao: 'Consultar CNAEs',
+                                cor: Colors.blue, 
+                                onPressed: () async {
+                                  await _atualizarDadosPeloCnpj();
+                                }
+                              ),
+                            ), 
+                          ],
+                        ),
+
+                        const Divider(
+                          indent: 10,
+                          endIndent: 10,
+                          thickness: 2,
+                        ),
+
                         const Divider(color: Colors.white,),
                         BootstrapRow(
                           height: 60,
@@ -774,6 +848,51 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
     );
   }
 
+  List<DataColumn> getColumnsCnae() {
+    List<DataColumn> lista = [];
+    lista.add(const DataColumn(
+      label: Text(
+        "Código",
+        style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
+      ),
+    ));
+    lista.add(const DataColumn(
+      label: Text(
+        "Descrição",
+        style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
+      ),
+    ));
+    lista.add(const DataColumn(
+      numeric: true,
+      label: Text(
+        "Principal",
+        style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
+      ),
+    ));
+    return lista;
+  }
+
+  List<DataRow> getRowsCnae() {
+    List<DataRow> lista = [];
+    for (var cnae in _listaCnae) {
+      List<DataCell> celulas = [];
+
+      celulas = [
+        DataCell(
+          Text(cnae.codigo!),
+        ),
+        DataCell(
+          Text(cnae.descricao!)
+        ),          
+        DataCell(
+          Text(cnae.principal!)
+        ),          
+      ];
+      lista.add(DataRow(cells: celulas));
+    }
+    return lista;
+  }
+
   Future _atualizarDadosPeloCnpj() async {
     EmpresaService servico = EmpresaService();
     final empresaModel = await servico.consultarObjetoPublico(Biblioteca.removerMascara(_cnpjController.text));
@@ -797,7 +916,21 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
           naturezaJuridica: empresaModel.naturezaJuridica,
         );
       await Sessao.db.empresaDao.alterar(Sessao.empresa!, true);
+
+      // atualiza CNAE
+      _listaCnae = [];
+      for (var cnae in empresaModel.listaAtividadePrincipal) {
+        EmpresaCnae empresCnae = EmpresaCnae(id: null, codigo: cnae.codigo, descricao: cnae.descricao, principal: 'S');
+        _listaCnae.add(empresCnae);
+      }
+      for (var cnae in empresaModel.listaAtividadeSecundaria) {
+        EmpresaCnae empresCnae = EmpresaCnae(id: null, codigo: cnae.codigo, descricao: cnae.descricao, principal: 'N');
+        _listaCnae.add(empresCnae);
+      }
+      await Sessao.db.empresaCnaeDao.excluirTodos();
+      await Sessao.db.empresaCnaeDao.inserirTodos(_listaCnae);
       Sessao.empresa = await Sessao.db.empresaDao.consultarObjeto(1);
+      await _consultarCnae();
       setState(() {
       });
     } else {
@@ -854,6 +987,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
       }
     );
   }
+
   List<Widget> _getOpcoesImportacaoImagem() {
     List<Widget> listaRetorno = [];
     listaRetorno.add(

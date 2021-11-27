@@ -34,7 +34,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
@@ -306,6 +305,25 @@ class _ClienteListaPageState extends State<ClienteListaPage> {
                         onSort: (int columnIndex, bool ascending) =>
                           _sort<String>((Cliente cliente) => cliente.contato, columnIndex, ascending),
                       ),
+                      DataColumn(
+                        label: const Text('Tipo de Fidelidade'),
+                        tooltip: 'Conteúdo para o campo Tipo de Fidelidade',
+                        onSort: (int columnIndex, bool ascending) =>
+                          _sort<String>((Cliente cliente) => cliente.fidelidadeAviso, columnIndex, ascending),
+                      ),
+                      DataColumn(
+                        label: const Text('Fidelidade Quantidade'),
+                        tooltip: 'Conteúdo para o Fidelidade Quantidade',
+                        onSort: (int columnIndex, bool ascending) =>
+                          _sort<num>((Cliente cliente) => cliente.fidelidadeQuantidade, columnIndex, ascending),
+                      ),
+                      DataColumn(
+                        numeric: true,
+                        label: const Text('Fidelidade Valor'),
+                        tooltip: 'Conteúdo para o campo Fidelidade Valor',
+                        onSort: (int columnIndex, bool ascending) =>
+                          _sort<num>((Cliente cliente) => cliente.fidelidadeValor, columnIndex, ascending),
+                      ),
                     ],
                     source: _clienteDataSource,
                   ),
@@ -425,7 +443,7 @@ class _ClienteDataSource extends DataTableSource {
         DataCell(Text(cliente.orgaoRg ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text(cliente.dataEmissaoRg != null ? DateFormat('dd/MM/yyyy').format(cliente.dataEmissaoRg!) : ''), onTap: () {
+        DataCell(Text(Biblioteca.formatarData(cliente.dataEmissaoRg)), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
         DataCell(Text(cliente.sexo ?? ''), onTap: () {
@@ -437,7 +455,7 @@ class _ClienteDataSource extends DataTableSource {
         DataCell(Text(cliente.inscricaoMunicipal ?? ''), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
-        DataCell(Text(cliente.dataCadastro != null ? DateFormat('dd/MM/yyyy').format(cliente.dataCadastro!) : ''), onTap: () {
+        DataCell(Text(Biblioteca.formatarData(cliente.dataCadastro)), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
         DataCell(Text(cliente.logradouro ?? ''), onTap: () {
@@ -468,6 +486,15 @@ class _ClienteDataSource extends DataTableSource {
           _detalharCliente(cliente, context, refrescarTela);
         }),
         DataCell(Text(cliente.contato ?? ''), onTap: () {
+          _detalharCliente(cliente, context, refrescarTela);
+        }),
+        DataCell(Text(cliente.fidelidadeAviso ?? ''), onTap: () {
+          _detalharCliente(cliente, context, refrescarTela);
+        }),
+        DataCell(Text(cliente.fidelidadeQuantidade?.toString() ?? ''), onTap: () {
+          _detalharCliente(cliente, context, refrescarTela);
+        }),
+        DataCell(Text(Biblioteca.formatarValorDecimal(cliente.fidelidadeValor)), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
       ],

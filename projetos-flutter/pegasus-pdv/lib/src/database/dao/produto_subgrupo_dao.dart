@@ -42,21 +42,29 @@ part 'produto_subgrupo_dao.g.dart';
 
 @UseDao(tables: [
           ProdutoSubgrupos,
+          ProdutoGrupos,
 		])
 class ProdutoSubgrupoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoSubgrupoDaoMixin {
   final AppDatabase db;
 
   ProdutoSubgrupoDao(this.db) : super(db);
 
-  Future<List<ProdutoSubgrupo>?> consultarLista() => select(produtoSubgrupos).get();
+  List<ProdutoSubgrupo>? listaProdutoSubgrupo; 
+  List<ProdutoSubgrupoMontado>? listaProdutoSubgrupoMontado; 
+  
+  Future<List<ProdutoSubgrupo>?> consultarLista() async {
+    listaProdutoSubgrupo = await select(produtoSubgrupos).get();
+    return listaProdutoSubgrupo;
+  }  
 
   Future<List<ProdutoSubgrupo>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM PRODUTO_SUBGRUPO WHERE " + campo + " like '%" + valor + "%'", 
+    listaProdutoSubgrupo = await (customSelect("SELECT * FROM PRODUTO_SUBGRUPO WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { produtoSubgrupos }).map((row) {
                                   return ProdutoSubgrupo.fromData(row.data, db);  
                                 }).get());
+    return listaProdutoSubgrupo;
   }
-
+    
   Future<ProdutoSubgrupo?> consultarObjetoFiltro(String campo, String valor) async {
     return (customSelect("SELECT * FROM PRODUTO_SUBGRUPO WHERE " + campo + " = '" + valor + "'", 
                                 readsFrom: { produtoSubgrupos }).map((row) {
@@ -64,6 +72,35 @@ class ProdutoSubgrupoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoSub
                                 }).getSingleOrNull());
   }  
   
+  Future<List<ProdutoSubgrupoMontado>?> consultarListaMontado({String? campo, dynamic valor}) async {
+    final consulta = select(produtoSubgrupos)
+      .join([
+        leftOuterJoin(produtoGrupos, produtoGrupos.id.equalsExp(produtoSubgrupos.idProdutoGrupo)),
+      ]);
+
+    if (campo != null && campo != '') {      
+      final coluna = produtoSubgrupos.$columns.where(((coluna) => coluna.$name == campo)).first;
+      if (coluna is TextColumn) {
+        consulta.where((coluna as TextColumn).like('%'  + valor + '%'));
+      } else if (coluna is IntColumn) {
+        consulta.where(coluna.equals(int.tryParse(valor)));
+      } else if (coluna is RealColumn) {
+        consulta.where(coluna.equals(double.tryParse(valor)));
+      }
+    }
+
+    listaProdutoSubgrupoMontado = await consulta.map((row) {
+        final produtoSubgrupo = row.readTableOrNull(produtoSubgrupos);
+        final produtoGrupo = row.readTableOrNull(produtoGrupos);
+
+        return ProdutoSubgrupoMontado(
+          produtoSubgrupo: produtoSubgrupo,
+          produtoGrupo: produtoGrupo,
+        );
+      }).get();      
+    return listaProdutoSubgrupoMontado;
+  }
+
   Stream<List<ProdutoSubgrupo>> observarLista() => select(produtoSubgrupos).watch();
 
   Future<ProdutoSubgrupo?> consultarObjeto(int pId) {
@@ -90,4 +127,16 @@ class ProdutoSubgrupoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoSub
   }
 
   
+  
+  static List<String> campos = <String>[
+    'ID', 
+    'NOME', 
+    'DESCRICAO', 
+  ];
+
+  static List<String> colunas = <String>[
+    'Id', 
+    'Nome', 
+    'Descrição', 
+  ];  
 }

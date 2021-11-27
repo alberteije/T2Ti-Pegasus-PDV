@@ -78,6 +78,18 @@ class Rotas {
 			case '/produtoUnidadeLista':
 			  return MaterialPageRoute(builder: (_) => const ProdutoUnidadeListaPage());
 
+			// Tipo Produto
+			case '/produtoTipoLista':
+			  return MaterialPageRoute(builder: (_) => const ProdutoTipoListaPage());
+
+			// Grupo Produto
+			case '/produtoGrupoLista':
+			  return MaterialPageRoute(builder: (_) => const ProdutoGrupoListaPage());
+
+			// Grupo SubProduto
+			case '/produtoSubgrupoLista':
+			  return MaterialPageRoute(builder: (_) => const ProdutoSubgrupoListaPage());
+
 			// Produto
 			case '/produtoLista':
 			  return MaterialPageRoute(builder: (_) => const ProdutoListaPage());
@@ -139,6 +151,24 @@ class Rotas {
 
 			case '/nfceInutilizaNumero':
 			  return MaterialPageRoute(builder: (_) => const NfceInutilizaNumeroPage());
+
+
+      ////////////////////////////////////////////////////////// 
+      /// FOOD
+      //////////////////////////////////////////////////////////
+
+			case '/cozinhaLista':
+			  return MaterialPageRoute(builder: (_) => const CozinhaListaPage());
+
+      ////////////////////////////////////////////////////////// 
+      /// DELIVERY
+      //////////////////////////////////////////////////////////
+
+			case '/taxaEntregaLista':
+			  return MaterialPageRoute(builder: (_) => const TaxaEntregaListaPage());
+
+
+
 
       // Home
 //      case '/home':
