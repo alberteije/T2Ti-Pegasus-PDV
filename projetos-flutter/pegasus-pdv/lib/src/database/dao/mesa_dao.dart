@@ -33,6 +33,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'dart:async';
+
 import 'package:moor/moor.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
@@ -48,15 +50,25 @@ class MesaDao extends DatabaseAccessor<AppDatabase> with _$MesaDaoMixin {
 
   MesaDao(this.db) : super(db);
 
-  Future<List<Mesa>?> consultarLista() => select(mesas).get();
+  List<Mesa> listaMesa = []; 
+
+  StreamController<List<Mesa>> mesaStreamController = StreamController<List<Mesa>>();
+  Stream<List<Mesa>> get mesaItemsStream => mesaStreamController.stream;
+  
+  Future<List<Mesa>?> consultarLista() async {
+    listaMesa = await select(mesas).get();
+    mesaStreamController.add(listaMesa);
+    return listaMesa;
+  }  
 
   Future<List<Mesa>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM MESA WHERE " + campo + " like '%" + valor + "%'", 
+    listaMesa = await (customSelect("SELECT * FROM MESA WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { mesas }).map((row) {
                                   return Mesa.fromData(row.data, db);  
                                 }).get());
+    return listaMesa;
   }
-
+    
   Future<Mesa?> consultarObjetoFiltro(String campo, String valor) async {
     return (customSelect("SELECT * FROM MESA WHERE " + campo + " = '" + valor + "'", 
                                 readsFrom: { mesas }).map((row) {
@@ -89,5 +101,36 @@ class MesaDao extends DatabaseAccessor<AppDatabase> with _$MesaDaoMixin {
     });    
   }
 
-  
+  Future<void> inserirMesas(int quantidadeMesas, int quantidadeCadeirasAdultos, int quantidadeCadeirasCriancas) async {
+    return transaction(() async {
+      for (var i = 0; i < quantidadeMesas; i++) {
+        Mesa objeto = Mesa(id: null, numero: (i+1).toString(), quantidadeCadeiras: quantidadeCadeirasAdultos, disponivel: 'S');
+        await into(mesas).insert(objeto);  
+      }
+    });
+  }
+
+  Future<int> excluirTodos() {
+    return transaction(() async {
+      return (delete(mesas)..where((t) => t.id.isNotNull())).go();      
+    });    
+  }  
+
+  static List<String> campos = <String>[
+    'ID', 
+    'NUMERO', 
+    'QUANTIDADE_CADEIRAS', 
+    'QUANTIDADE_CADEIRAS_CRIANCA', 
+    'DISPONIVEL', 
+    'OBSERVACAO', 
+  ];
+
+  static List<String> colunas = <String>[
+    'Id', 
+    'Número', 
+    'Quantidade de Cadeiras', 
+    'Quantidade de Cadeiras para Crianças', 
+    'Disponível', 
+    'Observação', 
+  ];  
 }

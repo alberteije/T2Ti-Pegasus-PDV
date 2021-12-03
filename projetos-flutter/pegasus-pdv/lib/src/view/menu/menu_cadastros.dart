@@ -299,7 +299,7 @@ class MenuCadastros extends StatelessWidget {
                         icon: FontAwesomeIcons.utensils,
                         label: "Mesa",
                         circleColor: Colors.orange,
-                        rota: "/mesaLista"),
+                        rota: "/mesaPage"),
                     terceiroBotao: BotaoMenu(
                         icon: FontAwesomeIcons.motorcycle,
                         label: "Taxa Entrega",

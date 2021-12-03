@@ -135,6 +135,7 @@ export 'package:pegasus_pdv/src/view/page/nfce/nfce_contrata_page.dart';
 // food
 export 'package:pegasus_pdv/src/view/page/food/cozinha/cozinha_lista_page.dart';
 export 'package:pegasus_pdv/src/view/page/food/cozinha/cozinha_persiste_page.dart';
+export 'package:pegasus_pdv/src/view/page/food/mesa/mesa_page.dart';
 
 // delivery
 export 'package:pegasus_pdv/src/view/page/delivery/taxa_entrega/taxa_entrega_lista_page.dart';

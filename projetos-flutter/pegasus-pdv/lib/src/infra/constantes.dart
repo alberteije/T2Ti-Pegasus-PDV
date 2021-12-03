@@ -197,6 +197,11 @@ class Constantes {
   static const String t2tiBackgroundImage = '$imageDir/t2ti_background.jpg';
   static const String profileImage = '$imageDir/profile.jpg';
   static const String googleMapFake = '$imageDir/maps.png';
+  static const String restauranteBackgroundImage = '$imageDir/restaurante-background.jpg';
+  static const String mesaImage = '$imageDir/mesa.jpg';
+  static const String mesaImage01 = '$imageDir/mesa01.jpg';
+  static const String mesaImage02 = '$imageDir/mesa02.jpg';
+  static const String mesaImage03 = '$imageDir/mesa03.jpg';
 
   //images menu
   static const String menuCadastrosImage = '$imageDir/menu_cadastros.jpg';

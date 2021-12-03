@@ -160,6 +160,9 @@ class Rotas {
 			case '/cozinhaLista':
 			  return MaterialPageRoute(builder: (_) => const CozinhaListaPage());
 
+			case '/mesaPage':
+			  return MaterialPageRoute(builder: (_) => const MesaPage());
+
       ////////////////////////////////////////////////////////// 
       /// DELIVERY
       //////////////////////////////////////////////////////////
