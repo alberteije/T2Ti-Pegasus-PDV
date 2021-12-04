@@ -51,13 +51,9 @@ class MesaDao extends DatabaseAccessor<AppDatabase> with _$MesaDaoMixin {
   MesaDao(this.db) : super(db);
 
   List<Mesa> listaMesa = []; 
-
-  StreamController<List<Mesa>> mesaStreamController = StreamController<List<Mesa>>();
-  Stream<List<Mesa>> get mesaItemsStream => mesaStreamController.stream;
   
-  Future<List<Mesa>?> consultarLista() async {
+  Future<List<Mesa>> consultarLista() async {
     listaMesa = await select(mesas).get();
-    mesaStreamController.add(listaMesa);
     return listaMesa;
   }  
 

@@ -211,6 +211,14 @@ class Biblioteca {
     return Constantes.formatoDecimalValor.format(valor ?? 0);
   }
 
+  static DateTime converteDataInicioParaFiltro(DateTime data) {
+    return DateTime(data.year, data.month, data.day, 0, 0, 0, 0, 0); // zera o tempo
+  }
+
+  static DateTime converteDataFimParaFiltro(DateTime data) {
+    return DateTime(data.year, data.month, data.day, 23, 59, 59, 0, 0); // adiciona o tempo
+  }
+
   /// define o que é a tela pequena e se o dispositivo utilizado tem a tela pequena
   static bool? isTelaPequena(BuildContext context) {
 	  return bootStrapValueBasedOnSize(

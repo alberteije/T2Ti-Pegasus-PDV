@@ -37,9 +37,7 @@ import 'dart:async';
 
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:flutter_spinbox/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
@@ -51,12 +49,17 @@ import 'package:pegasus_pdv/src/view/shared/botoes.dart';
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
-class MesaPage extends StatefulWidget {
-  final Mesa? mesa;
-  final String? title;
-  final String? operacao;
+import 'mesa_cadastro_page.dart';
 
-  const MesaPage({Key? key, this.mesa, this.title, this.operacao})
+class MesaPage extends StatefulWidget {
+  final String? title;
+  /// CAD=Cadastro
+  /// RES=Reserva
+  /// COM=Comanda 
+  final String? operacao;
+  final Reserva? reserva;
+
+  const MesaPage({Key? key, this.title, this.operacao, this.reserva})
       : super(key: key);
 
   @override
@@ -65,7 +68,6 @@ class MesaPage extends StatefulWidget {
 
 class _MesaPageState extends State<MesaPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
 
   final _quantidadeMesasController = MoneyMaskedTextController(
     decimalSeparator: '',
@@ -90,7 +92,6 @@ class _MesaPageState extends State<MesaPage> {
   Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
 
-  Mesa? mesa;
   List<Mesa> listaMesa = [];
 
   @override
@@ -107,14 +108,17 @@ class _MesaPageState extends State<MesaPage> {
         onInvoke: _tratarAcoesAtalhos,
       ),
     };
-    mesa = widget.mesa;
     _foco.requestFocus();
 
     WidgetsBinding.instance!.addPostFrameCallback((_) => _consultarMesas());
   }
 
   Future _consultarMesas() async {
-    await Sessao.db.mesaDao.consultarLista();
+    if (widget.operacao == 'CAD') {
+      listaMesa = await Sessao.db.mesaDao.consultarLista();
+    } else if (widget.operacao == 'RES') {
+      listaMesa = await Sessao.db.reservaDao.consultarListaReservaDia(widget.reserva!.dataReserva!);
+    }
     setState(() {
     });
   }
@@ -132,8 +136,6 @@ class _MesaPageState extends State<MesaPage> {
 
   @override
   Widget build(BuildContext context) {	
-    listaMesa = Sessao.db.mesaDao.listaMesa;
-
     return Theme(
       data: ThemeData(
         brightness: Brightness.dark,
@@ -147,7 +149,6 @@ class _MesaPageState extends State<MesaPage> {
           autofocus: true,
           child: Scaffold(
             backgroundColor: Colors.blueGrey[900],
-            // drawerDragStartBehavior: DragStartBehavior.down,
             key: _scaffoldKey,
             bottomNavigationBar: _getBottomNavigationBar(),
             body: _getBodySliverList(),
@@ -158,100 +159,115 @@ class _MesaPageState extends State<MesaPage> {
   }
 
   Widget _getBottomNavigationBar() {
-    return BottomAppBar(
-      color: ViewUtilLib.getBottomAppBarColor(),          
-      shape: const CircularNotchedRectangle(),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        child: Row(              
-          children: <Widget> [ 
-            Expanded(
-              flex: 1,
-              child: TextFormField(
-                controller: _quantidadeMesasController,
-                decoration: getInputDecoration(
-                  'Mesas',
-                  'Mesas',
-                  false),
-                onChanged: (text) async {
-                },
-              ),                
-            ),
-            const SizedBox(
-              width: 8,
-            ),
-            Expanded(
-              flex: 1,
-              child: TextFormField(
-                controller: _quantidadeCadeirasController,
-                decoration: getInputDecoration(
-                  'Cadeiras Adulto',
-                  'Cadeiras Adulto',
-                  false),
-                onChanged: (text) async {
-                },
-              ),                
-            ),
-            const SizedBox(
-              width: 8,
-            ),
-            Expanded(
-              flex: 1,
-              child: TextFormField(
-                controller: _quantidadeCadeirasCriancasController,
-                decoration: getInputDecoration(
-                  'Cadeiras Criança',
-                  'Cadeiras Criança',
-                  false),
-                onChanged: (text) async {
-                },
-              ),                
-            ),
-            const SizedBox(
-              width: 8,
-            ),
-            Expanded(
-              flex: 0,
-              child: Biblioteca.isTelaPequena(context)!
-              ? 
-              getBotaoTelaPequena(
-                tooltip: 'Gerar Mesas',
-                icone: const Icon(FontAwesomeIcons.utensils),
-                onPressed: () async {
-                  await _gerarMesas();
-                }
-              )
-              :
-              getBotaoTelaGrande(
-                texto: 'Gerar Mesas',
-                icone: const Icon(FontAwesomeIcons.utensils),
-                onPressed: () async {
-                  await _gerarMesas();
-                }
-              ),
-            ),
-          ],
+      return BottomAppBar(
+        color: ViewUtilLib.getBottomAppBarColor(),          
+        shape: const CircularNotchedRectangle(),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+          child: Row(              
+            children: _getItensBottomNavigationBar(),            
+          ),
         ),
-      ),
-    );
+      );
+  }
+
+  List<Widget> _getItensBottomNavigationBar() {
+    List<Widget> listaItems = [];
+
+    if (widget.operacao == 'CAD') {
+      listaItems.add(
+        Expanded(
+          flex: 1,
+          child: TextFormField(
+            controller: _quantidadeMesasController,
+            decoration: getInputDecoration(
+              'Mesas',
+              'Mesas',
+              false),
+            onChanged: (text) async {
+            },
+          ),                
+        ),
+      );
+      listaItems.add(
+        const SizedBox(
+          width: 8,
+        ),
+      );
+      listaItems.add(
+        Expanded(
+          flex: 1,
+          child: TextFormField(
+            controller: _quantidadeCadeirasController,
+            decoration: getInputDecoration(
+              'Cadeiras Adulto',
+              'Cadeiras Adulto',
+              false),
+            onChanged: (text) async {
+            },
+          ),                
+        ),
+      );
+      listaItems.add(
+        const SizedBox(
+          width: 8,
+        ),
+      );
+      listaItems.add(
+        Expanded(
+          flex: 1,
+          child: TextFormField(
+            controller: _quantidadeCadeirasCriancasController,
+            decoration: getInputDecoration(
+              'Cadeiras Criança',
+              'Cadeiras Criança',
+              false),
+            onChanged: (text) async {
+            },
+          ),                
+        ),
+      );
+      listaItems.add(
+        const SizedBox(
+          width: 8,
+        ),
+      );
+      listaItems.add(
+        Expanded(
+          flex: 0,
+          child: getBotaoGenerico(
+            context: context, 
+            icone: FontAwesomeIcons.utensils, 
+            textOuTip: 'Gerar Mesas',
+            onPressed: _gerarMesas,
+          ),
+        ),
+      );
+    }
+
+    if (widget.operacao == 'RES') {
+      listaItems.add(
+        Expanded(
+          flex: 1,
+          child: getBotaoGenerico(
+            context: context, 
+            icone: FontAwesomeIcons.chair, 
+            textOuTip: 'Confirmar Seleção',
+            onPressed: _confirmarSelecaoParaReserva,
+          ),          
+        ),
+      );    
+    }
+    return listaItems;
   }
 
   Widget _getBodySliverList() {
-    Sessao.db.mesaDao.mesaStreamController.close();
-    Sessao.db.mesaDao.mesaStreamController = StreamController<List<Mesa>>();
-
-    return StreamBuilder<List<Mesa>>(
-      stream: Sessao.db.mesaDao.mesaItemsStream,
-      builder: (context, snapshot) {
-        return snapshot.hasData
-            ? CustomScrollView(
-                slivers: <Widget>[
-                  appBar(),
-                  bodyGrid(snapshot.data!),
-                ],
-              )
-            : const Center(child: CircularProgressIndicator());
-      });
+    return CustomScrollView(
+      slivers: <Widget>[
+        appBar(),
+        gridComMesas(),
+      ],
+    );
   }
 
   Widget appBar() => SliverAppBar(
@@ -262,8 +278,8 @@ class _MesaPageState extends State<MesaPage> {
     expandedHeight: 80.0, // altura da caixa entre o topo da janela e os itens de mesa
     flexibleSpace: FlexibleSpaceBar(
         centerTitle: true,
-        title: const Text('Mesas',
-            style: TextStyle(
+        title: Text(widget.title!,
+            style: const TextStyle(
               color: Colors.white,
               shadows: <Shadow>[
                 // sombra atrás da fonte
@@ -282,20 +298,23 @@ class _MesaPageState extends State<MesaPage> {
         )),
   );
 
-  Widget bodyGrid(List<Mesa> mesa) => SliverPadding(
-    padding: const EdgeInsets.all(5.0),
-    sliver: SliverGrid(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: definirQuantidadeDeCartoesPorLinha(context),
-        mainAxisSpacing: 0.0,
-        crossAxisSpacing: 0.0,
-        childAspectRatio: 1.0,
-      ),
-      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-        return menuStack(mesa[index]);
-      }, childCount: mesa.length),
-    )
-  );
+  
+  Widget gridComMesas() {
+    return SliverPadding(
+      padding: const EdgeInsets.all(5.0),
+      sliver: SliverGrid(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: definirQuantidadeDeCartoesPorLinha(context),
+          mainAxisSpacing: 0.0,
+          crossAxisSpacing: 0.0,
+          childAspectRatio: 1.0,
+        ),
+        delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+          return mesaStack(index);
+        }, childCount: listaMesa.length),
+      )
+    );
+  }
 
   int definirQuantidadeDeCartoesPorLinha(BuildContext context) {
     double larguraDaTela = MediaQuery.of(context).size.width;
@@ -304,47 +323,88 @@ class _MesaPageState extends State<MesaPage> {
     return quantidadePorLinha;
   }
 
-  Widget menuStack(Mesa mesa) => InkWell(
-    canRequestFocus: true,
-    hoverColor: Colors.black38,
-    onTap: () {
-      Navigator.push(
-        context, MaterialPageRoute(builder: (_) => MesaDetalhePage(mesa))
-      ).then((value) async { await _consultarMesas(); });
-    },
-    splashColor: Colors.black,
-    child: Card(
-      clipBehavior: Clip.antiAlias,
-      elevation: 2.0,
-      child: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          menuImage(mesa),
-          menuColor(mesa),
-          menuData(mesa),
-        ],
+  Widget mesaStack(int index) {
+    return InkWell(
+      onLongPress: () { 
+        _selecionarMesa(index); 
+        setState(() {
+        });
+      },
+      onDoubleTap: () { 
+        _selecionarMesa(index); 
+        setState(() {
+        });
+      },
+      canRequestFocus: true,
+      hoverColor: Colors.black38,
+      onTap: () {
+        if (widget.operacao == 'CAD') {
+          Navigator.push(
+            context, MaterialPageRoute(builder: (_) => MesaCadastroPage(listaMesa[index]))
+          ).then((value) async { await _consultarMesas(); });
+        }
+      },
+      splashColor: Colors.black,
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        elevation: 2.0,
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            mesaImage(listaMesa[index]),
+            mesaColor(listaMesa[index]),
+            mesaData(listaMesa[index]),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
+
+  void _selecionarMesa(int index) {
+    if (widget.operacao == 'RES') {
+      if (listaMesa[index].disponivel == 'R') {
+        listaMesa[index] = listaMesa[index].copyWith(
+          disponivel: 'S', 
+        );
+      } else if (listaMesa[index].disponivel == 'S') {
+        listaMesa[index] = listaMesa[index].copyWith(
+          disponivel: 'R', // não será persistido no banco, apenas para controlar a marcação da mesa visualmente para a reserva
+        );
+      }
+    }
+  }
 
   //stack 1/3 - primeira porção da pilha - a imagem - fica na parte de baixo do Stack
-  Widget menuImage(Mesa mesa) => Image.asset(
+  Widget mesaImage(Mesa mesa) => Image.asset(
     int.tryParse(mesa.numero!)!.isEven ? Constantes.mesaImage02 : Constantes.mesaImage02,
     fit: BoxFit.cover,
   );
 
   //stack 2/3 - segunda porção da pilha - a cor com a opacidade
-  Widget menuColor(Mesa mesa) => Container(
+  Widget mesaColor(Mesa mesa) => Container(
     decoration: BoxDecoration(boxShadow: <BoxShadow>[
       BoxShadow(
-        color: mesa.disponivel == 'S' ? Colors.blue.withOpacity(0.6) : Colors.red.withOpacity(0.6),
+        color: _definirCorMesa(mesa),
         blurRadius: 50.0, // efeito de fumaça
       ),
     ]),
   );
 
+  Color _definirCorMesa(Mesa mesa) {
+    switch (mesa.disponivel) {
+      case 'S' :
+        return Colors.blue.withOpacity(0.6);
+      case 'N' :
+        return Colors.red.withOpacity(0.6);
+      case 'R' :
+        return Colors.yellow.withOpacity(0.6);
+      default:
+        return Colors.blue.withOpacity(0.6);
+    }
+  }
+
   //stack 3/3 - terceira porção da pilha - ícone e texto
-  Widget menuData(Mesa mesa) {
+  Widget mesaData(Mesa mesa) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -372,8 +432,8 @@ class _MesaPageState extends State<MesaPage> {
           padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text('Carlos', style: TextStyle(fontSize: 14.0, color: Colors.white, )),
+            children: [
+              Text((mesa.observacao?.isNotEmpty ?? false) ? 'OBS' : '', style: const TextStyle(fontSize: 14.0, color: Colors.white, fontWeight: FontWeight.bold)),
             ],
           ),
         ),
@@ -381,7 +441,7 @@ class _MesaPageState extends State<MesaPage> {
     );
   }
 
-  /// MÉTODOS
+  /// MÉTODOS  
   Future _gerarMesas() async {
     // verifica se já existem mesas no banco e se estão em uso
     final listaMesa = await Sessao.db.mesaDao.consultarListaFiltro('DISPONIVEL', 'N');
@@ -403,191 +463,18 @@ class _MesaPageState extends State<MesaPage> {
           _quantidadeCadeirasController.numberValue.toInt(),
           _quantidadeCadeirasCriancasController.numberValue.toInt(),
         );
+        await _consultarMesas();
       });
-      await _consultarMesas();
     }
   }
-}
 
-class MesaDetalhePage extends StatefulWidget {
-  const MesaDetalhePage(this.mesa, {Key? key}) : super(key: key);
-
-  final Mesa mesa;
-
-  @override
-  _MesaDetalhePageState createState() => _MesaDetalhePageState();
-}
-
-class _MesaDetalhePageState extends State<MesaDetalhePage> {
-  Mesa? mesa;
-
-  @override
-  void initState() {
-    super.initState();
-    mesa = widget.mesa;
-  }
-  
-  @override
-  Widget build(BuildContext context) {
-    final listItems = <Widget>[
-
-      ListTile(
-        contentPadding: const EdgeInsets.only(top: 5, bottom: 5, left: 12, right: 2),
-        leading: Wrap( 
-          spacing: 12,
-          children: const [
-            SizedBox(width: 1,),
-            Icon(
-              Icons.chair,
-              color: Colors.black54,
-            ),
-          ]
-        ),
-        title: Text("Quantidade de Cadeiras para Adultos",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: Biblioteca.isTelaPequena(context)! ? 14.0 : 16.0,
-            fontWeight: FontWeight.bold
-          ),
-        ),                    
-        trailing:
-        SizedBox(
-          width: Biblioteca.isTelaPequena(context)! ? 120 : 200,
-          child: SliderTheme(
-            data: ViewUtilLib.sliderThemeData(context),
-            child: SpinBox( 
-              textStyle: TextStyle(
-                color: Colors.white,
-                fontSize: Biblioteca.isTelaPequena(context)! ? 14.0 : 16.0
-              ),
-              max: 20,
-              min: 1,
-              value: mesa!.quantidadeCadeiras!.toDouble(),
-              decimals: 0,
-              step: 1,
-              onChanged: (value) { 
-                mesa = mesa!.copyWith(
-                  quantidadeCadeiras: value.toInt(),
-                );
-                setState(() {
-                });
-              },
-            ),                          
-          ),    
-        ),
-      ),  
-      ListTile(
-        contentPadding: const EdgeInsets.only(top: 5, bottom: 5, left: 12, right: 2),
-        leading: Wrap( 
-          spacing: 12,
-          children: const [
-            SizedBox(width: 1,),
-            Icon(
-              Icons.chair_sharp,
-              color: Colors.black54,
-            ),
-          ]
-        ),
-        title: Text("Quantidade de Cadeiras para Crianças",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: Biblioteca.isTelaPequena(context)! ? 14.0 : 16.0,
-            fontWeight: FontWeight.bold
-          ),
-        ),                    
-        trailing:
-        SizedBox(
-          width: Biblioteca.isTelaPequena(context)! ? 120 : 200,
-          child: SliderTheme(
-            data: ViewUtilLib.sliderThemeData(context),
-            child: SpinBox( 
-              textStyle: TextStyle(
-                color: Colors.white,
-                fontSize: Biblioteca.isTelaPequena(context)! ? 14.0 : 16.0
-              ),
-              max: 20,
-              min: 0,
-              value: mesa!.quantidadeCadeirasCrianca?.toDouble() ?? 0,
-              decimals: 0,
-              step: 1,
-              onChanged: (value) { 
-                mesa = mesa!.copyWith(
-                  quantidadeCadeirasCrianca: value.toInt(),
-                );
-                setState(() {
-                });
-              },
-            ),                          
-          ),    
-        ),
-      ),  
-
-    ].expand((widget) => [widget, const Divider()]).toList();
-
-    return WillPopScope(
-      onWillPop: _willPopCallback,
-      child: Scaffold(
-        backgroundColor: Color.lerp(Colors.grey[850], Colors.blueGrey, 0.8),
-        appBar: AppBar(
-          backgroundColor: Color.lerp(Colors.grey[850], Colors.white, 0.4),
-          bottom: MesaTileDetalhe(mesa!),
-        ),
-        body: ListView(padding: const EdgeInsets.only(top: 50.0), children: listItems),
-      ),
-    );
-  }
-
-  Future<bool> _willPopCallback() async {
-    await Sessao.db.mesaDao.alterar(mesa!);
-    return true;
-  }
-
-}
-
-class MesaTileDetalhe extends StatelessWidget implements PreferredSizeWidget {
-  const MesaTileDetalhe(this.mesa, {Key? key}) : super(key: key);
-
-  final Mesa mesa;
-
-  @override
-  Size get preferredSize => const Size.fromHeight(120);
-
-  @override
-  Widget build(BuildContext context) {     
-    final tileText = <Widget>[         
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('${mesa.quantidadeCadeiras}', style: const TextStyle(fontSize: 12.0, color: Colors.white)),
-          Text('${mesa.quantidadeCadeirasCrianca ?? '0'}', style: const TextStyle(fontSize: 12.0, color: Colors.white)),
-        ],
-      ),
-      Text(mesa.numero.toString(), style: const TextStyle(fontSize: 50.0, color: Colors.white, fontWeight: FontWeight.bold)),
-      const Text('Carlos', style: TextStyle(fontSize: 12.0, color: Colors.white, )),
-    ];
-
-    final tile = Container(
-      margin: const EdgeInsets.all(0.0),
-      width: 110,
-      height: 110,
-      foregroundDecoration: const BoxDecoration(gradient: LinearGradient(colors: [Colors.blue, Colors.amberAccent]), backgroundBlendMode: BlendMode.multiply,),
-      child: RawMaterialButton(
-        fillColor: Colors.grey[800],
-        disabledElevation: 10.0,
-        padding: const EdgeInsets.all(4.0),
-        onPressed: () {  },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween, 
-          children: tileText
-        ),
-      ),
-    );
-
-    return Hero(
-      tag: 'hero-${mesa.numero}',
-      flightShuttleBuilder: (_, anim, __, ___, ____) =>
-          ScaleTransition(scale: anim.drive(Tween(begin: 1, end: 1.75)), child: tile),
-      child: Transform.scale(scale: 1.75, child: tile),
-    );     
+  void _confirmarSelecaoParaReserva() {
+    final List<Mesa> listaMesaReserva = [];
+    for (var mesa in listaMesa) {
+      if (mesa.disponivel == 'R') {
+        listaMesaReserva.add(mesa);
+      }
+    }
+    Navigator.pop(context, listaMesaReserva);
   }
 }

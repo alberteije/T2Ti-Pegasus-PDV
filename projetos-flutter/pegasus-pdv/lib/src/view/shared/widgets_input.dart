@@ -44,9 +44,10 @@ import 'package:flutter/material.dart';
 /// Os demais controles devem aplicar o padding padrão.
 InputDecoration getInputDecoration(
     String hintText, String labelText, bool aplicaPadding, 
-    {double? paddingVertical, double? paddingHorizontal, Color? cor}
+    {double? paddingVertical, double? paddingHorizontal, Color? cor, bool? erroSeVazio}
     ) {
   return InputDecoration(
+    errorText: erroSeVazio ?? false ? ('Por favor, informe o conteúdo desse campo') : null,
     fillColor: cor,
     border: const UnderlineInputBorder(),
     hintText: hintText,

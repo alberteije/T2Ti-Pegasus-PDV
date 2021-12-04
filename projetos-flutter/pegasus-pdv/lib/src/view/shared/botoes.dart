@@ -280,3 +280,19 @@ ElevatedButton getBotaoGenericoPdv({required String descricao, Color? cor, Funct
     onPressed: onPressed as void Function()?,
   );
 }
+
+Widget getBotaoGenerico({required BuildContext context, Function? onPressed, required IconData icone, required String textOuTip}) {
+  if (Biblioteca.isTelaPequena(context)!) {
+    return getBotaoTelaPequena(
+        tooltip: textOuTip,                
+        icone: Icon(icone),
+        onPressed: onPressed
+      );
+  } else {
+    return getBotaoTelaGrande(
+        texto: textOuTip,
+        icone: Icon(icone),
+        onPressed: onPressed,
+      );
+  }
+}

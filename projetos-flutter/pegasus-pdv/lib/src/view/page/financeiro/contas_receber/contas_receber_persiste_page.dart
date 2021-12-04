@@ -91,7 +91,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
     };
 
     _contasReceber = widget.contasReceberMontado!.contasReceber;
-    _contasReceber ??= ContasReceber(id: null,);
+    // _contasReceber ??= ContasReceber(id: null,);
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {

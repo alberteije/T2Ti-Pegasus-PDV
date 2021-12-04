@@ -62,7 +62,13 @@ class MenuInternoBotao extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => abrirJanela(context, rota),
+      onTap: () {
+        if (onPressed != null) {
+          onPressed!();
+        } else {
+          abrirJanela(context, rota);
+        }
+      }, 
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,

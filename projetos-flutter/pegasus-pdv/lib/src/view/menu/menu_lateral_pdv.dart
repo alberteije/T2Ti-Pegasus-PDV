@@ -41,6 +41,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pegasus_pdv/src/controller/controller.dart';
+import 'package:pegasus_pdv/src/view/menu/menu_food.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -341,6 +342,30 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
                 // color: Colors.deepOrange.shade700,
               ),
             ),
+
+            // só apresenta o cadastro do Food se o CNAE da empresa for de alimentação
+            Sessao.cnaePermiteModuloFood
+            ?
+              ListTile(
+                onTap: () { 
+                  Navigator.of(context)
+                    .push(MaterialPageRoute(
+                      builder: (BuildContext context) => const MenuFood()))
+                    .then((_) {
+                    });
+                  },
+                title: const Text(
+                  "Módulo Food",
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
+                ),
+                leading: Icon(
+                  FontAwesomeIcons.utensils,
+                  color: Colors.red.shade700,
+                  // color: Colors.deepOrange.shade700,
+                ),
+              )
+            : const SizedBox(height: 1,),
+
 
             Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC' 
             ? 

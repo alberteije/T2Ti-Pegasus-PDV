@@ -35,6 +35,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'package:moor/moor.dart';
 
+import '../database_classes.dart';
+
 @DataClassName("Reserva")
 @UseRowClass(Reserva)
 class Reservas extends Table {
@@ -43,33 +45,57 @@ class Reservas extends Table {
 
   IntColumn get id => integer().named('ID').autoIncrement()();
   IntColumn get idCliente => integer().named('ID_CLIENTE').nullable().customConstraint('NULLABLE REFERENCES CLIENTE(ID)')();
+  TextColumn get nomeContato => text().named('NOME_CONTATO').withLength(min: 0, max: 100).nullable()();
+  TextColumn get telefoneContato => text().named('TELEFONE_CONTATO').withLength(min: 0, max: 15).nullable()();
   DateTimeColumn get dataReserva => dateTime().named('DATA_RESERVA').nullable()();
   TextColumn get horaReserva => text().named('HORA_RESERVA').withLength(min: 0, max: 8).nullable()();
   IntColumn get quantidadePessoas => integer().named('QUANTIDADE_PESSOAS').nullable()();
-  TextColumn get nomeContato => text().named('NOME_CONTATO').withLength(min: 0, max: 100).nullable()();
-  TextColumn get telefoneContato => text().named('TELEFONE_CONTATO').withLength(min: 0, max: 15).nullable()();
   TextColumn get situacao => text().named('SITUACAO').withLength(min: 0, max: 1).nullable()();
+}
+
+class ReservaMontado {
+  Reserva? reserva;
+  Cliente? cliente;
+  List<Mesa>? listaMesa;
+
+  ReservaMontado({
+    this.reserva,
+    this.cliente,
+    this.listaMesa,
+  });
+}
+
+class ReservaMesaMontado {
+  Reserva? reserva;
+  ReservaMesa? reservaMesa;
+  Mesa? mesa;
+
+  ReservaMesaMontado({
+    this.reserva,
+    this.reservaMesa,
+    this.mesa,
+  });
 }
 
 class Reserva extends DataClass implements Insertable<Reserva> {
   final int? id;
   final int? idCliente;
+  final String? nomeContato;
+  final String? telefoneContato;
   final DateTime? dataReserva;
   final String? horaReserva;
   final int? quantidadePessoas;
-  final String? nomeContato;
-  final String? telefoneContato;
   final String? situacao;
 
   Reserva(
     {
       required this.id,
       this.idCliente,
+      this.nomeContato,
+      this.telefoneContato,
       this.dataReserva,
       this.horaReserva,
       this.quantidadePessoas,
-      this.nomeContato,
-      this.telefoneContato,
       this.situacao,
     }
   );
@@ -79,11 +105,11 @@ class Reserva extends DataClass implements Insertable<Reserva> {
     return Reserva(
       id: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}ID']),
       idCliente: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}ID_CLIENTE']),
+      nomeContato: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}NOME_CONTATO']),
+      telefoneContato: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}TELEFONE_CONTATO']),
       dataReserva: const DateTimeType().mapFromDatabaseResponse(data['${effectivePrefix}DATA_RESERVA']),
       horaReserva: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}HORA_RESERVA']),
       quantidadePessoas: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}QUANTIDADE_PESSOAS']),
-      nomeContato: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}NOME_CONTATO']),
-      telefoneContato: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}TELEFONE_CONTATO']),
       situacao: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}SITUACAO']),
     );
   }
@@ -97,6 +123,12 @@ class Reserva extends DataClass implements Insertable<Reserva> {
     if (!nullToAbsent || idCliente != null) {
       map['ID_CLIENTE'] = Variable<int?>(idCliente);
     }
+    if (!nullToAbsent || nomeContato != null) {
+      map['NOME_CONTATO'] = Variable<String?>(nomeContato);
+    }
+    if (!nullToAbsent || telefoneContato != null) {
+      map['TELEFONE_CONTATO'] = Variable<String?>(telefoneContato);
+    }
     if (!nullToAbsent || dataReserva != null) {
       map['DATA_RESERVA'] = Variable<DateTime?>(dataReserva);
     }
@@ -105,12 +137,6 @@ class Reserva extends DataClass implements Insertable<Reserva> {
     }
     if (!nullToAbsent || quantidadePessoas != null) {
       map['QUANTIDADE_PESSOAS'] = Variable<int?>(quantidadePessoas);
-    }
-    if (!nullToAbsent || nomeContato != null) {
-      map['NOME_CONTATO'] = Variable<String?>(nomeContato);
-    }
-    if (!nullToAbsent || telefoneContato != null) {
-      map['TELEFONE_CONTATO'] = Variable<String?>(telefoneContato);
     }
     if (!nullToAbsent || situacao != null) {
       map['SITUACAO'] = Variable<String?>(situacao);
@@ -124,6 +150,12 @@ class Reserva extends DataClass implements Insertable<Reserva> {
       idCliente: idCliente == null && nullToAbsent
         ? const Value.absent()
         : Value(idCliente),
+      nomeContato: nomeContato == null && nullToAbsent
+        ? const Value.absent()
+        : Value(nomeContato),
+      telefoneContato: telefoneContato == null && nullToAbsent
+        ? const Value.absent()
+        : Value(telefoneContato),
       dataReserva: dataReserva == null && nullToAbsent
         ? const Value.absent()
         : Value(dataReserva),
@@ -133,12 +165,6 @@ class Reserva extends DataClass implements Insertable<Reserva> {
       quantidadePessoas: quantidadePessoas == null && nullToAbsent
         ? const Value.absent()
         : Value(quantidadePessoas),
-      nomeContato: nomeContato == null && nullToAbsent
-        ? const Value.absent()
-        : Value(nomeContato),
-      telefoneContato: telefoneContato == null && nullToAbsent
-        ? const Value.absent()
-        : Value(telefoneContato),
       situacao: situacao == null && nullToAbsent
         ? const Value.absent()
         : Value(situacao),
@@ -150,11 +176,11 @@ class Reserva extends DataClass implements Insertable<Reserva> {
     return Reserva(
       id: serializer.fromJson<int>(json['id']),
       idCliente: serializer.fromJson<int>(json['idCliente']),
+      nomeContato: serializer.fromJson<String>(json['nomeContato']),
+      telefoneContato: serializer.fromJson<String>(json['telefoneContato']),
       dataReserva: serializer.fromJson<DateTime>(json['dataReserva']),
       horaReserva: serializer.fromJson<String>(json['horaReserva']),
       quantidadePessoas: serializer.fromJson<int>(json['quantidadePessoas']),
-      nomeContato: serializer.fromJson<String>(json['nomeContato']),
-      telefoneContato: serializer.fromJson<String>(json['telefoneContato']),
       situacao: serializer.fromJson<String>(json['situacao']),
     );
   }
@@ -165,11 +191,11 @@ class Reserva extends DataClass implements Insertable<Reserva> {
     return <String, dynamic>{
       'id': serializer.toJson<int?>(id),
       'idCliente': serializer.toJson<int?>(idCliente),
+      'nomeContato': serializer.toJson<String?>(nomeContato),
+      'telefoneContato': serializer.toJson<String?>(telefoneContato),
       'dataReserva': serializer.toJson<DateTime?>(dataReserva),
       'horaReserva': serializer.toJson<String?>(horaReserva),
       'quantidadePessoas': serializer.toJson<int?>(quantidadePessoas),
-      'nomeContato': serializer.toJson<String?>(nomeContato),
-      'telefoneContato': serializer.toJson<String?>(telefoneContato),
       'situacao': serializer.toJson<String?>(situacao),
     };
   }
@@ -178,21 +204,21 @@ class Reserva extends DataClass implements Insertable<Reserva> {
         {
 		  int? id,
           int? idCliente,
+          String? nomeContato,
+          String? telefoneContato,
           DateTime? dataReserva,
           String? horaReserva,
           int? quantidadePessoas,
-          String? nomeContato,
-          String? telefoneContato,
           String? situacao,
 		}) =>
       Reserva(
         id: id ?? this.id,
         idCliente: idCliente ?? this.idCliente,
+        nomeContato: nomeContato ?? this.nomeContato,
+        telefoneContato: telefoneContato ?? this.telefoneContato,
         dataReserva: dataReserva ?? this.dataReserva,
         horaReserva: horaReserva ?? this.horaReserva,
         quantidadePessoas: quantidadePessoas ?? this.quantidadePessoas,
-        nomeContato: nomeContato ?? this.nomeContato,
-        telefoneContato: telefoneContato ?? this.telefoneContato,
         situacao: situacao ?? this.situacao,
       );
   
@@ -201,11 +227,11 @@ class Reserva extends DataClass implements Insertable<Reserva> {
     return (StringBuffer('Reserva(')
           ..write('id: $id, ')
           ..write('idCliente: $idCliente, ')
+          ..write('nomeContato: $nomeContato, ')
+          ..write('telefoneContato: $telefoneContato, ')
           ..write('dataReserva: $dataReserva, ')
           ..write('horaReserva: $horaReserva, ')
           ..write('quantidadePessoas: $quantidadePessoas, ')
-          ..write('nomeContato: $nomeContato, ')
-          ..write('telefoneContato: $telefoneContato, ')
           ..write('situacao: $situacao, ')
           ..write(')'))
         .toString();
@@ -215,11 +241,11 @@ class Reserva extends DataClass implements Insertable<Reserva> {
   int get hashCode => Object.hashAll([
       id,
       idCliente,
+      nomeContato,
+      telefoneContato,
       dataReserva,
       horaReserva,
       quantidadePessoas,
-      nomeContato,
-      telefoneContato,
       situacao,
 	]);
   
@@ -229,11 +255,11 @@ class Reserva extends DataClass implements Insertable<Reserva> {
       (other is Reserva &&
           other.id == id &&
           other.idCliente == idCliente &&
+          other.nomeContato == nomeContato &&
+          other.telefoneContato == telefoneContato &&
           other.dataReserva == dataReserva &&
           other.horaReserva == horaReserva &&
           other.quantidadePessoas == quantidadePessoas &&
-          other.nomeContato == nomeContato &&
-          other.telefoneContato == telefoneContato &&
           other.situacao == situacao 
 	   );
 }
@@ -242,53 +268,53 @@ class ReservasCompanion extends UpdateCompanion<Reserva> {
 
   final Value<int?> id;
   final Value<int?> idCliente;
+  final Value<String?> nomeContato;
+  final Value<String?> telefoneContato;
   final Value<DateTime?> dataReserva;
   final Value<String?> horaReserva;
   final Value<int?> quantidadePessoas;
-  final Value<String?> nomeContato;
-  final Value<String?> telefoneContato;
   final Value<String?> situacao;
 
   const ReservasCompanion({
     this.id = const Value.absent(),
     this.idCliente = const Value.absent(),
+    this.nomeContato = const Value.absent(),
+    this.telefoneContato = const Value.absent(),
     this.dataReserva = const Value.absent(),
     this.horaReserva = const Value.absent(),
     this.quantidadePessoas = const Value.absent(),
-    this.nomeContato = const Value.absent(),
-    this.telefoneContato = const Value.absent(),
     this.situacao = const Value.absent(),
   });
 
   ReservasCompanion.insert({
     this.id = const Value.absent(),
     this.idCliente = const Value.absent(),
+    this.nomeContato = const Value.absent(),
+    this.telefoneContato = const Value.absent(),
     this.dataReserva = const Value.absent(),
     this.horaReserva = const Value.absent(),
     this.quantidadePessoas = const Value.absent(),
-    this.nomeContato = const Value.absent(),
-    this.telefoneContato = const Value.absent(),
     this.situacao = const Value.absent(),
   });
 
   static Insertable<Reserva> custom({
     Expression<int>? id,
     Expression<int>? idCliente,
+    Expression<String>? nomeContato,
+    Expression<String>? telefoneContato,
     Expression<DateTime>? dataReserva,
     Expression<String>? horaReserva,
     Expression<int>? quantidadePessoas,
-    Expression<String>? nomeContato,
-    Expression<String>? telefoneContato,
     Expression<String>? situacao,
   }) {
     return RawValuesInsertable({
       if (id != null) 'ID': id,
       if (idCliente != null) 'ID_CLIENTE': idCliente,
+      if (nomeContato != null) 'NOME_CONTATO': nomeContato,
+      if (telefoneContato != null) 'TELEFONE_CONTATO': telefoneContato,
       if (dataReserva != null) 'DATA_RESERVA': dataReserva,
       if (horaReserva != null) 'HORA_RESERVA': horaReserva,
       if (quantidadePessoas != null) 'QUANTIDADE_PESSOAS': quantidadePessoas,
-      if (nomeContato != null) 'NOME_CONTATO': nomeContato,
-      if (telefoneContato != null) 'TELEFONE_CONTATO': telefoneContato,
       if (situacao != null) 'SITUACAO': situacao,
     });
   }
@@ -297,21 +323,21 @@ class ReservasCompanion extends UpdateCompanion<Reserva> {
       {
 	  Value<int>? id,
       Value<int>? idCliente,
+      Value<String>? nomeContato,
+      Value<String>? telefoneContato,
       Value<DateTime>? dataReserva,
       Value<String>? horaReserva,
       Value<int>? quantidadePessoas,
-      Value<String>? nomeContato,
-      Value<String>? telefoneContato,
       Value<String>? situacao,
 	  }) {
     return ReservasCompanion(
       id: id ?? this.id,
       idCliente: idCliente ?? this.idCliente,
+      nomeContato: nomeContato ?? this.nomeContato,
+      telefoneContato: telefoneContato ?? this.telefoneContato,
       dataReserva: dataReserva ?? this.dataReserva,
       horaReserva: horaReserva ?? this.horaReserva,
       quantidadePessoas: quantidadePessoas ?? this.quantidadePessoas,
-      nomeContato: nomeContato ?? this.nomeContato,
-      telefoneContato: telefoneContato ?? this.telefoneContato,
       situacao: situacao ?? this.situacao,
     );
   }
@@ -325,6 +351,12 @@ class ReservasCompanion extends UpdateCompanion<Reserva> {
     if (idCliente.present) {
       map['ID_CLIENTE'] = Variable<int?>(idCliente.value);
     }
+    if (nomeContato.present) {
+      map['NOME_CONTATO'] = Variable<String?>(nomeContato.value);
+    }
+    if (telefoneContato.present) {
+      map['TELEFONE_CONTATO'] = Variable<String?>(telefoneContato.value);
+    }
     if (dataReserva.present) {
       map['DATA_RESERVA'] = Variable<DateTime?>(dataReserva.value);
     }
@@ -333,12 +365,6 @@ class ReservasCompanion extends UpdateCompanion<Reserva> {
     }
     if (quantidadePessoas.present) {
       map['QUANTIDADE_PESSOAS'] = Variable<int?>(quantidadePessoas.value);
-    }
-    if (nomeContato.present) {
-      map['NOME_CONTATO'] = Variable<String?>(nomeContato.value);
-    }
-    if (telefoneContato.present) {
-      map['TELEFONE_CONTATO'] = Variable<String?>(telefoneContato.value);
     }
     if (situacao.present) {
       map['SITUACAO'] = Variable<String?>(situacao.value);
@@ -351,11 +377,11 @@ class ReservasCompanion extends UpdateCompanion<Reserva> {
     return (StringBuffer('ReservasCompanion(')
           ..write('id: $id, ')
           ..write('idCliente: $idCliente, ')
+          ..write('nomeContato: $nomeContato, ')
+          ..write('telefoneContato: $telefoneContato, ')
           ..write('dataReserva: $dataReserva, ')
           ..write('horaReserva: $horaReserva, ')
           ..write('quantidadePessoas: $quantidadePessoas, ')
-          ..write('nomeContato: $nomeContato, ')
-          ..write('telefoneContato: $telefoneContato, ')
           ..write('situacao: $situacao, ')
           ..write(')'))
         .toString();
@@ -386,6 +412,20 @@ class $ReservasTable extends Reservas
           typeName: 'INTEGER',
           requiredDuringInsert: false,
           $customConstraints: 'NULLABLE REFERENCES CLIENTE(ID)');
+  final VerificationMeta _nomeContatoMeta =
+      const VerificationMeta('nomeContato');
+  GeneratedColumn<String>? _nomeContato;
+  @override
+  GeneratedColumn<String> get nomeContato => _nomeContato ??=
+      GeneratedColumn<String>('NOME_CONTATO', aliasedName, true,
+          typeName: 'TEXT', requiredDuringInsert: false);
+  final VerificationMeta _telefoneContatoMeta =
+      const VerificationMeta('telefoneContato');
+  GeneratedColumn<String>? _telefoneContato;
+  @override
+  GeneratedColumn<String> get telefoneContato => _telefoneContato ??=
+      GeneratedColumn<String>('TELEFONE_CONTATO', aliasedName, true,
+          typeName: 'TEXT', requiredDuringInsert: false);
   final VerificationMeta _dataReservaMeta =
       const VerificationMeta('dataReserva');
   GeneratedColumn<DateTime>? _dataReserva;
@@ -407,20 +447,6 @@ class $ReservasTable extends Reservas
   GeneratedColumn<int> get quantidadePessoas => _quantidadePessoas ??=
       GeneratedColumn<int>('QUANTIDADE_PESSOAS', aliasedName, true,
           typeName: 'INTEGER', requiredDuringInsert: false);
-  final VerificationMeta _nomeContatoMeta =
-      const VerificationMeta('nomeContato');
-  GeneratedColumn<String>? _nomeContato;
-  @override
-  GeneratedColumn<String> get nomeContato => _nomeContato ??=
-      GeneratedColumn<String>('NOME_CONTATO', aliasedName, true,
-          typeName: 'TEXT', requiredDuringInsert: false);
-  final VerificationMeta _telefoneContatoMeta =
-      const VerificationMeta('telefoneContato');
-  GeneratedColumn<String>? _telefoneContato;
-  @override
-  GeneratedColumn<String> get telefoneContato => _telefoneContato ??=
-      GeneratedColumn<String>('TELEFONE_CONTATO', aliasedName, true,
-          typeName: 'TEXT', requiredDuringInsert: false);
   final VerificationMeta _situacaoMeta =
       const VerificationMeta('situacao');
   GeneratedColumn<String>? _situacao;
@@ -433,11 +459,11 @@ class $ReservasTable extends Reservas
   List<GeneratedColumn> get $columns => [
         id,
         idCliente,
+        nomeContato,
+        telefoneContato,
         dataReserva,
         horaReserva,
         quantidadePessoas,
-        nomeContato,
-        telefoneContato,
         situacao,
       ];
 
@@ -459,6 +485,14 @@ class $ReservasTable extends Reservas
         context.handle(_idClienteMeta,
             idCliente.isAcceptableOrUnknown(data['ID_CLIENTE']!, _idClienteMeta));
     }
+    if (data.containsKey('NOME_CONTATO')) {
+        context.handle(_nomeContatoMeta,
+            nomeContato.isAcceptableOrUnknown(data['NOME_CONTATO']!, _nomeContatoMeta));
+    }
+    if (data.containsKey('TELEFONE_CONTATO')) {
+        context.handle(_telefoneContatoMeta,
+            telefoneContato.isAcceptableOrUnknown(data['TELEFONE_CONTATO']!, _telefoneContatoMeta));
+    }
     if (data.containsKey('DATA_RESERVA')) {
         context.handle(_dataReservaMeta,
             dataReserva.isAcceptableOrUnknown(data['DATA_RESERVA']!, _dataReservaMeta));
@@ -470,14 +504,6 @@ class $ReservasTable extends Reservas
     if (data.containsKey('QUANTIDADE_PESSOAS')) {
         context.handle(_quantidadePessoasMeta,
             quantidadePessoas.isAcceptableOrUnknown(data['QUANTIDADE_PESSOAS']!, _quantidadePessoasMeta));
-    }
-    if (data.containsKey('NOME_CONTATO')) {
-        context.handle(_nomeContatoMeta,
-            nomeContato.isAcceptableOrUnknown(data['NOME_CONTATO']!, _nomeContatoMeta));
-    }
-    if (data.containsKey('TELEFONE_CONTATO')) {
-        context.handle(_telefoneContatoMeta,
-            telefoneContato.isAcceptableOrUnknown(data['TELEFONE_CONTATO']!, _telefoneContatoMeta));
     }
     if (data.containsKey('SITUACAO')) {
         context.handle(_situacaoMeta,

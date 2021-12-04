@@ -12145,34 +12145,43 @@ part of 'database.dart';
 //   final Value<int> id;
 //   final Value<String?> codigo;
 //   final Value<String?> principal;
+//   final Value<String?> descricao;
 //   const EmpresaCnaesCompanion({
 //     this.id = const Value.absent(),
 //     this.codigo = const Value.absent(),
 //     this.principal = const Value.absent(),
+//     this.descricao = const Value.absent(),
 //   });
 //   EmpresaCnaesCompanion.insert({
 //     this.id = const Value.absent(),
 //     this.codigo = const Value.absent(),
 //     this.principal = const Value.absent(),
+//     this.descricao = const Value.absent(),
 //   });
 //   static Insertable<EmpresaCnae> custom({
 //     Expression<int>? id,
 //     Expression<String?>? codigo,
 //     Expression<String?>? principal,
+//     Expression<String?>? descricao,
 //   }) {
 //     return RawValuesInsertable({
 //       if (id != null) 'ID': id,
 //       if (codigo != null) 'CODIGO': codigo,
 //       if (principal != null) 'PRINCIPAL': principal,
+//       if (descricao != null) 'DESCRICAO': descricao,
 //     });
 //   }
 
 //   EmpresaCnaesCompanion copyWith(
-//       {Value<int>? id, Value<String?>? codigo, Value<String?>? principal}) {
+//       {Value<int>? id,
+//       Value<String?>? codigo,
+//       Value<String?>? principal,
+//       Value<String?>? descricao}) {
 //     return EmpresaCnaesCompanion(
 //       id: id ?? this.id,
 //       codigo: codigo ?? this.codigo,
 //       principal: principal ?? this.principal,
+//       descricao: descricao ?? this.descricao,
 //     );
 //   }
 
@@ -12188,6 +12197,9 @@ part of 'database.dart';
 //     if (principal.present) {
 //       map['PRINCIPAL'] = Variable<String?>(principal.value);
 //     }
+//     if (descricao.present) {
+//       map['DESCRICAO'] = Variable<String?>(descricao.value);
+//     }
 //     return map;
 //   }
 
@@ -12196,7 +12208,8 @@ part of 'database.dart';
 //     return (StringBuffer('EmpresaCnaesCompanion(')
 //           ..write('id: $id, ')
 //           ..write('codigo: $codigo, ')
-//           ..write('principal: $principal')
+//           ..write('principal: $principal, ')
+//           ..write('descricao: $descricao')
 //           ..write(')'))
 //         .toString();
 //   }
@@ -12227,8 +12240,15 @@ part of 'database.dart';
 //           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 1),
 //       typeName: 'TEXT',
 //       requiredDuringInsert: false);
+//   final VerificationMeta _descricaoMeta = const VerificationMeta('descricao');
+//   late final GeneratedColumn<String?> descricao = GeneratedColumn<String?>(
+//       'DESCRICAO', aliasedName, true,
+//       additionalChecks:
+//           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 250),
+//       typeName: 'TEXT',
+//       requiredDuringInsert: false);
 //   @override
-//   List<GeneratedColumn> get $columns => [id, codigo, principal];
+//   List<GeneratedColumn> get $columns => [id, codigo, principal, descricao];
 //   @override
 //   String get aliasedName => _alias ?? 'EMPRESA_CNAE';
 //   @override
@@ -12249,6 +12269,10 @@ part of 'database.dart';
 //       context.handle(_principalMeta,
 //           principal.isAcceptableOrUnknown(data['PRINCIPAL']!, _principalMeta));
 //     }
+//     if (data.containsKey('DESCRICAO')) {
+//       context.handle(_descricaoMeta,
+//           descricao.isAcceptableOrUnknown(data['DESCRICAO']!, _descricaoMeta));
+//     }
 //     return context;
 //   }
 
@@ -12264,6 +12288,8 @@ part of 'database.dart';
 //           .mapFromDatabaseResponse(data['${effectivePrefix}CODIGO']),
 //       principal: const StringType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}PRINCIPAL']),
+//       descricao: const StringType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}DESCRICAO']),
 //     );
 //   }
 
@@ -14789,6 +14815,7 @@ part of 'database.dart';
 
 // class MesasCompanion extends UpdateCompanion<Mesa> {
 //   final Value<int> id;
+//   final Value<int?> idReserva;
 //   final Value<String?> numero;
 //   final Value<int?> quantidadeCadeiras;
 //   final Value<int?> quantidadeCadeirasCrianca;
@@ -14796,6 +14823,7 @@ part of 'database.dart';
 //   final Value<String?> observacao;
 //   const MesasCompanion({
 //     this.id = const Value.absent(),
+//     this.idReserva = const Value.absent(),
 //     this.numero = const Value.absent(),
 //     this.quantidadeCadeiras = const Value.absent(),
 //     this.quantidadeCadeirasCrianca = const Value.absent(),
@@ -14804,6 +14832,7 @@ part of 'database.dart';
 //   });
 //   MesasCompanion.insert({
 //     this.id = const Value.absent(),
+//     this.idReserva = const Value.absent(),
 //     this.numero = const Value.absent(),
 //     this.quantidadeCadeiras = const Value.absent(),
 //     this.quantidadeCadeirasCrianca = const Value.absent(),
@@ -14812,6 +14841,7 @@ part of 'database.dart';
 //   });
 //   static Insertable<Mesa> custom({
 //     Expression<int>? id,
+//     Expression<int?>? idReserva,
 //     Expression<String?>? numero,
 //     Expression<int?>? quantidadeCadeiras,
 //     Expression<int?>? quantidadeCadeirasCrianca,
@@ -14820,6 +14850,7 @@ part of 'database.dart';
 //   }) {
 //     return RawValuesInsertable({
 //       if (id != null) 'ID': id,
+//       if (idReserva != null) 'ID_RESERVA': idReserva,
 //       if (numero != null) 'NUMERO': numero,
 //       if (quantidadeCadeiras != null) 'QUANTIDADE_CADEIRAS': quantidadeCadeiras,
 //       if (quantidadeCadeirasCrianca != null)
@@ -14831,6 +14862,7 @@ part of 'database.dart';
 
 //   MesasCompanion copyWith(
 //       {Value<int>? id,
+//       Value<int?>? idReserva,
 //       Value<String?>? numero,
 //       Value<int?>? quantidadeCadeiras,
 //       Value<int?>? quantidadeCadeirasCrianca,
@@ -14838,6 +14870,7 @@ part of 'database.dart';
 //       Value<String?>? observacao}) {
 //     return MesasCompanion(
 //       id: id ?? this.id,
+//       idReserva: idReserva ?? this.idReserva,
 //       numero: numero ?? this.numero,
 //       quantidadeCadeiras: quantidadeCadeiras ?? this.quantidadeCadeiras,
 //       quantidadeCadeirasCrianca:
@@ -14852,6 +14885,9 @@ part of 'database.dart';
 //     final map = <String, Expression>{};
 //     if (id.present) {
 //       map['ID'] = Variable<int>(id.value);
+//     }
+//     if (idReserva.present) {
+//       map['ID_RESERVA'] = Variable<int?>(idReserva.value);
 //     }
 //     if (numero.present) {
 //       map['NUMERO'] = Variable<String?>(numero.value);
@@ -14876,6 +14912,7 @@ part of 'database.dart';
 //   String toString() {
 //     return (StringBuffer('MesasCompanion(')
 //           ..write('id: $id, ')
+//           ..write('idReserva: $idReserva, ')
 //           ..write('numero: $numero, ')
 //           ..write('quantidadeCadeiras: $quantidadeCadeiras, ')
 //           ..write('quantidadeCadeirasCrianca: $quantidadeCadeirasCrianca, ')
@@ -14896,6 +14933,12 @@ part of 'database.dart';
 //       typeName: 'INTEGER',
 //       requiredDuringInsert: false,
 //       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+//   final VerificationMeta _idReservaMeta = const VerificationMeta('idReserva');
+//   late final GeneratedColumn<int?> idReserva = GeneratedColumn<int?>(
+//       'ID_RESERVA', aliasedName, true,
+//       typeName: 'INTEGER',
+//       requiredDuringInsert: false,
+//       $customConstraints: 'NULLABLE REFERENCES RESERVA(ID)');
 //   final VerificationMeta _numeroMeta = const VerificationMeta('numero');
 //   late final GeneratedColumn<String?> numero = GeneratedColumn<String?>(
 //       'NUMERO', aliasedName, true,
@@ -14930,6 +14973,7 @@ part of 'database.dart';
 //   @override
 //   List<GeneratedColumn> get $columns => [
 //         id,
+//         idReserva,
 //         numero,
 //         quantidadeCadeiras,
 //         quantidadeCadeirasCrianca,
@@ -14947,6 +14991,10 @@ part of 'database.dart';
 //     final data = instance.toColumns(true);
 //     if (data.containsKey('ID')) {
 //       context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));
+//     }
+//     if (data.containsKey('ID_RESERVA')) {
+//       context.handle(_idReservaMeta,
+//           idReserva.isAcceptableOrUnknown(data['ID_RESERVA']!, _idReservaMeta));
 //     }
 //     if (data.containsKey('NUMERO')) {
 //       context.handle(_numeroMeta,
@@ -14988,6 +15036,8 @@ part of 'database.dart';
 //     return Mesa(
 //       id: const IntType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}ID'])!,
+//       idReserva: const IntType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}ID_RESERVA']),
 //       numero: const StringType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}NUMERO']),
 //       quantidadeCadeiras: const IntType().mapFromDatabaseResponse(
@@ -41922,50 +41972,50 @@ part of 'database.dart';
 // class ReservasCompanion extends UpdateCompanion<Reserva> {
 //   final Value<int> id;
 //   final Value<int?> idCliente;
+//   final Value<String?> nomeContato;
+//   final Value<String?> telefoneContato;
 //   final Value<DateTime?> dataReserva;
 //   final Value<String?> horaReserva;
 //   final Value<int?> quantidadePessoas;
-//   final Value<String?> nomeContato;
-//   final Value<String?> telefoneContato;
 //   final Value<String?> situacao;
 //   const ReservasCompanion({
 //     this.id = const Value.absent(),
 //     this.idCliente = const Value.absent(),
+//     this.nomeContato = const Value.absent(),
+//     this.telefoneContato = const Value.absent(),
 //     this.dataReserva = const Value.absent(),
 //     this.horaReserva = const Value.absent(),
 //     this.quantidadePessoas = const Value.absent(),
-//     this.nomeContato = const Value.absent(),
-//     this.telefoneContato = const Value.absent(),
 //     this.situacao = const Value.absent(),
 //   });
 //   ReservasCompanion.insert({
 //     this.id = const Value.absent(),
 //     this.idCliente = const Value.absent(),
+//     this.nomeContato = const Value.absent(),
+//     this.telefoneContato = const Value.absent(),
 //     this.dataReserva = const Value.absent(),
 //     this.horaReserva = const Value.absent(),
 //     this.quantidadePessoas = const Value.absent(),
-//     this.nomeContato = const Value.absent(),
-//     this.telefoneContato = const Value.absent(),
 //     this.situacao = const Value.absent(),
 //   });
 //   static Insertable<Reserva> custom({
 //     Expression<int>? id,
 //     Expression<int?>? idCliente,
+//     Expression<String?>? nomeContato,
+//     Expression<String?>? telefoneContato,
 //     Expression<DateTime?>? dataReserva,
 //     Expression<String?>? horaReserva,
 //     Expression<int?>? quantidadePessoas,
-//     Expression<String?>? nomeContato,
-//     Expression<String?>? telefoneContato,
 //     Expression<String?>? situacao,
 //   }) {
 //     return RawValuesInsertable({
 //       if (id != null) 'ID': id,
 //       if (idCliente != null) 'ID_CLIENTE': idCliente,
+//       if (nomeContato != null) 'NOME_CONTATO': nomeContato,
+//       if (telefoneContato != null) 'TELEFONE_CONTATO': telefoneContato,
 //       if (dataReserva != null) 'DATA_RESERVA': dataReserva,
 //       if (horaReserva != null) 'HORA_RESERVA': horaReserva,
 //       if (quantidadePessoas != null) 'QUANTIDADE_PESSOAS': quantidadePessoas,
-//       if (nomeContato != null) 'NOME_CONTATO': nomeContato,
-//       if (telefoneContato != null) 'TELEFONE_CONTATO': telefoneContato,
 //       if (situacao != null) 'SITUACAO': situacao,
 //     });
 //   }
@@ -41973,20 +42023,20 @@ part of 'database.dart';
 //   ReservasCompanion copyWith(
 //       {Value<int>? id,
 //       Value<int?>? idCliente,
+//       Value<String?>? nomeContato,
+//       Value<String?>? telefoneContato,
 //       Value<DateTime?>? dataReserva,
 //       Value<String?>? horaReserva,
 //       Value<int?>? quantidadePessoas,
-//       Value<String?>? nomeContato,
-//       Value<String?>? telefoneContato,
 //       Value<String?>? situacao}) {
 //     return ReservasCompanion(
 //       id: id ?? this.id,
 //       idCliente: idCliente ?? this.idCliente,
+//       nomeContato: nomeContato ?? this.nomeContato,
+//       telefoneContato: telefoneContato ?? this.telefoneContato,
 //       dataReserva: dataReserva ?? this.dataReserva,
 //       horaReserva: horaReserva ?? this.horaReserva,
 //       quantidadePessoas: quantidadePessoas ?? this.quantidadePessoas,
-//       nomeContato: nomeContato ?? this.nomeContato,
-//       telefoneContato: telefoneContato ?? this.telefoneContato,
 //       situacao: situacao ?? this.situacao,
 //     );
 //   }
@@ -42000,6 +42050,12 @@ part of 'database.dart';
 //     if (idCliente.present) {
 //       map['ID_CLIENTE'] = Variable<int?>(idCliente.value);
 //     }
+//     if (nomeContato.present) {
+//       map['NOME_CONTATO'] = Variable<String?>(nomeContato.value);
+//     }
+//     if (telefoneContato.present) {
+//       map['TELEFONE_CONTATO'] = Variable<String?>(telefoneContato.value);
+//     }
 //     if (dataReserva.present) {
 //       map['DATA_RESERVA'] = Variable<DateTime?>(dataReserva.value);
 //     }
@@ -42008,12 +42064,6 @@ part of 'database.dart';
 //     }
 //     if (quantidadePessoas.present) {
 //       map['QUANTIDADE_PESSOAS'] = Variable<int?>(quantidadePessoas.value);
-//     }
-//     if (nomeContato.present) {
-//       map['NOME_CONTATO'] = Variable<String?>(nomeContato.value);
-//     }
-//     if (telefoneContato.present) {
-//       map['TELEFONE_CONTATO'] = Variable<String?>(telefoneContato.value);
 //     }
 //     if (situacao.present) {
 //       map['SITUACAO'] = Variable<String?>(situacao.value);
@@ -42026,11 +42076,11 @@ part of 'database.dart';
 //     return (StringBuffer('ReservasCompanion(')
 //           ..write('id: $id, ')
 //           ..write('idCliente: $idCliente, ')
+//           ..write('nomeContato: $nomeContato, ')
+//           ..write('telefoneContato: $telefoneContato, ')
 //           ..write('dataReserva: $dataReserva, ')
 //           ..write('horaReserva: $horaReserva, ')
 //           ..write('quantidadePessoas: $quantidadePessoas, ')
-//           ..write('nomeContato: $nomeContato, ')
-//           ..write('telefoneContato: $telefoneContato, ')
 //           ..write('situacao: $situacao')
 //           ..write(')'))
 //         .toString();
@@ -42053,6 +42103,22 @@ part of 'database.dart';
 //       typeName: 'INTEGER',
 //       requiredDuringInsert: false,
 //       $customConstraints: 'NULLABLE REFERENCES CLIENTE(ID)');
+//   final VerificationMeta _nomeContatoMeta =
+//       const VerificationMeta('nomeContato');
+//   late final GeneratedColumn<String?> nomeContato = GeneratedColumn<String?>(
+//       'NOME_CONTATO', aliasedName, true,
+//       additionalChecks:
+//           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
+//       typeName: 'TEXT',
+//       requiredDuringInsert: false);
+//   final VerificationMeta _telefoneContatoMeta =
+//       const VerificationMeta('telefoneContato');
+//   late final GeneratedColumn<String?> telefoneContato =
+//       GeneratedColumn<String?>('TELEFONE_CONTATO', aliasedName, true,
+//           additionalChecks: GeneratedColumn.checkTextLength(
+//               minTextLength: 0, maxTextLength: 15),
+//           typeName: 'TEXT',
+//           requiredDuringInsert: false);
 //   final VerificationMeta _dataReservaMeta =
 //       const VerificationMeta('dataReserva');
 //   late final GeneratedColumn<DateTime?> dataReserva =
@@ -42071,22 +42137,6 @@ part of 'database.dart';
 //   late final GeneratedColumn<int?> quantidadePessoas = GeneratedColumn<int?>(
 //       'QUANTIDADE_PESSOAS', aliasedName, true,
 //       typeName: 'INTEGER', requiredDuringInsert: false);
-//   final VerificationMeta _nomeContatoMeta =
-//       const VerificationMeta('nomeContato');
-//   late final GeneratedColumn<String?> nomeContato = GeneratedColumn<String?>(
-//       'NOME_CONTATO', aliasedName, true,
-//       additionalChecks:
-//           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
-//       typeName: 'TEXT',
-//       requiredDuringInsert: false);
-//   final VerificationMeta _telefoneContatoMeta =
-//       const VerificationMeta('telefoneContato');
-//   late final GeneratedColumn<String?> telefoneContato =
-//       GeneratedColumn<String?>('TELEFONE_CONTATO', aliasedName, true,
-//           additionalChecks: GeneratedColumn.checkTextLength(
-//               minTextLength: 0, maxTextLength: 15),
-//           typeName: 'TEXT',
-//           requiredDuringInsert: false);
 //   final VerificationMeta _situacaoMeta = const VerificationMeta('situacao');
 //   late final GeneratedColumn<String?> situacao = GeneratedColumn<String?>(
 //       'SITUACAO', aliasedName, true,
@@ -42098,11 +42148,11 @@ part of 'database.dart';
 //   List<GeneratedColumn> get $columns => [
 //         id,
 //         idCliente,
+//         nomeContato,
+//         telefoneContato,
 //         dataReserva,
 //         horaReserva,
 //         quantidadePessoas,
-//         nomeContato,
-//         telefoneContato,
 //         situacao
 //       ];
 //   @override
@@ -42120,6 +42170,18 @@ part of 'database.dart';
 //     if (data.containsKey('ID_CLIENTE')) {
 //       context.handle(_idClienteMeta,
 //           idCliente.isAcceptableOrUnknown(data['ID_CLIENTE']!, _idClienteMeta));
+//     }
+//     if (data.containsKey('NOME_CONTATO')) {
+//       context.handle(
+//           _nomeContatoMeta,
+//           nomeContato.isAcceptableOrUnknown(
+//               data['NOME_CONTATO']!, _nomeContatoMeta));
+//     }
+//     if (data.containsKey('TELEFONE_CONTATO')) {
+//       context.handle(
+//           _telefoneContatoMeta,
+//           telefoneContato.isAcceptableOrUnknown(
+//               data['TELEFONE_CONTATO']!, _telefoneContatoMeta));
 //     }
 //     if (data.containsKey('DATA_RESERVA')) {
 //       context.handle(
@@ -42139,18 +42201,6 @@ part of 'database.dart';
 //           quantidadePessoas.isAcceptableOrUnknown(
 //               data['QUANTIDADE_PESSOAS']!, _quantidadePessoasMeta));
 //     }
-//     if (data.containsKey('NOME_CONTATO')) {
-//       context.handle(
-//           _nomeContatoMeta,
-//           nomeContato.isAcceptableOrUnknown(
-//               data['NOME_CONTATO']!, _nomeContatoMeta));
-//     }
-//     if (data.containsKey('TELEFONE_CONTATO')) {
-//       context.handle(
-//           _telefoneContatoMeta,
-//           telefoneContato.isAcceptableOrUnknown(
-//               data['TELEFONE_CONTATO']!, _telefoneContatoMeta));
-//     }
 //     if (data.containsKey('SITUACAO')) {
 //       context.handle(_situacaoMeta,
 //           situacao.isAcceptableOrUnknown(data['SITUACAO']!, _situacaoMeta));
@@ -42168,16 +42218,16 @@ part of 'database.dart';
 //           .mapFromDatabaseResponse(data['${effectivePrefix}ID'])!,
 //       idCliente: const IntType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}ID_CLIENTE']),
+//       nomeContato: const StringType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}NOME_CONTATO']),
+//       telefoneContato: const StringType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}TELEFONE_CONTATO']),
 //       dataReserva: const DateTimeType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}DATA_RESERVA']),
 //       horaReserva: const StringType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}HORA_RESERVA']),
 //       quantidadePessoas: const IntType().mapFromDatabaseResponse(
 //           data['${effectivePrefix}QUANTIDADE_PESSOAS']),
-//       nomeContato: const StringType()
-//           .mapFromDatabaseResponse(data['${effectivePrefix}NOME_CONTATO']),
-//       telefoneContato: const StringType()
-//           .mapFromDatabaseResponse(data['${effectivePrefix}TELEFONE_CONTATO']),
 //       situacao: const StringType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}SITUACAO']),
 //     );
@@ -42191,36 +42241,36 @@ part of 'database.dart';
 
 // class ReservaMesasCompanion extends UpdateCompanion<ReservaMesa> {
 //   final Value<int> id;
-//   final Value<int?> idReserva;
 //   final Value<int?> idMesa;
+//   final Value<int?> idReserva;
 //   const ReservaMesasCompanion({
 //     this.id = const Value.absent(),
-//     this.idReserva = const Value.absent(),
 //     this.idMesa = const Value.absent(),
+//     this.idReserva = const Value.absent(),
 //   });
 //   ReservaMesasCompanion.insert({
 //     this.id = const Value.absent(),
-//     this.idReserva = const Value.absent(),
 //     this.idMesa = const Value.absent(),
+//     this.idReserva = const Value.absent(),
 //   });
 //   static Insertable<ReservaMesa> custom({
 //     Expression<int>? id,
-//     Expression<int?>? idReserva,
 //     Expression<int?>? idMesa,
+//     Expression<int?>? idReserva,
 //   }) {
 //     return RawValuesInsertable({
 //       if (id != null) 'ID': id,
-//       if (idReserva != null) 'ID_RESERVA': idReserva,
 //       if (idMesa != null) 'ID_MESA': idMesa,
+//       if (idReserva != null) 'ID_RESERVA': idReserva,
 //     });
 //   }
 
 //   ReservaMesasCompanion copyWith(
-//       {Value<int>? id, Value<int?>? idReserva, Value<int?>? idMesa}) {
+//       {Value<int>? id, Value<int?>? idMesa, Value<int?>? idReserva}) {
 //     return ReservaMesasCompanion(
 //       id: id ?? this.id,
-//       idReserva: idReserva ?? this.idReserva,
 //       idMesa: idMesa ?? this.idMesa,
+//       idReserva: idReserva ?? this.idReserva,
 //     );
 //   }
 
@@ -42230,11 +42280,11 @@ part of 'database.dart';
 //     if (id.present) {
 //       map['ID'] = Variable<int>(id.value);
 //     }
-//     if (idReserva.present) {
-//       map['ID_RESERVA'] = Variable<int?>(idReserva.value);
-//     }
 //     if (idMesa.present) {
 //       map['ID_MESA'] = Variable<int?>(idMesa.value);
+//     }
+//     if (idReserva.present) {
+//       map['ID_RESERVA'] = Variable<int?>(idReserva.value);
 //     }
 //     return map;
 //   }
@@ -42243,8 +42293,8 @@ part of 'database.dart';
 //   String toString() {
 //     return (StringBuffer('ReservaMesasCompanion(')
 //           ..write('id: $id, ')
-//           ..write('idReserva: $idReserva, ')
-//           ..write('idMesa: $idMesa')
+//           ..write('idMesa: $idMesa, ')
+//           ..write('idReserva: $idReserva')
 //           ..write(')'))
 //         .toString();
 //   }
@@ -42261,20 +42311,20 @@ part of 'database.dart';
 //       typeName: 'INTEGER',
 //       requiredDuringInsert: false,
 //       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
-//   final VerificationMeta _idReservaMeta = const VerificationMeta('idReserva');
-//   late final GeneratedColumn<int?> idReserva = GeneratedColumn<int?>(
-//       'ID_RESERVA', aliasedName, true,
-//       typeName: 'INTEGER',
-//       requiredDuringInsert: false,
-//       $customConstraints: 'NULLABLE REFERENCES RESERVA(ID)');
 //   final VerificationMeta _idMesaMeta = const VerificationMeta('idMesa');
 //   late final GeneratedColumn<int?> idMesa = GeneratedColumn<int?>(
 //       'ID_MESA', aliasedName, true,
 //       typeName: 'INTEGER',
 //       requiredDuringInsert: false,
 //       $customConstraints: 'NULLABLE REFERENCES MESA(ID)');
+//   final VerificationMeta _idReservaMeta = const VerificationMeta('idReserva');
+//   late final GeneratedColumn<int?> idReserva = GeneratedColumn<int?>(
+//       'ID_RESERVA', aliasedName, true,
+//       typeName: 'INTEGER',
+//       requiredDuringInsert: false,
+//       $customConstraints: 'NULLABLE REFERENCES RESERVA(ID)');
 //   @override
-//   List<GeneratedColumn> get $columns => [id, idReserva, idMesa];
+//   List<GeneratedColumn> get $columns => [id, idMesa, idReserva];
 //   @override
 //   String get aliasedName => _alias ?? 'RESERVA_MESA';
 //   @override
@@ -42287,13 +42337,13 @@ part of 'database.dart';
 //     if (data.containsKey('ID')) {
 //       context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));
 //     }
-//     if (data.containsKey('ID_RESERVA')) {
-//       context.handle(_idReservaMeta,
-//           idReserva.isAcceptableOrUnknown(data['ID_RESERVA']!, _idReservaMeta));
-//     }
 //     if (data.containsKey('ID_MESA')) {
 //       context.handle(_idMesaMeta,
 //           idMesa.isAcceptableOrUnknown(data['ID_MESA']!, _idMesaMeta));
+//     }
+//     if (data.containsKey('ID_RESERVA')) {
+//       context.handle(_idReservaMeta,
+//           idReserva.isAcceptableOrUnknown(data['ID_RESERVA']!, _idReservaMeta));
 //     }
 //     return context;
 //   }
@@ -42306,10 +42356,10 @@ part of 'database.dart';
 //     return ReservaMesa(
 //       id: const IntType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}ID'])!,
-//       idReserva: const IntType()
-//           .mapFromDatabaseResponse(data['${effectivePrefix}ID_RESERVA']),
 //       idMesa: const IntType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}ID_MESA']),
+//       idReserva: const IntType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}ID_RESERVA']),
 //     );
 //   }
 

@@ -128,7 +128,7 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
           // pega os detalhes
           objetoNfeCabecalhoMontado.listaNfeDetalheMontado = [];
           final detalhes = await customSelect("SELECT * FROM NFE_DETALHE WHERE ID_NFE_CABECALHO = '" + objetoNfeCabecalhoMontado.nfeCabecalho!.id.toString() + "'", 
-                                    readsFrom: { nfeCabecalhos }).map((row) {
+                                    readsFrom: { nfeDetalhes }).map((row) {
                                       return NfeDetalhe.fromData(row.data, db);  
                                     }).get();      
           // pega os impostos de cada detalhe

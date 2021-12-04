@@ -107,16 +107,14 @@ export class MoorDao {
                 this.listaTabelaFilha.push(", List<" + nomeCampoGetSet + "> lista" + nomeCampoGetSet);
 
                 // inserir filhos
-                // this.inserirFilhos.push("await inserirFilhos(pObjeto as " + this.class + ", lista" + nomeCampoGetSet + ");");
-                this.inserirFilhos.push("await inserirFilhos(pObjeto " + nomeCampoGetSet + ", lista" + nomeCampoGetSet + ");");
+                this.inserirFilhos.push("await inserirFilhos(pObjeto as " + this.class + ", lista" + nomeCampoGetSet + ");");
                 this.insereFilho.push("for (var objeto in lista" + nomeCampoGetSet + ") {");
                 this.insereFilho.push("  objeto = objeto.copyWith(id" + this.class  + ": " + this.objetoPrincipal + ".id);");
                 this.insereFilho.push("  await into(" + nomeCampoAtributo + "s).insert(objeto);  ");
                 this.insereFilho.push("}");
 
                 // excluir filhos
-                // this.excluirFilhos.push("await excluirFilhos(pObjeto as " + this.class + ");");
-                this.excluirFilhos.push("await excluirFilhos(pObjeto as " + nomeCampoGetSet + ");");
+                this.excluirFilhos.push("await excluirFilhos(pObjeto as " + this.class + ");");
                 this.exclusaoFilho.push("await (delete(" + nomeCampoAtributo + "s)..where((t) => t.id" + this.class + ".equals(" + this.objetoPrincipal + ".id!))).go();");
             }
         }

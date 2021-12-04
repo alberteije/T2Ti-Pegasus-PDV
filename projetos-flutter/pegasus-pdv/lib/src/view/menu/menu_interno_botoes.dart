@@ -71,6 +71,7 @@ class MenuInternoBotoes extends StatelessWidget {
         label: primeiroBotao!.label,
         circleColor: primeiroBotao!.circleColor,
         rota: primeiroBotao!.rota,
+        onPressed: primeiroBotao!.onPressed,
       ));
     }
 
@@ -80,6 +81,7 @@ class MenuInternoBotoes extends StatelessWidget {
         label: segundoBotao!.label,
         circleColor: segundoBotao!.circleColor,
         rota: segundoBotao!.rota,
+        onPressed: segundoBotao!.onPressed,
       ));
     }
 
@@ -89,6 +91,7 @@ class MenuInternoBotoes extends StatelessWidget {
         label: terceiroBotao!.label,
         circleColor: terceiroBotao!.circleColor,
         rota: terceiroBotao!.rota,
+        onPressed: terceiroBotao!.onPressed,
       ));
     }
 
@@ -98,6 +101,7 @@ class MenuInternoBotoes extends StatelessWidget {
         label: quartoBotao!.label,
         circleColor: quartoBotao!.circleColor,
         rota: quartoBotao!.rota,
+        onPressed: quartoBotao!.onPressed,
       ));
     }
     return lista;
@@ -109,11 +113,15 @@ class BotaoMenu {
   String? label;
   Color? circleColor;
   String? rota;
+  Function? onPressed;
 
   BotaoMenu(
-    {this.icon,
-    this.label,
-    this.circleColor,
-    this.rota,}
+    {
+      this.icon,
+      this.label,
+      this.circleColor,
+      this.rota,
+      this.onPressed,
+    }
   );
 }

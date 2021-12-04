@@ -42,20 +42,20 @@ class ReservaMesas extends Table {
   String get tableName => 'RESERVA_MESA';
 
   IntColumn get id => integer().named('ID').autoIncrement()();
-  IntColumn get idReserva => integer().named('ID_RESERVA').nullable().customConstraint('NULLABLE REFERENCES RESERVA(ID)')();
   IntColumn get idMesa => integer().named('ID_MESA').nullable().customConstraint('NULLABLE REFERENCES MESA(ID)')();
+  IntColumn get idReserva => integer().named('ID_RESERVA').nullable().customConstraint('NULLABLE REFERENCES RESERVA(ID)')();
 }
 
 class ReservaMesa extends DataClass implements Insertable<ReservaMesa> {
   final int? id;
-  final int? idReserva;
   final int? idMesa;
+  final int? idReserva;
 
   ReservaMesa(
     {
       required this.id,
-      this.idReserva,
       this.idMesa,
+      this.idReserva,
     }
   );
 
@@ -63,8 +63,8 @@ class ReservaMesa extends DataClass implements Insertable<ReservaMesa> {
     final effectivePrefix = prefix ?? '';
     return ReservaMesa(
       id: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}ID']),
-      idReserva: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}ID_RESERVA']),
       idMesa: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}ID_MESA']),
+      idReserva: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}ID_RESERVA']),
     );
   }
 
@@ -74,11 +74,11 @@ class ReservaMesa extends DataClass implements Insertable<ReservaMesa> {
     if (!nullToAbsent || id != null) {
       map['ID'] = Variable<int?>(id);
     }
-    if (!nullToAbsent || idReserva != null) {
-      map['ID_RESERVA'] = Variable<int?>(idReserva);
-    }
     if (!nullToAbsent || idMesa != null) {
       map['ID_MESA'] = Variable<int?>(idMesa);
+    }
+    if (!nullToAbsent || idReserva != null) {
+      map['ID_RESERVA'] = Variable<int?>(idReserva);
     }
     return map;
   }
@@ -86,12 +86,12 @@ class ReservaMesa extends DataClass implements Insertable<ReservaMesa> {
   ReservaMesasCompanion toCompanion(bool nullToAbsent) {
     return ReservaMesasCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
-      idReserva: idReserva == null && nullToAbsent
-        ? const Value.absent()
-        : Value(idReserva),
       idMesa: idMesa == null && nullToAbsent
         ? const Value.absent()
         : Value(idMesa),
+      idReserva: idReserva == null && nullToAbsent
+        ? const Value.absent()
+        : Value(idReserva),
     );
   }
 
@@ -99,8 +99,8 @@ class ReservaMesa extends DataClass implements Insertable<ReservaMesa> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return ReservaMesa(
       id: serializer.fromJson<int>(json['id']),
-      idReserva: serializer.fromJson<int>(json['idReserva']),
       idMesa: serializer.fromJson<int>(json['idMesa']),
+      idReserva: serializer.fromJson<int>(json['idReserva']),
     );
   }
 
@@ -109,29 +109,29 @@ class ReservaMesa extends DataClass implements Insertable<ReservaMesa> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int?>(id),
-      'idReserva': serializer.toJson<int?>(idReserva),
       'idMesa': serializer.toJson<int?>(idMesa),
+      'idReserva': serializer.toJson<int?>(idReserva),
     };
   }
 
   ReservaMesa copyWith(
         {
 		  int? id,
-          int? idReserva,
           int? idMesa,
+          int? idReserva,
 		}) =>
       ReservaMesa(
         id: id ?? this.id,
-        idReserva: idReserva ?? this.idReserva,
         idMesa: idMesa ?? this.idMesa,
+        idReserva: idReserva ?? this.idReserva,
       );
   
   @override
   String toString() {
     return (StringBuffer('ReservaMesa(')
           ..write('id: $id, ')
-          ..write('idReserva: $idReserva, ')
           ..write('idMesa: $idMesa, ')
+          ..write('idReserva: $idReserva, ')
           ..write(')'))
         .toString();
   }
@@ -139,8 +139,8 @@ class ReservaMesa extends DataClass implements Insertable<ReservaMesa> {
   @override
   int get hashCode => Object.hashAll([
       id,
-      idReserva,
       idMesa,
+      idReserva,
 	]);
   
   @override
@@ -148,51 +148,51 @@ class ReservaMesa extends DataClass implements Insertable<ReservaMesa> {
       identical(this, other) ||
       (other is ReservaMesa &&
           other.id == id &&
-          other.idReserva == idReserva &&
-          other.idMesa == idMesa 
+          other.idMesa == idMesa &&
+          other.idReserva == idReserva 
 	   );
 }
 
 class ReservaMesasCompanion extends UpdateCompanion<ReservaMesa> {
 
   final Value<int?> id;
-  final Value<int?> idReserva;
   final Value<int?> idMesa;
+  final Value<int?> idReserva;
 
   const ReservaMesasCompanion({
     this.id = const Value.absent(),
-    this.idReserva = const Value.absent(),
     this.idMesa = const Value.absent(),
+    this.idReserva = const Value.absent(),
   });
 
   ReservaMesasCompanion.insert({
     this.id = const Value.absent(),
-    this.idReserva = const Value.absent(),
     this.idMesa = const Value.absent(),
+    this.idReserva = const Value.absent(),
   });
 
   static Insertable<ReservaMesa> custom({
     Expression<int>? id,
-    Expression<int>? idReserva,
     Expression<int>? idMesa,
+    Expression<int>? idReserva,
   }) {
     return RawValuesInsertable({
       if (id != null) 'ID': id,
-      if (idReserva != null) 'ID_RESERVA': idReserva,
       if (idMesa != null) 'ID_MESA': idMesa,
+      if (idReserva != null) 'ID_RESERVA': idReserva,
     });
   }
 
   ReservaMesasCompanion copyWith(
       {
 	  Value<int>? id,
-      Value<int>? idReserva,
       Value<int>? idMesa,
+      Value<int>? idReserva,
 	  }) {
     return ReservaMesasCompanion(
       id: id ?? this.id,
-      idReserva: idReserva ?? this.idReserva,
       idMesa: idMesa ?? this.idMesa,
+      idReserva: idReserva ?? this.idReserva,
     );
   }
 
@@ -202,11 +202,11 @@ class ReservaMesasCompanion extends UpdateCompanion<ReservaMesa> {
     if (id.present) {
       map['ID'] = Variable<int?>(id.value);
     }
-    if (idReserva.present) {
-      map['ID_RESERVA'] = Variable<int?>(idReserva.value);
-    }
     if (idMesa.present) {
       map['ID_MESA'] = Variable<int?>(idMesa.value);
+    }
+    if (idReserva.present) {
+      map['ID_RESERVA'] = Variable<int?>(idReserva.value);
     }
     return map;
   }
@@ -215,8 +215,8 @@ class ReservaMesasCompanion extends UpdateCompanion<ReservaMesa> {
   String toString() {
     return (StringBuffer('ReservaMesasCompanion(')
           ..write('id: $id, ')
-          ..write('idReserva: $idReserva, ')
           ..write('idMesa: $idMesa, ')
+          ..write('idReserva: $idReserva, ')
           ..write(')'))
         .toString();
   }
@@ -237,15 +237,6 @@ class $ReservaMesasTable extends ReservaMesas
           requiredDuringInsert: false,
           defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
 
-  final VerificationMeta _idReservaMeta =
-      const VerificationMeta('idReserva');
-  GeneratedColumn<int>? _idReserva;
-  @override
-  GeneratedColumn<int> get idReserva =>
-      _idReserva ??= GeneratedColumn<int>('ID_RESERVA', aliasedName, true,
-          typeName: 'INTEGER',
-          requiredDuringInsert: false,
-          $customConstraints: 'NULLABLE REFERENCES RESERVA(ID)');
   final VerificationMeta _idMesaMeta =
       const VerificationMeta('idMesa');
   GeneratedColumn<int>? _idMesa;
@@ -255,12 +246,21 @@ class $ReservaMesasTable extends ReservaMesas
           typeName: 'INTEGER',
           requiredDuringInsert: false,
           $customConstraints: 'NULLABLE REFERENCES MESA(ID)');
+  final VerificationMeta _idReservaMeta =
+      const VerificationMeta('idReserva');
+  GeneratedColumn<int>? _idReserva;
+  @override
+  GeneratedColumn<int> get idReserva =>
+      _idReserva ??= GeneratedColumn<int>('ID_RESERVA', aliasedName, true,
+          typeName: 'INTEGER',
+          requiredDuringInsert: false,
+          $customConstraints: 'NULLABLE REFERENCES RESERVA(ID)');
 		    
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        idReserva,
         idMesa,
+        idReserva,
       ];
 
   @override
@@ -277,13 +277,13 @@ class $ReservaMesasTable extends ReservaMesas
     if (data.containsKey('ID')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));
     }
-    if (data.containsKey('ID_RESERVA')) {
-        context.handle(_idReservaMeta,
-            idReserva.isAcceptableOrUnknown(data['ID_RESERVA']!, _idReservaMeta));
-    }
     if (data.containsKey('ID_MESA')) {
         context.handle(_idMesaMeta,
             idMesa.isAcceptableOrUnknown(data['ID_MESA']!, _idMesaMeta));
+    }
+    if (data.containsKey('ID_RESERVA')) {
+        context.handle(_idReservaMeta,
+            idReserva.isAcceptableOrUnknown(data['ID_RESERVA']!, _idReservaMeta));
     }
     return context;
   }

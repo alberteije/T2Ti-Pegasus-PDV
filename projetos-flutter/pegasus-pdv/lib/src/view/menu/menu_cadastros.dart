@@ -83,9 +83,6 @@ class MenuCadastros extends StatelessWidget {
             // só apresenta o cadastro da tributação se não for o módulo gratuito
             Sessao.configuracaoPdv!.modulo == 'G' ? const SizedBox(height: 1,) : actionMenuGrupoTributacao(), 
             Sessao.configuracaoPdv!.modulo == 'G' ? const SizedBox(height: 1,) : const SizedBox(height: 20,),
-            // só apresenta o cadastro do Food se o CNAE da empresa for de alimentação
-            Sessao.cnaePermiteModuloFood ? actionMenuGrupoFood() : const SizedBox(height: 1,), 
-            Sessao.cnaePermiteModuloFood ? const SizedBox(height: 20,) : const SizedBox(height: 1,),
           ],
         ),
       );
@@ -271,43 +268,6 @@ class MenuCadastros extends StatelessWidget {
                     quartoBotao: null,
                   ),
                 ],
-              ),
-            ),
-          ),
-        ),
-      );
-
-  Widget actionMenuGrupoFood() => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Card(
-          elevation: 2.0,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  const MenuTituloGrupoMenuInterno(titulo: "Cadastros - Módulo Food"),
-                  MenuInternoBotoes(
-                    primeiroBotao: BotaoMenu(
-                        icon: FontAwesomeIcons.hamburger,
-                        label: "Cozinha",
-                        circleColor: Colors.blue,
-                        rota: "/cozinhaLista"),
-                    segundoBotao: BotaoMenu(
-                        icon: FontAwesomeIcons.utensils,
-                        label: "Mesa",
-                        circleColor: Colors.orange,
-                        rota: "/mesaPage"),
-                    terceiroBotao: BotaoMenu(
-                        icon: FontAwesomeIcons.motorcycle,
-                        label: "Taxa Entrega",
-                        circleColor: Colors.purple,
-                        rota: "/taxaEntregaLista"),
-                    quartoBotao: null,
-                  ),
-               ],
               ),
             ),
           ),

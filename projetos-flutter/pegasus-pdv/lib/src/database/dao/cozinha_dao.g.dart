@@ -8,4 +8,5 @@ part of 'cozinha_dao.dart';
 
 mixin _$CozinhaDaoMixin on DatabaseAccessor<AppDatabase> {
   $CozinhasTable get cozinhas => attachedDatabase.cozinhas;
+  $ComandaPedidosTable get comandaPedidos => attachedDatabase.comandaPedidos;
 }

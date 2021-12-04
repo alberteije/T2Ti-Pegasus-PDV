@@ -140,7 +140,7 @@ class _ProdutoSubgrupoPersistePageState extends State<ProdutoSubgrupoPersistePag
                     padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                     children: <Widget>[
                       const Divider(color: Colors.white,),
-	                  BootstrapRow(
+	                    BootstrapRow(
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(

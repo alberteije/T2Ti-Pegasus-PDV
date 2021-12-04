@@ -93,6 +93,21 @@ class ValidaCampoFormulario {
     return null;
   }
 
+  /// validar se os caracteres são numericos
+  static String? validarNumericoMaiorQueZero(String? value) {
+    if (value != null) {
+      final RegExp nameExp = RegExp(r'^[0-9]+$');
+      if (!nameExp.hasMatch(value)) {
+        return 'Por favor, informe apenas caracteres numéricos.';
+      } else {
+        if (int.tryParse(value)! <= 0) {
+          return 'Por favor, informe um valor maior que zero.';
+        }
+      }
+    }
+    return null;
+  }
+
   /// validar o campo como obrigatório e verificar se os caracteres são numericos
   static String? validarObrigatorioNumerico(String? value) {
     var campoObrigario = validarObrigatorio(value);
@@ -186,7 +201,9 @@ class ValidaCampoFormulario {
     }
   }
 
-  static String? validarDIA(String value) {
+  static String? validarDIA(String? value) {
+    value ??= ''; // se value for null, ponha um vazio nele
+
     int? dia = int.tryParse(value);
     if (dia != null) {
       if (dia >= 1 && dia <= 30) {
@@ -198,8 +215,9 @@ class ValidaCampoFormulario {
     return null;
   }
 
-  static String? validarHORA(String value) {
-    
+  static String? validarHORA(String? value) {
+    value ??= ''; // se value for null, ponha um vazio nele
+
     // tamanho incorreto, já devolve o erro
     if (value.length != 8) {
       return 'Por favor, informe uma HORA válida.';
