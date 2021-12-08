@@ -47,7 +47,6 @@ class Cardapios extends Table {
   TextColumn get modoPreparo => text().named('MODO_PREPARO').withLength(min: 0, max: 250).nullable()();
   TextColumn get infoAlergico => text().named('INFO_ALERGICO').withLength(min: 0, max: 250).nullable()();
   TextColumn get ingredientes => text().named('INGREDIENTES').withLength(min: 0, max: 250).nullable()();
-  TextColumn get fotos => text().named('FOTOS').withLength(min: 0, max: 250).nullable()();
 }
 
 class Cardapio extends DataClass implements Insertable<Cardapio> {
@@ -57,7 +56,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
   final String? modoPreparo;
   final String? infoAlergico;
   final String? ingredientes;
-  final String? fotos;
 
   Cardapio(
     {
@@ -67,7 +65,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
       this.modoPreparo,
       this.infoAlergico,
       this.ingredientes,
-      this.fotos,
     }
   );
 
@@ -80,7 +77,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
       modoPreparo: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}MODO_PREPARO']),
       infoAlergico: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}INFO_ALERGICO']),
       ingredientes: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}INGREDIENTES']),
-      fotos: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}FOTOS']),
     );
   }
 
@@ -105,9 +101,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
     if (!nullToAbsent || ingredientes != null) {
       map['INGREDIENTES'] = Variable<String?>(ingredientes);
     }
-    if (!nullToAbsent || fotos != null) {
-      map['FOTOS'] = Variable<String?>(fotos);
-    }
     return map;
   }
 
@@ -129,9 +122,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
       ingredientes: ingredientes == null && nullToAbsent
         ? const Value.absent()
         : Value(ingredientes),
-      fotos: fotos == null && nullToAbsent
-        ? const Value.absent()
-        : Value(fotos),
     );
   }
 
@@ -144,7 +134,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
       modoPreparo: serializer.fromJson<String>(json['modoPreparo']),
       infoAlergico: serializer.fromJson<String>(json['infoAlergico']),
       ingredientes: serializer.fromJson<String>(json['ingredientes']),
-      fotos: serializer.fromJson<String>(json['fotos']),
     );
   }
 
@@ -158,7 +147,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
       'modoPreparo': serializer.toJson<String?>(modoPreparo),
       'infoAlergico': serializer.toJson<String?>(infoAlergico),
       'ingredientes': serializer.toJson<String?>(ingredientes),
-      'fotos': serializer.toJson<String?>(fotos),
     };
   }
 
@@ -170,7 +158,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
           String? modoPreparo,
           String? infoAlergico,
           String? ingredientes,
-          String? fotos,
 		}) =>
       Cardapio(
         id: id ?? this.id,
@@ -179,7 +166,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
         modoPreparo: modoPreparo ?? this.modoPreparo,
         infoAlergico: infoAlergico ?? this.infoAlergico,
         ingredientes: ingredientes ?? this.ingredientes,
-        fotos: fotos ?? this.fotos,
       );
   
   @override
@@ -191,7 +177,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
           ..write('modoPreparo: $modoPreparo, ')
           ..write('infoAlergico: $infoAlergico, ')
           ..write('ingredientes: $ingredientes, ')
-          ..write('fotos: $fotos, ')
           ..write(')'))
         .toString();
   }
@@ -204,7 +189,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
       modoPreparo,
       infoAlergico,
       ingredientes,
-      fotos,
 	]);
   
   @override
@@ -216,8 +200,7 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
           other.descricao == descricao &&
           other.modoPreparo == modoPreparo &&
           other.infoAlergico == infoAlergico &&
-          other.ingredientes == ingredientes &&
-          other.fotos == fotos 
+          other.ingredientes == ingredientes 
 	   );
 }
 
@@ -229,7 +212,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
   final Value<String?> modoPreparo;
   final Value<String?> infoAlergico;
   final Value<String?> ingredientes;
-  final Value<String?> fotos;
 
   const CardapiosCompanion({
     this.id = const Value.absent(),
@@ -238,7 +220,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
     this.modoPreparo = const Value.absent(),
     this.infoAlergico = const Value.absent(),
     this.ingredientes = const Value.absent(),
-    this.fotos = const Value.absent(),
   });
 
   CardapiosCompanion.insert({
@@ -248,7 +229,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
     this.modoPreparo = const Value.absent(),
     this.infoAlergico = const Value.absent(),
     this.ingredientes = const Value.absent(),
-    this.fotos = const Value.absent(),
   });
 
   static Insertable<Cardapio> custom({
@@ -258,7 +238,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
     Expression<String>? modoPreparo,
     Expression<String>? infoAlergico,
     Expression<String>? ingredientes,
-    Expression<String>? fotos,
   }) {
     return RawValuesInsertable({
       if (id != null) 'ID': id,
@@ -267,7 +246,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
       if (modoPreparo != null) 'MODO_PREPARO': modoPreparo,
       if (infoAlergico != null) 'INFO_ALERGICO': infoAlergico,
       if (ingredientes != null) 'INGREDIENTES': ingredientes,
-      if (fotos != null) 'FOTOS': fotos,
     });
   }
 
@@ -279,7 +257,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
       Value<String>? modoPreparo,
       Value<String>? infoAlergico,
       Value<String>? ingredientes,
-      Value<String>? fotos,
 	  }) {
     return CardapiosCompanion(
       id: id ?? this.id,
@@ -288,7 +265,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
       modoPreparo: modoPreparo ?? this.modoPreparo,
       infoAlergico: infoAlergico ?? this.infoAlergico,
       ingredientes: ingredientes ?? this.ingredientes,
-      fotos: fotos ?? this.fotos,
     );
   }
 
@@ -313,9 +289,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
     if (ingredientes.present) {
       map['INGREDIENTES'] = Variable<String?>(ingredientes.value);
     }
-    if (fotos.present) {
-      map['FOTOS'] = Variable<String?>(fotos.value);
-    }
     return map;
   }
 
@@ -328,7 +301,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
           ..write('modoPreparo: $modoPreparo, ')
           ..write('infoAlergico: $infoAlergico, ')
           ..write('ingredientes: $ingredientes, ')
-          ..write('fotos: $fotos, ')
           ..write(')'))
         .toString();
   }
@@ -386,13 +358,6 @@ class $CardapiosTable extends Cardapios
   GeneratedColumn<String> get ingredientes => _ingredientes ??=
       GeneratedColumn<String>('INGREDIENTES', aliasedName, true,
           typeName: 'TEXT', requiredDuringInsert: false);
-  final VerificationMeta _fotosMeta =
-      const VerificationMeta('fotos');
-  GeneratedColumn<String>? _fotos;
-  @override
-  GeneratedColumn<String> get fotos => _fotos ??=
-      GeneratedColumn<String>('FOTOS', aliasedName, true,
-          typeName: 'TEXT', requiredDuringInsert: false);
 		    
   @override
   List<GeneratedColumn> get $columns => [
@@ -402,7 +367,6 @@ class $CardapiosTable extends Cardapios
         modoPreparo,
         infoAlergico,
         ingredientes,
-        fotos,
       ];
 
   @override
@@ -438,10 +402,6 @@ class $CardapiosTable extends Cardapios
     if (data.containsKey('INGREDIENTES')) {
         context.handle(_ingredientesMeta,
             ingredientes.isAcceptableOrUnknown(data['INGREDIENTES']!, _ingredientesMeta));
-    }
-    if (data.containsKey('FOTOS')) {
-        context.handle(_fotosMeta,
-            fotos.isAcceptableOrUnknown(data['FOTOS']!, _fotosMeta));
     }
     return context;
   }

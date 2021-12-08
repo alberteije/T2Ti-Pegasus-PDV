@@ -1,6 +1,6 @@
 /*
-Title: T2Ti ERP 3.0                                                                
-Description: Arquivo para exportar os demais arquivos de infra
+Title: T2Ti ERP Pegasus                                                                
+Description: DAO relacionado à tabela [PRODUTO_IMAGEM] 
                                                                                 
 The MIT License                                                                 
                                                                                 
@@ -33,10 +33,77 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'package:moor/moor.dart';
 
-export 'package:pegasus_pdv/src/infra/biblioteca.dart';
-export 'package:pegasus_pdv/src/infra/constantes.dart';
-export 'package:pegasus_pdv/src/infra/rotas.dart';
-export 'package:pegasus_pdv/src/infra/sessao.dart';
-export 'package:pegasus_pdv/src/infra/valida_campo_formulario.dart';
-export 'package:pegasus_pdv/src/infra/carrega_imagem.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
+import 'package:pegasus_pdv/src/database/database_classes.dart';
+
+part 'produto_imagem_dao.g.dart';
+
+@UseDao(tables: [
+          ProdutoImagems,
+		])
+class ProdutoImagemDao extends DatabaseAccessor<AppDatabase> with _$ProdutoImagemDaoMixin {
+  final AppDatabase db;
+
+  ProdutoImagemDao(this.db) : super(db);
+
+  List<ProdutoImagem> listaProdutoImagem = []; 
+  
+  Future<List<ProdutoImagem>> consultarLista() async {
+    listaProdutoImagem = await select(produtoImagems).get();
+    return listaProdutoImagem;
+  }  
+
+  Future<List<ProdutoImagem>> consultarListaFiltro(String campo, String valor) async {
+    listaProdutoImagem = await (customSelect("SELECT * FROM PRODUTO_IMAGEM WHERE " + campo + " like '%" + valor + "%'", 
+                                readsFrom: { produtoImagems }).map((row) {
+                                  return ProdutoImagem.fromData(row.data, db);  
+                                }).get());
+    return listaProdutoImagem;
+  }
+    
+  Future<ProdutoImagem?> consultarObjetoFiltro(String campo, String valor) async {
+    return (customSelect("SELECT * FROM PRODUTO_IMAGEM WHERE " + campo + " = '" + valor + "'", 
+                                readsFrom: { produtoImagems }).map((row) {
+                                  return ProdutoImagem.fromData(row.data, db);  
+                                }).getSingleOrNull());
+  }  
+  
+  Stream<List<ProdutoImagem>> observarLista() => select(produtoImagems).watch();
+
+  Future<ProdutoImagem?> consultarObjeto(int pId) {
+    return (select(produtoImagems)..where((t) => t.id.equals(pId))).getSingleOrNull();
+  } 
+
+  Future<int> inserir(Insertable<ProdutoImagem> pObjeto) {
+    return transaction(() async {
+      final idInserido = await into(produtoImagems).insert(pObjeto);
+      return idInserido;
+    });    
+  } 
+
+  Future<bool> alterar(Insertable<ProdutoImagem> pObjeto) {
+    return transaction(() async {
+      return update(produtoImagems).replace(pObjeto);
+    });    
+  } 
+
+  Future<int> excluir(Insertable<ProdutoImagem> pObjeto) {
+    return transaction(() async {
+      return delete(produtoImagems).delete(pObjeto);
+    });    
+  }
+
+  
+  
+  static List<String> campos = <String>[
+    'ID', 
+    'IMAGEM', 
+  ];
+
+  static List<String> colunas = <String>[
+    'Id', 
+    '', 
+  ];  
+}

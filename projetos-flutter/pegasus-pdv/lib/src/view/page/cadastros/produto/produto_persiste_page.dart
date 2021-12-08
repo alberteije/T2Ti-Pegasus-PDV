@@ -34,6 +34,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
@@ -44,6 +45,7 @@ import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
+import 'package:pegasus_pdv/src/view/page/cadastros/produto/produto_page.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_abas.dart';
@@ -71,8 +73,6 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
   Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
 
-  Produto? _produto;
-
   @override
   void initState() {
     super.initState();
@@ -87,10 +87,16 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
       ),
     };
 
-    _produto = widget.produtoMontado!.produto;
-    _produto ??= Produto(id: null); // se produto for nulo, instancia
     _foco.requestFocus();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _carregarImagens());
   }
+
+  Future _carregarImagens() async {
+    listaProdutoImagem = await Sessao.db.produtoImagemDao.consultarListaFiltro('ID_PRODUTO', widget.produtoMontado!.produto!.id.toString());
+    setState(() {
+    });
+  }  
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
     switch (intent.type) {
@@ -116,16 +122,16 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
     final _importaProdutoSubgrupoController = TextEditingController();
     _importaProdutoSubgrupoController.text = widget.produtoMontado?.produtoSubgrupo?.nome ?? '';
 	
-    final _valorCompraController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _produto?.valorCompra ?? 0);
-    final _valorVendaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _produto?.valorVenda ?? 0);
-    final _valorCustoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _produto?.valorCusto ?? 0);
-    final _quantidadeEstoqueController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _produto?.quantidadeEstoque ?? 0);
-    final _estoqueMinimoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _produto?.estoqueMinimo ?? 0);
-    final _estoqueMaximoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _produto?.estoqueMaximo ?? 0);
+    final _valorCompraController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.valorCompra ?? 0);
+    final _valorVendaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.valorVenda ?? 0);
+    final _valorCustoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.valorCusto ?? 0);
+    final _quantidadeEstoqueController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.quantidadeEstoque ?? 0);
+    final _estoqueMinimoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.estoqueMinimo ?? 0);
+    final _estoqueMaximoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.estoqueMaximo ?? 0);
 
     final _ncmController = MaskedTextController(
       mask: '00000000',
-      text: _produto!.codigoNcm ?? '',
+      text: widget.produtoMontado!.produto!.codigoNcm ?? '',
     );
 
     return FocusableActionDetector(
@@ -200,7 +206,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                       if (_objetoJsonRetorno != null) {
                                         if (_objetoJsonRetorno['sigla'] != null) {
                                           _importaProdutoUnidadeController.text = _objetoJsonRetorno['sigla'];
-                                          _produto = _produto!.copyWith(idProdutoUnidade: _objetoJsonRetorno['id']);
+                                          widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(idProdutoUnidade: _objetoJsonRetorno['id']);
                                           widget.produtoMontado!.produtoUnidade = widget.produtoMontado!.produtoUnidade!.copyWith(
                                             sigla: _objetoJsonRetorno['sigla'],
                                           );
@@ -266,7 +272,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                       if (_objetoJsonRetorno != null) {
                                         if (_objetoJsonRetorno['descricao'] != null) {
                                           _importaProdutoTipoController.text = _objetoJsonRetorno['descricao'];
-                                          _produto = _produto!.copyWith(idProdutoTipo: _objetoJsonRetorno['id']);
+                                          widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(idProdutoTipo: _objetoJsonRetorno['id']);
                                           widget.produtoMontado!.produtoTipo = widget.produtoMontado!.produtoTipo!.copyWith(
                                             descricao: _objetoJsonRetorno['descricao'],
                                           );
@@ -332,7 +338,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                       if (_objetoJsonRetorno != null) {
                                         if (_objetoJsonRetorno['nome'] != null) {
                                           _importaProdutoSubgrupoController.text = _objetoJsonRetorno['nome'];
-                                          _produto = _produto!.copyWith(idProdutoSubgrupo: _objetoJsonRetorno['id']);
+                                          widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(idProdutoSubgrupo: _objetoJsonRetorno['id']);
                                           widget.produtoMontado!.produtoSubgrupo = widget.produtoMontado!.produtoSubgrupo!.copyWith(
                                             nome: _objetoJsonRetorno['nome'],
                                           );
@@ -403,7 +409,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                         if (_objetoJsonRetorno != null) {
                                           if (_objetoJsonRetorno['descricao'] != null) {
                                             _importaTributGrupoTributarioController.text = _objetoJsonRetorno['descricao'];
-                                            _produto = _produto!.copyWith(idTributGrupoTributario: _objetoJsonRetorno['id']);
+                                            widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(idTributGrupoTributario: _objetoJsonRetorno['id']);
                                             widget.produtoMontado!.tributGrupoTributario = widget.produtoMontado!.tributGrupoTributario!.copyWith(
                                               descricao: _objetoJsonRetorno['descricao'],
                                             );
@@ -430,7 +436,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 validator: ValidaCampoFormulario.validarObrigatorio,
                                 maxLength: 14,
                                 maxLines: 1,
-                                initialValue: _produto?.gtin ?? '',
+                                initialValue: widget.produtoMontado!.produto?.gtin ?? '',
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Gtin',
                                   'Gtin',
@@ -438,7 +444,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto!.copyWith(gtin: text);
+                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(gtin: text);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -451,7 +457,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                               child: TextFormField(
                                 maxLength: 50,
                                 maxLines: 1,
-                                initialValue: _produto?.codigoInterno ?? '',
+                                initialValue: widget.produtoMontado!.produto?.codigoInterno ?? '',
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Codigo Interno',
                                   'Codigo Interno',
@@ -459,7 +465,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto!.copyWith(codigoInterno: text);
+                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(codigoInterno: text);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -477,7 +483,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                               validator: ValidaCampoFormulario.validarObrigatorio,
                               maxLength: 100,
                               maxLines: 1,
-                              initialValue: _produto?.nome ?? '',
+                              initialValue: widget.produtoMontado!.produto?.nome ?? '',
                               decoration: getInputDecoration(
                                 'Conteúdo para o campo Nome',
                                 'Nome',
@@ -485,7 +491,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                               onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                _produto = _produto!.copyWith(nome: text);
+                                widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(nome: text);
                                 paginaMestreDetalheFoiAlterada = true;
                               },
                             ),
@@ -501,7 +507,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                             child: TextFormField(
                               maxLength: 250,
                               maxLines: 3,
-                              initialValue: _produto?.descricao ?? '',
+                              initialValue: widget.produtoMontado!.produto?.descricao ?? '',
                               decoration: getInputDecoration(
                                 'Conteúdo para o campo Descricao',
                                 'Descricao',
@@ -509,7 +515,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                               onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                _produto = _produto!.copyWith(descricao: text);
+                                widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(descricao: text);
                                 paginaMestreDetalheFoiAlterada = true;
                               },
                             ),
@@ -536,7 +542,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto!.copyWith(codigoNcm: text);
+                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(codigoNcm: text);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -551,12 +557,11 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                   'Indicador de Produção Própria ou de Terceiros',
                                   'Produção [P]rópria ou [T]erceiros',
                                   true),
-                                isEmpty: _produto!.ippt == null,
-                                child: getDropDownButton(_produto!.ippt,
+                                isEmpty: widget.produtoMontado!.produto!.ippt == null,
+                                child: getDropDownButton(widget.produtoMontado!.produto!.ippt,
                                   (String? newValue) {
                                     setState(() {
-                                      widget.produtoMontado!.produto = _produto!.copyWith(ippt: newValue);
-                                      _produto = _produto!.copyWith(ippt: newValue);
+                                      widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(ippt: newValue);
                                       widget.atualizarProdutoCallBack!();
                                     });
                                 }, <String>[
@@ -589,7 +594,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto!.copyWith(valorCompra: _valorCompraController.numberValue);
+                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(valorCompra: _valorCompraController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -611,7 +616,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto!.copyWith(valorVenda: _valorVendaController.numberValue);
+                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(valorVenda: _valorVendaController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -633,7 +638,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto!.copyWith(valorCusto: _valorCustoController.numberValue);
+                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(valorCusto: _valorCustoController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -660,7 +665,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto!.copyWith(quantidadeEstoque: _quantidadeEstoqueController.numberValue);
+                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(quantidadeEstoque: _quantidadeEstoqueController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -681,7 +686,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto!.copyWith(estoqueMinimo: _estoqueMinimoController.numberValue);
+                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(estoqueMinimo: _estoqueMinimoController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -702,7 +707,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _produto = _produto!.copyWith(estoqueMaximo: _estoqueMaximoController.numberValue);
+                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(estoqueMaximo: _estoqueMaximoController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -721,6 +726,50 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 '* indica que o campo é obrigatório',
                                 style: Theme.of(context).textTheme.caption,
                               ),								
+                          ),
+                        ],
+                      ),
+                      const Divider(color: Colors.white,),
+                      Column(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 0),
+                            child: Text(
+                              "Imagens selecionadas para o produto", 
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black),
+                            ),
+                          ),
+                          const Divider(
+                            indent: 10,
+                            endIndent: 10,
+                            thickness: 2,
+                          ), 
+                          CarregaImagem(
+                            widgetFilho: Card(
+                              color: Colors.blueGrey[900],
+                              margin: const EdgeInsets.all(16),
+                              elevation: 4,
+                              child: CustomScrollView(
+                                shrinkWrap: true,
+                                slivers: <Widget>[
+                                  gridComImagens(),
+                                ],
+                              ),
+                            ),
+                            exibirImagemCallBack: _exibirImagem,
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 0, bottom: 0, left: 0, right: 0),
+                            child: Text(
+                              "Pressione a caixa acima para importar as imagens", 
+                              style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black),
+                            ),
                           ),
                         ],
                       ),
@@ -754,5 +803,75 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
     final listaFiltrada = await Sessao.db.produtoSubgrupoDao.consultarListaFiltro(campo, valor);
     Sessao.retornoJsonLookup = jsonEncode(listaFiltrada);
   }
+
+  Future _exibirImagem(Uint8List data) async {
+    setState(() {
+      listaProdutoImagem.add(ProdutoImagem(id: null, imagem: data));
+    });  
+    Navigator.of(context).pop();
+  }
+
+  /// ==================================================================================================================
+  /// o código abaixo monta a grid com as imagens do produto
+  /// ==================================================================================================================
+  Widget gridComImagens() {
+    return SliverPadding(
+      padding: const EdgeInsets.all(5.0),
+      sliver: SliverGrid(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: definirQuantidadeDeCartoesPorLinha(context),
+          mainAxisSpacing: 0.0,
+          crossAxisSpacing: 0.0,
+          childAspectRatio: 1.0,
+        ),
+        delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+          return imagemStack(index);
+        }, childCount: listaProdutoImagem.length),
+      )
+    );
+  }
+
+  int definirQuantidadeDeCartoesPorLinha(BuildContext context) {
+    double larguraDaTela = MediaQuery.of(context).size.width;
+    int larguraDoCartao = 150;
+    int quantidadePorLinha = larguraDaTela ~/ larguraDoCartao;
+    return quantidadePorLinha;
+  }
+
+  Widget imagemStack(int index) {
+    return InkWell(
+      canRequestFocus: false,
+      hoverColor: Colors.grey,
+      onTap: () {
+      },
+      splashColor: Colors.black,
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        elevation: 2.0,
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            imagemImage(listaProdutoImagem[index]),
+            imagemColor(listaProdutoImagem[index]),
+          ],
+        ),
+      ),
+    );
+  }
+
+  //stack 1/3 - primeira porção da pilha - a imagem - fica na parte de baixo do Stack
+  Widget imagemImage(ProdutoImagem produtoImagem) {
+    return Image.memory(produtoImagem.imagem!);
+  } 
+
+  //stack 2/3 - segunda porção da pilha - a cor com a opacidade
+  Widget imagemColor(ProdutoImagem produtoImagem) => Container(
+    decoration: BoxDecoration(boxShadow: <BoxShadow>[
+      BoxShadow(
+        color: Colors.green.withOpacity(0.2),
+        blurRadius: 50.0, // efeito de fumaça
+      ),
+    ]),
+  );
 
 }

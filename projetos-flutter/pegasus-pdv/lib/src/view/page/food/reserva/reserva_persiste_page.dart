@@ -43,6 +43,7 @@ import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
+import 'package:pegasus_pdv/src/view/page/page.dart';
 import 'package:pegasus_pdv/src/view/shared/page/lookup_local_page.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
@@ -51,8 +52,6 @@ import 'package:pegasus_pdv/src/view/shared/botoes.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 import 'package:extended_masked_text/extended_masked_text.dart';
-
-import '../../page.dart';
 
 class ReservaPersistePage extends StatefulWidget {
   final ReservaMontado? reservaMontado;

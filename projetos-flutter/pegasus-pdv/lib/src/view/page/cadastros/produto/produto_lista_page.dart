@@ -323,6 +323,9 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
                 produto: Produto(id: null,), 
                 produtoUnidade: ProdutoUnidade(id: null,),
                 tributGrupoTributario: TributGrupoTributario(id: null),
+                produtoTipo: ProdutoTipo(id: null),
+                cardapio: Cardapio(id: null),
+                produtoSubgrupo: ProdutoSubgrupo(id: null),
               ), 
               title: 'Produto - Inserindo', operacao: 'I')
             ))
@@ -504,6 +507,10 @@ class _ProdutoDataSource extends DataTableSource {
 
 void _detalharProduto(ProdutoMontado produtoMontado, BuildContext context, Function refrescarTela) {
   produtoMontado.tributGrupoTributario ??= TributGrupoTributario(id: null); // se tributGrupoTributario for nulo, instancia
+  produtoMontado.produtoTipo ??= ProdutoTipo(id: null); // se produtoTipo for nulo, instancia
+  produtoMontado.cardapio ??= Cardapio(id: null); // se cardapio for nulo, instancia
+  produtoMontado.produtoSubgrupo ??= ProdutoSubgrupo(id: null); // se produtoSubgrupo for nulo, instancia
+
   Navigator.of(context)
     .push(MaterialPageRoute(
       builder: (BuildContext context) => ProdutoPage(

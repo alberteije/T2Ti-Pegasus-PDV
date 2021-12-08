@@ -33,15 +33,16 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'dart:io';
+// import 'dart:io';
+import 'dart:typed_data';
 
-import 'package:file_picker/file_picker.dart';
+// import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
@@ -73,13 +74,13 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
 
-  final ImagePicker _pickerImagem = ImagePicker();
+  // final ImagePicker _pickerImagem = ImagePicker();
 
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
 
-  final _imagemController = TextEditingController();
+  // final _imagemController = TextEditingController();
   final _razaoSocialController = TextEditingController();
   final _nomeFantasiaController = TextEditingController();
   final _emailController = TextEditingController();
@@ -706,20 +707,31 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                           children: <BootstrapCol>[
                             BootstrapCol(
                               sizes: 'col-12',
-                              child: GestureDetector(
-                                onTap: () {
-                                  _exibirImagemPicker(context);
-                                },                            
-                                child: Container(
+                              child: CarregaImagem(
+                                widgetFilho: Container(
                                   margin: const EdgeInsets.symmetric(horizontal: 10),
                                   height: 200,
                                   child: FittedBox(
                                     fit: BoxFit.contain,
-                                    child: 
-                                    Image.memory(Sessao.empresa!.logotipo!),                                  
+                                    child: Image.memory(Sessao.empresa!.logotipo!),
                                   ),
-                                ),
+                                ), 
+                                exibirImagemCallBack: _exibirImagem,
                               ),
+                              // GestureDetector(
+                              //   onTap: () {
+                              //     _exibirImagemPicker(context);
+                              //   },                            
+                              //   child: Container(
+                              //     margin: const EdgeInsets.symmetric(horizontal: 10),
+                              //     height: 200,
+                              //     child: FittedBox(
+                              //       fit: BoxFit.contain,
+                              //       child: 
+                              //       Image.memory(Sessao.empresa!.logotipo!),                                  
+                              //     ),
+                              //   ),
+                              // ),
                             ),
                           ],
                         ),
@@ -938,6 +950,13 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
     }
   }
 
+  void _exibirImagem(Uint8List data) {
+    setState(() {
+      Sessao.empresa = Sessao.empresa!.copyWith(logotipo: data);
+    });  
+    Navigator.of(context).pop();
+  }
+
   Future<void> _salvar() async {
     final FormState form = _formKey.currentState!;
     if (!form.validate()) {
@@ -974,133 +993,133 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
     Navigator.of(context).pop();
   }
 
-  void _exibirImagemPicker(context) {
-    _imagemController.text = '';
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext bc) {
-        return SafeArea(
-          child: Wrap(
-            children: _getOpcoesImportacaoImagem(),
-          ),
-        );
-      }
-    );
-  }
+  // void _exibirImagemPicker(context) {
+  //   _imagemController.text = '';
+  //   showModalBottomSheet(
+  //     context: context,
+  //     builder: (BuildContext bc) {
+  //       return SafeArea(
+  //         child: Wrap(
+  //           children: _getOpcoesImportacaoImagem(),
+  //         ),
+  //       );
+  //     }
+  //   );
+  // }
 
-  List<Widget> _getOpcoesImportacaoImagem() {
-    List<Widget> listaRetorno = [];
-    listaRetorno.add(
-      ListTile(
-        leading: const Padding( 
-          padding: EdgeInsets.all(5),
-          child: Icon(Icons.cloud_download),
-        ),
-        title: _getEditUrl(), 
-        onTap: () async {
-          try {
-            final ByteData imageData = await NetworkAssetBundle(Uri.parse(_imagemController.text)).load('');
-            setState(() {
-              Sessao.empresa = Sessao.empresa!.copyWith(logotipo: imageData.buffer.asUint8List());
-            });
-            Navigator.pop(context);
-          } catch (e) {
-            Navigator.pop(context);
-            showInSnackBar('Ocorreu um erro ao tentar carregar a imagem', context);
-          }
-        }
-      ),
-    );
-    listaRetorno.add(
-      ListTile(
-        leading: const Icon(Icons.file_copy),
-        title: const Text('Carregar Imagem'),
-        onTap: () async {
-          // Documentação: https://github.com/miguelpruivo/flutter_file_picker/wiki
-          FilePickerResult? arquivoSelecionado = 
-            await FilePicker.platform.pickFiles(
-              type: FileType.custom, 
-              allowedExtensions: ['jpg, png'],
-              dialogTitle: 'Selecione o Logotipo da Empresa'
-            );
-            if(arquivoSelecionado != null) {
-              File file = File(arquivoSelecionado.files.first.path!);
-              setState(() {
-                Sessao.empresa = Sessao.empresa!.copyWith(logotipo: file.readAsBytesSync());
-              });  
-              Navigator.pop(context);
-            }                          
-        },
-      ),        
-    );
+  // List<Widget> _getOpcoesImportacaoImagem() {
+  //   List<Widget> listaRetorno = [];
+  //   listaRetorno.add(
+  //     ListTile(
+  //       leading: const Padding( 
+  //         padding: EdgeInsets.all(5),
+  //         child: Icon(Icons.cloud_download),
+  //       ),
+  //       title: _getEditUrl(), 
+  //       onTap: () async {
+  //         try {
+  //           final ByteData imageData = await NetworkAssetBundle(Uri.parse(_imagemController.text)).load('');
+  //           setState(() {
+  //             Sessao.empresa = Sessao.empresa!.copyWith(logotipo: imageData.buffer.asUint8List());
+  //           });
+  //           Navigator.pop(context);
+  //         } catch (e) {
+  //           Navigator.pop(context);
+  //           showInSnackBar('Ocorreu um erro ao tentar carregar a imagem', context);
+  //         }
+  //       }
+  //     ),
+  //   );
+  //   listaRetorno.add(
+  //     ListTile(
+  //       leading: const Icon(Icons.file_copy),
+  //       title: const Text('Carregar Imagem'),
+  //       onTap: () async {
+  //         // Documentação: https://github.com/miguelpruivo/flutter_file_picker/wiki
+  //         FilePickerResult? arquivoSelecionado = 
+  //           await FilePicker.platform.pickFiles(
+  //             type: FileType.custom, 
+  //             allowedExtensions: ['jpg, png'],
+  //             dialogTitle: 'Selecione o Logotipo da Empresa'
+  //           );
+  //           if(arquivoSelecionado != null) {
+  //             File file = File(arquivoSelecionado.files.first.path!);
+  //             setState(() {
+  //               Sessao.empresa = Sessao.empresa!.copyWith(logotipo: file.readAsBytesSync());
+  //             });  
+  //             Navigator.pop(context);
+  //           }                          
+  //       },
+  //     ),        
+  //   );
 
-    if (Biblioteca.isMobile()) {
-      listaRetorno.add(
-        ListTile(
-          leading: const Icon(Icons.photo_library),
-          title: const Text('Galeria de Imagens'),
-          onTap: () {
-            _getImagemGaleria();
-            Navigator.of(context).pop();
-          }
-        ),       
-      );
-      listaRetorno.add(
-        ListTile(
-          leading: const Icon(Icons.photo_camera),
-          title: const Text('Câmera'),
-          onTap: () {
-            _getImagemCamera();
-            Navigator.of(context).pop();
-          },
-        ),        
-      );
-    }
-    return listaRetorno;
-  }
+  //   if (Biblioteca.isMobile()) {
+  //     listaRetorno.add(
+  //       ListTile(
+  //         leading: const Icon(Icons.photo_library),
+  //         title: const Text('Galeria de Imagens'),
+  //         onTap: () {
+  //           _getImagemGaleria();
+  //           Navigator.of(context).pop();
+  //         }
+  //       ),       
+  //     );
+  //     listaRetorno.add(
+  //       ListTile(
+  //         leading: const Icon(Icons.photo_camera),
+  //         title: const Text('Câmera'),
+  //         onTap: () {
+  //           _getImagemCamera();
+  //           Navigator.of(context).pop();
+  //         },
+  //       ),        
+  //     );
+  //   }
+  //   return listaRetorno;
+  // }
   
-  _getImagemCamera() async {
-    final pickedFile = await _pickerImagem.pickImage(
-      source: ImageSource.camera, imageQuality: 50
-    );
-    Sessao.empresa = Sessao.empresa!.copyWith(
-      logotipo: await pickedFile?.readAsBytes(),
-    );
-    setState(() {
-    });
-  }
+  // _getImagemCamera() async {
+  //   final pickedFile = await _pickerImagem.pickImage(
+  //     source: ImageSource.camera, imageQuality: 50
+  //   );
+  //   Sessao.empresa = Sessao.empresa!.copyWith(
+  //     logotipo: await pickedFile?.readAsBytes(),
+  //   );
+  //   setState(() {
+  //   });
+  // }
 
-  _getImagemGaleria() async {
-    final pickedFile = await _pickerImagem.pickImage(
-      source: ImageSource.gallery, imageQuality: 50
-    );
-    if (pickedFile != null) {
-      Sessao.empresa = Sessao.empresa!.copyWith(
-        logotipo: await pickedFile.readAsBytes(),
-      );
-      setState(() {
-      });
-    }
-  }
+  // _getImagemGaleria() async {
+  //   final pickedFile = await _pickerImagem.pickImage(
+  //     source: ImageSource.gallery, imageQuality: 50
+  //   );
+  //   if (pickedFile != null) {
+  //     Sessao.empresa = Sessao.empresa!.copyWith(
+  //       logotipo: await pickedFile.readAsBytes(),
+  //     );
+  //     setState(() {
+  //     });
+  //   }
+  // }
 
-  Widget _getEditUrl() {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 10, bottom: 10, left: 0, right: 0),
-          child: TextFormField(
-            controller: _imagemController,
-            decoration: getInputDecoration(
-              'Informe a URL para a imagem',
-              'URL da Imagem',
-              true),
-            onChanged: (text) {
-            },
-          ),
-        ),
-      ],
-    );   
-  }
+  // Widget _getEditUrl() {
+  //   return Column(
+  //     children: [
+  //       Padding(
+  //         padding: const EdgeInsets.only(top: 10, bottom: 10, left: 0, right: 0),
+  //         child: TextFormField(
+  //           controller: _imagemController,
+  //           decoration: getInputDecoration(
+  //             'Informe a URL para a imagem',
+  //             'URL da Imagem',
+  //             true),
+  //           onChanged: (text) {
+  //           },
+  //         ),
+  //       ),
+  //     ],
+  //   );   
+  // }
 
 
 }

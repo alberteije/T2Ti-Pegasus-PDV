@@ -83,6 +83,7 @@ class ProdutoMontado {
   TributGrupoTributario? tributGrupoTributario;
   ProdutoTipo? produtoTipo;
   ProdutoSubgrupo? produtoSubgrupo;
+  Cardapio? cardapio;
 
   ProdutoMontado({
     this.produtoUnidade,
@@ -90,6 +91,7 @@ class ProdutoMontado {
     this.tributGrupoTributario,
     this.produtoTipo,
     this.produtoSubgrupo,
+    this.cardapio,
   });
 }
 

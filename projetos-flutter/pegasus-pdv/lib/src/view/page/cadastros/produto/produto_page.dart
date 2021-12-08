@@ -45,11 +45,13 @@ import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_abas.dart';
 
+import 'cardapio_persiste_page.dart';
 import 'produto_ficha_tecnica_lista_page.dart';
 import 'produto_persiste_page.dart';
 
 List<Aba> _todasAsAbas = <Aba>[];
-List<ProdutoFichaTecnica> listaProdutoFichaTecnica = [];
+List<ProdutoFichaTecnica> listaProdutoFichaTecnica = []; // TODO: é preciso carregar os dados da lista para a tela no momento da consulta
+List<ProdutoImagem> listaProdutoImagem = [];
 
 List<Aba> _getAbasAtivas() {
   List<Aba> retorno = [];
@@ -82,6 +84,8 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
   // Produto
   final GlobalKey<FormState> _produtoPersisteFormKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _produtoPersisteScaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> _cardapioPersisteFormKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _cardapioPersisteScaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -162,6 +166,17 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
         atualizarProdutoCallBack: _atualizarDados,
     )));
     _todasAsAbas.add(Aba(
+      icon: Icons.person,
+      text: 'Cardápio',
+      visible: widget.produtoMontado?.produto?.ippt == 'P',
+      pagina: CardapioPersistePage(
+        formKey: _cardapioPersisteFormKey,
+        scaffoldKey: _cardapioPersisteScaffoldKey,
+        produtoMontado: widget.produtoMontado!,
+        foco: myFocusNode,
+        salvarProdutoCallBack: _salvarProduto,
+    )));
+    _todasAsAbas.add(Aba(
       icon: Icons.group,
       text: 'Ficha Técnica',
       visible: widget.produtoMontado?.produto?.ippt == 'P',
@@ -174,18 +189,20 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
 
   void _atualizarDados() { // serve para atualizar algum dado após alguma ação numa página filha
     if (widget.produtoMontado?.produto?.ippt == 'P') {
-      _abasController = TabController(vsync: this, length: 2);
+      _abasController = TabController(vsync: this, length: 3);
       _todasAsAbas[1].visible = true;
+      _todasAsAbas[2].visible = true;
     } else {
       _abasController = TabController(vsync: this, length: 1);
       _todasAsAbas[1].visible = false;
+      _todasAsAbas[2].visible = false;
     }
     setState(() {
     });
   }
 
   bool _salvarForms() {
-    // valida e salva o form ProdutoDetalhe
+    // valida e salva os forms
     FormState? formProduto = _produtoPersisteFormKey.currentState;
     if (formProduto != null) {
       if (!formProduto.validate()) {
@@ -197,6 +214,16 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
       }
     }
 
+    FormState? formCardapio = _cardapioPersisteFormKey.currentState;
+    if (formCardapio != null) {
+      if (!formCardapio.validate()) {
+        _abasController!.animateTo(1);
+        return false;
+      } else {
+        _cardapioPersisteFormKey.currentState?.save();
+        return true;
+      }
+    }
   	return true;
   }
 
@@ -205,12 +232,12 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
         bool tudoCerto = false;
         if (widget.operacao == 'A') {
-          await Sessao.db.produtoDao.alterar(widget.produtoMontado!.produto!, listaProdutoFichaTecnica);
+          await Sessao.db.produtoDao.alterar(widget.produtoMontado!, listaProdutoFichaTecnica, listaProdutoImagem);
           tudoCerto = true;
         } else {
           final produto = await Sessao.db.produtoDao.consultarObjetoFiltro('GTIN', widget.produtoMontado!.produto!.gtin!);
           if (produto == null) {
-            await Sessao.db.produtoDao.inserir(widget.produtoMontado!.produto!, listaProdutoFichaTecnica);
+            await Sessao.db.produtoDao.inserir(widget.produtoMontado!, listaProdutoFichaTecnica, listaProdutoImagem);
             tudoCerto = true;
           } else {
             showInSnackBar('Já existe um produto cadastrado com o GTIN informado.', context);
@@ -227,7 +254,7 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
 
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-      Sessao.db.produtoDao.excluir(widget.produtoMontado!.produto!);
+      Sessao.db.produtoDao.excluir(widget.produtoMontado!);
       Navigator.of(context).pop();
     },);
   }

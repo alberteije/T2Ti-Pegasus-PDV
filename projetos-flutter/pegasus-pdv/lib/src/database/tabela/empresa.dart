@@ -1220,10 +1220,12 @@ class $EmpresasTable extends Empresas with TableInfo<$EmpresasTable, Empresa> {
           typeName: 'INTEGER', requiredDuringInsert: false);
   final VerificationMeta _logotipoMeta = const VerificationMeta('logotipo');
   GeneratedColumn<Uint8List>? _logotipo;
+  
   @override
   GeneratedColumn<Uint8List> get logotipo =>
       _logotipo ??= GeneratedColumn<Uint8List>('LOGOTIPO', aliasedName, true,
           typeName: 'BLOB', requiredDuringInsert: false);
+
   final VerificationMeta _registradoMeta = const VerificationMeta('registrado');
   GeneratedColumn<bool>? _registrado;
   @override

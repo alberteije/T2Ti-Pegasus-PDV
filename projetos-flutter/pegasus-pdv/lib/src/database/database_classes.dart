@@ -117,6 +117,8 @@ export 'package:pegasus_pdv/src/database/tabela/pdv_venda_detalhe.dart';
 export 'package:pegasus_pdv/src/database/dao/pdv_venda_detalhe_dao.dart';
 export 'package:pegasus_pdv/src/database/tabela/produto.dart';
 export 'package:pegasus_pdv/src/database/dao/produto_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/produto_imagem.dart';
+export 'package:pegasus_pdv/src/database/dao/produto_imagem_dao.dart';
 export 'package:pegasus_pdv/src/database/tabela/produto_ficha_tecnica.dart';
 export 'package:pegasus_pdv/src/database/dao/produto_ficha_tecnica_dao.dart';
 export 'package:pegasus_pdv/src/database/tabela/produto_promocao.dart';

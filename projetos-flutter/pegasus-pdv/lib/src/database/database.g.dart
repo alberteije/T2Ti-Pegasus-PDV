@@ -14,7 +14,6 @@ part of 'database.dart';
 //   final Value<String?> modoPreparo;
 //   final Value<String?> infoAlergico;
 //   final Value<String?> ingredientes;
-//   final Value<String?> fotos;
 //   const CardapiosCompanion({
 //     this.id = const Value.absent(),
 //     this.idProduto = const Value.absent(),
@@ -22,7 +21,6 @@ part of 'database.dart';
 //     this.modoPreparo = const Value.absent(),
 //     this.infoAlergico = const Value.absent(),
 //     this.ingredientes = const Value.absent(),
-//     this.fotos = const Value.absent(),
 //   });
 //   CardapiosCompanion.insert({
 //     this.id = const Value.absent(),
@@ -31,7 +29,6 @@ part of 'database.dart';
 //     this.modoPreparo = const Value.absent(),
 //     this.infoAlergico = const Value.absent(),
 //     this.ingredientes = const Value.absent(),
-//     this.fotos = const Value.absent(),
 //   });
 //   static Insertable<Cardapio> custom({
 //     Expression<int>? id,
@@ -40,7 +37,6 @@ part of 'database.dart';
 //     Expression<String?>? modoPreparo,
 //     Expression<String?>? infoAlergico,
 //     Expression<String?>? ingredientes,
-//     Expression<String?>? fotos,
 //   }) {
 //     return RawValuesInsertable({
 //       if (id != null) 'ID': id,
@@ -49,7 +45,6 @@ part of 'database.dart';
 //       if (modoPreparo != null) 'MODO_PREPARO': modoPreparo,
 //       if (infoAlergico != null) 'INFO_ALERGICO': infoAlergico,
 //       if (ingredientes != null) 'INGREDIENTES': ingredientes,
-//       if (fotos != null) 'FOTOS': fotos,
 //     });
 //   }
 
@@ -59,8 +54,7 @@ part of 'database.dart';
 //       Value<String?>? descricao,
 //       Value<String?>? modoPreparo,
 //       Value<String?>? infoAlergico,
-//       Value<String?>? ingredientes,
-//       Value<String?>? fotos}) {
+//       Value<String?>? ingredientes}) {
 //     return CardapiosCompanion(
 //       id: id ?? this.id,
 //       idProduto: idProduto ?? this.idProduto,
@@ -68,7 +62,6 @@ part of 'database.dart';
 //       modoPreparo: modoPreparo ?? this.modoPreparo,
 //       infoAlergico: infoAlergico ?? this.infoAlergico,
 //       ingredientes: ingredientes ?? this.ingredientes,
-//       fotos: fotos ?? this.fotos,
 //     );
 //   }
 
@@ -93,9 +86,6 @@ part of 'database.dart';
 //     if (ingredientes.present) {
 //       map['INGREDIENTES'] = Variable<String?>(ingredientes.value);
 //     }
-//     if (fotos.present) {
-//       map['FOTOS'] = Variable<String?>(fotos.value);
-//     }
 //     return map;
 //   }
 
@@ -107,8 +97,7 @@ part of 'database.dart';
 //           ..write('descricao: $descricao, ')
 //           ..write('modoPreparo: $modoPreparo, ')
 //           ..write('infoAlergico: $infoAlergico, ')
-//           ..write('ingredientes: $ingredientes, ')
-//           ..write('fotos: $fotos')
+//           ..write('ingredientes: $ingredientes')
 //           ..write(')'))
 //         .toString();
 //   }
@@ -162,23 +151,9 @@ part of 'database.dart';
 //           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 250),
 //       typeName: 'TEXT',
 //       requiredDuringInsert: false);
-//   final VerificationMeta _fotosMeta = const VerificationMeta('fotos');
-//   late final GeneratedColumn<String?> fotos = GeneratedColumn<String?>(
-//       'FOTOS', aliasedName, true,
-//       additionalChecks:
-//           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 250),
-//       typeName: 'TEXT',
-//       requiredDuringInsert: false);
 //   @override
-//   List<GeneratedColumn> get $columns => [
-//         id,
-//         idProduto,
-//         descricao,
-//         modoPreparo,
-//         infoAlergico,
-//         ingredientes,
-//         fotos
-//       ];
+//   List<GeneratedColumn> get $columns =>
+//       [id, idProduto, descricao, modoPreparo, infoAlergico, ingredientes];
 //   @override
 //   String get aliasedName => _alias ?? 'CARDAPIO';
 //   @override
@@ -217,10 +192,6 @@ part of 'database.dart';
 //           ingredientes.isAcceptableOrUnknown(
 //               data['INGREDIENTES']!, _ingredientesMeta));
 //     }
-//     if (data.containsKey('FOTOS')) {
-//       context.handle(
-//           _fotosMeta, fotos.isAcceptableOrUnknown(data['FOTOS']!, _fotosMeta));
-//     }
 //     return context;
 //   }
 
@@ -242,8 +213,6 @@ part of 'database.dart';
 //           .mapFromDatabaseResponse(data['${effectivePrefix}INFO_ALERGICO']),
 //       ingredientes: const StringType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}INGREDIENTES']),
-//       fotos: const StringType()
-//           .mapFromDatabaseResponse(data['${effectivePrefix}FOTOS']),
 //     );
 //   }
 
@@ -14815,7 +14784,6 @@ part of 'database.dart';
 
 // class MesasCompanion extends UpdateCompanion<Mesa> {
 //   final Value<int> id;
-//   final Value<int?> idReserva;
 //   final Value<String?> numero;
 //   final Value<int?> quantidadeCadeiras;
 //   final Value<int?> quantidadeCadeirasCrianca;
@@ -14823,7 +14791,6 @@ part of 'database.dart';
 //   final Value<String?> observacao;
 //   const MesasCompanion({
 //     this.id = const Value.absent(),
-//     this.idReserva = const Value.absent(),
 //     this.numero = const Value.absent(),
 //     this.quantidadeCadeiras = const Value.absent(),
 //     this.quantidadeCadeirasCrianca = const Value.absent(),
@@ -14832,7 +14799,6 @@ part of 'database.dart';
 //   });
 //   MesasCompanion.insert({
 //     this.id = const Value.absent(),
-//     this.idReserva = const Value.absent(),
 //     this.numero = const Value.absent(),
 //     this.quantidadeCadeiras = const Value.absent(),
 //     this.quantidadeCadeirasCrianca = const Value.absent(),
@@ -14841,7 +14807,6 @@ part of 'database.dart';
 //   });
 //   static Insertable<Mesa> custom({
 //     Expression<int>? id,
-//     Expression<int?>? idReserva,
 //     Expression<String?>? numero,
 //     Expression<int?>? quantidadeCadeiras,
 //     Expression<int?>? quantidadeCadeirasCrianca,
@@ -14850,7 +14815,6 @@ part of 'database.dart';
 //   }) {
 //     return RawValuesInsertable({
 //       if (id != null) 'ID': id,
-//       if (idReserva != null) 'ID_RESERVA': idReserva,
 //       if (numero != null) 'NUMERO': numero,
 //       if (quantidadeCadeiras != null) 'QUANTIDADE_CADEIRAS': quantidadeCadeiras,
 //       if (quantidadeCadeirasCrianca != null)
@@ -14862,7 +14826,6 @@ part of 'database.dart';
 
 //   MesasCompanion copyWith(
 //       {Value<int>? id,
-//       Value<int?>? idReserva,
 //       Value<String?>? numero,
 //       Value<int?>? quantidadeCadeiras,
 //       Value<int?>? quantidadeCadeirasCrianca,
@@ -14870,7 +14833,6 @@ part of 'database.dart';
 //       Value<String?>? observacao}) {
 //     return MesasCompanion(
 //       id: id ?? this.id,
-//       idReserva: idReserva ?? this.idReserva,
 //       numero: numero ?? this.numero,
 //       quantidadeCadeiras: quantidadeCadeiras ?? this.quantidadeCadeiras,
 //       quantidadeCadeirasCrianca:
@@ -14885,9 +14847,6 @@ part of 'database.dart';
 //     final map = <String, Expression>{};
 //     if (id.present) {
 //       map['ID'] = Variable<int>(id.value);
-//     }
-//     if (idReserva.present) {
-//       map['ID_RESERVA'] = Variable<int?>(idReserva.value);
 //     }
 //     if (numero.present) {
 //       map['NUMERO'] = Variable<String?>(numero.value);
@@ -14912,7 +14871,6 @@ part of 'database.dart';
 //   String toString() {
 //     return (StringBuffer('MesasCompanion(')
 //           ..write('id: $id, ')
-//           ..write('idReserva: $idReserva, ')
 //           ..write('numero: $numero, ')
 //           ..write('quantidadeCadeiras: $quantidadeCadeiras, ')
 //           ..write('quantidadeCadeirasCrianca: $quantidadeCadeirasCrianca, ')
@@ -14933,12 +14891,6 @@ part of 'database.dart';
 //       typeName: 'INTEGER',
 //       requiredDuringInsert: false,
 //       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
-//   final VerificationMeta _idReservaMeta = const VerificationMeta('idReserva');
-//   late final GeneratedColumn<int?> idReserva = GeneratedColumn<int?>(
-//       'ID_RESERVA', aliasedName, true,
-//       typeName: 'INTEGER',
-//       requiredDuringInsert: false,
-//       $customConstraints: 'NULLABLE REFERENCES RESERVA(ID)');
 //   final VerificationMeta _numeroMeta = const VerificationMeta('numero');
 //   late final GeneratedColumn<String?> numero = GeneratedColumn<String?>(
 //       'NUMERO', aliasedName, true,
@@ -14973,7 +14925,6 @@ part of 'database.dart';
 //   @override
 //   List<GeneratedColumn> get $columns => [
 //         id,
-//         idReserva,
 //         numero,
 //         quantidadeCadeiras,
 //         quantidadeCadeirasCrianca,
@@ -14991,10 +14942,6 @@ part of 'database.dart';
 //     final data = instance.toColumns(true);
 //     if (data.containsKey('ID')) {
 //       context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));
-//     }
-//     if (data.containsKey('ID_RESERVA')) {
-//       context.handle(_idReservaMeta,
-//           idReserva.isAcceptableOrUnknown(data['ID_RESERVA']!, _idReservaMeta));
 //     }
 //     if (data.containsKey('NUMERO')) {
 //       context.handle(_numeroMeta,
@@ -15036,8 +14983,6 @@ part of 'database.dart';
 //     return Mesa(
 //       id: const IntType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}ID'])!,
-//       idReserva: const IntType()
-//           .mapFromDatabaseResponse(data['${effectivePrefix}ID_RESERVA']),
 //       numero: const StringType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}NUMERO']),
 //       quantidadeCadeiras: const IntType().mapFromDatabaseResponse(
@@ -41280,6 +41225,134 @@ part of 'database.dart';
 //   }
 // }
 
+// class ProdutoImagemsCompanion extends UpdateCompanion<ProdutoImagem> {
+//   final Value<int> id;
+//   final Value<int?> idProduto;
+//   final Value<Uint8List?> imagem;
+//   const ProdutoImagemsCompanion({
+//     this.id = const Value.absent(),
+//     this.idProduto = const Value.absent(),
+//     this.imagem = const Value.absent(),
+//   });
+//   ProdutoImagemsCompanion.insert({
+//     this.id = const Value.absent(),
+//     this.idProduto = const Value.absent(),
+//     this.imagem = const Value.absent(),
+//   });
+//   static Insertable<ProdutoImagem> custom({
+//     Expression<int>? id,
+//     Expression<int?>? idProduto,
+//     Expression<Uint8List?>? imagem,
+//   }) {
+//     return RawValuesInsertable({
+//       if (id != null) 'ID': id,
+//       if (idProduto != null) 'ID_PRODUTO': idProduto,
+//       if (imagem != null) 'IMAGEM': imagem,
+//     });
+//   }
+
+//   ProdutoImagemsCompanion copyWith(
+//       {Value<int>? id, Value<int?>? idProduto, Value<Uint8List?>? imagem}) {
+//     return ProdutoImagemsCompanion(
+//       id: id ?? this.id,
+//       idProduto: idProduto ?? this.idProduto,
+//       imagem: imagem ?? this.imagem,
+//     );
+//   }
+
+//   @override
+//   Map<String, Expression> toColumns(bool nullToAbsent) {
+//     final map = <String, Expression>{};
+//     if (id.present) {
+//       map['ID'] = Variable<int>(id.value);
+//     }
+//     if (idProduto.present) {
+//       map['ID_PRODUTO'] = Variable<int?>(idProduto.value);
+//     }
+//     if (imagem.present) {
+//       map['IMAGEM'] = Variable<Uint8List?>(imagem.value);
+//     }
+//     return map;
+//   }
+
+//   @override
+//   String toString() {
+//     return (StringBuffer('ProdutoImagemsCompanion(')
+//           ..write('id: $id, ')
+//           ..write('idProduto: $idProduto, ')
+//           ..write('imagem: $imagem')
+//           ..write(')'))
+//         .toString();
+//   }
+// }
+
+// class $ProdutoImagemsTable extends ProdutoImagems
+//     with TableInfo<$ProdutoImagemsTable, ProdutoImagem> {
+//   final GeneratedDatabase _db;
+//   final String? _alias;
+//   $ProdutoImagemsTable(this._db, [this._alias]);
+//   final VerificationMeta _idMeta = const VerificationMeta('id');
+//   late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+//       'ID', aliasedName, false,
+//       typeName: 'INTEGER',
+//       requiredDuringInsert: false,
+//       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+//   final VerificationMeta _idProdutoMeta = const VerificationMeta('idProduto');
+//   late final GeneratedColumn<int?> idProduto = GeneratedColumn<int?>(
+//       'ID_PRODUTO', aliasedName, true,
+//       typeName: 'INTEGER',
+//       requiredDuringInsert: false,
+//       $customConstraints: 'NULLABLE REFERENCES PRODUTO(ID)');
+//   final VerificationMeta _imagemMeta = const VerificationMeta('imagem');
+//   late final GeneratedColumn<Uint8List?> imagem = GeneratedColumn<Uint8List?>(
+//       'IMAGEM', aliasedName, true,
+//       typeName: 'BLOB', requiredDuringInsert: false);
+//   @override
+//   List<GeneratedColumn> get $columns => [id, idProduto, imagem];
+//   @override
+//   String get aliasedName => _alias ?? 'PRODUTO_IMAGEM';
+//   @override
+//   String get actualTableName => 'PRODUTO_IMAGEM';
+//   @override
+//   VerificationContext validateIntegrity(Insertable<ProdutoImagem> instance,
+//       {bool isInserting = false}) {
+//     final context = VerificationContext();
+//     final data = instance.toColumns(true);
+//     if (data.containsKey('ID')) {
+//       context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));
+//     }
+//     if (data.containsKey('ID_PRODUTO')) {
+//       context.handle(_idProdutoMeta,
+//           idProduto.isAcceptableOrUnknown(data['ID_PRODUTO']!, _idProdutoMeta));
+//     }
+//     if (data.containsKey('IMAGEM')) {
+//       context.handle(_imagemMeta,
+//           imagem.isAcceptableOrUnknown(data['IMAGEM']!, _imagemMeta));
+//     }
+//     return context;
+//   }
+
+//   @override
+//   Set<GeneratedColumn> get $primaryKey => {id};
+//   @override
+//   ProdutoImagem map(Map<String, dynamic> data, {String? tablePrefix}) {
+//     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+//     return ProdutoImagem(
+//       id: const IntType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}ID'])!,
+//       idProduto: const IntType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}ID_PRODUTO']),
+//       imagem: const BlobType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}IMAGEM']),
+//     );
+//   }
+
+//   @override
+//   $ProdutoImagemsTable createAlias(String alias) {
+//     return $ProdutoImagemsTable(_db, alias);
+//   }
+// }
+
 // class ProdutoPromocaosCompanion extends UpdateCompanion<ProdutoPromocao> {
 //   final Value<int> id;
 //   final Value<int?> idProduto;
@@ -45713,6 +45786,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ProdutoFichaTecnicasTable produtoFichaTecnicas =
       $ProdutoFichaTecnicasTable(this);
   late final $ProdutoGruposTable produtoGrupos = $ProdutoGruposTable(this);
+  late final $ProdutoImagemsTable produtoImagems = $ProdutoImagemsTable(this);
   late final $ProdutoPromocaosTable produtoPromocaos =
       $ProdutoPromocaosTable(this);
   late final $ProdutoSubgruposTable produtoSubgrupos =
@@ -45849,6 +45923,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       ProdutoFichaTecnicaDao(this as AppDatabase);
   late final ProdutoGrupoDao produtoGrupoDao =
       ProdutoGrupoDao(this as AppDatabase);
+  late final ProdutoImagemDao produtoImagemDao =
+      ProdutoImagemDao(this as AppDatabase);
   late final ProdutoPromocaoDao produtoPromocaoDao =
       ProdutoPromocaoDao(this as AppDatabase);
   late final ProdutoSubgrupoDao produtoSubgrupoDao =
@@ -45985,6 +46061,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         produtos,
         produtoFichaTecnicas,
         produtoGrupos,
+        produtoImagems,
         produtoPromocaos,
         produtoSubgrupos,
         produtoTipos,
