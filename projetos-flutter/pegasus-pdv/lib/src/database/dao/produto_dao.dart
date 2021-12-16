@@ -51,6 +51,8 @@ part 'produto_dao.g.dart';
           ProdutoFichaTecnicas,
           ProdutoImagems,
           Cardapios,
+          CardapioPerguntaPadraos,
+          CardapioRespostaPadraos,
 		])
 class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
   final AppDatabase db;
@@ -61,12 +63,12 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
   ProdutoDao(this.db) : super(db);
 
   Future<List<Produto>?> consultarLista() async {
-    listaProduto = await select(produtos).get();
+    listaProduto = await (select(produtos)..where((t) => t.situacao.equals('A'))).get();
     return listaProduto;
   }
 
   Future<List<Produto>?> consultarListaFiltro(String campo, String valor) async {
-    listaProduto = await (customSelect("SELECT * FROM PRODUTO WHERE " + campo + " like '%" + valor + "%'", 
+    listaProduto = await (customSelect("SELECT * FROM PRODUTO WHERE " + campo + " like '%" + valor + "%' and SITUACAO='A'", 
                                 readsFrom: { produtos }).map((row) {
                                   return Produto.fromData(row.data, db);  
                                 }).get());
@@ -74,7 +76,7 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
   }
 
   Future<List<Produto>?> consultarProdutoSemGrupoTributario() async {
-    listaProduto = await (customSelect("SELECT * FROM PRODUTO WHERE id_tribut_grupo_tributario is null", 
+    listaProduto = await (customSelect("SELECT * FROM PRODUTO WHERE id_tribut_grupo_tributario is null and SITUACAO='A'", 
                                 readsFrom: { produtos }).map((row) {
                                   return Produto.fromData(row.data, db);  
                                 }).get());
@@ -82,13 +84,13 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
   }  
 
   Future<Produto?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM PRODUTO WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM PRODUTO WHERE " + campo + " = '" + valor + "' and SITUACAO='A'", 
                                 readsFrom: { produtos }).map((row) {
                                   return Produto.fromData(row.data, db);  
                                 }).getSingleOrNull());
   }
 
-  Future<ProdutoMontado?> consultarObjetoMontado(int? pId) async {
+  Future<ProdutoMontado?> consultarObjetoMontado({int? pId, String? campo, dynamic valor}) async {
     final consulta = select(produtos)
       .join([
         leftOuterJoin(produtoUnidades, produtoUnidades.id.equalsExp(produtos.idProdutoUnidade)),
@@ -106,7 +108,22 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
         leftOuterJoin(produtoTipos, produtoTipos.id.equalsExp(produtos.idProdutoTipo)),
       ]);
 
-    consulta.where(produtos.id.equals(pId!));
+    if (pId != null) {
+      consulta.where(produtos.id.equals(pId));
+    }
+
+    if (campo != null && campo != '') {      
+      final coluna = produtos.$columns.where(((coluna) => coluna.$name == campo)).first;
+      if (coluna is TextColumn) {
+        consulta.where((coluna as TextColumn).like('%'  + valor + '%'));
+      } else if (coluna is IntColumn) {
+        consulta.where(coluna.equals(int.tryParse(valor)));
+      } else if (coluna is RealColumn) {
+        consulta.where(coluna.equals(double.tryParse(valor)));
+      }
+    }
+
+    consulta.where(produtos.situacao.equals('A'));
 
     final retorno = await consulta.map((row) {
         final produtoUnidade = row.readTableOrNull(produtoUnidades);
@@ -124,8 +141,13 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
           produtoSubgrupo: produtoSubgrupo, 
           cardapio: cardapio,
         );
-      }).getSingleOrNull();
-    return retorno;
+      }).get();
+
+    if (retorno.length != 1) {
+      return null;
+    } else {
+      return retorno[0];
+    }
   }
 
   Future<List<ProdutoMontado>?> consultarListaMontado({String? campo, dynamic valor, String? status}) async {
@@ -157,6 +179,8 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
       }
     }
 
+    consulta.where(produtos.situacao.equals('A'));
+
     if (status != null) {
       switch (status) {
         case 'Crítico':
@@ -187,7 +211,7 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
   }
 
   Future<int> consultarEstoqueCritico() async {
-    final resultado = await customSelect("select count(*) as QUANTIDADE from produto where QUANTIDADE_ESTOQUE<ESTOQUE_MINIMO").getSingleOrNull();
+    final resultado = await customSelect("select count(*) as QUANTIDADE from produto where QUANTIDADE_ESTOQUE<ESTOQUE_MINIMO and SITUACAO='A'").getSingleOrNull();
     return resultado?.data["QUANTIDADE"] ?? 0;
   }
 
@@ -244,24 +268,47 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
     return (select(produtos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(ProdutoMontado pObjeto, List<ProdutoFichaTecnica> listaProdutoFichaTecnica, List<ProdutoImagem> listaProdutoImagem) {
+  Future<bool> excluir(ProdutoMontado pObjeto) {
+    return transaction(() async {
+      // await excluirFilhos(pObjeto);
+      // return delete(produtos).delete(pObjeto.produto!);
+      return update(produtos).replace(pObjeto.produto!);
+    });    
+  }
+
+  Future<int> inserir(
+    ProdutoMontado pObjeto, 
+    List<ProdutoFichaTecnica> listaProdutoFichaTecnica, 
+    List<ProdutoImagem> listaProdutoImagem,
+    List<CardapioPerguntaPadraoMontado> listaCardapioPerguntaPadraoMontado
+  ) {
     return transaction(() async {
       final idInserido = await into(produtos).insert(pObjeto.produto!);
       pObjeto.produto = pObjeto.produto!.copyWith(id: idInserido);
-      await inserirFilhos(pObjeto, listaProdutoFichaTecnica, listaProdutoImagem);
+      await inserirFilhos(pObjeto, listaProdutoFichaTecnica, listaProdutoImagem, listaCardapioPerguntaPadraoMontado);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(ProdutoMontado pObjeto, List<ProdutoFichaTecnica> listaProdutoFichaTecnica, List<ProdutoImagem> listaProdutoImagem) {
+  Future<bool> alterar(
+    ProdutoMontado pObjeto, 
+    List<ProdutoFichaTecnica> listaProdutoFichaTecnica, 
+    List<ProdutoImagem> listaProdutoImagem,
+    List<CardapioPerguntaPadraoMontado> listaCardapioPerguntaPadraoMontado
+  ) {
     return transaction(() async {
-      await excluirFilhos(pObjeto.produto!.id!);
-      await inserirFilhos(pObjeto, listaProdutoFichaTecnica, listaProdutoImagem);
+      await excluirFilhos(pObjeto);
+      await inserirFilhos(pObjeto, listaProdutoFichaTecnica, listaProdutoImagem, listaCardapioPerguntaPadraoMontado);
       return update(produtos).replace(pObjeto.produto!);
     });    
   } 
 
-  Future<void> inserirFilhos(ProdutoMontado produtoMontado, List<ProdutoFichaTecnica> listaProdutoFichaTecnica, List<ProdutoImagem> listaProdutoImagem) async {
+  Future<void> inserirFilhos(
+    ProdutoMontado produtoMontado, 
+    List<ProdutoFichaTecnica> listaProdutoFichaTecnica, 
+    List<ProdutoImagem> listaProdutoImagem,
+    List<CardapioPerguntaPadraoMontado> listaCardapioPerguntaPadraoMontado
+  ) async {
     for (var objeto in listaProdutoFichaTecnica) {
       objeto = objeto.copyWith(idProduto: produtoMontado.produto!.id);
       await into(produtoFichaTecnicas).insert(objeto);  
@@ -270,23 +317,41 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
       objeto = objeto.copyWith(idProduto: produtoMontado.produto!.id);
       await into(produtoImagems).insert(objeto);  
     }
+    // cardápio
     if (produtoMontado.cardapio != null) {
       produtoMontado.cardapio = produtoMontado.cardapio!.copyWith(idProduto: produtoMontado.produto!.id);
-      await into(cardapios).insert(produtoMontado.cardapio!);
+      final idCardapio = await into(cardapios).insert(produtoMontado.cardapio!);
+
+      // perguntas e respostas
+      for (var perguntaMontado in listaCardapioPerguntaPadraoMontado) {
+        perguntaMontado.cardapioPerguntaPadrao = perguntaMontado.cardapioPerguntaPadrao!.copyWith(idCardapio: idCardapio);
+        final idPerguntaPadrao = await into(cardapioPerguntaPadraos).insert(perguntaMontado.cardapioPerguntaPadrao!);  
+
+        for (var resposta in perguntaMontado.listaCardapioRespostaPadrao) {
+          resposta = resposta.copyWith(idCardapioPerguntaPadrao: idPerguntaPadrao);
+          await into(cardapioRespostaPadraos).insert(resposta);  
+        }      
+      }      
     }
   }
   
-  Future<void> excluirFilhos(int idMestre) async {
-    await (delete(produtoFichaTecnicas)..where((t) => t.idProduto.equals(idMestre))).go();
-    await (delete(produtoImagems)..where((t) => t.idProduto.equals(idMestre))).go();
-    await (delete(cardapios)..where((t) => t.idProduto.equals(idMestre))).go();
-  }
+  Future<void> excluirFilhos(ProdutoMontado produtoMontado,) async {
+    await (delete(produtoFichaTecnicas)..where((t) => t.idProduto.equals(produtoMontado.produto!.id!))).go();
+    await (delete(produtoImagems)..where((t) => t.idProduto.equals(produtoMontado.produto!.id!))).go();
 
-  Future<int> excluir(ProdutoMontado pObjeto) {
-    return transaction(() async {
-      await excluirFilhos(pObjeto.produto!.id!);
-      return delete(produtos).delete(pObjeto.produto!);
-    });    
+    final listaPerguntas = 
+      await (customSelect("SELECT * FROM CARDAPIO_PERGUNTA_PADRAO WHERE ID_CARDAPIO = '" 
+      + (produtoMontado.cardapio?.id?.toString() ?? '') + "'", 
+        readsFrom: { cardapioPerguntaPadraos }).map((row) {
+        return CardapioPerguntaPadrao.fromData(row.data, db);  
+      }).get());
+
+    for (var pergunta in listaPerguntas) {
+      await (delete(cardapioRespostaPadraos)..where((t) => t.idCardapioPerguntaPadrao.equals(pergunta.id!))).go();
+      await (delete(cardapioPerguntaPadraos)..where((t) => t.id.equals(pergunta.id!))).go();
+    }      
+
+    await (delete(cardapios)..where((t) => t.idProduto.equals(produtoMontado.produto!.id!))).go();
   }
 
 	static List<String> campos = <String>[
@@ -300,6 +365,10 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
 		'QUANTIDADE_ESTOQUE', 
 		'ESTOQUE_MINIMO', 
 		'ESTOQUE_MAXIMO', 
+    'CODIGO_NCM', 
+    'CODIGO_CEST', 
+    'IPPT', 
+    'SITUACAO', 
 	];
 	
 	static List<String> colunas = <String>[
@@ -313,6 +382,10 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
 		'Quantidade Estoque', 
 		'Estoque Minimo', 
 		'Estoque Maximo', 
+    'Codigo Ncm', 
+    'Codigo Cest', 
+    'Ippt', 
+    'Situacao', 
 	];
   
 }

@@ -166,6 +166,9 @@ class Rotas {
 			case '/reservaLista':
 			  return MaterialPageRoute(builder: (_) => const ReservaListaPage());
 
+			case '/comandaObservacaoPadraoLista':
+			  return MaterialPageRoute(builder: (_) => const ComandaObservacaoPadraoListaPage());
+			  
       ////////////////////////////////////////////////////////// 
       /// DELIVERY
       //////////////////////////////////////////////////////////

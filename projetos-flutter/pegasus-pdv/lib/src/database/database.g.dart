@@ -10,14 +10,12 @@ part of 'database.dart';
 // class CardapiosCompanion extends UpdateCompanion<Cardapio> {
 //   final Value<int> id;
 //   final Value<int?> idProduto;
-//   final Value<String?> descricao;
 //   final Value<String?> modoPreparo;
 //   final Value<String?> infoAlergico;
 //   final Value<String?> ingredientes;
 //   const CardapiosCompanion({
 //     this.id = const Value.absent(),
 //     this.idProduto = const Value.absent(),
-//     this.descricao = const Value.absent(),
 //     this.modoPreparo = const Value.absent(),
 //     this.infoAlergico = const Value.absent(),
 //     this.ingredientes = const Value.absent(),
@@ -25,7 +23,6 @@ part of 'database.dart';
 //   CardapiosCompanion.insert({
 //     this.id = const Value.absent(),
 //     this.idProduto = const Value.absent(),
-//     this.descricao = const Value.absent(),
 //     this.modoPreparo = const Value.absent(),
 //     this.infoAlergico = const Value.absent(),
 //     this.ingredientes = const Value.absent(),
@@ -33,7 +30,6 @@ part of 'database.dart';
 //   static Insertable<Cardapio> custom({
 //     Expression<int>? id,
 //     Expression<int?>? idProduto,
-//     Expression<String?>? descricao,
 //     Expression<String?>? modoPreparo,
 //     Expression<String?>? infoAlergico,
 //     Expression<String?>? ingredientes,
@@ -41,7 +37,6 @@ part of 'database.dart';
 //     return RawValuesInsertable({
 //       if (id != null) 'ID': id,
 //       if (idProduto != null) 'ID_PRODUTO': idProduto,
-//       if (descricao != null) 'DESCRICAO': descricao,
 //       if (modoPreparo != null) 'MODO_PREPARO': modoPreparo,
 //       if (infoAlergico != null) 'INFO_ALERGICO': infoAlergico,
 //       if (ingredientes != null) 'INGREDIENTES': ingredientes,
@@ -51,14 +46,12 @@ part of 'database.dart';
 //   CardapiosCompanion copyWith(
 //       {Value<int>? id,
 //       Value<int?>? idProduto,
-//       Value<String?>? descricao,
 //       Value<String?>? modoPreparo,
 //       Value<String?>? infoAlergico,
 //       Value<String?>? ingredientes}) {
 //     return CardapiosCompanion(
 //       id: id ?? this.id,
 //       idProduto: idProduto ?? this.idProduto,
-//       descricao: descricao ?? this.descricao,
 //       modoPreparo: modoPreparo ?? this.modoPreparo,
 //       infoAlergico: infoAlergico ?? this.infoAlergico,
 //       ingredientes: ingredientes ?? this.ingredientes,
@@ -73,9 +66,6 @@ part of 'database.dart';
 //     }
 //     if (idProduto.present) {
 //       map['ID_PRODUTO'] = Variable<int?>(idProduto.value);
-//     }
-//     if (descricao.present) {
-//       map['DESCRICAO'] = Variable<String?>(descricao.value);
 //     }
 //     if (modoPreparo.present) {
 //       map['MODO_PREPARO'] = Variable<String?>(modoPreparo.value);
@@ -94,7 +84,6 @@ part of 'database.dart';
 //     return (StringBuffer('CardapiosCompanion(')
 //           ..write('id: $id, ')
 //           ..write('idProduto: $idProduto, ')
-//           ..write('descricao: $descricao, ')
 //           ..write('modoPreparo: $modoPreparo, ')
 //           ..write('infoAlergico: $infoAlergico, ')
 //           ..write('ingredientes: $ingredientes')
@@ -120,13 +109,6 @@ part of 'database.dart';
 //       typeName: 'INTEGER',
 //       requiredDuringInsert: false,
 //       $customConstraints: 'NULLABLE REFERENCES PRODUTO(ID)');
-//   final VerificationMeta _descricaoMeta = const VerificationMeta('descricao');
-//   late final GeneratedColumn<String?> descricao = GeneratedColumn<String?>(
-//       'DESCRICAO', aliasedName, true,
-//       additionalChecks:
-//           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 250),
-//       typeName: 'TEXT',
-//       requiredDuringInsert: false);
 //   final VerificationMeta _modoPreparoMeta =
 //       const VerificationMeta('modoPreparo');
 //   late final GeneratedColumn<String?> modoPreparo = GeneratedColumn<String?>(
@@ -153,7 +135,7 @@ part of 'database.dart';
 //       requiredDuringInsert: false);
 //   @override
 //   List<GeneratedColumn> get $columns =>
-//       [id, idProduto, descricao, modoPreparo, infoAlergico, ingredientes];
+//       [id, idProduto, modoPreparo, infoAlergico, ingredientes];
 //   @override
 //   String get aliasedName => _alias ?? 'CARDAPIO';
 //   @override
@@ -169,10 +151,6 @@ part of 'database.dart';
 //     if (data.containsKey('ID_PRODUTO')) {
 //       context.handle(_idProdutoMeta,
 //           idProduto.isAcceptableOrUnknown(data['ID_PRODUTO']!, _idProdutoMeta));
-//     }
-//     if (data.containsKey('DESCRICAO')) {
-//       context.handle(_descricaoMeta,
-//           descricao.isAcceptableOrUnknown(data['DESCRICAO']!, _descricaoMeta));
 //     }
 //     if (data.containsKey('MODO_PREPARO')) {
 //       context.handle(
@@ -205,8 +183,6 @@ part of 'database.dart';
 //           .mapFromDatabaseResponse(data['${effectivePrefix}ID'])!,
 //       idProduto: const IntType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}ID_PRODUTO']),
-//       descricao: const StringType()
-//           .mapFromDatabaseResponse(data['${effectivePrefix}DESCRICAO']),
 //       modoPreparo: const StringType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}MODO_PREPARO']),
 //       infoAlergico: const StringType()
@@ -2193,7 +2169,7 @@ part of 'database.dart';
 // class ComandaDetalhesCompanion extends UpdateCompanion<ComandaDetalhe> {
 //   final Value<int> id;
 //   final Value<int?> idComanda;
-//   final Value<int?> idCardapio;
+//   final Value<int?> idProduto;
 //   final Value<double?> quantidade;
 //   final Value<double?> valorUnitario;
 //   final Value<double?> valorTotal;
@@ -2202,7 +2178,7 @@ part of 'database.dart';
 //   const ComandaDetalhesCompanion({
 //     this.id = const Value.absent(),
 //     this.idComanda = const Value.absent(),
-//     this.idCardapio = const Value.absent(),
+//     this.idProduto = const Value.absent(),
 //     this.quantidade = const Value.absent(),
 //     this.valorUnitario = const Value.absent(),
 //     this.valorTotal = const Value.absent(),
@@ -2212,7 +2188,7 @@ part of 'database.dart';
 //   ComandaDetalhesCompanion.insert({
 //     this.id = const Value.absent(),
 //     this.idComanda = const Value.absent(),
-//     this.idCardapio = const Value.absent(),
+//     this.idProduto = const Value.absent(),
 //     this.quantidade = const Value.absent(),
 //     this.valorUnitario = const Value.absent(),
 //     this.valorTotal = const Value.absent(),
@@ -2222,7 +2198,7 @@ part of 'database.dart';
 //   static Insertable<ComandaDetalhe> custom({
 //     Expression<int>? id,
 //     Expression<int?>? idComanda,
-//     Expression<int?>? idCardapio,
+//     Expression<int?>? idProduto,
 //     Expression<double?>? quantidade,
 //     Expression<double?>? valorUnitario,
 //     Expression<double?>? valorTotal,
@@ -2232,7 +2208,7 @@ part of 'database.dart';
 //     return RawValuesInsertable({
 //       if (id != null) 'ID': id,
 //       if (idComanda != null) 'ID_COMANDA': idComanda,
-//       if (idCardapio != null) 'ID_CARDAPIO': idCardapio,
+//       if (idProduto != null) 'ID_PRODUTO': idProduto,
 //       if (quantidade != null) 'QUANTIDADE': quantidade,
 //       if (valorUnitario != null) 'VALOR_UNITARIO': valorUnitario,
 //       if (valorTotal != null) 'VALOR_TOTAL': valorTotal,
@@ -2245,7 +2221,7 @@ part of 'database.dart';
 //   ComandaDetalhesCompanion copyWith(
 //       {Value<int>? id,
 //       Value<int?>? idComanda,
-//       Value<int?>? idCardapio,
+//       Value<int?>? idProduto,
 //       Value<double?>? quantidade,
 //       Value<double?>? valorUnitario,
 //       Value<double?>? valorTotal,
@@ -2254,7 +2230,7 @@ part of 'database.dart';
 //     return ComandaDetalhesCompanion(
 //       id: id ?? this.id,
 //       idComanda: idComanda ?? this.idComanda,
-//       idCardapio: idCardapio ?? this.idCardapio,
+//       idProduto: idProduto ?? this.idProduto,
 //       quantidade: quantidade ?? this.quantidade,
 //       valorUnitario: valorUnitario ?? this.valorUnitario,
 //       valorTotal: valorTotal ?? this.valorTotal,
@@ -2272,8 +2248,8 @@ part of 'database.dart';
 //     if (idComanda.present) {
 //       map['ID_COMANDA'] = Variable<int?>(idComanda.value);
 //     }
-//     if (idCardapio.present) {
-//       map['ID_CARDAPIO'] = Variable<int?>(idCardapio.value);
+//     if (idProduto.present) {
+//       map['ID_PRODUTO'] = Variable<int?>(idProduto.value);
 //     }
 //     if (quantidade.present) {
 //       map['QUANTIDADE'] = Variable<double?>(quantidade.value);
@@ -2298,7 +2274,7 @@ part of 'database.dart';
 //     return (StringBuffer('ComandaDetalhesCompanion(')
 //           ..write('id: $id, ')
 //           ..write('idComanda: $idComanda, ')
-//           ..write('idCardapio: $idCardapio, ')
+//           ..write('idProduto: $idProduto, ')
 //           ..write('quantidade: $quantidade, ')
 //           ..write('valorUnitario: $valorUnitario, ')
 //           ..write('valorTotal: $valorTotal, ')
@@ -2326,12 +2302,12 @@ part of 'database.dart';
 //       typeName: 'INTEGER',
 //       requiredDuringInsert: false,
 //       $customConstraints: 'NULLABLE REFERENCES COMANDA(ID)');
-//   final VerificationMeta _idCardapioMeta = const VerificationMeta('idCardapio');
-//   late final GeneratedColumn<int?> idCardapio = GeneratedColumn<int?>(
-//       'ID_CARDAPIO', aliasedName, true,
+//   final VerificationMeta _idProdutoMeta = const VerificationMeta('idProduto');
+//   late final GeneratedColumn<int?> idProduto = GeneratedColumn<int?>(
+//       'ID_PRODUTO', aliasedName, true,
 //       typeName: 'INTEGER',
 //       requiredDuringInsert: false,
-//       $customConstraints: 'NULLABLE REFERENCES CARDAPIO(ID)');
+//       $customConstraints: 'NULLABLE REFERENCES PRODUTO(ID)');
 //   final VerificationMeta _quantidadeMeta = const VerificationMeta('quantidade');
 //   late final GeneratedColumn<double?> quantidade = GeneratedColumn<double?>(
 //       'QUANTIDADE', aliasedName, true,
@@ -2365,7 +2341,7 @@ part of 'database.dart';
 //   List<GeneratedColumn> get $columns => [
 //         id,
 //         idComanda,
-//         idCardapio,
+//         idProduto,
 //         quantidade,
 //         valorUnitario,
 //         valorTotal,
@@ -2388,11 +2364,9 @@ part of 'database.dart';
 //       context.handle(_idComandaMeta,
 //           idComanda.isAcceptableOrUnknown(data['ID_COMANDA']!, _idComandaMeta));
 //     }
-//     if (data.containsKey('ID_CARDAPIO')) {
-//       context.handle(
-//           _idCardapioMeta,
-//           idCardapio.isAcceptableOrUnknown(
-//               data['ID_CARDAPIO']!, _idCardapioMeta));
+//     if (data.containsKey('ID_PRODUTO')) {
+//       context.handle(_idProdutoMeta,
+//           idProduto.isAcceptableOrUnknown(data['ID_PRODUTO']!, _idProdutoMeta));
 //     }
 //     if (data.containsKey('QUANTIDADE')) {
 //       context.handle(
@@ -2437,8 +2411,8 @@ part of 'database.dart';
 //           .mapFromDatabaseResponse(data['${effectivePrefix}ID'])!,
 //       idComanda: const IntType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}ID_COMANDA']),
-//       idCardapio: const IntType()
-//           .mapFromDatabaseResponse(data['${effectivePrefix}ID_CARDAPIO']),
+//       idProduto: const IntType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}ID_PRODUTO']),
 //       quantidade: const RealType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}QUANTIDADE']),
 //       valorUnitario: const RealType()
@@ -2455,6 +2429,216 @@ part of 'database.dart';
 //   @override
 //   $ComandaDetalhesTable createAlias(String alias) {
 //     return $ComandaDetalhesTable(_db, alias);
+//   }
+// }
+
+// class ComandaDetalheComplementosCompanion
+//     extends UpdateCompanion<ComandaDetalheComplemento> {
+//   final Value<int> id;
+//   final Value<int?> idComandaDetalhe;
+//   final Value<int?> idProduto;
+//   final Value<double?> quantidade;
+//   final Value<double?> valorUnitario;
+//   final Value<double?> valorTotal;
+//   const ComandaDetalheComplementosCompanion({
+//     this.id = const Value.absent(),
+//     this.idComandaDetalhe = const Value.absent(),
+//     this.idProduto = const Value.absent(),
+//     this.quantidade = const Value.absent(),
+//     this.valorUnitario = const Value.absent(),
+//     this.valorTotal = const Value.absent(),
+//   });
+//   ComandaDetalheComplementosCompanion.insert({
+//     this.id = const Value.absent(),
+//     this.idComandaDetalhe = const Value.absent(),
+//     this.idProduto = const Value.absent(),
+//     this.quantidade = const Value.absent(),
+//     this.valorUnitario = const Value.absent(),
+//     this.valorTotal = const Value.absent(),
+//   });
+//   static Insertable<ComandaDetalheComplemento> custom({
+//     Expression<int>? id,
+//     Expression<int?>? idComandaDetalhe,
+//     Expression<int?>? idProduto,
+//     Expression<double?>? quantidade,
+//     Expression<double?>? valorUnitario,
+//     Expression<double?>? valorTotal,
+//   }) {
+//     return RawValuesInsertable({
+//       if (id != null) 'ID': id,
+//       if (idComandaDetalhe != null) 'ID_COMANDA_DETALHE': idComandaDetalhe,
+//       if (idProduto != null) 'ID_PRODUTO': idProduto,
+//       if (quantidade != null) 'QUANTIDADE': quantidade,
+//       if (valorUnitario != null) 'VALOR_UNITARIO': valorUnitario,
+//       if (valorTotal != null) 'VALOR_TOTAL': valorTotal,
+//     });
+//   }
+
+//   ComandaDetalheComplementosCompanion copyWith(
+//       {Value<int>? id,
+//       Value<int?>? idComandaDetalhe,
+//       Value<int?>? idProduto,
+//       Value<double?>? quantidade,
+//       Value<double?>? valorUnitario,
+//       Value<double?>? valorTotal}) {
+//     return ComandaDetalheComplementosCompanion(
+//       id: id ?? this.id,
+//       idComandaDetalhe: idComandaDetalhe ?? this.idComandaDetalhe,
+//       idProduto: idProduto ?? this.idProduto,
+//       quantidade: quantidade ?? this.quantidade,
+//       valorUnitario: valorUnitario ?? this.valorUnitario,
+//       valorTotal: valorTotal ?? this.valorTotal,
+//     );
+//   }
+
+//   @override
+//   Map<String, Expression> toColumns(bool nullToAbsent) {
+//     final map = <String, Expression>{};
+//     if (id.present) {
+//       map['ID'] = Variable<int>(id.value);
+//     }
+//     if (idComandaDetalhe.present) {
+//       map['ID_COMANDA_DETALHE'] = Variable<int?>(idComandaDetalhe.value);
+//     }
+//     if (idProduto.present) {
+//       map['ID_PRODUTO'] = Variable<int?>(idProduto.value);
+//     }
+//     if (quantidade.present) {
+//       map['QUANTIDADE'] = Variable<double?>(quantidade.value);
+//     }
+//     if (valorUnitario.present) {
+//       map['VALOR_UNITARIO'] = Variable<double?>(valorUnitario.value);
+//     }
+//     if (valorTotal.present) {
+//       map['VALOR_TOTAL'] = Variable<double?>(valorTotal.value);
+//     }
+//     return map;
+//   }
+
+//   @override
+//   String toString() {
+//     return (StringBuffer('ComandaDetalheComplementosCompanion(')
+//           ..write('id: $id, ')
+//           ..write('idComandaDetalhe: $idComandaDetalhe, ')
+//           ..write('idProduto: $idProduto, ')
+//           ..write('quantidade: $quantidade, ')
+//           ..write('valorUnitario: $valorUnitario, ')
+//           ..write('valorTotal: $valorTotal')
+//           ..write(')'))
+//         .toString();
+//   }
+// }
+
+// class $ComandaDetalheComplementosTable extends ComandaDetalheComplementos
+//     with
+//         TableInfo<$ComandaDetalheComplementosTable, ComandaDetalheComplemento> {
+//   final GeneratedDatabase _db;
+//   final String? _alias;
+//   $ComandaDetalheComplementosTable(this._db, [this._alias]);
+//   final VerificationMeta _idMeta = const VerificationMeta('id');
+//   late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+//       'ID', aliasedName, false,
+//       typeName: 'INTEGER',
+//       requiredDuringInsert: false,
+//       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+//   final VerificationMeta _idComandaDetalheMeta =
+//       const VerificationMeta('idComandaDetalhe');
+//   late final GeneratedColumn<int?> idComandaDetalhe = GeneratedColumn<int?>(
+//       'ID_COMANDA_DETALHE', aliasedName, true,
+//       typeName: 'INTEGER',
+//       requiredDuringInsert: false,
+//       $customConstraints: 'NULLABLE REFERENCES COMANDA_DETALHE(ID)');
+//   final VerificationMeta _idProdutoMeta = const VerificationMeta('idProduto');
+//   late final GeneratedColumn<int?> idProduto = GeneratedColumn<int?>(
+//       'ID_PRODUTO', aliasedName, true,
+//       typeName: 'INTEGER',
+//       requiredDuringInsert: false,
+//       $customConstraints: 'NULLABLE REFERENCES PRODUTO(ID)');
+//   final VerificationMeta _quantidadeMeta = const VerificationMeta('quantidade');
+//   late final GeneratedColumn<double?> quantidade = GeneratedColumn<double?>(
+//       'QUANTIDADE', aliasedName, true,
+//       typeName: 'REAL', requiredDuringInsert: false);
+//   final VerificationMeta _valorUnitarioMeta =
+//       const VerificationMeta('valorUnitario');
+//   late final GeneratedColumn<double?> valorUnitario = GeneratedColumn<double?>(
+//       'VALOR_UNITARIO', aliasedName, true,
+//       typeName: 'REAL', requiredDuringInsert: false);
+//   final VerificationMeta _valorTotalMeta = const VerificationMeta('valorTotal');
+//   late final GeneratedColumn<double?> valorTotal = GeneratedColumn<double?>(
+//       'VALOR_TOTAL', aliasedName, true,
+//       typeName: 'REAL', requiredDuringInsert: false);
+//   @override
+//   List<GeneratedColumn> get $columns =>
+//       [id, idComandaDetalhe, idProduto, quantidade, valorUnitario, valorTotal];
+//   @override
+//   String get aliasedName => _alias ?? 'COMANDA_DETALHE_COMPLEMENTO';
+//   @override
+//   String get actualTableName => 'COMANDA_DETALHE_COMPLEMENTO';
+//   @override
+//   VerificationContext validateIntegrity(
+//       Insertable<ComandaDetalheComplemento> instance,
+//       {bool isInserting = false}) {
+//     final context = VerificationContext();
+//     final data = instance.toColumns(true);
+//     if (data.containsKey('ID')) {
+//       context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));
+//     }
+//     if (data.containsKey('ID_COMANDA_DETALHE')) {
+//       context.handle(
+//           _idComandaDetalheMeta,
+//           idComandaDetalhe.isAcceptableOrUnknown(
+//               data['ID_COMANDA_DETALHE']!, _idComandaDetalheMeta));
+//     }
+//     if (data.containsKey('ID_PRODUTO')) {
+//       context.handle(_idProdutoMeta,
+//           idProduto.isAcceptableOrUnknown(data['ID_PRODUTO']!, _idProdutoMeta));
+//     }
+//     if (data.containsKey('QUANTIDADE')) {
+//       context.handle(
+//           _quantidadeMeta,
+//           quantidade.isAcceptableOrUnknown(
+//               data['QUANTIDADE']!, _quantidadeMeta));
+//     }
+//     if (data.containsKey('VALOR_UNITARIO')) {
+//       context.handle(
+//           _valorUnitarioMeta,
+//           valorUnitario.isAcceptableOrUnknown(
+//               data['VALOR_UNITARIO']!, _valorUnitarioMeta));
+//     }
+//     if (data.containsKey('VALOR_TOTAL')) {
+//       context.handle(
+//           _valorTotalMeta,
+//           valorTotal.isAcceptableOrUnknown(
+//               data['VALOR_TOTAL']!, _valorTotalMeta));
+//     }
+//     return context;
+//   }
+
+//   @override
+//   Set<GeneratedColumn> get $primaryKey => {id};
+//   @override
+//   ComandaDetalheComplemento map(Map<String, dynamic> data,
+//       {String? tablePrefix}) {
+//     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+//     return ComandaDetalheComplemento(
+//       id: const IntType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}ID'])!,
+//       idComandaDetalhe: const IntType().mapFromDatabaseResponse(
+//           data['${effectivePrefix}ID_COMANDA_DETALHE']),
+//       idProduto: const IntType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}ID_PRODUTO']),
+//       quantidade: const RealType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}QUANTIDADE']),
+//       valorUnitario: const RealType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}VALOR_UNITARIO']),
+//       valorTotal: const RealType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}VALOR_TOTAL']),
+//     );
+//   }
+
+//   @override
+//   $ComandaDetalheComplementosTable createAlias(String alias) {
+//     return $ComandaDetalheComplementosTable(_db, alias);
 //   }
 // }
 
@@ -40009,6 +40193,8 @@ part of 'database.dart';
 //   final Value<String?> pafPSt;
 //   final Value<String?> hashRegistro;
 //   final Value<double?> valorCusto;
+//   final Value<String?> situacao;
+//   final Value<String?> codigoCest;
 //   const ProdutosCompanion({
 //     this.id = const Value.absent(),
 //     this.idProdutoUnidade = const Value.absent(),
@@ -40042,6 +40228,8 @@ part of 'database.dart';
 //     this.pafPSt = const Value.absent(),
 //     this.hashRegistro = const Value.absent(),
 //     this.valorCusto = const Value.absent(),
+//     this.situacao = const Value.absent(),
+//     this.codigoCest = const Value.absent(),
 //   });
 //   ProdutosCompanion.insert({
 //     this.id = const Value.absent(),
@@ -40076,6 +40264,8 @@ part of 'database.dart';
 //     this.pafPSt = const Value.absent(),
 //     this.hashRegistro = const Value.absent(),
 //     this.valorCusto = const Value.absent(),
+//     this.situacao = const Value.absent(),
+//     this.codigoCest = const Value.absent(),
 //   });
 //   static Insertable<Produto> custom({
 //     Expression<int>? id,
@@ -40110,6 +40300,8 @@ part of 'database.dart';
 //     Expression<String?>? pafPSt,
 //     Expression<String?>? hashRegistro,
 //     Expression<double?>? valorCusto,
+//     Expression<String?>? situacao,
+//     Expression<String?>? codigoCest,
 //   }) {
 //     return RawValuesInsertable({
 //       if (id != null) 'ID': id,
@@ -40145,6 +40337,8 @@ part of 'database.dart';
 //       if (pafPSt != null) 'PAF_P_ST': pafPSt,
 //       if (hashRegistro != null) 'HASH_REGISTRO': hashRegistro,
 //       if (valorCusto != null) 'VALOR_CUSTO': valorCusto,
+//       if (situacao != null) 'SITUACAO': situacao,
+//       if (codigoCest != null) 'CODIGO_CEST': codigoCest,
 //     });
 //   }
 
@@ -40180,7 +40374,9 @@ part of 'database.dart';
 //       Value<int?>? codigoBalanca,
 //       Value<String?>? pafPSt,
 //       Value<String?>? hashRegistro,
-//       Value<double?>? valorCusto}) {
+//       Value<double?>? valorCusto,
+//       Value<String?>? situacao,
+//       Value<String?>? codigoCest}) {
 //     return ProdutosCompanion(
 //       id: id ?? this.id,
 //       idProdutoUnidade: idProdutoUnidade ?? this.idProdutoUnidade,
@@ -40215,6 +40411,8 @@ part of 'database.dart';
 //       pafPSt: pafPSt ?? this.pafPSt,
 //       hashRegistro: hashRegistro ?? this.hashRegistro,
 //       valorCusto: valorCusto ?? this.valorCusto,
+//       situacao: situacao ?? this.situacao,
+//       codigoCest: codigoCest ?? this.codigoCest,
 //     );
 //   }
 
@@ -40318,6 +40516,12 @@ part of 'database.dart';
 //     if (valorCusto.present) {
 //       map['VALOR_CUSTO'] = Variable<double?>(valorCusto.value);
 //     }
+//     if (situacao.present) {
+//       map['SITUACAO'] = Variable<String?>(situacao.value);
+//     }
+//     if (codigoCest.present) {
+//       map['CODIGO_CEST'] = Variable<String?>(codigoCest.value);
+//     }
 //     return map;
 //   }
 
@@ -40355,7 +40559,9 @@ part of 'database.dart';
 //           ..write('codigoBalanca: $codigoBalanca, ')
 //           ..write('pafPSt: $pafPSt, ')
 //           ..write('hashRegistro: $hashRegistro, ')
-//           ..write('valorCusto: $valorCusto')
+//           ..write('valorCusto: $valorCusto, ')
+//           ..write('situacao: $situacao, ')
+//           ..write('codigoCest: $codigoCest')
 //           ..write(')'))
 //         .toString();
 //   }
@@ -40564,6 +40770,20 @@ part of 'database.dart';
 //   late final GeneratedColumn<double?> valorCusto = GeneratedColumn<double?>(
 //       'VALOR_CUSTO', aliasedName, true,
 //       typeName: 'REAL', requiredDuringInsert: false);
+//   final VerificationMeta _situacaoMeta = const VerificationMeta('situacao');
+//   late final GeneratedColumn<String?> situacao = GeneratedColumn<String?>(
+//       'SITUACAO', aliasedName, true,
+//       additionalChecks:
+//           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 1),
+//       typeName: 'TEXT',
+//       requiredDuringInsert: false);
+//   final VerificationMeta _codigoCestMeta = const VerificationMeta('codigoCest');
+//   late final GeneratedColumn<String?> codigoCest = GeneratedColumn<String?>(
+//       'CODIGO_CEST', aliasedName, true,
+//       additionalChecks:
+//           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 7),
+//       typeName: 'TEXT',
+//       requiredDuringInsert: false);
 //   @override
 //   List<GeneratedColumn> get $columns => [
 //         id,
@@ -40597,7 +40817,9 @@ part of 'database.dart';
 //         codigoBalanca,
 //         pafPSt,
 //         hashRegistro,
-//         valorCusto
+//         valorCusto,
+//         situacao,
+//         codigoCest
 //       ];
 //   @override
 //   String get aliasedName => _alias ?? 'PRODUTO';
@@ -40772,6 +40994,16 @@ part of 'database.dart';
 //           valorCusto.isAcceptableOrUnknown(
 //               data['VALOR_CUSTO']!, _valorCustoMeta));
 //     }
+//     if (data.containsKey('SITUACAO')) {
+//       context.handle(_situacaoMeta,
+//           situacao.isAcceptableOrUnknown(data['SITUACAO']!, _situacaoMeta));
+//     }
+//     if (data.containsKey('CODIGO_CEST')) {
+//       context.handle(
+//           _codigoCestMeta,
+//           codigoCest.isAcceptableOrUnknown(
+//               data['CODIGO_CEST']!, _codigoCestMeta));
+//     }
 //     return context;
 //   }
 
@@ -40845,6 +41077,10 @@ part of 'database.dart';
 //           .mapFromDatabaseResponse(data['${effectivePrefix}HASH_REGISTRO']),
 //       valorCusto: const RealType()
 //           .mapFromDatabaseResponse(data['${effectivePrefix}VALOR_CUSTO']),
+//       situacao: const StringType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}SITUACAO']),
+//       codigoCest: const StringType()
+//           .mapFromDatabaseResponse(data['${effectivePrefix}CODIGO_CEST']),
 //     );
 //   }
 
@@ -45629,6 +45865,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ComandasTable comandas = $ComandasTable(this);
   late final $ComandaDetalhesTable comandaDetalhes =
       $ComandaDetalhesTable(this);
+  late final $ComandaDetalheComplementosTable comandaDetalheComplementos =
+      $ComandaDetalheComplementosTable(this);
   late final $ComandaObservacaoPadraosTable comandaObservacaoPadraos =
       $ComandaObservacaoPadraosTable(this);
   late final $ComandaPedidosTable comandaPedidos = $ComandaPedidosTable(this);
@@ -45824,6 +46062,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final ComandaDao comandaDao = ComandaDao(this as AppDatabase);
   late final ComandaDetalheDao comandaDetalheDao =
       ComandaDetalheDao(this as AppDatabase);
+  late final ComandaDetalheComplementoDao comandaDetalheComplementoDao =
+      ComandaDetalheComplementoDao(this as AppDatabase);
   late final ComandaObservacaoPadraoDao comandaObservacaoPadraoDao =
       ComandaObservacaoPadraoDao(this as AppDatabase);
   late final ComandaPedidoDao comandaPedidoDao =
@@ -45963,6 +46203,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         colaboradors,
         comandas,
         comandaDetalhes,
+        comandaDetalheComplementos,
         comandaObservacaoPadraos,
         comandaPedidos,
         compraPedidoCabecalhos,

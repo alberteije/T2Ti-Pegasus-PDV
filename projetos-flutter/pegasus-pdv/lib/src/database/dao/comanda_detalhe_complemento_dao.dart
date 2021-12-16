@@ -1,6 +1,6 @@
 /*
 Title: T2Ti ERP Pegasus                                                                
-Description: DAO relacionado à tabela [PRODUTO_FICHA_TECNICA] 
+Description: DAO relacionado à tabela [COMANDA_DETALHE_COMPLEMENTO] 
                                                                                 
 The MIT License                                                                 
                                                                                 
@@ -38,60 +38,60 @@ import 'package:moor/moor.dart';
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
-part 'produto_ficha_tecnica_dao.g.dart';
+part 'comanda_detalhe_complemento_dao.g.dart';
 
 @UseDao(tables: [
-          ProdutoFichaTecnicas,
+          ComandaDetalheComplementos,
 		])
-class ProdutoFichaTecnicaDao extends DatabaseAccessor<AppDatabase> with _$ProdutoFichaTecnicaDaoMixin {
+class ComandaDetalheComplementoDao extends DatabaseAccessor<AppDatabase> with _$ComandaDetalheComplementoDaoMixin {
   final AppDatabase db;
 
-  ProdutoFichaTecnicaDao(this.db) : super(db);
+  ComandaDetalheComplementoDao(this.db) : super(db);
 
-  List<ProdutoFichaTecnica> listaProdutoFichaTecnica = []; 
+  List<ComandaDetalheComplemento>? listaComandaDetalheComplemento; 
   
-  Future<List<ProdutoFichaTecnica>> consultarLista() async {
-    listaProdutoFichaTecnica = await select(produtoFichaTecnicas).get();
-    return listaProdutoFichaTecnica;
+  Future<List<ComandaDetalheComplemento>?> consultarLista() async {
+    listaComandaDetalheComplemento = await select(comandaDetalheComplementos).get();
+    return listaComandaDetalheComplemento;
   }  
 
-  Future<List<ProdutoFichaTecnica>> consultarListaFiltro(String campo, String valor) async {
-    listaProdutoFichaTecnica = await (customSelect("SELECT * FROM PRODUTO_FICHA_TECNICA WHERE " + campo + " like '%" + valor + "%'", 
-                                readsFrom: { produtoFichaTecnicas }).map((row) {
-                                  return ProdutoFichaTecnica.fromData(row.data, db);  
+  Future<List<ComandaDetalheComplemento>?> consultarListaFiltro(String campo, String valor) async {
+    listaComandaDetalheComplemento = await (customSelect("SELECT * FROM COMANDA_DETALHE_COMPLEMENTO WHERE " + campo + " like '%" + valor + "%'", 
+                                readsFrom: { comandaDetalheComplementos }).map((row) {
+                                  return ComandaDetalheComplemento.fromData(row.data, db);  
                                 }).get());
-    return listaProdutoFichaTecnica;
+    return listaComandaDetalheComplemento;
   }
     
-  Future<ProdutoFichaTecnica?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM PRODUTO_FICHA_TECNICA WHERE " + campo + " = '" + valor + "'", 
-                                readsFrom: { produtoFichaTecnicas }).map((row) {
-                                  return ProdutoFichaTecnica.fromData(row.data, db);  
+  Future<ComandaDetalheComplemento?> consultarObjetoFiltro(String campo, String valor) async {
+    return (customSelect("SELECT * FROM COMANDA_DETALHE_COMPLEMENTO WHERE " + campo + " = '" + valor + "'", 
+                                readsFrom: { comandaDetalheComplementos }).map((row) {
+                                  return ComandaDetalheComplemento.fromData(row.data, db);  
                                 }).getSingleOrNull());
   }  
   
-  Stream<List<ProdutoFichaTecnica>> observarLista() => select(produtoFichaTecnicas).watch();
+  Stream<List<ComandaDetalheComplemento>> observarLista() => select(comandaDetalheComplementos).watch();
 
-  Future<ProdutoFichaTecnica?> consultarObjeto(int pId) {
-    return (select(produtoFichaTecnicas)..where((t) => t.id.equals(pId))).getSingleOrNull();
+  Future<ComandaDetalheComplemento?> consultarObjeto(int pId) {
+    return (select(comandaDetalheComplementos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<ProdutoFichaTecnica> pObjeto) {
+  Future<int> inserir(Insertable<ComandaDetalheComplemento> pObjeto) {
     return transaction(() async {
-      final idInserido = await into(produtoFichaTecnicas).insert(pObjeto);
+      final idInserido = await into(comandaDetalheComplementos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<ProdutoFichaTecnica> pObjeto) {
+  Future<bool> alterar(Insertable<ComandaDetalheComplemento> pObjeto) {
     return transaction(() async {
-      return update(produtoFichaTecnicas).replace(pObjeto);
+      return update(comandaDetalheComplementos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<ProdutoFichaTecnica> pObjeto) {
+  Future<int> excluir(Insertable<ComandaDetalheComplemento> pObjeto) {
     return transaction(() async {
-      return delete(produtoFichaTecnicas).delete(pObjeto);
+      return delete(comandaDetalheComplementos).delete(pObjeto);
     });    
   }
 
@@ -99,17 +99,15 @@ class ProdutoFichaTecnicaDao extends DatabaseAccessor<AppDatabase> with _$Produt
   
   static List<String> campos = <String>[
     'ID', 
-    'DESCRICAO', 
     'QUANTIDADE', 
-    'VALOR_CUSTO', 
-    'PERCENTUAL_CUSTO', 
+    'VALOR_UNITARIO', 
+    'VALOR_TOTAL', 
   ];
 
   static List<String> colunas = <String>[
     'Id', 
-    'Descrição', 
     'Quantidade', 
-    'Valor Custo', 
-    'Percentual Custo', 
+    'Valor Unitário', 
+    'Valor Total', 
   ];  
 }

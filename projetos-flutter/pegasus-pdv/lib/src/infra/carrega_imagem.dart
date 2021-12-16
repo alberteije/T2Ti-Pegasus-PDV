@@ -93,17 +93,8 @@ class _CarregaImagemState extends State<CarregaImagem> {
         ),
         title: _getEditUrl(), 
         onTap: () async {
-          // try {
-            final ByteData imageData = await NetworkAssetBundle(Uri.parse(_imagemController.text)).load('');
-            widget.exibirImagemCallBack(imageData);
-            // setState(() {
-              // Sessao.empresa = Sessao.empresa!.copyWith(logotipo: imageData.buffer.asUint8List());
-            // });
-            // Navigator.pop(context);
-          // } catch (e) {
-            // Navigator.pop(context);
-            // showInSnackBar('Ocorreu um erro ao tentar carregar a imagem', context);
-          // }
+          final ByteData imageData = await NetworkAssetBundle(Uri.parse(_imagemController.text)).load('');
+          widget.exibirImagemCallBack(imageData);
         }
       ),
     );
@@ -112,20 +103,13 @@ class _CarregaImagemState extends State<CarregaImagem> {
         leading: const Icon(Icons.file_copy),
         title: const Text('Carregar Imagem'),
         onTap: () async {
-          // Documentação: https://github.com/miguelpruivo/flutter_file_picker/wiki
           FilePickerResult? arquivoSelecionado = 
             await FilePicker.platform.pickFiles(
-              // type: FileType.custom, 
-              // allowedExtensions: ['jpg, png'],
               dialogTitle: 'Selecione a imagem desejada'
             );
             if(arquivoSelecionado != null) {
               File file = File(arquivoSelecionado.files.first.path!);
               await widget.exibirImagemCallBack(file.readAsBytesSync());
-              // setState(() {
-                // Sessao.empresa = Sessao.empresa!.copyWith(logotipo: file.readAsBytesSync());
-              // });  
-              // Navigator.pop(context);
             }                          
         },
       ),        
@@ -161,11 +145,6 @@ class _CarregaImagemState extends State<CarregaImagem> {
       source: ImageSource.camera, imageQuality: 50
     );
     widget.exibirImagemCallBack(await pickedFile?.readAsBytes());
-    // Sessao.empresa = Sessao.empresa!.copyWith(
-    //   logotipo: await pickedFile?.readAsBytes(),
-    // );
-    // setState(() {
-    // });
   }
 
   _getImagemGaleria() async {
@@ -174,11 +153,6 @@ class _CarregaImagemState extends State<CarregaImagem> {
     );
     if (pickedFile != null) {
       widget.exibirImagemCallBack(await pickedFile.readAsBytes());
-      // Sessao.empresa = Sessao.empresa!.copyWith(
-      //   logotipo: await pickedFile.readAsBytes(),
-      // );
-      // setState(() {
-      // });
     }
   }
 

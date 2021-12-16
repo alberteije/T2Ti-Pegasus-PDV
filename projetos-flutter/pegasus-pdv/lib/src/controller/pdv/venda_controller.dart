@@ -41,7 +41,7 @@ class VendaController {
   // busca as taxas no arquivo do IBTP e calcula o imposto do item, armazenando ainda o imposto total da nota
   static void calcularImpostosTransparencia(VendaDetalhe vendaDetalhe) async {
     bool produtoImportado = false;
-    final produtoMontado = await Sessao.db.produtoDao.consultarObjetoMontado(vendaDetalhe.produto!.id);
+    final produtoMontado = await Sessao.db.produtoDao.consultarObjetoMontado(pId: vendaDetalhe.produto!.id);
 
     switch (produtoMontado?.tributGrupoTributario?.origemMercadoria ?? 0) {
       case '0' : produtoImportado = false; break;             // 0 - Nacional, exceto as indicadas nos códigos 3, 4, 5 e 8

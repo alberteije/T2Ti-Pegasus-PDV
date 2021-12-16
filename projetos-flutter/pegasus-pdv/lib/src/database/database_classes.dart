@@ -209,6 +209,8 @@ export 'package:pegasus_pdv/src/database/tabela/comanda.dart';
 export 'package:pegasus_pdv/src/database/dao/comanda_dao.dart';
 export 'package:pegasus_pdv/src/database/tabela/comanda_detalhe.dart';
 export 'package:pegasus_pdv/src/database/dao/comanda_detalhe_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/comanda_detalhe_complemento.dart';
+export 'package:pegasus_pdv/src/database/dao/comanda_detalhe_complemento_dao.dart';
 export 'package:pegasus_pdv/src/database/tabela/comanda_observacao_padrao.dart';
 export 'package:pegasus_pdv/src/database/dao/comanda_observacao_padrao_dao.dart';
 export 'package:pegasus_pdv/src/database/tabela/comanda_pedido.dart';

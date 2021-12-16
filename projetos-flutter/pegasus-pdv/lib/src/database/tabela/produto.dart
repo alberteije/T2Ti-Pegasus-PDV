@@ -60,7 +60,7 @@ class Produtos extends Table {
   RealColumn get estoqueMaximo => real().named('ESTOQUE_MAXIMO').nullable()();
   TextColumn get codigoNcm => text().named('CODIGO_NCM').withLength(min: 0, max: 8).nullable()();
   TextColumn get iat => text().named('IAT').withLength(min: 0, max: 1).nullable()();
-  TextColumn get ippt => text().named('IPPT').withLength(min: 0, max: 1).nullable()(); // T=Terceiro | P=Própria
+  TextColumn get ippt => text().named('IPPT').withLength(min: 0, max: 1).nullable()();
   TextColumn get tipoItemSped => text().named('TIPO_ITEM_SPED').withLength(min: 0, max: 2).nullable()();
   RealColumn get taxaIpi => real().named('TAXA_IPI').nullable()();
   RealColumn get taxaIssqn => real().named('TAXA_ISSQN').nullable()();
@@ -75,6 +75,8 @@ class Produtos extends Table {
   TextColumn get pafPSt => text().named('PAF_P_ST').withLength(min: 0, max: 1).nullable()();
   TextColumn get hashRegistro => text().named('HASH_REGISTRO').withLength(min: 0, max: 32).nullable()();
   RealColumn get valorCusto => real().named('VALOR_CUSTO').nullable()();
+  TextColumn get situacao => text().named('SITUACAO').withLength(min: 0, max: 1).nullable()();
+  TextColumn get codigoCest => text().named('CODIGO_CEST').withLength(min: 0, max: 7).nullable()();
 }
 
 class ProdutoMontado {
@@ -128,6 +130,8 @@ class Produto extends DataClass implements Insertable<Produto> {
   final String? pafPSt;
   final String? hashRegistro;
   final double? valorCusto;
+  final String? situacao;
+  final String? codigoCest;
 
   Produto(
     {
@@ -163,6 +167,8 @@ class Produto extends DataClass implements Insertable<Produto> {
       this.pafPSt,
       this.hashRegistro,
       this.valorCusto,
+      this.situacao,
+      this.codigoCest,
     }
   );
 
@@ -201,6 +207,8 @@ class Produto extends DataClass implements Insertable<Produto> {
       pafPSt: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}PAF_P_ST']),
       hashRegistro: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}HASH_REGISTRO']),
       valorCusto: const RealType().mapFromDatabaseResponse(data['${effectivePrefix}VALOR_CUSTO']),
+      situacao: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}SITUACAO']),
+      codigoCest: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}CODIGO_CEST']),
     );
   }
 
@@ -303,6 +311,12 @@ class Produto extends DataClass implements Insertable<Produto> {
     if (!nullToAbsent || valorCusto != null) {
       map['VALOR_CUSTO'] = Variable<double?>(valorCusto);
     }
+    if (!nullToAbsent || situacao != null) {
+      map['SITUACAO'] = Variable<String?>(situacao);
+    }
+    if (!nullToAbsent || codigoCest != null) {
+      map['CODIGO_CEST'] = Variable<String?>(codigoCest);
+    }
     return map;
   }
 
@@ -402,6 +416,12 @@ class Produto extends DataClass implements Insertable<Produto> {
       valorCusto: valorCusto == null && nullToAbsent
         ? const Value.absent()
         : Value(valorCusto),
+      situacao: situacao == null && nullToAbsent
+        ? const Value.absent()
+        : Value(situacao),
+      codigoCest: codigoCest == null && nullToAbsent
+        ? const Value.absent()
+        : Value(codigoCest),
     );
   }
 
@@ -440,6 +460,8 @@ class Produto extends DataClass implements Insertable<Produto> {
       pafPSt: serializer.fromJson<String>(json['pafPSt']),
       hashRegistro: serializer.fromJson<String>(json['hashRegistro']),
       valorCusto: serializer.fromJson<double>(json['valorCusto']),
+      situacao: serializer.fromJson<String>(json['situacao']),
+      codigoCest: serializer.fromJson<String>(json['codigoCest']),
     );
   }
 
@@ -479,6 +501,8 @@ class Produto extends DataClass implements Insertable<Produto> {
       'pafPSt': serializer.toJson<String?>(pafPSt),
       'hashRegistro': serializer.toJson<String?>(hashRegistro),
       'valorCusto': serializer.toJson<double?>(valorCusto),
+      'situacao': serializer.toJson<String?>(situacao),
+      'codigoCest': serializer.toJson<String?>(codigoCest),
     };
   }
 
@@ -516,6 +540,8 @@ class Produto extends DataClass implements Insertable<Produto> {
           String? pafPSt,
           String? hashRegistro,
           double? valorCusto,
+          String? situacao,
+          String? codigoCest,
 		}) =>
       Produto(
         id: id ?? this.id,
@@ -550,6 +576,8 @@ class Produto extends DataClass implements Insertable<Produto> {
         pafPSt: pafPSt ?? this.pafPSt,
         hashRegistro: hashRegistro ?? this.hashRegistro,
         valorCusto: valorCusto ?? this.valorCusto,
+        situacao: situacao ?? this.situacao,
+        codigoCest: codigoCest ?? this.codigoCest,
       );
   
   @override
@@ -587,6 +615,8 @@ class Produto extends DataClass implements Insertable<Produto> {
           ..write('pafPSt: $pafPSt, ')
           ..write('hashRegistro: $hashRegistro, ')
           ..write('valorCusto: $valorCusto, ')
+          ..write('situacao: $situacao, ')
+          ..write('codigoCest: $codigoCest, ')
           ..write(')'))
         .toString();
   }
@@ -625,6 +655,8 @@ class Produto extends DataClass implements Insertable<Produto> {
       pafPSt,
       hashRegistro,
       valorCusto,
+      situacao,
+      codigoCest,
 	]);
   
   @override
@@ -662,7 +694,9 @@ class Produto extends DataClass implements Insertable<Produto> {
           other.codigoBalanca == codigoBalanca &&
           other.pafPSt == pafPSt &&
           other.hashRegistro == hashRegistro &&
-          other.valorCusto == valorCusto 
+          other.valorCusto == valorCusto &&
+          other.situacao == situacao &&
+          other.codigoCest == codigoCest 
 	   );
 }
 
@@ -700,6 +734,8 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
   final Value<String?> pafPSt;
   final Value<String?> hashRegistro;
   final Value<double?> valorCusto;
+  final Value<String?> situacao;
+  final Value<String?> codigoCest;
 
   const ProdutosCompanion({
     this.id = const Value.absent(),
@@ -734,6 +770,8 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
     this.pafPSt = const Value.absent(),
     this.hashRegistro = const Value.absent(),
     this.valorCusto = const Value.absent(),
+    this.situacao = const Value.absent(),
+    this.codigoCest = const Value.absent(),
   });
 
   ProdutosCompanion.insert({
@@ -769,6 +807,8 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
     this.pafPSt = const Value.absent(),
     this.hashRegistro = const Value.absent(),
     this.valorCusto = const Value.absent(),
+    this.situacao = const Value.absent(),
+    this.codigoCest = const Value.absent(),
   });
 
   static Insertable<Produto> custom({
@@ -804,6 +844,8 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
     Expression<String>? pafPSt,
     Expression<String>? hashRegistro,
     Expression<double>? valorCusto,
+    Expression<String>? situacao,
+    Expression<String>? codigoCest,
   }) {
     return RawValuesInsertable({
       if (id != null) 'ID': id,
@@ -838,6 +880,8 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
       if (pafPSt != null) 'PAF_P_ST': pafPSt,
       if (hashRegistro != null) 'HASH_REGISTRO': hashRegistro,
       if (valorCusto != null) 'VALOR_CUSTO': valorCusto,
+      if (situacao != null) 'SITUACAO': situacao,
+      if (codigoCest != null) 'CODIGO_CEST': codigoCest,
     });
   }
 
@@ -875,6 +919,8 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
       Value<String>? pafPSt,
       Value<String>? hashRegistro,
       Value<double>? valorCusto,
+      Value<String>? situacao,
+      Value<String>? codigoCest,
 	  }) {
     return ProdutosCompanion(
       id: id ?? this.id,
@@ -909,6 +955,8 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
       pafPSt: pafPSt ?? this.pafPSt,
       hashRegistro: hashRegistro ?? this.hashRegistro,
       valorCusto: valorCusto ?? this.valorCusto,
+      situacao: situacao ?? this.situacao,
+      codigoCest: codigoCest ?? this.codigoCest,
     );
   }
 
@@ -1011,6 +1059,12 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
     if (valorCusto.present) {
       map['VALOR_CUSTO'] = Variable<double?>(valorCusto.value);
     }
+    if (situacao.present) {
+      map['SITUACAO'] = Variable<String?>(situacao.value);
+    }
+    if (codigoCest.present) {
+      map['CODIGO_CEST'] = Variable<String?>(codigoCest.value);
+    }
     return map;
   }
 
@@ -1049,6 +1103,8 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
           ..write('pafPSt: $pafPSt, ')
           ..write('hashRegistro: $hashRegistro, ')
           ..write('valorCusto: $valorCusto, ')
+          ..write('situacao: $situacao, ')
+          ..write('codigoCest: $codigoCest, ')
           ..write(')'))
         .toString();
   }
@@ -1294,6 +1350,20 @@ class $ProdutosTable extends Produtos
   GeneratedColumn<double> get valorCusto => _valorCusto ??=
       GeneratedColumn<double>('VALOR_CUSTO', aliasedName, true,
           typeName: 'REAL', requiredDuringInsert: false);
+  final VerificationMeta _situacaoMeta =
+      const VerificationMeta('situacao');
+  GeneratedColumn<String>? _situacao;
+  @override
+  GeneratedColumn<String> get situacao => _situacao ??=
+      GeneratedColumn<String>('SITUACAO', aliasedName, true,
+          typeName: 'TEXT', requiredDuringInsert: false);
+  final VerificationMeta _codigoCestMeta =
+      const VerificationMeta('codigoCest');
+  GeneratedColumn<String>? _codigoCest;
+  @override
+  GeneratedColumn<String> get codigoCest => _codigoCest ??=
+      GeneratedColumn<String>('CODIGO_CEST', aliasedName, true,
+          typeName: 'TEXT', requiredDuringInsert: false);
 		    
   @override
   List<GeneratedColumn> get $columns => [
@@ -1329,6 +1399,8 @@ class $ProdutosTable extends Produtos
         pafPSt,
         hashRegistro,
         valorCusto,
+        situacao,
+        codigoCest,
       ];
 
   @override
@@ -1468,6 +1540,14 @@ class $ProdutosTable extends Produtos
     if (data.containsKey('VALOR_CUSTO')) {
         context.handle(_valorCustoMeta,
             valorCusto.isAcceptableOrUnknown(data['VALOR_CUSTO']!, _valorCustoMeta));
+    }
+    if (data.containsKey('SITUACAO')) {
+        context.handle(_situacaoMeta,
+            situacao.isAcceptableOrUnknown(data['SITUACAO']!, _situacaoMeta));
+    }
+    if (data.containsKey('CODIGO_CEST')) {
+        context.handle(_codigoCestMeta,
+            codigoCest.isAcceptableOrUnknown(data['CODIGO_CEST']!, _codigoCestMeta));
     }
     return context;
   }

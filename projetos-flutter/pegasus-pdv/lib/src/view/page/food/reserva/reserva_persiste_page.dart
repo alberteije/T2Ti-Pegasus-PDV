@@ -254,7 +254,7 @@ class _ReservaPersistePageState extends State<ReservaPersistePage> {
                                       onChanged: (DateTime? value) {
                                           _formFoiAlterado = true;
                                           setState(() {
-                                            _reserva = _reserva!.copyWith(dataReserva: value);
+                                            _reserva = _reserva!.copyWith(dataReserva: Biblioteca.removerTempoDaData(value));
                                         });
                                       },
                                     ),

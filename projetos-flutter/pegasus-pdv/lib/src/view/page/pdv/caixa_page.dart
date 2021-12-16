@@ -932,7 +932,7 @@ class _CaixaPageState extends State<CaixaPage> {
           campoParaConsulta = 'CODIGO_INTERNO';
         }
       } else {
-        campoParaConsulta = 'DESCRICAO_PDV';
+        campoParaConsulta = 'NOME';
       }
       _produto = await Sessao.db.produtoDao.consultarObjetoFiltro(campoParaConsulta, dadoInformado);   
 
@@ -940,7 +940,7 @@ class _CaixaPageState extends State<CaixaPage> {
         bool podeComporItemParaVenda = true;
         if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
           // verifica se a tributação para o produto está OK antes mesmo de incluí-lo na venda
-          final produtoMontado = await Sessao.db.produtoDao.consultarObjetoMontado(_produto!.id);
+          final produtoMontado = await Sessao.db.produtoDao.consultarObjetoMontado(pId: _produto!.id);
           final tributacao = await Sessao.db.tributConfiguraOfGtDao.consultarObjetoMontado(
             Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao!, produtoMontado!.tributGrupoTributario!.id!
           ); 

@@ -77,13 +77,6 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
   void initState() {
     super.initState();
 
-    // EIJE - 22102021 - comentado para observar o comportamento do novo widget
-    // _valorController.afterChange = (_, __) {
-    //   _valorController.selection = TextSelection.collapsed(
-    //     offset: _valorController.text.length,
-    //   );
-    // };
-
     _valorFoco.addListener(() {
       if(_valorFoco.hasFocus) {
         _valorController.selection = TextSelection(baseOffset: 0, extentOffset: _valorController.text.length);

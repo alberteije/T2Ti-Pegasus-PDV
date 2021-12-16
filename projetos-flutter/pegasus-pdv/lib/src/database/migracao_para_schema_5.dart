@@ -23,6 +23,7 @@ class MigracaoParaSchema5 extends DatabaseAccessor<AppDatabase> {
   $ComandaDetalhesTable get	comandaDetalhes => attachedDatabase.comandaDetalhes;
   $ComandaPedidosTable get	comandaPedidos => attachedDatabase.comandaPedidos;
   $ComandaObservacaoPadraosTable get	comandaObservacaoPadraos => attachedDatabase.comandaObservacaoPadraos;
+  $ComandaDetalheComplementosTable get	comandaDetalheComplementos => attachedDatabase.comandaDetalheComplementos;
   $CozinhasTable get	cozinhas => attachedDatabase.cozinhas;
   $DeliverysTable get	deliverys => attachedDatabase.deliverys;
   $DeliveryAcertosTable get	deliveryAcertos => attachedDatabase.deliveryAcertos;
@@ -44,6 +45,8 @@ class MigracaoParaSchema5 extends DatabaseAccessor<AppDatabase> {
 
   Future<void> migrarParaSchema5(Migrator m, int from, int to) async {
     // adicionando novas colunas em tabelas existentes
+    await m.addColumn(produtos, produtos.codigoCest);        
+    await m.addColumn(produtos, produtos.situacao);        
     await m.addColumn(produtos, produtos.valorCusto);        
     await m.addColumn(produtos, produtos.idProdutoSubgrupo);        
     await m.addColumn(produtos, produtos.idProdutoTipo);        
@@ -62,6 +65,7 @@ class MigracaoParaSchema5 extends DatabaseAccessor<AppDatabase> {
     await m.createTable(comandaDetalhes);
     await m.createTable(comandaPedidos);
     await m.createTable(comandaObservacaoPadraos);
+    await m.createTable(comandaDetalheComplementos);
     await m.createTable(cozinhas);
     await m.createTable(deliverys);
     await m.createTable(deliveryAcertos);

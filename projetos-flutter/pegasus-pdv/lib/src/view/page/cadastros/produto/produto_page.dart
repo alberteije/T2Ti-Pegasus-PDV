@@ -50,8 +50,9 @@ import 'produto_ficha_tecnica_lista_page.dart';
 import 'produto_persiste_page.dart';
 
 List<Aba> _todasAsAbas = <Aba>[];
-List<ProdutoFichaTecnica> listaProdutoFichaTecnica = []; // TODO: é preciso carregar os dados da lista para a tela no momento da consulta
+List<ProdutoFichaTecnica> listaProdutoFichaTecnica = [];
 List<ProdutoImagem> listaProdutoImagem = [];
+List<CardapioPerguntaPadraoMontado> listaCardapioPerguntaPadraoMontado = [];
 
 List<Aba> _getAbasAtivas() {
   List<Aba> retorno = [];
@@ -107,6 +108,17 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
     };
 
     myFocusNode = FocusNode();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _carregarListas());
+  }
+
+  Future _carregarListas() async {
+    if (widget.produtoMontado?.produto?.ippt == 'P') {
+      listaProdutoFichaTecnica = await Sessao.db.produtoFichaTecnicaDao.consultarListaFiltro('ID_PRODUTO', widget.produtoMontado!.produto!.id.toString());
+      listaCardapioPerguntaPadraoMontado = await Sessao.db.cardapioPerguntaPadraoDao.consultarListaPerguntaMontado(widget.produtoMontado!.cardapio?.id ?? 0);
+      setState(() {
+      });
+    }
   }
 
   @override
@@ -168,7 +180,7 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
     _todasAsAbas.add(Aba(
       icon: Icons.person,
       text: 'Cardápio',
-      visible: widget.produtoMontado?.produto?.ippt == 'P',
+      visible: (widget.produtoMontado?.produto?.ippt == 'P' && Sessao.cnaePermiteModuloFood),
       pagina: CardapioPersistePage(
         formKey: _cardapioPersisteFormKey,
         scaffoldKey: _cardapioPersisteScaffoldKey,
@@ -189,9 +201,15 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
 
   void _atualizarDados() { // serve para atualizar algum dado após alguma ação numa página filha
     if (widget.produtoMontado?.produto?.ippt == 'P') {
-      _abasController = TabController(vsync: this, length: 3);
-      _todasAsAbas[1].visible = true;
-      _todasAsAbas[2].visible = true;
+      if (Sessao.cnaePermiteModuloFood) {
+        _abasController = TabController(vsync: this, length: 3);
+        _todasAsAbas[1].visible = true;
+        _todasAsAbas[2].visible = true;
+      } else {
+        _abasController = TabController(vsync: this, length: 2);
+        // _todasAsAbas[1].visible = true;
+        _todasAsAbas[2].visible = true;
+      }
     } else {
       _abasController = TabController(vsync: this, length: 1);
       _todasAsAbas[1].visible = false;
@@ -232,12 +250,12 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
         bool tudoCerto = false;
         if (widget.operacao == 'A') {
-          await Sessao.db.produtoDao.alterar(widget.produtoMontado!, listaProdutoFichaTecnica, listaProdutoImagem);
+          await Sessao.db.produtoDao.alterar(widget.produtoMontado!, listaProdutoFichaTecnica, listaProdutoImagem, listaCardapioPerguntaPadraoMontado);
           tudoCerto = true;
         } else {
           final produto = await Sessao.db.produtoDao.consultarObjetoFiltro('GTIN', widget.produtoMontado!.produto!.gtin!);
           if (produto == null) {
-            await Sessao.db.produtoDao.inserir(widget.produtoMontado!, listaProdutoFichaTecnica, listaProdutoImagem);
+            await Sessao.db.produtoDao.inserir(widget.produtoMontado!, listaProdutoFichaTecnica, listaProdutoImagem, listaCardapioPerguntaPadraoMontado);
             tudoCerto = true;
           } else {
             showInSnackBar('Já existe um produto cadastrado com o GTIN informado.', context);
@@ -254,9 +272,11 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
 
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
+      widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(situacao: 'I');
       Sessao.db.produtoDao.excluir(widget.produtoMontado!);
       Navigator.of(context).pop();
-    },);
+    },
+    mensagemPersonalizada: 'Deseja marcar esse produto como Inativo? Ele não será excluído do banco de dados.');
   }
 
   void _alterarEstiloBotoes(String style) {

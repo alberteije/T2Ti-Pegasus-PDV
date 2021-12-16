@@ -164,7 +164,7 @@ class NfceController {
     
     // PRODUTO
     for (var vendaDetalhe in Sessao.listaVendaAtualDetalhe) {
-      final produtoMontado = await Sessao.db.produtoDao.consultarObjetoMontado(vendaDetalhe.produto!.id);
+      final produtoMontado = await Sessao.db.produtoDao.consultarObjetoMontado(pId: vendaDetalhe.produto!.id);
       final tributacao = await Sessao.db.tributConfiguraOfGtDao.consultarObjetoMontado(
         Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao!, produtoMontado!.tributGrupoTributario!.id!); 
 

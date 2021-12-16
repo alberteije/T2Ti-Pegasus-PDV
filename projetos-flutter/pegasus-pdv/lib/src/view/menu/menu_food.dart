@@ -130,12 +130,22 @@ class MenuFood extends StatelessWidget {
                           );                          
                         }
                       ),
+                    terceiroBotao: null,
+                    quartoBotao: null,
+                  ),
+                  MenuInternoBotoes(
+                    primeiroBotao: null,
+                    segundoBotao: null,
                     terceiroBotao: BotaoMenu(
                         icon: FontAwesomeIcons.motorcycle,
                         label: "Taxa Entrega",
                         circleColor: Colors.purple,
                         rota: "/taxaEntregaLista"),
-                    quartoBotao: null,
+                    quartoBotao: BotaoMenu(
+                        icon: FontAwesomeIcons.handPaper,
+                        label: "Comanda OBS Padrão",
+                        circleColor: Colors.purple,
+                        rota: "/comandaObservacaoPadraoLista"),
                   ),
                ],
               ),
@@ -166,7 +176,13 @@ class MenuFood extends StatelessWidget {
                         icon: FontAwesomeIcons.fileInvoice,
                         label: "Comanda",
                         circleColor: Colors.pink,
-                        rota: "/comandaLista"),
+                        rota: "/mesaPage",
+                        onPressed: () { 
+                          Navigator.push(
+                            context, MaterialPageRoute(builder: (_) => const MesaPage(title: 'Iniciar Comanda', operacao: 'COM',))
+                          );                          
+                        }
+                      ),
                     terceiroBotao: BotaoMenu(
                         icon: FontAwesomeIcons.bicycle,
                         label: "Delivery",

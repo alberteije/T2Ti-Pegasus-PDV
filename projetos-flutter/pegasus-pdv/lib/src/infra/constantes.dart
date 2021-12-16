@@ -198,11 +198,14 @@ class Constantes {
   static const String profileImage = '$imageDir/profile.jpg';
   static const String googleMapFake = '$imageDir/maps.png';
   static const String restauranteBackgroundImage = '$imageDir/restaurante-background.jpg';
+  static const String comandaBackgroundImage = '$imageDir/comanda-background.jpg';
   static const String mesaImage = '$imageDir/mesa.jpg';
   static const String mesaImage01 = '$imageDir/mesa01.jpg';
   static const String mesaImage02 = '$imageDir/mesa02.jpg';
   static const String mesaImage03 = '$imageDir/mesa03.jpg';
   static const String addIcon = '$imageDir/add_icon.png';
+  static const String fundoComandaImage = '$imageDir/fundo-comanda.png';
+
 
   //images menu
   static const String menuCadastrosImage = '$imageDir/menu_cadastros.jpg';

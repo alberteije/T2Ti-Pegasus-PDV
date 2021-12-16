@@ -37,6 +37,7 @@ import 'package:moor/moor.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/infra/biblioteca.dart';
 
 part 'reserva_dao.g.dart';
 
@@ -103,13 +104,45 @@ class ReservaDao extends DatabaseAccessor<AppDatabase> with _$ReservaDaoMixin {
     }).get(); 
 
     // vamos modificar a lista de mesas abaixo, marcando as mesas que já foram reservadas
-    // TODO: avaliar a possibilidade de usar uma VIEW
     List<Mesa> listaMesa = await db.mesaDao.consultarLista(); 
     if (listaReservaMesaMontado != null) {
       for (var reserva in listaReservaMesaMontado!) {
         for (var i = 0; i < listaMesa.length; i++) {
           if (listaMesa[i].id == reserva.reservaMesa!.idMesa) {
             listaMesa[i] = listaMesa[i].copyWith(disponivel: 'N');
+          }
+        }
+      }
+    }
+    return listaMesa;
+  }  
+
+  Future<List<Mesa>> consultarMesasParaComanda() async {
+    final consulta = select(reservas)
+      .join([
+        leftOuterJoin(reservaMesas, reservaMesas.idReserva.equalsExp(reservas.id)),
+      ]);
+    
+    consulta.where(reservas.dataReserva.equals(Biblioteca.removerTempoDaData(DateTime.now())!));
+    consulta.where(reservas.situacao.equals('A'));
+    
+    listaReservaMesaMontado = await consulta.map((row) {
+      final reserva = row.readTableOrNull(reservas);
+      final reservaMesa = row.readTableOrNull(reservaMesas);
+
+      return ReservaMesaMontado(
+        reserva: reserva,
+        reservaMesa: reservaMesa,
+      );
+    }).get(); 
+
+    // vamos modificar a lista de mesas abaixo, marcando as mesas que estão reservadas
+    List<Mesa> listaMesa = await db.mesaDao.consultarLista(); 
+    if (listaReservaMesaMontado != null) {
+      for (var reserva in listaReservaMesaMontado!) {
+        for (var i = 0; i < listaMesa.length; i++) {
+          if (listaMesa[i].id == reserva.reservaMesa!.idMesa) {
+            listaMesa[i] = listaMesa[i].copyWith(disponivel: 'R');
           }
         }
       }
@@ -224,7 +257,7 @@ class ReservaDao extends DatabaseAccessor<AppDatabase> with _$ReservaDaoMixin {
     await (delete(reservaMesas)..where((t) => t.idReserva.equals(idReserva))).go();
   }
 
-   Reserva removerDomains(Reserva reserva) {
+  Reserva removerDomains(Reserva reserva) {
     if (reserva.situacao != null) {
       reserva = 
       reserva.copyWith(

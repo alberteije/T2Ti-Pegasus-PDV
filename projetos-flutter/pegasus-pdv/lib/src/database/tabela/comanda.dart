@@ -35,6 +35,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'package:moor/moor.dart';
 
+import '../database_classes.dart';
+
 @DataClassName("Comanda")
 @UseRowClass(Comanda)
 class Comandas extends Table {
@@ -55,6 +57,22 @@ class Comandas extends Table {
   TextColumn get tipo => text().named('TIPO').withLength(min: 0, max: 1).nullable()();
   IntColumn get quantidadePessoas => integer().named('QUANTIDADE_PESSOAS').nullable()();
   RealColumn get valorPorPessoa => real().named('VALOR_POR_PESSOA').nullable()();
+}
+
+class ComandaMontado {
+  Comanda? comanda;
+  Cliente? cliente;
+  Colaborador? colaborador;
+  Mesa? mesa;
+  List<ComandaDetalheMontado>? listaComandaDetalheMontado;
+
+  ComandaMontado({
+    this.comanda,
+    this.cliente,
+    this.colaborador,
+    this.mesa,
+    this.listaComandaDetalheMontado,
+  });
 }
 
 class Comanda extends DataClass implements Insertable<Comanda> {

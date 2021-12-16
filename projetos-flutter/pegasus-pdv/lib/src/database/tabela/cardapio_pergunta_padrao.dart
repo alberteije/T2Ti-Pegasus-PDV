@@ -35,6 +35,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'package:moor/moor.dart';
 
+import '../database_classes.dart';
+
 @DataClassName("CardapioPerguntaPadrao")
 @UseRowClass(CardapioPerguntaPadrao)
 class CardapioPerguntaPadraos extends Table {
@@ -44,6 +46,18 @@ class CardapioPerguntaPadraos extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
   IntColumn get idCardapio => integer().named('ID_CARDAPIO').nullable().customConstraint('NULLABLE REFERENCES CARDAPIO(ID)')();
   TextColumn get pergunta => text().named('PERGUNTA').withLength(min: 0, max: 100).nullable()();
+}
+
+class CardapioPerguntaPadraoMontado {
+  int id;
+  CardapioPerguntaPadrao? cardapioPerguntaPadrao;
+  List<CardapioRespostaPadrao> listaCardapioRespostaPadrao;
+
+  CardapioPerguntaPadraoMontado({
+    required this.id,
+    this.cardapioPerguntaPadrao,
+    required this.listaCardapioRespostaPadrao,
+  });
 }
 
 class CardapioPerguntaPadrao extends DataClass implements Insertable<CardapioPerguntaPadrao> {

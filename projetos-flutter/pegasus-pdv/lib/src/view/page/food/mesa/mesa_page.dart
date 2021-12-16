@@ -43,13 +43,12 @@ import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
+import 'package:pegasus_pdv/src/view/page/page.dart';
 
 import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
-
-import 'mesa_cadastro_page.dart';
 
 class MesaPage extends StatefulWidget {
   final String? title;
@@ -118,6 +117,8 @@ class _MesaPageState extends State<MesaPage> {
       listaMesa = await Sessao.db.mesaDao.consultarLista();
     } else if (widget.operacao == 'RES') {
       listaMesa = await Sessao.db.reservaDao.consultarListaReservaDia(widget.reserva!.dataReserva!);
+    } else if (widget.operacao == 'COM') {
+      listaMesa = await Sessao.db.reservaDao.consultarMesasParaComanda();
     }
     setState(() {
     });
@@ -243,9 +244,7 @@ class _MesaPageState extends State<MesaPage> {
           ),
         ),
       );
-    }
-
-    if (widget.operacao == 'RES') {
+    } else if (widget.operacao == 'RES') {
       listaItems.add(
         Expanded(
           flex: 1,
@@ -254,6 +253,62 @@ class _MesaPageState extends State<MesaPage> {
             icone: FontAwesomeIcons.chair, 
             textOuTip: 'Confirmar Seleção',
             onPressed: _confirmarSelecaoParaReserva,
+          ),          
+        ),
+      );    
+    } else if (widget.operacao == 'COM') {
+      listaItems.add(
+        Expanded(
+          flex: 1,
+          child: getBotaoGenerico(
+            context: context, 
+            icone: FontAwesomeIcons.handHolding, 
+            textOuTip: 'Takeout',
+            onPressed: () {
+              Navigator.push(
+                context, MaterialPageRoute(builder: (_) => ComandaPage(title: 'Comandas', mesa: Mesa(id: null), tipo: 'T'))
+              ).then((value) async { await _consultarMesas(); });
+            },
+          ),          
+        ),
+      );    
+      listaItems.add(
+        const SizedBox(
+          width: 8,
+        ),
+      );
+      listaItems.add(
+        Expanded(
+          flex: 1,
+          child: getBotaoGenerico(
+            context: context, 
+            icone: FontAwesomeIcons.bicycle, 
+            textOuTip: 'Delivery',
+            onPressed: () {
+              Navigator.push(
+                context, MaterialPageRoute(builder: (_) => ComandaPage(title: 'Comandas', mesa: Mesa(id: null), tipo: 'D'))
+              ).then((value) async { await _consultarMesas(); });
+            },
+          ),          
+        ),
+      );    
+      listaItems.add(
+        const SizedBox(
+          width: 8,
+        ),
+      );
+      listaItems.add(
+        Expanded(
+          flex: 1,
+          child: getBotaoGenerico(
+            context: context, 
+            icone: FontAwesomeIcons.list, 
+            textOuTip: 'Consultar',
+            onPressed: () {
+              Navigator.push(
+                context, MaterialPageRoute(builder: (_) => const ComandaListaPage())
+              ).then((value) async { await _consultarMesas(); });
+            },
           ),          
         ),
       );    
@@ -341,6 +396,10 @@ class _MesaPageState extends State<MesaPage> {
         if (widget.operacao == 'CAD') {
           Navigator.push(
             context, MaterialPageRoute(builder: (_) => MesaCadastroPage(listaMesa[index]))
+          ).then((value) async { await _consultarMesas(); });
+        } else if (widget.operacao == 'COM') { 
+          Navigator.push(
+            context, MaterialPageRoute(builder: (_) => ComandaPage(title: 'Comandas', mesa: listaMesa[index], tipo: 'I'))
           ).then((value) async { await _consultarMesas(); });
         }
       },
@@ -477,4 +536,5 @@ class _MesaPageState extends State<MesaPage> {
     }
     Navigator.pop(context, listaMesaReserva);
   }
+   
 }

@@ -42,6 +42,7 @@ part 'cardapio_pergunta_padrao_dao.g.dart';
 
 @UseDao(tables: [
           CardapioPerguntaPadraos,
+          CardapioRespostaPadraos,
 		])
 class CardapioPerguntaPadraoDao extends DatabaseAccessor<AppDatabase> with _$CardapioPerguntaPadraoDaoMixin {
   final AppDatabase db;
@@ -69,6 +70,34 @@ class CardapioPerguntaPadraoDao extends DatabaseAccessor<AppDatabase> with _$Car
   Future<CardapioPerguntaPadrao?> consultarObjeto(int pId) {
     return (select(cardapioPerguntaPadraos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
+
+  Future<List<CardapioPerguntaPadraoMontado>> consultarListaPerguntaMontado(int idCardapio) async {
+    final List<CardapioPerguntaPadraoMontado> listaRetorno = [];
+
+    final listaPerguntas = await (customSelect("SELECT * FROM CARDAPIO_PERGUNTA_PADRAO WHERE ID_CARDAPIO = '" + idCardapio.toString() + "'", 
+                                readsFrom: { cardapioPerguntaPadraos }).map((row) {
+                                  return CardapioPerguntaPadrao.fromData(row.data, db);  
+                                }).get());
+
+    int idFake = 0;
+    for (var pergunta in listaPerguntas) {
+      CardapioPerguntaPadraoMontado perguntaMontado = CardapioPerguntaPadraoMontado(
+        id: ++idFake,
+        cardapioPerguntaPadrao: pergunta,
+
+        // pega as respostas
+        listaCardapioRespostaPadrao: await (
+          customSelect("SELECT * FROM CARDAPIO_RESPOSTA_PADRAO WHERE ID_CARDAPIO_PERGUNTA_PADRAO = '" + pergunta.id.toString() + "'", 
+                                readsFrom: { cardapioRespostaPadraos }).map((row) {
+                                  return CardapioRespostaPadrao.fromData(row.data, db);  
+                                }).get()),
+
+      );
+      listaRetorno.add(perguntaMontado);
+    }
+
+    return listaRetorno;
+  }  
 
   Future<int> inserir(Insertable<CardapioPerguntaPadrao> pObjeto) {
     return transaction(() async {

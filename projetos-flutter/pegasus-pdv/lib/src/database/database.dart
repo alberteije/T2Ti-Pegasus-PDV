@@ -47,6 +47,7 @@ LazyDatabase _openConnection() {
     Colaboradors,
     Comandas,
     ComandaDetalhes,
+    ComandaDetalheComplementos,
     ComandaObservacaoPadraos,
     ComandaPedidos,
     CompraPedidoCabecalhos,
@@ -173,6 +174,7 @@ LazyDatabase _openConnection() {
     ColaboradorDao,
     ComandaDao,
     ComandaDetalheDao,
+    ComandaDetalheComplementoDao,
     ComandaObservacaoPadraoDao,
     ComandaPedidoDao,
     CompraPedidoCabecalhoDao,
@@ -302,6 +304,27 @@ class AppDatabase extends _$AppDatabase {
 }
 
 Future<void> _popularBancoSchema05(AppDatabase db) async {
+  // ---> COMANDA_OBSERVACAO_PADRAO
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (1, '01', 'Sem Cebola')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (2, '02', 'Sem Pimentão')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (3, '03', 'Com Gelo e Limão')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (4, '04', 'Com Gelo e Laranja')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (5, '05', 'Com Gelo')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (6, '06', 'Sem Açúcar')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (7, '07', 'Sem Tomate')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (8, '08', 'Sem Maionese')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (9, '09', 'Sem Mostarda')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (10, '10', 'Sem Salada')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (11, '11', 'Sem Molho')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (12, '12', 'Sem Borda')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (13, '13', 'Sem Pimenta')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (14, '14', 'Mal Passado')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (15, '15', 'No Ponto')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (16, '16', 'Para Viagem')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (17, '17', 'Retirar no Caixa')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (18, '18', 'Quente')");
+  await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (19, '19', 'Frio')");
+
   // ---> TAXA_ENTREGA
   await db.customStatement("INSERT INTO TAXA_ENTREGA (ID, NOME, VALOR, ESTIMATIVA_MINUTOS) values (1, 'Perto - até 05 Km', '5', '15')");
   await db.customStatement("INSERT INTO TAXA_ENTREGA (ID, NOME, VALOR, ESTIMATIVA_MINUTOS) values (2, 'Intermediária - De 05 até 10 KM', '8', '20')");
@@ -342,8 +365,8 @@ Future<void> _popularBancoSchema05(AppDatabase db) async {
   await db.customStatement("INSERT INTO PRODUTO_GRUPO (ID, NOME, DESCRICAO) VALUES (1, 'GRUPO GERAL', 'GRUPO GERAL DE PRODUTOS')");
   // ---> PRODUTO_SUBGRUPO
   await db.customStatement("INSERT INTO PRODUTO_SUBGRUPO (ID, ID_PRODUTO_GRUPO, NOME, DESCRICAO) VALUES (1, 1, 'SUBGRUPO GERAL', 'SUBGRUPO GERAL DE PRODUTOS')");
-  // ---> PRODUTO - ATUALIZA O TIPO E O SUBGRUPO
-  db.customStatement("UPDATE PRODUTO SET ID_PRODUTO_TIPO = '1', ID_PRODUTO_SUBGRUPO = '1'");
+  // ---> PRODUTO - ATUALIZA O TIPO, SITUACAO E O SUBGRUPO
+  db.customStatement("UPDATE PRODUTO SET ID_PRODUTO_TIPO = '1', ID_PRODUTO_SUBGRUPO = '1', SITUACAO = 'A'");
 }
 
 Future<void> _popularBancoSchema04(AppDatabase db) async {

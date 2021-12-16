@@ -139,6 +139,14 @@ export 'package:pegasus_pdv/src/view/page/food/mesa/mesa_page.dart';
 export 'package:pegasus_pdv/src/view/page/food/mesa/mesa_cadastro_page.dart';
 export 'package:pegasus_pdv/src/view/page/food/reserva/reserva_lista_page.dart';
 export 'package:pegasus_pdv/src/view/page/food/reserva/reserva_persiste_page.dart';
+export 'package:pegasus_pdv/src/view/page/food/comanda/comanda_page.dart';
+export 'package:pegasus_pdv/src/view/page/food/comanda/comanda_cadastro_page.dart';
+export 'package:pegasus_pdv/src/view/page/food/comanda/comanda_lista_page.dart';
+export 'package:pegasus_pdv/src/view/page/food/comanda/comanda_detalhe_page.dart';
+export 'package:pegasus_pdv/src/view/page/food/comanda/comanda_tile_detalhe_page.dart';
+export 'package:pegasus_pdv/src/view/page/food/comanda/comanda_observacao_padrao_lista_page.dart';
+export 'package:pegasus_pdv/src/view/page/food/comanda/comanda_observacao_padrao_persiste_page.dart';
+export 'package:pegasus_pdv/src/view/page/food/comanda/comanda_observacao_padrao_lookup_page.dart';
 
 // delivery
 export 'package:pegasus_pdv/src/view/page/delivery/taxa_entrega/taxa_entrega_lista_page.dart';

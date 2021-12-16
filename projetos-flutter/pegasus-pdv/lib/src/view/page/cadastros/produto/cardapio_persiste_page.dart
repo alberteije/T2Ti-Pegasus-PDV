@@ -39,6 +39,9 @@ import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
+import 'package:pegasus_pdv/src/view/page/cadastros/produto/produto_page.dart';
+import 'package:pegasus_pdv/src/view/shared/botoes.dart';
+import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -65,6 +68,9 @@ class _CardapioPersistePageState extends State<CardapioPersistePage> {
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
+
+  CardapioPerguntaPadraoMontado? perguntaMontadoSelecionada;
+  int idMestre = 0;
 
   @override
   void initState() {
@@ -95,6 +101,9 @@ class _CardapioPersistePageState extends State<CardapioPersistePage> {
 
   @override
   Widget build(BuildContext context) {
+    final _perguntaController = TextEditingController();
+    final _respostaController = TextEditingController();
+
     return FocusableActionDetector(
       actions: _actionMap,
       shortcuts: _shortcutMap,
@@ -124,19 +133,18 @@ class _CardapioPersistePageState extends State<CardapioPersistePage> {
                           BootstrapCol(
                             sizes: 'col-12',
                             child: TextFormField(
+                              readOnly: true,
                               maxLength: 1000,
                               maxLines: 3,
-                              initialValue: widget.produtoMontado!.cardapio?.descricao ?? '',
+                              initialValue: widget.produtoMontado!.produto?.descricao ?? 'Cadastre a Descrição no Produto',
                               decoration: getInputDecoration(
-                                'Informe a Descrição',
+                                'Descrição do Produto',
                                 'Descrição',
                                 false),
                               onSaved: (String? value) {
                               },
                               validator: ValidaCampoFormulario.validarObrigatorio,
                               onChanged: (text) {
-                                widget.produtoMontado!.cardapio = widget.produtoMontado!.cardapio!.copyWith(descricao: text);
-                                paginaMestreDetalheFoiAlterada = true;
                               },
                             ),
                           ),
@@ -230,7 +238,158 @@ class _CardapioPersistePageState extends State<CardapioPersistePage> {
                               ),								
                           ),
                         ],
-                      ),                      
+                      ),  
+                      const Divider(color: Colors.white,),
+                      Column(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 0),
+                            child: Text(
+                              "Perguntas e Respostas Padrões", 
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black),
+                            ),
+                          ),
+                          const Divider(
+                            indent: 10,
+                            endIndent: 10,
+                            thickness: 2,
+                          ), 
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 1,
+                                  child: TextFormField(
+                                    controller: _perguntaController,
+                                    decoration: getInputDecoration(
+                                      'Informe uma pergunta',
+                                      'Pergunta',
+                                      false),
+                                    onSaved: (String? value) {
+                                    },
+                                    onChanged: (text) {
+                                    },
+                                    
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 0,
+                                  child: IconButton(
+                                    tooltip: 'Adiciona Pergunta',
+                                    icon: const Icon(Icons.add),
+                                    onPressed: () {       
+                                      if (_perguntaController.text.isEmpty) {
+                                        showInSnackBar('Por favor, insira uma pergunta.', context, corFundo: Colors.red);
+                                      } else {
+                                        listaCardapioPerguntaPadraoMontado.add(
+                                          CardapioPerguntaPadraoMontado(
+                                            id: ++idMestre,
+                                            cardapioPerguntaPadrao: CardapioPerguntaPadrao(id: null, pergunta: _perguntaController.text),
+                                            listaCardapioRespostaPadrao: [],
+                                          ),
+                                        );
+                                        setState(() {
+                                        });
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 170.0,
+                            child: Scrollbar(
+                              child: ListView(
+                                padding: const EdgeInsets.all(2.0),
+                                children: <Widget>[
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Card(
+                                      color: Colors.white,
+                                      elevation: 2.0,
+                                      child: DataTable(
+                                        columns: getColumnsPergunta(),
+                                        rows: getRowsPergunta()
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),                          
+                          const Divider(color: Colors.white,),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 1,
+                                  child: TextFormField(
+                                    controller: _respostaController,
+                                    decoration: getInputDecoration(
+                                      'Informe uma resposta',
+                                      'Resposta',
+                                      false),
+                                    onSaved: (String? value) {
+                                    },
+                                    onChanged: (text) {
+                                    },
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 0,
+                                  child: IconButton(
+                                    tooltip: 'Adiciona Resposta',
+                                    icon: const Icon(Icons.add),
+                                    onPressed: () async {                                   
+                                      if (_respostaController.text.isEmpty) {
+                                        showInSnackBar('Por favor, insira uma resposta.', context, corFundo: Colors.red);
+                                      } else {
+                                        if (perguntaMontadoSelecionada == null) {
+                                          showInSnackBar('Por favor, selecione uma pergunta para incluir respostas.', context, corFundo: Colors.red);
+                                        } else {
+                                          perguntaMontadoSelecionada!.listaCardapioRespostaPadrao.add(
+                                            CardapioRespostaPadrao(id: null, resposta: _respostaController.text),
+                                          );
+                                          setState(() {
+                                          });
+                                        }
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 170.0,
+                            child: Scrollbar(
+                              child: ListView(
+                                padding: const EdgeInsets.all(2.0),
+                                children: <Widget>[
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Card(
+                                      color: Colors.white,
+                                      elevation: 2.0,
+                                      child: DataTable(
+                                          columns: getColumnsResposta(),
+                                          rows: getRowsResposta()),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),                          
+                          const Divider(color: Colors.white,),
+                        ],
+                      ),
+
                     ],
                   ),
                 ),
@@ -242,4 +401,120 @@ class _CardapioPersistePageState extends State<CardapioPersistePage> {
     );
   }
 
+  List<DataColumn> getColumnsPergunta() {
+    List<DataColumn> lista = [];
+    lista.add(
+      const DataColumn(
+        label: Text(''),
+        tooltip: '',      
+    ));
+    lista.add(const DataColumn(
+      label: Text(
+        "Perguntas",
+        style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
+      ),
+    ));
+    return lista;
+  }
+
+  List<DataRow> getRowsPergunta() {
+    List<DataRow> lista = [];
+    for (var perguntaMontado in listaCardapioPerguntaPadraoMontado) {
+      List<DataCell> celulas = [];
+
+      celulas = [
+        DataCell(
+            getBotaoGenericoPdv(
+              descricao: 'Excluir',
+              cor: Colors.red.shade400, 
+              padding: const EdgeInsets.all(5),
+              onPressed: () {
+                _excluirPergunta(perguntaMontado);
+              }
+            ),
+        ),
+        DataCell(
+          Text(perguntaMontado.cardapioPerguntaPadrao?.pergunta ?? '',
+            style: TextStyle(
+              color: perguntaMontado.id == perguntaMontadoSelecionada?.id ? Colors.blue : Colors.black, 
+              fontWeight: perguntaMontado.id == perguntaMontadoSelecionada?.id ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+          onTap: () => _exibirRespostas(perguntaMontado)
+        ),
+      ];
+
+      lista.add(DataRow(cells: celulas));
+    }
+    return lista;
+  }
+
+  void _exibirRespostas(CardapioPerguntaPadraoMontado perguntaMontado) {
+    setState(() {
+      perguntaMontadoSelecionada = perguntaMontado;
+    });
+  }
+
+  void _excluirPergunta(CardapioPerguntaPadraoMontado perguntaMontado) {
+    gerarDialogBoxExclusao(context, () {
+      setState(() {
+        if (perguntaMontado.id == perguntaMontadoSelecionada!.id) {
+          perguntaMontadoSelecionada = null;  
+        }
+        listaCardapioPerguntaPadraoMontado.removeWhere((item) => item.id == perguntaMontado.id);
+      });
+    });
+  } 
+
+  List<DataColumn> getColumnsResposta() {
+    List<DataColumn> lista = [];
+    lista.add(
+      const DataColumn(
+        label: Text(''),
+        tooltip: '',      
+    ));
+    lista.add(const DataColumn(
+      label: Text(
+        "Respostas",
+        style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
+      ),
+    ));
+    return lista;
+  }
+
+  List<DataRow> getRowsResposta() {
+    List<DataRow> lista = [];
+    if (perguntaMontadoSelecionada != null) {
+      for (var resposta in perguntaMontadoSelecionada!.listaCardapioRespostaPadrao) {
+        List<DataCell> celulas = [];
+
+        celulas = [
+          DataCell(
+              getBotaoGenericoPdv(
+                descricao: 'Excluir',
+                cor: Colors.red.shade400, 
+                padding: const EdgeInsets.all(5),
+                onPressed: () {
+                  _excluirResposta(resposta);
+                }
+              ),
+          ),
+          DataCell(
+            Text(resposta.resposta!),
+          ),
+        ];
+
+        lista.add(DataRow(cells: celulas));
+      }
+    }
+    return lista;
+  }
+
+  void _excluirResposta(CardapioRespostaPadrao resposta) {
+    gerarDialogBoxExclusao(context, () {
+      setState(() {
+        perguntaMontadoSelecionada!.listaCardapioRespostaPadrao.removeWhere((item) => item.resposta == resposta.resposta);
+      });
+    });
+  }  
 }

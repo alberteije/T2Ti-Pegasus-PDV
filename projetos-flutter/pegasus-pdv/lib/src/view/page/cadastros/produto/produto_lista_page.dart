@@ -320,7 +320,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
         builder: (BuildContext context) => 
             ProdutoPage(
               produtoMontado: ProdutoMontado(
-                produto: Produto(id: null,), 
+                produto: Produto(id: null, situacao: 'A'), 
                 produtoUnidade: ProdutoUnidade(id: null,),
                 tributGrupoTributario: TributGrupoTributario(id: null),
                 produtoTipo: ProdutoTipo(id: null),

@@ -227,7 +227,7 @@ MaterialButton getBotaoInternoCaixa(
     );
 }
 
-InkWell getBotaoIncrementaCaixa({Function? incrementar}) {
+InkWell getBotaoIncrementaCaixa({Function? incrementar, Color corIcone = Colors.green}) {
   return InkWell(
     onTap: incrementar as void Function()?,
     splashColor: Colors.lightBlue,
@@ -235,11 +235,11 @@ InkWell getBotaoIncrementaCaixa({Function? incrementar}) {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50)),
       alignment: Alignment.center,
-      child: const Padding(
-        padding: EdgeInsets.all(6.0),
+      child: Padding(
+        padding: const EdgeInsets.all(6.0),
         child: Icon(
           Icons.add,
-          color: Colors.green,
+          color: corIcone,
           size: 20,
         ),
       ),
@@ -247,7 +247,7 @@ InkWell getBotaoIncrementaCaixa({Function? incrementar}) {
   );
 }
 
-InkWell getBotaoDecrementaCaixa({Function? decrementar}) {
+InkWell getBotaoDecrementaCaixa({Function? decrementar, Color corIcone = Colors.redAccent}) {
   return InkWell(
     onTap: decrementar as void Function()?,
     splashColor: Colors.redAccent.shade200,
@@ -255,11 +255,11 @@ InkWell getBotaoDecrementaCaixa({Function? decrementar}) {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50)),
       alignment: Alignment.center,
-      child: const Padding(
-        padding: EdgeInsets.all(6.0),
+      child: Padding(
+        padding: const EdgeInsets.all(6.0),
         child: Icon(
           Icons.remove,
-          color: Colors.redAccent,
+          color: corIcone,
           size: 20,                                  
         ),
       ),
@@ -267,7 +267,15 @@ InkWell getBotaoDecrementaCaixa({Function? decrementar}) {
   );
 }
 
-ElevatedButton getBotaoGenericoPdv({required String descricao, Color? cor, Function? onPressed, EdgeInsetsGeometry? padding, Size? tamanho}) {
+ElevatedButton getBotaoGenericoPdv({
+    required String descricao, 
+    Color? cor, 
+    Function? onPressed, 
+    EdgeInsetsGeometry? 
+    padding, 
+    Size? tamanho,
+    TextStyle? textStyle,
+  }) {
   return ElevatedButton(
     child: Text(descricao),
     style: ElevatedButton.styleFrom(
@@ -276,6 +284,7 @@ ElevatedButton getBotaoGenericoPdv({required String descricao, Color? cor, Funct
       primary: cor, 
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       padding: padding,
+      textStyle: textStyle
     ),
     onPressed: onPressed as void Function()?,
   );

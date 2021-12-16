@@ -133,6 +133,10 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
       mask: '00000000',
       text: widget.produtoMontado!.produto!.codigoNcm ?? '',
     );
+    final _cestController = MaskedTextController(
+      mask: '0000000',
+      text: widget.produtoMontado!.produto!.codigoCest ?? '',
+    );
 
     return FocusableActionDetector(
       actions: _actionMap,
@@ -528,7 +532,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
-                            sizes: 'col-12 col-md-6',
+                            sizes: 'col-12 col-md-4',
                             child: Padding(
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
@@ -549,7 +553,28 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                             ),
                           ),
                           BootstrapCol(
-                            sizes: 'col-12 col-md-6',
+                            sizes: 'col-12 col-md-4',
+                            child: Padding(
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
+                              child: TextFormField(
+                                // validator: ValidaCampoFormulario.validarObrigatorio,
+                                controller: _cestController,
+                                decoration: getInputDecoration(
+                                  'Conteúdo para o campo CEST',
+                                  'Código CEST',
+                                  true,
+                                  paddingVertical: 18),
+                                onSaved: (String? value) {
+                                },
+                                onChanged: (text) {
+                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(codigoCest: text);
+                                  paginaMestreDetalheFoiAlterada = true;
+                                },
+                              ),
+                            ),
+                          ),
+                          BootstrapCol(
+                            sizes: 'col-12 col-md-4',
                             child: Padding(
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: InputDecorator(

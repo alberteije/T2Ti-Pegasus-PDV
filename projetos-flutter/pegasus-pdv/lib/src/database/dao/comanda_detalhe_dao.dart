@@ -42,6 +42,8 @@ part 'comanda_detalhe_dao.g.dart';
 
 @UseDao(tables: [
           ComandaDetalhes,
+          ComandaDetalheComplementos,
+          Produtos,
 		])
 class ComandaDetalheDao extends DatabaseAccessor<AppDatabase> with _$ComandaDetalheDaoMixin {
   final AppDatabase db;
@@ -64,6 +66,30 @@ class ComandaDetalheDao extends DatabaseAccessor<AppDatabase> with _$ComandaDeta
                                 }).getSingleOrNull());
   }  
   
+  Future<List<ComandaDetalheMontado>?> consultarListaMontado(int idComanda) async {
+    final List<ComandaDetalheMontado> listaComandaDetalheMontado = [];
+
+    final listaComandaDetalhe = await (customSelect("SELECT * FROM COMANDA_DETALHE WHERE ID_COMANDA = '"  + idComanda.toString() + "'", 
+                                readsFrom: { comandaDetalhes }).map((row) {
+                                  return ComandaDetalhe.fromData(row.data, db);  
+                                }).get());
+
+    for (var comandaDetalhe in listaComandaDetalhe) {
+      var listaComandaDetalheComplemento = await (customSelect("SELECT * FROM COMANDA_DETALHE_COMPLEMENTO WHERE ID_COMANDA_DETALHE = '"  + comandaDetalhe.id.toString() + "'", 
+                                readsFrom: { comandaDetalheComplementos }).map((row) {
+                                  return ComandaDetalheComplemento.fromData(row.data, db);  
+                                }).get());
+      ComandaDetalheMontado comandaDetalheMontado = ComandaDetalheMontado(
+        comandaDetalhe: comandaDetalhe,
+        produtoMontado: await db.produtoDao.consultarObjetoMontado(pId: comandaDetalhe.idProduto!),
+        listaComandaDetalheComplemento: listaComandaDetalheComplemento,
+      );
+      listaComandaDetalheMontado.add(comandaDetalheMontado);
+    }
+
+    return listaComandaDetalheMontado;
+  }
+
   Stream<List<ComandaDetalhe>> observarLista() => select(comandaDetalhes).watch();
 
   Future<ComandaDetalhe?> consultarObjeto(int pId) {

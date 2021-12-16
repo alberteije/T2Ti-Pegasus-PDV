@@ -1,6 +1,6 @@
 /*
 Title: T2Ti ERP 3.0                                                                
-Description: ListaPage relacionada à tabela [RESERVA] 
+Description: ListaPage relacionada à tabela [COMANDA] 
                                                                                 
 The MIT License                                                                 
                                                                                 
@@ -41,32 +41,30 @@ import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
 import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/view/page/page.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
-import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
 import 'package:pegasus_pdv/src/view/shared/page/filtro_page.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
-import 'reserva_persiste_page.dart';
-
-class ReservaListaPage extends StatefulWidget {
-  const ReservaListaPage({Key? key}) : super(key: key);
+class ComandaListaPage extends StatefulWidget {
+  const ComandaListaPage({Key? key}) : super(key: key);
 
   @override
-  _ReservaListaPageState createState() => _ReservaListaPageState();
+  _ComandaListaPageState createState() => _ComandaListaPageState();
 }
 
-class _ReservaListaPageState extends State<ReservaListaPage> {
+class _ComandaListaPageState extends State<ComandaListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
   Filtro? _filtro = Filtro();
-  final _colunas = ReservaDao.colunas;
-  final _campos = ReservaDao.campos;
+  final _colunas = ComandaDao.colunas;
+  final _campos = ComandaDao.campos;
 
   DateTime _dataInicio = DateTime.now();
   DateTime _dataFim = DateTime.now();
-  String? _situacaoReserva = 'Todas';
+  String? _tipoComanda = 'Todas';
 
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
@@ -88,10 +86,8 @@ class _ReservaListaPageState extends State<ReservaListaPage> {
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
     switch (intent.type) {
       case AtalhoTelaType.inserir:
-        _inserir();
         break;
       case AtalhoTelaType.imprimir:
-        _gerarRelatorio();
         break;
       case AtalhoTelaType.filtrar:
         _chamarFiltro();
@@ -103,12 +99,12 @@ class _ReservaListaPageState extends State<ReservaListaPage> {
   
   @override
   Widget build(BuildContext context) {
-    final _listaReservaMontado = Sessao.db.reservaDao.listaReservaMontado;
+    final _listaComandaMontado = Sessao.db.comandaDao.listaComandaMontado;
 
-    final _ReservaDataSource _reservaDataSource = _ReservaDataSource(_listaReservaMontado, context, _refrescarTela);
+    final _ComandaDataSource _comandaDataSource = _ComandaDataSource(_listaComandaMontado, context, _refrescarTela);
   
-    void _sort<T>(Comparable<T>? Function(ReservaMontado reservaMontado) getField, int columnIndex, bool ascending) {
-      _reservaDataSource._sort<T>(getField, ascending);
+    void _sort<T>(Comparable<T>? Function(ComandaMontado comandaMontado) getField, int columnIndex, bool ascending) {
+      _comandaDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -122,23 +118,15 @@ class _ReservaListaPageState extends State<ReservaListaPage> {
         autofocus: true,
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Cadastro - Reserva'),
+            title: const Text('Comandas'),
             actions: const <Widget>[],
           ),
-          floatingActionButton: FloatingActionButton(
-            focusColor: ViewUtilLib.getBotaoFocusColor(),
-            tooltip: Constantes.botaoInserirDica,
-            backgroundColor: ViewUtilLib.getBackgroundColorBotaoInserir(),
-            child: ViewUtilLib.getIconBotaoInserir(),
-            onPressed: () {
-              _inserir();
-            }),
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: BottomAppBar(
             color: ViewUtilLib.getBottomAppBarColor(),          
             shape: const CircularNotchedRectangle(),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 90, 10),
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: Row(
                 children: <Widget>[
                   Expanded(
@@ -192,19 +180,19 @@ class _ReservaListaPageState extends State<ReservaListaPage> {
                     child: 
                     InputDecorator(
                       decoration: getInputDecoration(
-                        'Situação',
-                        'Situação',
+                        'Tipo',
+                        'Tipo',
                         true, paddingVertical: 1),
-                      isEmpty: _situacaoReserva == null,
-                      child: getDropDownButton(_situacaoReserva,
+                      isEmpty: _tipoComanda == null,
+                      child: getDropDownButton(_tipoComanda,
                         (String? newValue) {
-                          _situacaoReserva = newValue;
+                          _tipoComanda = newValue;
                           _refrescarTela();
                       }, <String>[
                         'Todas',
-                        'Ativa',
-                        'Cancelada',
-                        'Utilizada',
+                        'Indoor',
+                        'Takeout',
+                        'Delivery',
                       ]),
                     ),                  
                   ),
@@ -215,13 +203,11 @@ class _ReservaListaPageState extends State<ReservaListaPage> {
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
-              child: _listaReservaMontado == null
-              ? const Center(child: CircularProgressIndicator())
-              : ListView(
+              child: ListView(
                 padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
                 children: <Widget>[
                   PaginatedDataTable(                        
-                    header: const Text('Relação - Reserva'),
+                    header: const Text('Relação - Comanda'),
                     rowsPerPage: _rowsPerPage!,
                     onRowsPerPageChanged: (int? value) {
                       setState(() {
@@ -236,53 +222,93 @@ class _ReservaListaPageState extends State<ReservaListaPage> {
                         label: const Text('Id'),
                         tooltip: 'Id',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<num>((ReservaMontado reservaMontado) => reservaMontado.reserva!.id, columnIndex, ascending),
+                          _sort<num>((ComandaMontado comandaMontado) => comandaMontado.comanda!.id, columnIndex, ascending),
+                      ),
+                      DataColumn(
+                        label: const Text('Colaborador'),
+                        tooltip: 'Colaborador',
+                        onSort: (int columnIndex, bool ascending) =>
+                          _sort<String>((ComandaMontado comandaMontado) => comandaMontado.colaborador?.nome, columnIndex, ascending),
+                      ),
+                      DataColumn(
+                        label: const Text('Mesa'),
+                        tooltip: 'Mesa',
+                        onSort: (int columnIndex, bool ascending) =>
+                          _sort<String>((ComandaMontado comandaMontado) => comandaMontado.mesa?.numero, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Cliente'),
                         tooltip: 'Cliente',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>((ReservaMontado reservaMontado) => reservaMontado.cliente!.nome, columnIndex, ascending), 
+                          _sort<String>((ComandaMontado comandaMontado) => comandaMontado.cliente?.nome, columnIndex, ascending),
                       ),
                       DataColumn(
-                        label: const Text('Data Reserva'),
-                        tooltip: 'Data Reserva',
+                        numeric: true,
+                        label: const Text(''),
+                        tooltip: '',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<DateTime>((ReservaMontado reservaMontado) => reservaMontado.reserva!.dataReserva, columnIndex, ascending),
+                          _sort<num>((ComandaMontado comandaMontado) => comandaMontado.comanda!.idEmpresaDeliveryPedido, columnIndex, ascending),
                       ),
                       DataColumn(
-                        label: const Text('Hora Reserva'),
-                        tooltip: 'Hora Reserva',
+                        numeric: true,
+                        label: const Text('Número'),
+                        tooltip: 'Número',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>((ReservaMontado reservaMontado) => reservaMontado.reserva!.horaReserva, columnIndex, ascending),
+                          _sort<num>((ComandaMontado comandaMontado) => comandaMontado.comanda!.numero, columnIndex, ascending),
+                      ),
+                      DataColumn(
+                        label: const Text('Data da Chegada'),
+                        tooltip: 'Data da Chegada',
+                        onSort: (int columnIndex, bool ascending) =>
+                          _sort<DateTime>((ComandaMontado comandaMontado) => comandaMontado.comanda!.dataChegada, columnIndex, ascending),
+                      ),
+                      DataColumn(
+                        label: const Text('Hora da Chegada'),
+                        tooltip: 'Hora da Chegada',
+                        onSort: (int columnIndex, bool ascending) =>
+                          _sort<String>((ComandaMontado comandaMontado) => comandaMontado.comanda!.horaChegada, columnIndex, ascending),
+                      ),
+                      DataColumn(
+                        label: const Text('Data da Saída'),
+                        tooltip: 'Data da Saída',
+                        onSort: (int columnIndex, bool ascending) =>
+                          _sort<DateTime>((ComandaMontado comandaMontado) => comandaMontado.comanda!.dataSaida, columnIndex, ascending),
+                      ),
+                      DataColumn(
+                        label: const Text('Hora da Saída'),
+                        tooltip: 'Hora da Saída',
+                        onSort: (int columnIndex, bool ascending) =>
+                          _sort<String>((ComandaMontado comandaMontado) => comandaMontado.comanda!.horaSaida, columnIndex, ascending),
+                      ),
+                      DataColumn(
+                        numeric: true,
+                        label: const Text('Valor Total'),
+                        tooltip: 'Valor Total',
+                        onSort: (int columnIndex, bool ascending) =>
+                          _sort<num>((ComandaMontado comandaMontado) => comandaMontado.comanda!.total, columnIndex, ascending),
+                      ),
+                      DataColumn(
+                        label: const Text('Tipo'),
+                        tooltip: 'Tipo',
+                        onSort: (int columnIndex, bool ascending) =>
+                          _sort<String>((ComandaMontado comandaMontado) => comandaMontado.comanda!.tipo, columnIndex, ascending),
                       ),
                       DataColumn(
                         numeric: true,
                         label: const Text('Quantidade de Pessoas'),
                         tooltip: 'Quantidade de Pessoas',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<num>((ReservaMontado reservaMontado) => reservaMontado.reserva!.quantidadePessoas, columnIndex, ascending),
+                          _sort<num>((ComandaMontado comandaMontado) => comandaMontado.comanda!.quantidadePessoas, columnIndex, ascending),
                       ),
                       DataColumn(
-                        label: const Text('Contato'),
-                        tooltip: 'Contato',
+                        numeric: true,
+                        label: const Text('Valor por Pessoa'),
+                        tooltip: 'Valor por Pessoa',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>((ReservaMontado reservaMontado) => reservaMontado.reserva!.nomeContato, columnIndex, ascending),
-                      ),
-                      DataColumn(
-                        label: const Text('Telefone'),
-                        tooltip: 'Telefone',
-                        onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>((ReservaMontado reservaMontado) => reservaMontado.reserva!.telefoneContato, columnIndex, ascending),
-                      ),
-                      DataColumn(
-                        label: const Text('Situação'),
-                        tooltip: 'Situação',
-                        onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>((ReservaMontado reservaMontado) => reservaMontado.reserva!.situacao, columnIndex, ascending),
+                          _sort<num>((ComandaMontado comandaMontado) => comandaMontado.comanda!.valorPorPessoa, columnIndex, ascending),
                       ),
                     ],
-                    source: _reservaDataSource,
+                    source: _comandaDataSource,
                   ),
                 ],
               ),
@@ -293,22 +319,12 @@ class _ReservaListaPageState extends State<ReservaListaPage> {
     );
   }
 
-  void _inserir() {
-    Navigator.of(context)
-      .push(MaterialPageRoute(
-        builder: (BuildContext context) => 
-          ReservaPersistePage(reservaMontado: ReservaMontado(reserva: Reserva(id: null,), cliente: Cliente(id: null)), title: 'Reserva - Inserindo', operacao: 'I')))
-      .then((_) async {
-        await _refrescarTela();
-    });
-  }
-
   void _chamarFiltro() async {
     _filtro = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (BuildContext context) => FiltroPage(
-            title: 'Reserva - Filtro',
+            title: 'Comanda - Filtro',
             colunas: _colunas,
             filtroPadrao: true,
           ),
@@ -317,40 +333,37 @@ class _ReservaListaPageState extends State<ReservaListaPage> {
     if (_filtro != null) {
       if (_filtro!.campo != null) {
         _filtro!.campo = _campos[int.parse(_filtro!.campo!)];
-        await Sessao.db.reservaDao.consultarListaFiltro(_filtro!.campo!, _filtro!.valor!);
+        await Sessao.db.comandaDao.consultarListaFiltro(_filtro!.campo!, _filtro!.valor!);
         setState(() {
         });
       }
     }    
   }
 
-  Future _gerarRelatorio() async {
-    gerarDialogBoxInformacao(context, 'Essa janela não possui relatório implementado');
-  }
-
   Future _refrescarTela() async {
-    await Sessao.db.reservaDao.consultarListaMontado(
+    await Sessao.db.comandaDao.consultarListaMontadoPeriodo(
       dataInicio: Biblioteca.removerTempoDaData(_dataInicio)!, 
       dataFim: Biblioteca.removerTempoDaData(_dataFim)!, 
-      situacao: _situacaoReserva!
+      tipo: _tipoComanda!
     );
     setState(() {
     });
   }
+
 }
 
 /// codigo referente a fonte de dados
-class _ReservaDataSource extends DataTableSource {
-  final List<ReservaMontado>? listaReservaMontado;
+class _ComandaDataSource extends DataTableSource {
+  final List<ComandaMontado>? listaComandaMontado;
   final BuildContext context;
   final Function refrescarTela;
 
-  _ReservaDataSource(this.listaReservaMontado, this.context, this.refrescarTela);
+  _ComandaDataSource(this.listaComandaMontado, this.context, this.refrescarTela);
 
-  void _sort<T>(Comparable<T>? Function(ReservaMontado reservaMontado) getField, bool ascending) {
-    listaReservaMontado!.sort((ReservaMontado a, ReservaMontado b) {
+  void _sort<T>(Comparable<T>? Function(ComandaMontado comandaMontado) getField, bool ascending) {
+    listaComandaMontado!.sort((ComandaMontado a, ComandaMontado b) {
       if (!ascending) {
-        final ReservaMontado c = a;
+        final ComandaMontado c = a;
         a = b;
         b = c;
       }
@@ -369,53 +382,72 @@ class _ReservaDataSource extends DataTableSource {
   @override
   DataRow? getRow(int index) {
     assert(index >= 0);
-    if (index >= listaReservaMontado!.length) return null;
-    final ReservaMontado reservaMontado = listaReservaMontado![index];
+    if (index >= listaComandaMontado!.length) return null;
+    final ComandaMontado comandaMontado = listaComandaMontado![index];
+    final Comanda comanda = comandaMontado.comanda!;
     return DataRow.byIndex(
       color: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-        switch (reservaMontado.reserva!.situacao) {
-          case 'Ativa' :
-            return Colors.yellow.withOpacity(0.3);
-          case 'Cancelada' :
-            return Colors.red.withOpacity(0.3);
-          case 'Utilizada' :
-            return Colors.blue.withOpacity(0.3);
+        switch (comandaMontado.comanda!.tipo) {
+          case 'I' :
+            return Colors.yellow.withOpacity(0.2);
+          case 'T' :
+            return Colors.red.withOpacity(0.2);
+          case 'D' :
+            return Colors.blue.withOpacity(0.2);
           default:
             return null;
         }        
       }),
       index: index,
       cells: <DataCell>[
-        DataCell(Text(reservaMontado.reserva!.id?.toString() ?? ''), onTap: () {
-          _detalharReserva(reservaMontado, context, refrescarTela);
+        DataCell(Text(comanda.id?.toString() ?? ''), onTap: () {
+          _detalharComanda(comandaMontado, context, refrescarTela);
         }),
-        DataCell(Text(reservaMontado.cliente?.nome?.toString() ?? ''), onTap: () {
-          _detalharReserva(reservaMontado, context, refrescarTela);
+        DataCell(Text(comandaMontado.colaborador?.nome?.toString() ?? ''), onTap: () {
+          _detalharComanda(comandaMontado, context, refrescarTela);
         }),
-        DataCell(Text(Biblioteca.formatarData(reservaMontado.reserva!.dataReserva)), onTap: () {
-          _detalharReserva(reservaMontado, context, refrescarTela);
+        DataCell(Text(comandaMontado.mesa?.numero?.toString() ?? ''), onTap: () {
+          _detalharComanda(comandaMontado, context, refrescarTela);
         }),
-        DataCell(Text(reservaMontado.reserva!.horaReserva ?? ''), onTap: () {
-          _detalharReserva(reservaMontado, context, refrescarTela);
+        DataCell(Text(comandaMontado.cliente?.nome?.toString() ?? ''), onTap: () {
+          _detalharComanda(comandaMontado, context, refrescarTela);
         }),
-        DataCell(Text(reservaMontado.reserva!.quantidadePessoas?.toString() ?? ''), onTap: () {
-          _detalharReserva(reservaMontado, context, refrescarTela);
+        DataCell(Text(comanda.idEmpresaDeliveryPedido?.toString() ?? ''), onTap: () {
+          _detalharComanda(comandaMontado, context, refrescarTela);
         }),
-        DataCell(Text(reservaMontado.reserva!.nomeContato ?? ''), onTap: () {
-          _detalharReserva(reservaMontado, context, refrescarTela);
+        DataCell(Text(comanda.numero?.toString() ?? ''), onTap: () {
+          _detalharComanda(comandaMontado, context, refrescarTela);
         }),
-        DataCell(Text(reservaMontado.reserva!.telefoneContato ?? ''), onTap: () {
-          _detalharReserva(reservaMontado, context, refrescarTela);
+        DataCell(Text(Biblioteca.formatarData(comanda.dataChegada)), onTap: () {
+          _detalharComanda(comandaMontado, context, refrescarTela);
         }),
-        DataCell(Text(reservaMontado.reserva!.situacao ?? ''), onTap: () {
-          _detalharReserva(reservaMontado, context, refrescarTela);
+        DataCell(Text(comanda.horaChegada ?? ''), onTap: () {
+          _detalharComanda(comandaMontado, context, refrescarTela);
+        }),
+        DataCell(Text(Biblioteca.formatarData(comanda.dataSaida)), onTap: () {
+          _detalharComanda(comandaMontado, context, refrescarTela);
+        }),
+        DataCell(Text(comanda.horaSaida ?? ''), onTap: () {
+          _detalharComanda(comandaMontado, context, refrescarTela);
+        }),
+        DataCell(Text(Constantes.formatoDecimalValor.format(comanda.total ?? 0)), onTap: () {
+          _detalharComanda(comandaMontado, context, refrescarTela);
+        }),
+        DataCell(Text(comanda.tipo ?? ''), onTap: () {
+          _detalharComanda(comandaMontado, context, refrescarTela);
+        }),
+        DataCell(Text(comanda.quantidadePessoas?.toString() ?? ''), onTap: () {
+          _detalharComanda(comandaMontado, context, refrescarTela);
+        }),
+        DataCell(Text(Constantes.formatoDecimalValor.format(comanda.valorPorPessoa ?? 0)), onTap: () {
+          _detalharComanda(comandaMontado, context, refrescarTela);
         }),
       ],
     );
   }
 
   @override
-  int get rowCount => listaReservaMontado!.length;
+  int get rowCount => listaComandaMontado!.length;
 
   @override
   bool get isRowCountApproximate => false;
@@ -424,12 +456,13 @@ class _ReservaDataSource extends DataTableSource {
   int get selectedRowCount => _selectedCount;
 }
 
-void _detalharReserva(ReservaMontado reservaMontado, BuildContext context, Function refrescarTela) {
-  Navigator.of(context)
-    .push(MaterialPageRoute(
-      builder: (BuildContext context) => ReservaPersistePage(
-      reservaMontado: reservaMontado, title: 'Reserva - Editando', operacao: 'A')))
-    .then((_) async {    
-      await refrescarTela();
-   });
+void _detalharComanda(ComandaMontado comandaMontado, BuildContext context, Function refrescarTela) {
+  Navigator.push(
+    context, MaterialPageRoute(builder: (_) => ComandaPage(
+      title: 'Comandas', 
+      mesa: comandaMontado.mesa == null ? Mesa(id: null) : comandaMontado.mesa!, 
+      tipo: comandaMontado.comanda!.tipo!,
+      comandaMontado: comandaMontado,
+    )),
+  ).then((value) async { await refrescarTela(); });
 }

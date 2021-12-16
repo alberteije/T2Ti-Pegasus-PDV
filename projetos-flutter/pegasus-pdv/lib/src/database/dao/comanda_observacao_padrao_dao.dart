@@ -48,15 +48,21 @@ class ComandaObservacaoPadraoDao extends DatabaseAccessor<AppDatabase> with _$Co
 
   ComandaObservacaoPadraoDao(this.db) : super(db);
 
-  Future<List<ComandaObservacaoPadrao>?> consultarLista() => select(comandaObservacaoPadraos).get();
+  List<ComandaObservacaoPadrao> listaComandaObservacaoPadrao = []; 
+  
+  Future<List<ComandaObservacaoPadrao>?> consultarLista() async {
+    listaComandaObservacaoPadrao = await select(comandaObservacaoPadraos).get();
+    return listaComandaObservacaoPadrao;
+  }  
 
   Future<List<ComandaObservacaoPadrao>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM COMANDA_OBSERVACAO_PADRAO WHERE " + campo + " like '%" + valor + "%'", 
+    listaComandaObservacaoPadrao = await (customSelect("SELECT * FROM COMANDA_OBSERVACAO_PADRAO WHERE " + campo + " like '%" + valor + "%'", 
                                 readsFrom: { comandaObservacaoPadraos }).map((row) {
                                   return ComandaObservacaoPadrao.fromData(row.data, db);  
                                 }).get());
+    return listaComandaObservacaoPadrao;
   }
-
+    
   Future<ComandaObservacaoPadrao?> consultarObjetoFiltro(String campo, String valor) async {
     return (customSelect("SELECT * FROM COMANDA_OBSERVACAO_PADRAO WHERE " + campo + " = '" + valor + "'", 
                                 readsFrom: { comandaObservacaoPadraos }).map((row) {
@@ -90,4 +96,16 @@ class ComandaObservacaoPadraoDao extends DatabaseAccessor<AppDatabase> with _$Co
   }
 
   
+  
+  static List<String> campos = <String>[
+    'ID', 
+    'CODIGO', 
+    'DESCRICAO', 
+  ];
+
+  static List<String> colunas = <String>[
+    'Id', 
+    'Código', 
+    'Descrição', 
+  ];  
 }

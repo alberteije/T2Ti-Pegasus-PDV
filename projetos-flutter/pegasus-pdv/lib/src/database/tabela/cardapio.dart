@@ -43,7 +43,6 @@ class Cardapios extends Table {
 
   IntColumn get id => integer().named('ID').autoIncrement()();
   IntColumn get idProduto => integer().named('ID_PRODUTO').nullable().customConstraint('NULLABLE REFERENCES PRODUTO(ID)')();
-  TextColumn get descricao => text().named('DESCRICAO').withLength(min: 0, max: 250).nullable()();
   TextColumn get modoPreparo => text().named('MODO_PREPARO').withLength(min: 0, max: 250).nullable()();
   TextColumn get infoAlergico => text().named('INFO_ALERGICO').withLength(min: 0, max: 250).nullable()();
   TextColumn get ingredientes => text().named('INGREDIENTES').withLength(min: 0, max: 250).nullable()();
@@ -52,7 +51,6 @@ class Cardapios extends Table {
 class Cardapio extends DataClass implements Insertable<Cardapio> {
   final int? id;
   final int? idProduto;
-  final String? descricao;
   final String? modoPreparo;
   final String? infoAlergico;
   final String? ingredientes;
@@ -61,7 +59,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
     {
       required this.id,
       this.idProduto,
-      this.descricao,
       this.modoPreparo,
       this.infoAlergico,
       this.ingredientes,
@@ -73,7 +70,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
     return Cardapio(
       id: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}ID']),
       idProduto: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}ID_PRODUTO']),
-      descricao: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}DESCRICAO']),
       modoPreparo: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}MODO_PREPARO']),
       infoAlergico: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}INFO_ALERGICO']),
       ingredientes: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}INGREDIENTES']),
@@ -88,9 +84,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
     }
     if (!nullToAbsent || idProduto != null) {
       map['ID_PRODUTO'] = Variable<int?>(idProduto);
-    }
-    if (!nullToAbsent || descricao != null) {
-      map['DESCRICAO'] = Variable<String?>(descricao);
     }
     if (!nullToAbsent || modoPreparo != null) {
       map['MODO_PREPARO'] = Variable<String?>(modoPreparo);
@@ -110,9 +103,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
       idProduto: idProduto == null && nullToAbsent
         ? const Value.absent()
         : Value(idProduto),
-      descricao: descricao == null && nullToAbsent
-        ? const Value.absent()
-        : Value(descricao),
       modoPreparo: modoPreparo == null && nullToAbsent
         ? const Value.absent()
         : Value(modoPreparo),
@@ -130,7 +120,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
     return Cardapio(
       id: serializer.fromJson<int>(json['id']),
       idProduto: serializer.fromJson<int>(json['idProduto']),
-      descricao: serializer.fromJson<String>(json['descricao']),
       modoPreparo: serializer.fromJson<String>(json['modoPreparo']),
       infoAlergico: serializer.fromJson<String>(json['infoAlergico']),
       ingredientes: serializer.fromJson<String>(json['ingredientes']),
@@ -143,7 +132,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
     return <String, dynamic>{
       'id': serializer.toJson<int?>(id),
       'idProduto': serializer.toJson<int?>(idProduto),
-      'descricao': serializer.toJson<String?>(descricao),
       'modoPreparo': serializer.toJson<String?>(modoPreparo),
       'infoAlergico': serializer.toJson<String?>(infoAlergico),
       'ingredientes': serializer.toJson<String?>(ingredientes),
@@ -154,7 +142,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
         {
 		  int? id,
           int? idProduto,
-          String? descricao,
           String? modoPreparo,
           String? infoAlergico,
           String? ingredientes,
@@ -162,7 +149,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
       Cardapio(
         id: id ?? this.id,
         idProduto: idProduto ?? this.idProduto,
-        descricao: descricao ?? this.descricao,
         modoPreparo: modoPreparo ?? this.modoPreparo,
         infoAlergico: infoAlergico ?? this.infoAlergico,
         ingredientes: ingredientes ?? this.ingredientes,
@@ -173,7 +159,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
     return (StringBuffer('Cardapio(')
           ..write('id: $id, ')
           ..write('idProduto: $idProduto, ')
-          ..write('descricao: $descricao, ')
           ..write('modoPreparo: $modoPreparo, ')
           ..write('infoAlergico: $infoAlergico, ')
           ..write('ingredientes: $ingredientes, ')
@@ -185,7 +170,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
   int get hashCode => Object.hashAll([
       id,
       idProduto,
-      descricao,
       modoPreparo,
       infoAlergico,
       ingredientes,
@@ -197,7 +181,6 @@ class Cardapio extends DataClass implements Insertable<Cardapio> {
       (other is Cardapio &&
           other.id == id &&
           other.idProduto == idProduto &&
-          other.descricao == descricao &&
           other.modoPreparo == modoPreparo &&
           other.infoAlergico == infoAlergico &&
           other.ingredientes == ingredientes 
@@ -208,7 +191,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
 
   final Value<int?> id;
   final Value<int?> idProduto;
-  final Value<String?> descricao;
   final Value<String?> modoPreparo;
   final Value<String?> infoAlergico;
   final Value<String?> ingredientes;
@@ -216,7 +198,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
   const CardapiosCompanion({
     this.id = const Value.absent(),
     this.idProduto = const Value.absent(),
-    this.descricao = const Value.absent(),
     this.modoPreparo = const Value.absent(),
     this.infoAlergico = const Value.absent(),
     this.ingredientes = const Value.absent(),
@@ -225,7 +206,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
   CardapiosCompanion.insert({
     this.id = const Value.absent(),
     this.idProduto = const Value.absent(),
-    this.descricao = const Value.absent(),
     this.modoPreparo = const Value.absent(),
     this.infoAlergico = const Value.absent(),
     this.ingredientes = const Value.absent(),
@@ -234,7 +214,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
   static Insertable<Cardapio> custom({
     Expression<int>? id,
     Expression<int>? idProduto,
-    Expression<String>? descricao,
     Expression<String>? modoPreparo,
     Expression<String>? infoAlergico,
     Expression<String>? ingredientes,
@@ -242,7 +221,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
     return RawValuesInsertable({
       if (id != null) 'ID': id,
       if (idProduto != null) 'ID_PRODUTO': idProduto,
-      if (descricao != null) 'DESCRICAO': descricao,
       if (modoPreparo != null) 'MODO_PREPARO': modoPreparo,
       if (infoAlergico != null) 'INFO_ALERGICO': infoAlergico,
       if (ingredientes != null) 'INGREDIENTES': ingredientes,
@@ -253,7 +231,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
       {
 	  Value<int>? id,
       Value<int>? idProduto,
-      Value<String>? descricao,
       Value<String>? modoPreparo,
       Value<String>? infoAlergico,
       Value<String>? ingredientes,
@@ -261,7 +238,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
     return CardapiosCompanion(
       id: id ?? this.id,
       idProduto: idProduto ?? this.idProduto,
-      descricao: descricao ?? this.descricao,
       modoPreparo: modoPreparo ?? this.modoPreparo,
       infoAlergico: infoAlergico ?? this.infoAlergico,
       ingredientes: ingredientes ?? this.ingredientes,
@@ -276,9 +252,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
     }
     if (idProduto.present) {
       map['ID_PRODUTO'] = Variable<int?>(idProduto.value);
-    }
-    if (descricao.present) {
-      map['DESCRICAO'] = Variable<String?>(descricao.value);
     }
     if (modoPreparo.present) {
       map['MODO_PREPARO'] = Variable<String?>(modoPreparo.value);
@@ -297,7 +270,6 @@ class CardapiosCompanion extends UpdateCompanion<Cardapio> {
     return (StringBuffer('CardapiosCompanion(')
           ..write('id: $id, ')
           ..write('idProduto: $idProduto, ')
-          ..write('descricao: $descricao, ')
           ..write('modoPreparo: $modoPreparo, ')
           ..write('infoAlergico: $infoAlergico, ')
           ..write('ingredientes: $ingredientes, ')
@@ -330,13 +302,6 @@ class $CardapiosTable extends Cardapios
           typeName: 'INTEGER',
           requiredDuringInsert: false,
           $customConstraints: 'NULLABLE REFERENCES PRODUTO(ID)');
-  final VerificationMeta _descricaoMeta =
-      const VerificationMeta('descricao');
-  GeneratedColumn<String>? _descricao;
-  @override
-  GeneratedColumn<String> get descricao => _descricao ??=
-      GeneratedColumn<String>('DESCRICAO', aliasedName, true,
-          typeName: 'TEXT', requiredDuringInsert: false);
   final VerificationMeta _modoPreparoMeta =
       const VerificationMeta('modoPreparo');
   GeneratedColumn<String>? _modoPreparo;
@@ -363,7 +328,6 @@ class $CardapiosTable extends Cardapios
   List<GeneratedColumn> get $columns => [
         id,
         idProduto,
-        descricao,
         modoPreparo,
         infoAlergico,
         ingredientes,
@@ -386,10 +350,6 @@ class $CardapiosTable extends Cardapios
     if (data.containsKey('ID_PRODUTO')) {
         context.handle(_idProdutoMeta,
             idProduto.isAcceptableOrUnknown(data['ID_PRODUTO']!, _idProdutoMeta));
-    }
-    if (data.containsKey('DESCRICAO')) {
-        context.handle(_descricaoMeta,
-            descricao.isAcceptableOrUnknown(data['DESCRICAO']!, _descricaoMeta));
     }
     if (data.containsKey('MODO_PREPARO')) {
         context.handle(_modoPreparoMeta,
