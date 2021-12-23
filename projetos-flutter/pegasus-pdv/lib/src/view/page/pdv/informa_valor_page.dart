@@ -70,13 +70,6 @@ class _InformaValorPageState extends State<InformaValorPage> {
   void initState() {
     super.initState();
 
-    // EIJE - 22102021 - comentado para observar o comportamento do novo widget
-    // _valorController.afterChange = (_, __) {
-    //   _valorController.selection = TextSelection.collapsed(
-    //     offset: _valorController.text.length,
-    //   );
-    // };
-
     _valorFoco.addListener(() {
       if(_valorFoco.hasFocus) {
         _valorController.selection = TextSelection(baseOffset: 0, extentOffset: _valorController.text.length);
@@ -113,6 +106,9 @@ class _InformaValorPageState extends State<InformaValorPage> {
     if (widget.operacao == 'DESCONTO') {
       _valorController.updateValue(Sessao.vendaAtual!.taxaDesconto ?? 0);
       _subtitulo = 'Informe a taxa e a observação';
+      _textoValor = 'Taxa';
+    }else if (widget.operacao == 'DESCONTO_COMANDA') {
+      _subtitulo = 'Informe a taxa do desconto';
       _textoValor = 'Taxa';
     } else if (widget.operacao == 'CANCELAR_NFCE') {
       _subtitulo = 'Informe o Motivo do Cancelamento da NFC-e';
@@ -247,7 +243,7 @@ class _InformaValorPageState extends State<InformaValorPage> {
                     ),
                     const SizedBox(height: 24.0),
                     Visibility(
-                      visible: widget.operacao != 'DESCONTO',
+                      visible: (widget.operacao != 'DESCONTO' && widget.operacao != 'DESCONTO_COMANDA'),
                       child: TextField(
                         maxLines: 3,
                         controller: _observacaoController,
@@ -313,6 +309,8 @@ class _InformaValorPageState extends State<InformaValorPage> {
         valorDesconto: Biblioteca.calcularDesconto(Sessao.vendaAtual!.valorFinal, _valorController.numberValue),
       );
       Navigator.pop(context, true);
+    } else if (widget.operacao == 'DESCONTO_COMANDA') {
+      Navigator.pop(context, _valorController.numberValue);
     } else if (widget.operacao == 'SUPRIMENTO') {
       PdvSuprimento suprimento = 
       PdvSuprimento(
@@ -343,7 +341,7 @@ class _InformaValorPageState extends State<InformaValorPage> {
   }
 
   LinearGradient _gradienteTopo() {
-    if (widget.operacao == 'DESCONTO') {
+    if (widget.operacao == 'DESCONTO' || widget.operacao == 'DESCONTO_COMANDA') {
       return LinearGradient(colors: [Colors.red.shade200, Colors.red.shade600]);
     } else if (widget.operacao == 'SUPRIMENTO') {
       return LinearGradient(colors: [Colors.blue.shade200, Colors.blue.shade600]);

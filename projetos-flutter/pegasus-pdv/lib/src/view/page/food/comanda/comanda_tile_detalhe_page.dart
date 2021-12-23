@@ -129,7 +129,9 @@ class ComandaTileDetalhePage extends StatelessWidget  {
             children: [
               Text('Quantidade de Itens: ' + comandaMontado.listaComandaDetalheMontado!.length.toString(), style: TextStyle(fontSize: tamanhoFonteQuantidadeItens, color: Colors.black54, fontWeight: FontWeight.bold)),
               Text('Quantidade de Pessoas: ' + (comandaMontado.comanda!.quantidadePessoas?.toString() ?? '0'), style: TextStyle(fontSize: tamanhoFonteQuantidadePessoas, color: Colors.black54, fontWeight: FontWeight.bold)),
-              Text('Valor Total: ' + Biblioteca.formatarValorDecimal(comandaMontado.comanda!.total), style: TextStyle(fontSize: tamanhoFonteValorTotal, color: Colors.black, fontWeight: FontWeight.bold)),
+              Text('Valor Subtotal: ' + Biblioteca.formatarValorDecimal(comandaMontado.comanda!.valorSubtotal), style: TextStyle(fontSize: tamanhoFonteValorTotal, color: Colors.black, fontWeight: FontWeight.bold)),
+              Text('Valor Desconto: ' + Biblioteca.formatarValorDecimal(comandaMontado.comanda!.valorDesconto), style: TextStyle(fontSize: tamanhoFonteValorTotal, color: Colors.black, fontWeight: FontWeight.bold)),
+              Text('Valor Total: ' + Biblioteca.formatarValorDecimal(comandaMontado.comanda!.valorTotal), style: TextStyle(fontSize: tamanhoFonteValorTotal, color: Colors.black, fontWeight: FontWeight.bold)),
               Text('Valor por Pessoa: '  + Biblioteca.formatarValorDecimal(comandaMontado.comanda!.valorPorPessoa), style: TextStyle(fontSize: tamanhoFontevalorPorPessoa, color: Colors.black, fontWeight: FontWeight.bold)),
             ],
           ),

@@ -88,7 +88,8 @@ class Sessao {
   static List<PdvTotalTipoPagamento> listaDadosPagamento = [];
   static List<ContasReceberMontado> listaParcelamento = []; // guarda o parcelamento atual da venda para ser impresso no recibo
   static RetornoJsonErro? objetoJsonErro; // objeto de erro estático que armazena o último erro ocorrido na aplicação
-  
+  static ComandaMontado? comandaMontadoAtual; // TODO: usado para o relatório - remover quando os relatórios forem arrumados
+
   /*
    [0] = codigo
    [1] = ex
@@ -162,6 +163,16 @@ class Sessao {
 
   static void fecharDialogBoxEspera(BuildContext context) {
     Navigator.of(context).pop();
+  }
+
+  static Function? refrescarCaixaCallBack;
+
+  static void emitirNotaDaComanda(BuildContext context) {
+    Navigator.popUntil(context, ModalRoute.withName('/'));
+    listaDadosPagamento = [];
+    listaParcelamento = [];
+    statusCaixa = StatusCaixa.vendaEmAndamento;      
+    refrescarCaixaCallBack!();
   }
 
   /// Passos:

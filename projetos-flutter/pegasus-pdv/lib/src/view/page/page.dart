@@ -101,9 +101,12 @@ export 'package:pegasus_pdv/src/view/page/estoque/estoque_lista_page.dart';
 export 'package:pegasus_pdv/src/view/page/dashboard/dashboard_page.dart';
 
 // relatórios
+export 'package:pegasus_pdv/src/view/page/relatorios/encerra_movimento_relatorio.dart';
 export 'package:pegasus_pdv/src/view/page/relatorios/recibo_relatorio_a4.dart';
 export 'package:pegasus_pdv/src/view/page/relatorios/recibo_relatorio_80.dart';
 export 'package:pegasus_pdv/src/view/page/relatorios/recibo_relatorio_57.dart';
+export 'package:pegasus_pdv/src/view/page/relatorios/comanda_relatorio_80.dart';
+
 
 // vendas
 export 'package:pegasus_pdv/src/view/page/vendas/vendas_lista_page.dart';
@@ -147,6 +150,7 @@ export 'package:pegasus_pdv/src/view/page/food/comanda/comanda_tile_detalhe_page
 export 'package:pegasus_pdv/src/view/page/food/comanda/comanda_observacao_padrao_lista_page.dart';
 export 'package:pegasus_pdv/src/view/page/food/comanda/comanda_observacao_padrao_persiste_page.dart';
 export 'package:pegasus_pdv/src/view/page/food/comanda/comanda_observacao_padrao_lookup_page.dart';
+export 'package:pegasus_pdv/src/view/page/food/comanda/comanda_cardapio_pergunta_lookup_page.dart';
 
 // delivery
 export 'package:pegasus_pdv/src/view/page/delivery/taxa_entrega/taxa_entrega_lista_page.dart';

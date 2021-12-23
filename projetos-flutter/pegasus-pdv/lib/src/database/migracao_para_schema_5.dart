@@ -29,6 +29,7 @@ class MigracaoParaSchema5 extends DatabaseAccessor<AppDatabase> {
   $DeliveryAcertosTable get	deliveryAcertos => attachedDatabase.deliveryAcertos;
   $DeliveryAcertoComandasTable get	deliveryAcertoComandas => attachedDatabase.deliveryAcertoComandas;
   $EmpresaSegmentosTable get	empresaSegmentos => attachedDatabase.empresaSegmentos;
+  $EmpresaDeliveryPedidosTable get	empresaDeliveryPedidos => attachedDatabase.empresaDeliveryPedidos;
   $EntregadorRotasTable get	entregadorRotas => attachedDatabase.entregadorRotas;
   $EntregadorRotaDetalhesTable get	entregadorRotaDetalhes => attachedDatabase.entregadorRotaDetalhes;
   $FidelidadeHistoricosTable get	fidelidadeHistoricos => attachedDatabase.fidelidadeHistoricos;
@@ -71,6 +72,7 @@ class MigracaoParaSchema5 extends DatabaseAccessor<AppDatabase> {
     await m.createTable(deliveryAcertos);
     await m.createTable(deliveryAcertoComandas);
     await m.createTable(empresaSegmentos);
+    await m.createTable(empresaDeliveryPedidos);
     await m.createTable(entregadorRotas);
     await m.createTable(entregadorRotaDetalhes);
     await m.createTable(fidelidadeHistoricos);

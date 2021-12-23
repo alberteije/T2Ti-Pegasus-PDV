@@ -251,10 +251,10 @@ class _ComandaListaPageState extends State<ComandaListaPage> {
                       ),
                       DataColumn(
                         numeric: true,
-                        label: const Text('Número'),
-                        tooltip: 'Número',
+                        label: const Text('Situação'),
+                        tooltip: 'Situação',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<num>((ComandaMontado comandaMontado) => comandaMontado.comanda!.numero, columnIndex, ascending),
+                          _sort<String>((ComandaMontado comandaMontado) => comandaMontado.comanda!.situacao, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Data da Chegada'),
@@ -282,10 +282,24 @@ class _ComandaListaPageState extends State<ComandaListaPage> {
                       ),
                       DataColumn(
                         numeric: true,
+                        label: const Text('Valor SubTotal'),
+                        tooltip: 'Valor Total',
+                        onSort: (int columnIndex, bool ascending) =>
+                          _sort<num>((ComandaMontado comandaMontado) => comandaMontado.comanda!.valorSubtotal, columnIndex, ascending),
+                      ),
+                      DataColumn(
+                        numeric: true,
+                        label: const Text('Valor Desconto'),
+                        tooltip: 'Valor Desconto',
+                        onSort: (int columnIndex, bool ascending) =>
+                          _sort<num>((ComandaMontado comandaMontado) => comandaMontado.comanda!.valorDesconto, columnIndex, ascending),
+                      ),
+                      DataColumn(
+                        numeric: true,
                         label: const Text('Valor Total'),
                         tooltip: 'Valor Total',
                         onSort: (int columnIndex, bool ascending) =>
-                          _sort<num>((ComandaMontado comandaMontado) => comandaMontado.comanda!.total, columnIndex, ascending),
+                          _sort<num>((ComandaMontado comandaMontado) => comandaMontado.comanda!.valorTotal, columnIndex, ascending),
                       ),
                       DataColumn(
                         label: const Text('Tipo'),
@@ -403,19 +417,19 @@ class _ComandaDataSource extends DataTableSource {
         DataCell(Text(comanda.id?.toString() ?? ''), onTap: () {
           _detalharComanda(comandaMontado, context, refrescarTela);
         }),
-        DataCell(Text(comandaMontado.colaborador?.nome?.toString() ?? ''), onTap: () {
+        DataCell(Text(comandaMontado.colaborador?.nome ?? ''), onTap: () {
           _detalharComanda(comandaMontado, context, refrescarTela);
         }),
         DataCell(Text(comandaMontado.mesa?.numero?.toString() ?? ''), onTap: () {
           _detalharComanda(comandaMontado, context, refrescarTela);
         }),
-        DataCell(Text(comandaMontado.cliente?.nome?.toString() ?? ''), onTap: () {
+        DataCell(Text(comandaMontado.cliente?.nome ?? ''), onTap: () {
           _detalharComanda(comandaMontado, context, refrescarTela);
         }),
         DataCell(Text(comanda.idEmpresaDeliveryPedido?.toString() ?? ''), onTap: () {
           _detalharComanda(comandaMontado, context, refrescarTela);
         }),
-        DataCell(Text(comanda.numero?.toString() ?? ''), onTap: () {
+        DataCell(Text(comanda.situacao ?? ''), onTap: () {
           _detalharComanda(comandaMontado, context, refrescarTela);
         }),
         DataCell(Text(Biblioteca.formatarData(comanda.dataChegada)), onTap: () {
@@ -430,7 +444,13 @@ class _ComandaDataSource extends DataTableSource {
         DataCell(Text(comanda.horaSaida ?? ''), onTap: () {
           _detalharComanda(comandaMontado, context, refrescarTela);
         }),
-        DataCell(Text(Constantes.formatoDecimalValor.format(comanda.total ?? 0)), onTap: () {
+        DataCell(Text(Constantes.formatoDecimalValor.format(comanda.valorSubtotal ?? 0)), onTap: () {
+          _detalharComanda(comandaMontado, context, refrescarTela);
+        }),
+        DataCell(Text(Constantes.formatoDecimalValor.format(comanda.valorDesconto ?? 0)), onTap: () {
+          _detalharComanda(comandaMontado, context, refrescarTela);
+        }),
+        DataCell(Text(Constantes.formatoDecimalValor.format(comanda.valorTotal ?? 0)), onTap: () {
           _detalharComanda(comandaMontado, context, refrescarTela);
         }),
         DataCell(Text(comanda.tipo ?? ''), onTap: () {

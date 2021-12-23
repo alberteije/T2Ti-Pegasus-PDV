@@ -49,6 +49,7 @@ class ComandaDetalhes extends Table {
   RealColumn get quantidade => real().named('QUANTIDADE').nullable()();
   RealColumn get valorUnitario => real().named('VALOR_UNITARIO').nullable()();
   RealColumn get valorTotal => real().named('VALOR_TOTAL').nullable()();
+  RealColumn get valorTotalComplemento => real().named('VALOR_TOTAL_COMPLEMENTO').nullable()();
   TextColumn get observacao => text().named('OBSERVACAO').withLength(min: 0, max: 250).nullable()();
   TextColumn get gerouPedidoCozinha => text().named('GEROU_PEDIDO_COZINHA').withLength(min: 0, max: 1).nullable()();
 }
@@ -62,7 +63,7 @@ class ComandaDetalheMontado {
     this.comandaDetalhe,
     this.produtoMontado,
     this.listaComandaDetalheComplemento,
-  });
+  });   
 }
 
 class ComandaDetalhe extends DataClass implements Insertable<ComandaDetalhe> {
@@ -72,6 +73,7 @@ class ComandaDetalhe extends DataClass implements Insertable<ComandaDetalhe> {
   final double? quantidade;
   final double? valorUnitario;
   final double? valorTotal;
+  final double? valorTotalComplemento;
   final String? observacao;
   final String? gerouPedidoCozinha;
 
@@ -83,6 +85,7 @@ class ComandaDetalhe extends DataClass implements Insertable<ComandaDetalhe> {
       this.quantidade,
       this.valorUnitario,
       this.valorTotal,
+      this.valorTotalComplemento,
       this.observacao,
       this.gerouPedidoCozinha,
     }
@@ -97,6 +100,7 @@ class ComandaDetalhe extends DataClass implements Insertable<ComandaDetalhe> {
       quantidade: const RealType().mapFromDatabaseResponse(data['${effectivePrefix}QUANTIDADE']),
       valorUnitario: const RealType().mapFromDatabaseResponse(data['${effectivePrefix}VALOR_UNITARIO']),
       valorTotal: const RealType().mapFromDatabaseResponse(data['${effectivePrefix}VALOR_TOTAL']),
+      valorTotalComplemento: const RealType().mapFromDatabaseResponse(data['${effectivePrefix}VALOR_TOTAL_COMPLEMENTO']),
       observacao: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}OBSERVACAO']),
       gerouPedidoCozinha: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}GEROU_PEDIDO_COZINHA']),
     );
@@ -122,6 +126,9 @@ class ComandaDetalhe extends DataClass implements Insertable<ComandaDetalhe> {
     }
     if (!nullToAbsent || valorTotal != null) {
       map['VALOR_TOTAL'] = Variable<double?>(valorTotal);
+    }
+    if (!nullToAbsent || valorTotalComplemento != null) {
+      map['VALOR_TOTAL_COMPLEMENTO'] = Variable<double?>(valorTotalComplemento);
     }
     if (!nullToAbsent || observacao != null) {
       map['OBSERVACAO'] = Variable<String?>(observacao);
@@ -150,6 +157,9 @@ class ComandaDetalhe extends DataClass implements Insertable<ComandaDetalhe> {
       valorTotal: valorTotal == null && nullToAbsent
         ? const Value.absent()
         : Value(valorTotal),
+      valorTotalComplemento: valorTotalComplemento == null && nullToAbsent
+        ? const Value.absent()
+        : Value(valorTotalComplemento),
       observacao: observacao == null && nullToAbsent
         ? const Value.absent()
         : Value(observacao),
@@ -168,6 +178,7 @@ class ComandaDetalhe extends DataClass implements Insertable<ComandaDetalhe> {
       quantidade: serializer.fromJson<double>(json['quantidade']),
       valorUnitario: serializer.fromJson<double>(json['valorUnitario']),
       valorTotal: serializer.fromJson<double>(json['valorTotal']),
+      valorTotalComplemento: serializer.fromJson<double>(json['valorTotalComplemento']),
       observacao: serializer.fromJson<String>(json['observacao']),
       gerouPedidoCozinha: serializer.fromJson<String>(json['gerouPedidoCozinha']),
     );
@@ -183,6 +194,7 @@ class ComandaDetalhe extends DataClass implements Insertable<ComandaDetalhe> {
       'quantidade': serializer.toJson<double?>(quantidade),
       'valorUnitario': serializer.toJson<double?>(valorUnitario),
       'valorTotal': serializer.toJson<double?>(valorTotal),
+      'valorTotalComplemento': serializer.toJson<double?>(valorTotalComplemento),
       'observacao': serializer.toJson<String?>(observacao),
       'gerouPedidoCozinha': serializer.toJson<String?>(gerouPedidoCozinha),
     };
@@ -196,6 +208,7 @@ class ComandaDetalhe extends DataClass implements Insertable<ComandaDetalhe> {
           double? quantidade,
           double? valorUnitario,
           double? valorTotal,
+          double? valorTotalComplemento,
           String? observacao,
           String? gerouPedidoCozinha,
 		}) =>
@@ -206,6 +219,7 @@ class ComandaDetalhe extends DataClass implements Insertable<ComandaDetalhe> {
         quantidade: quantidade ?? this.quantidade,
         valorUnitario: valorUnitario ?? this.valorUnitario,
         valorTotal: valorTotal ?? this.valorTotal,
+        valorTotalComplemento: valorTotalComplemento ?? this.valorTotalComplemento,
         observacao: observacao ?? this.observacao,
         gerouPedidoCozinha: gerouPedidoCozinha ?? this.gerouPedidoCozinha,
       );
@@ -219,6 +233,7 @@ class ComandaDetalhe extends DataClass implements Insertable<ComandaDetalhe> {
           ..write('quantidade: $quantidade, ')
           ..write('valorUnitario: $valorUnitario, ')
           ..write('valorTotal: $valorTotal, ')
+          ..write('valorTotalComplemento: $valorTotalComplemento, ')
           ..write('observacao: $observacao, ')
           ..write('gerouPedidoCozinha: $gerouPedidoCozinha, ')
           ..write(')'))
@@ -233,6 +248,7 @@ class ComandaDetalhe extends DataClass implements Insertable<ComandaDetalhe> {
       quantidade,
       valorUnitario,
       valorTotal,
+      valorTotalComplemento,
       observacao,
       gerouPedidoCozinha,
 	]);
@@ -247,6 +263,7 @@ class ComandaDetalhe extends DataClass implements Insertable<ComandaDetalhe> {
           other.quantidade == quantidade &&
           other.valorUnitario == valorUnitario &&
           other.valorTotal == valorTotal &&
+          other.valorTotalComplemento == valorTotalComplemento &&
           other.observacao == observacao &&
           other.gerouPedidoCozinha == gerouPedidoCozinha 
 	   );
@@ -260,6 +277,7 @@ class ComandaDetalhesCompanion extends UpdateCompanion<ComandaDetalhe> {
   final Value<double?> quantidade;
   final Value<double?> valorUnitario;
   final Value<double?> valorTotal;
+  final Value<double?> valorTotalComplemento;
   final Value<String?> observacao;
   final Value<String?> gerouPedidoCozinha;
 
@@ -270,6 +288,7 @@ class ComandaDetalhesCompanion extends UpdateCompanion<ComandaDetalhe> {
     this.quantidade = const Value.absent(),
     this.valorUnitario = const Value.absent(),
     this.valorTotal = const Value.absent(),
+    this.valorTotalComplemento = const Value.absent(),
     this.observacao = const Value.absent(),
     this.gerouPedidoCozinha = const Value.absent(),
   });
@@ -281,6 +300,7 @@ class ComandaDetalhesCompanion extends UpdateCompanion<ComandaDetalhe> {
     this.quantidade = const Value.absent(),
     this.valorUnitario = const Value.absent(),
     this.valorTotal = const Value.absent(),
+    this.valorTotalComplemento = const Value.absent(),
     this.observacao = const Value.absent(),
     this.gerouPedidoCozinha = const Value.absent(),
   });
@@ -292,6 +312,7 @@ class ComandaDetalhesCompanion extends UpdateCompanion<ComandaDetalhe> {
     Expression<double>? quantidade,
     Expression<double>? valorUnitario,
     Expression<double>? valorTotal,
+    Expression<double>? valorTotalComplemento,
     Expression<String>? observacao,
     Expression<String>? gerouPedidoCozinha,
   }) {
@@ -302,6 +323,7 @@ class ComandaDetalhesCompanion extends UpdateCompanion<ComandaDetalhe> {
       if (quantidade != null) 'QUANTIDADE': quantidade,
       if (valorUnitario != null) 'VALOR_UNITARIO': valorUnitario,
       if (valorTotal != null) 'VALOR_TOTAL': valorTotal,
+      if (valorTotalComplemento != null) 'VALOR_TOTAL_COMPLEMENTO': valorTotalComplemento,
       if (observacao != null) 'OBSERVACAO': observacao,
       if (gerouPedidoCozinha != null) 'GEROU_PEDIDO_COZINHA': gerouPedidoCozinha,
     });
@@ -315,6 +337,7 @@ class ComandaDetalhesCompanion extends UpdateCompanion<ComandaDetalhe> {
       Value<double>? quantidade,
       Value<double>? valorUnitario,
       Value<double>? valorTotal,
+      Value<double>? valorTotalComplemento,
       Value<String>? observacao,
       Value<String>? gerouPedidoCozinha,
 	  }) {
@@ -325,6 +348,7 @@ class ComandaDetalhesCompanion extends UpdateCompanion<ComandaDetalhe> {
       quantidade: quantidade ?? this.quantidade,
       valorUnitario: valorUnitario ?? this.valorUnitario,
       valorTotal: valorTotal ?? this.valorTotal,
+      valorTotalComplemento: valorTotalComplemento ?? this.valorTotalComplemento,
       observacao: observacao ?? this.observacao,
       gerouPedidoCozinha: gerouPedidoCozinha ?? this.gerouPedidoCozinha,
     );
@@ -351,6 +375,9 @@ class ComandaDetalhesCompanion extends UpdateCompanion<ComandaDetalhe> {
     if (valorTotal.present) {
       map['VALOR_TOTAL'] = Variable<double?>(valorTotal.value);
     }
+    if (valorTotalComplemento.present) {
+      map['VALOR_TOTAL_COMPLEMENTO'] = Variable<double?>(valorTotalComplemento.value);
+    }
     if (observacao.present) {
       map['OBSERVACAO'] = Variable<String?>(observacao.value);
     }
@@ -369,6 +396,7 @@ class ComandaDetalhesCompanion extends UpdateCompanion<ComandaDetalhe> {
           ..write('quantidade: $quantidade, ')
           ..write('valorUnitario: $valorUnitario, ')
           ..write('valorTotal: $valorTotal, ')
+          ..write('valorTotalComplemento: $valorTotalComplemento, ')
           ..write('observacao: $observacao, ')
           ..write('gerouPedidoCozinha: $gerouPedidoCozinha, ')
           ..write(')'))
@@ -430,6 +458,13 @@ class $ComandaDetalhesTable extends ComandaDetalhes
   GeneratedColumn<double> get valorTotal => _valorTotal ??=
       GeneratedColumn<double>('VALOR_TOTAL', aliasedName, true,
           typeName: 'REAL', requiredDuringInsert: false);
+  final VerificationMeta _valorTotalComplementoMeta =
+      const VerificationMeta('valorTotalComplemento');
+  GeneratedColumn<double>? _valorTotalComplemento;
+  @override
+  GeneratedColumn<double> get valorTotalComplemento => _valorTotalComplemento ??=
+      GeneratedColumn<double>('VALOR_TOTAL_COMPLEMENTO', aliasedName, true,
+          typeName: 'REAL', requiredDuringInsert: false);
   final VerificationMeta _observacaoMeta =
       const VerificationMeta('observacao');
   GeneratedColumn<String>? _observacao;
@@ -453,6 +488,7 @@ class $ComandaDetalhesTable extends ComandaDetalhes
         quantidade,
         valorUnitario,
         valorTotal,
+        valorTotalComplemento,
         observacao,
         gerouPedidoCozinha,
       ];
@@ -490,6 +526,10 @@ class $ComandaDetalhesTable extends ComandaDetalhes
     if (data.containsKey('VALOR_TOTAL')) {
         context.handle(_valorTotalMeta,
             valorTotal.isAcceptableOrUnknown(data['VALOR_TOTAL']!, _valorTotalMeta));
+    }
+    if (data.containsKey('VALOR_TOTAL_COMPLEMENTO')) {
+        context.handle(_valorTotalComplementoMeta,
+            valorTotalComplemento.isAcceptableOrUnknown(data['VALOR_TOTAL_COMPLEMENTO']!, _valorTotalComplementoMeta));
     }
     if (data.containsKey('OBSERVACAO')) {
         context.handle(_observacaoMeta,

@@ -116,9 +116,12 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
     if (widget.produtoMontado?.produto?.ippt == 'P') {
       listaProdutoFichaTecnica = await Sessao.db.produtoFichaTecnicaDao.consultarListaFiltro('ID_PRODUTO', widget.produtoMontado!.produto!.id.toString());
       listaCardapioPerguntaPadraoMontado = await Sessao.db.cardapioPerguntaPadraoDao.consultarListaPerguntaMontado(widget.produtoMontado!.cardapio?.id ?? 0);
-      setState(() {
-      });
+    } else {
+      listaProdutoFichaTecnica = [];
+      listaCardapioPerguntaPadraoMontado = [];
     }
+    setState(() {
+    });
   }
 
   @override

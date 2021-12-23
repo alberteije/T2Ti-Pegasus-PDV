@@ -63,6 +63,7 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
   final _pesquisaProdutoController = TextEditingController();
   final _focusNode = FocusNode();
   double? _quantidadeInformada = 1;
+  double valorDesconto = 0;
   ProdutoMontado? _produtoMontado = ProdutoMontado(produto: Produto(id: null),);
 
   @override
@@ -73,6 +74,7 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
 
   @override
   Widget build(BuildContext context) {
+    valorDesconto = widget.comandaMontado.comanda!.valorDesconto ?? 0;
     return Scaffold(
       backgroundColor: Color.lerp(Colors.grey[850], Colors.blueGrey, 0.8),
       body: _getCorpo(),
@@ -80,7 +82,7 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
   }
 
   Widget _getCorpo() {
-    return  Column(
+    return Column(
       children: <Widget>[
         Stack(
           children: [
@@ -93,10 +95,15 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
             ),
             Positioned(
               top: 10,
+              right: 10, 
+              child: _getPopupMenuGeral(_executarFuncaoMenuButtonGeral),
+            ),
+            Positioned(
+              top: 10,
               left: 10, 
               child: ComandaTileDetalhePage(
                 widget.comandaMontado,
-        				altura: 182,
+                altura: 182,
                 largura: 133,
                 tamanhoFonteLabelComanda: 10,
                 tamanhoFonteNumeroComanda: 10,
@@ -173,68 +180,450 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
             },
           ),
         ),
-        _rodape(context)
       ],
     );
   }
 
-  Widget _rodape(BuildContext context) {
-    return Material(
-      color: Color.lerp(Colors.grey[850], Colors.white, 0.4),
-      child: 
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+  Widget _itensDaComanda(BuildContext context, int index) {
+    var _item = index + 1;
+    return Card(      
+      color: Color.lerp(Colors.grey[550], Colors.white, 0.6),
+      child: ListTile(
+        minLeadingWidth: Biblioteca.isTelaPequena(context)! ? 0 : 20,
+        leading: Text(
+          _item.toString(),
+          style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13.0),
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _getDescricaoItem(index),
+            _getBotoesItem(index),
+          ],
+        ),        
+        subtitle: _getRodape(index),            
+        trailing: _getPopupMenuItem(_executarFuncaoMenuButtonItem, index),
+      ),
+    );
+  }
+
+  Widget _getDescricaoItem(int index) {
+    return Flexible(    
+      child: Text(
+        widget.comandaMontado.listaComandaDetalheMontado![index].produtoMontado?.produto?.nome ?? '',
+        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18.0),
+      ),
+    );
+  }
+
+  Widget _getBotoesItem(int index) {
+    return Row(          
+      mainAxisAlignment: Biblioteca.isTelaPequena(context)! ? MainAxisAlignment.center : MainAxisAlignment.end,
+      children: <Widget>[
+        // valor unitário
+        getCardValorUnitario(context: context, valorUnitario: widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe!.valorUnitario),
+        const SizedBox(
+          width: 8,
+        ),
+        getBotaoDecrementaCaixa(corIcone: Colors.red.shade900, decrementar: () {_decrementarItem(index);} ),
+        // quantidade e unidade
+        getCardQuantidade(context: context, quantidade: widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe!.quantidade),
+        getBotaoIncrementaCaixa(corIcone: Colors.green.shade900, incrementar: () {_incrementarItem(index);} ),
+        const SizedBox(
+          width: 8,
+        ),
+        // valor total
+        getCardValorTotal(context: context, valorTotal: widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe!.valorTotal),
+      ],
+    );
+  }
+
+  Widget _getRodape(int index) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Divider(
+          indent: 0,
+          endIndent: 0,
+          thickness: 2,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 0),
+          child: Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.cancel, color: Colors.red,),
+                onPressed: () {
+                  setState(() {
+                    widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe = 
+                    widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe!.copyWith(
+                      observacao: '',
+                    );
+                  });                 
+                }, 
+              ),
+              const Text(
+                "Observações", 
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black
+                ),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 0),
+          child: Text(
+            widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe!.observacao ?? '',
+            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13.0),
+          ),
+        ),
+        const Divider(
+          indent: 0,
+          endIndent: 0,
+          thickness: 2,
+        ),
+        const Padding(
+          padding: EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 0),
+          child: Text(
+            "Complementos", 
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: Colors.black
+            ),
+          ),
+        ),
+        SizedBox(
+          height: (35.0 * (widget.comandaMontado.listaComandaDetalheMontado?.length ?? 0)) + 50,
+          child: Scrollbar(
+            child: ListView(
+              padding: const EdgeInsets.all(2.0),
               children: <Widget>[
-                SizedBox(
-                  width: Biblioteca.isTelaPequena(context)! ? 130 : 180,
-                  child: ElevatedButton(
-                    child: Text(Biblioteca.isTelaPequena(context)! ? "Cancelar" : "Cancelar [F11]", 
-                      style: Biblioteca.isTelaPequena(context)! ? const TextStyle(fontSize: 15) : const TextStyle(fontSize: 16)),
-                    style: ElevatedButton.styleFrom(
-                      elevation: 4,
-                      padding: Biblioteca.isTelaPequena(context)! 
-                                ? const EdgeInsets.only(left: 6.0, right: 6.0, top: 12.0, bottom: 12.0) 
-                                : const EdgeInsets.all(15.0),
-                      primary: Colors.red.shade900, 
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Card(
+                    color: Colors.grey,
+                    elevation: 2.0,
+                    child: DataTable(
+                      headingTextStyle: const TextStyle(color: Colors.black, fontSize: 12.0, fontWeight: FontWeight.bold),
+                      dataTextStyle: const TextStyle(color: Colors.black, fontSize: 12.0,),
+                      headingRowHeight: 35,
+                      dataRowHeight: 35,
+                      columns: _getColumnsComplemento(),
+                      rows: _getRowsComplemento(index),
                     ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                SizedBox(
-                  width: Biblioteca.isTelaPequena(context)! ? 130 : 180,
-                  child: ElevatedButton(
-                    child: Text(Biblioteca.isTelaPequena(context)! ? "Fechar Pedido" : "Fechar Pedido [F7]", 
-                      style: Biblioteca.isTelaPequena(context)! ? const TextStyle(fontSize: 15) : const TextStyle(fontSize: 16)),
-                    style: ElevatedButton.styleFrom(
-                      elevation: 4,
-                      padding: Biblioteca.isTelaPequena(context)! 
-                                ? const EdgeInsets.only(left: 6.0, right: 6.0, top: 12.0, bottom: 12.0) 
-                                : const EdgeInsets.all(15.0),
-                      primary: Colors.green.shade900, 
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      _salvar();
-                    },
                   ),
                 ),
               ],
-            )
-          ),        
-        ],
+            ),
+          ),                          
+        ),
+        const Divider(
+          indent: 0,
+          endIndent: 0,
+          thickness: 2,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [            
+              Text(
+                "Total do Item " + Biblioteca.formatarValorDecimal(
+                  widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe!.valorTotal! + 
+                  widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe!.valorTotalComplemento!
+                ), 
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black
+                ),
+              ),
+            ],
+          ),
+        ),
+
+      ],
+    );
+  }
+
+  List<DataColumn> _getColumnsComplemento() {
+    List<DataColumn> lista = [];
+    lista.add(
+      const DataColumn(
+        label: Text(''),
+        tooltip: '',      
+    ));
+    lista.add(const DataColumn(
+      label: Text(
+        "Nome",        
       ),
+    ));
+    lista.add(const DataColumn(
+      numeric: true,
+      label: Text(
+        "Valor",
+      ),
+    ));
+    return lista;
+  }
+
+  List<DataRow> _getRowsComplemento(int index) {
+    List<DataRow> lista = [];
+    for (var comandaDetalheComplemento in widget.comandaMontado.listaComandaDetalheMontado![index].listaComandaDetalheComplemento!) {
+      List<DataCell> celulas = [];
+
+      celulas = [
+        DataCell(
+          getBotaoGenericoPdv(
+            descricao: 'Excluir',
+            cor: Colors.red.shade400, 
+            padding: const EdgeInsets.all(2),
+            textStyle: const TextStyle(color: Colors.white, fontSize: 12.0,),
+            onPressed: () {
+              _excluirComplemento(comandaDetalheComplemento, index);
+            }
+          ),
+        ),
+        DataCell(
+          Text(comandaDetalheComplemento.nomeProduto ?? '',),
+        ),
+        DataCell(
+          Text(Biblioteca.formatarValorDecimal(comandaDetalheComplemento.valorTotal),),
+        ),
+      ];
+
+      lista.add(DataRow(cells: celulas));
+    }
+    return lista;
+  }
+
+  PopupMenuButton<String> _getPopupMenuItem(Function(String) onSelectedPopupMenuButton, int index) {
+    return PopupMenuButton<String> (
+      onSelected: onSelectedPopupMenuButton,
+      itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
+        PopupMenuItem<String>(
+          value: 'excluir:'+index.toString(),
+          child: Row(
+            children: const [
+              Icon(
+                Icons.delete, 
+                color: Colors.red,
+              ),
+              Text(
+                ' Excluir',
+                style: TextStyle(
+                  decorationColor: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold
+                ),                                    
+              ),
+            ],
+          ),          
+        ),
+        PopupMenuItem<String>(
+          value: 'complemento:'+index.toString(),
+          child: Row(
+            children: const [
+              Icon(
+                Icons.add_box, 
+                color: Colors.blue
+              ),
+              Text(
+                ' Complemento',
+                style: TextStyle(
+                  decorationColor: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold
+                ),                                    
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem<String>(
+          value: 'observacao:'+index.toString(),
+          child: Row(
+            children: const [
+              Icon(
+                Icons.add_box, 
+                color: Colors.green
+              ),
+              Text(
+                ' Observação',
+                style: TextStyle(
+                  decorationColor: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold
+                ),                                    
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem<String>(
+          value: 'perguntas:'+index.toString(),
+          child: Row(
+            children: const [
+              Icon(
+                Icons.question_answer, 
+                color: Colors.purple
+              ),
+              Text(
+                ' Perguntas',
+                style: TextStyle(
+                  decorationColor: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold
+                ),                                    
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  PopupMenuButton<String> _getPopupMenuGeral(Function(String) onSelectedPopupMenuButton) {
+    return PopupMenuButton<String> (
+      onSelected: onSelectedPopupMenuButton,
+      itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
+        PopupMenuItem<String>(
+          value: 'salvar_dados',
+          child: Row(
+            children: const [
+              Icon(
+                Icons.save, 
+                color: Colors.purple,
+              ),
+              Text(
+                ' Salvar Dados',
+                style: TextStyle(
+                  decorationColor: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold
+                ),                                    
+              ),
+            ],
+          ),          
+        ),
+        PopupMenuItem<String>(
+          value: 'desconto',
+          child: Row(
+            children: const [
+              Icon(
+                Icons.monetization_on, 
+                color: Colors.pink,
+              ),
+              Text(
+                ' Conceder Desconto',
+                style: TextStyle(
+                  decorationColor: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold
+                ),                                    
+              ),
+            ],
+          ),          
+        ),
+        PopupMenuItem<String>(
+          value: 'imprimir_comanda',
+          child: Row(
+            children: const [
+              Icon(
+                Icons.print, 
+                color: Colors.green,
+              ),
+              Text(
+                ' Imprimir Comanda',
+                style: TextStyle(
+                  decorationColor: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold
+                ),                                    
+              ),
+            ],
+          ),          
+        ),
+        // PopupMenuItem<String>(
+        //   value: 'mesa',
+        //   child: Row(
+        //     children: const [
+        //       Icon(
+        //         Icons.chair_sharp,
+        //         color: Colors.indigo,
+        //       ),
+        //       Text(
+        //         ' Mesa',
+        //         style: TextStyle(
+        //           decorationColor: Colors.white,
+        //           fontSize: 10,
+        //           fontWeight: FontWeight.bold
+        //         ),                                    
+        //       ),
+        //     ],
+        //   ),          
+        // ),
+        // PopupMenuItem<String>(
+        //   value: 'delivery',
+        //   child: Row(
+        //     children: const [
+        //       Icon(
+        //         Icons.motorcycle, 
+        //         color: Colors.blueGrey,
+        //       ),
+        //       Text(
+        //         ' delivery',
+        //         style: TextStyle(
+        //           decorationColor: Colors.white,
+        //           fontSize: 10,
+        //           fontWeight: FontWeight.bold
+        //         ),                                    
+        //       ),
+        //     ],
+        //   ),          
+        // ),
+        PopupMenuItem<String>(
+          value: 'emitir_nota',
+          child: Row(
+            children: const [
+              Icon(
+                Icons.document_scanner, 
+                color: Colors.blue
+              ),
+              Text(
+                ' Emitir Nota',
+                style: TextStyle(
+                  decorationColor: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold
+                ),                                    
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem<String>(
+          value: 'sair',
+          child: Row(
+            children: const [
+              Icon(
+                Icons.door_back_door_outlined, 
+                color: Colors.red
+              ),
+              Text(
+                ' Sair',
+                style: TextStyle(
+                  decorationColor: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold
+                ),                                    
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -304,7 +693,7 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
     _focusNode.requestFocus();
   }
 
-  void _comporItemParaComanda() {
+  Future _comporItemParaComanda() async {
     final _quantidadeFutura = (_produtoMontado!.produto!.quantidadeEstoque ?? 0) - _quantidadeInformada!;
 
     if(Sessao.configuracaoPdv!.modulo != 'G' && _produtoMontado!.produto!.idTributGrupoTributario == null) {
@@ -320,6 +709,7 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
           idComanda: widget.comandaMontado.comanda!.id,
           quantidade: _quantidadeInformada,
           valorUnitario: _produtoMontado!.produto!.valorVenda,
+          valorTotalComplemento: 0,
           valorTotal: _quantidadeInformada! * _produtoMontado!.produto!.valorVenda!,
           gerouPedidoCozinha: _produtoMontado!.produto!.ippt == 'P' ? 'S' : 'N', 
         ),
@@ -327,7 +717,13 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
         listaComandaDetalheComplemento: [],
       );
 
+      // se tiver perguntas, chama a tela com perguntas e respostas
+      if (comandaDetalheMontado.produtoMontado!.produto!.ippt == 'P') {
+        await _tratarPerguntas(comandaDetalheMontado);
+      }
+
       widget.comandaMontado.listaComandaDetalheMontado!.add(comandaDetalheMontado);
+
       setState(() {
         _atualizarTotais();
       });      
@@ -378,211 +774,32 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
   }
   
   Future _salvar() async {
+    _atualizarTotais();
     await Sessao.db.comandaDao.alterar(widget.comandaMontado);
-    Navigator.pop(context);
-  }
-
-  Widget _itensDaComanda(BuildContext context, int index) {
-    var _item = index + 1;
-    return Card(      
-      color: Color.lerp(Colors.grey[550], Colors.white, 0.6),
-      child: ListTile(
-        minLeadingWidth: Biblioteca.isTelaPequena(context)! ? 0 : 20,
-        leading: Text(
-          _item.toString(),
-          style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13.0),
-        ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _getDescricaoItem(index),
-            _getBotoesItem(index),
-          ],
-        ),        
-        subtitle: _getRodape(index),            
-        trailing: _getPopupMenu(_executarFuncaoMenuButton, index),
-      ),
-    );
-  }
-
-  Widget _getDescricaoItem(int index) {
-    return Flexible(    
-      child: Text(
-        widget.comandaMontado.listaComandaDetalheMontado![index].produtoMontado?.produto?.nome ?? '',
-        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18.0),
-      ),
-    );
-  }
-
-  Widget _getBotoesItem(int index) {
-    return Row(          
-      mainAxisAlignment: Biblioteca.isTelaPequena(context)! ? MainAxisAlignment.center : MainAxisAlignment.end,
-      children: <Widget>[
-        // valor unitário
-        getCardValorUnitario(context: context, valorUnitario: widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe!.valorUnitario),
-        const SizedBox(
-          width: 8,
-        ),
-        getBotaoDecrementaCaixa(corIcone: Colors.red.shade900, decrementar: () {_decrementarItem(index);} ),
-        // quantidade e unidade
-        getCardQuantidade(context: context, quantidade: widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe!.quantidade),
-        getBotaoIncrementaCaixa(corIcone: Colors.green.shade900, incrementar: () {_incrementarItem(index);} ),
-        const SizedBox(
-          width: 8,
-        ),
-        // valor total
-        getCardValorTotal(context: context, valorTotal: widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe!.valorTotal),
-      ],
-    );
-  }
-
-  Widget _getRodape(int index) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Divider(
-          indent: 0,
-          endIndent: 0,
-          thickness: 2,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 0),
-          child: Row(
-            children: [
-            IconButton(
-              icon: const Icon(Icons.cancel, color: Colors.red,),
-              onPressed: () {
-                setState(() {
-                  widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe = 
-                  widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe!.copyWith(
-                    observacao: '',
-                  );
-                });                 
-              }, 
-            ),
-            const Text(
-              "Observações", 
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Colors.black
-              ),
-            ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 0),
-          child: Text(
-            widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe!.observacao ?? '',
-            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13.0),
-          ),
-        ),
-        const Divider(
-          indent: 0,
-          endIndent: 0,
-          thickness: 2,
-        ),
-        const Padding(
-          padding: EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 0),
-          child: Text(
-            "Complementos", 
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Colors.black
-            ),
-          ),
-        ),
-        SizedBox(
-          height: (35.0 * (widget.comandaMontado.listaComandaDetalheMontado?.length ?? 0)) + 50,
-          child: Scrollbar(
-            child: ListView(
-              padding: const EdgeInsets.all(2.0),
-              children: <Widget>[
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Card(
-                    color: Colors.grey,
-                    elevation: 2.0,
-                    child: DataTable(
-                      headingTextStyle: const TextStyle(color: Colors.black, fontSize: 12.0, fontWeight: FontWeight.bold),
-                      dataTextStyle: const TextStyle(color: Colors.black, fontSize: 12.0,),
-                      headingRowHeight: 35,
-                      dataRowHeight: 35,
-                      columns: _getColumnsComplemento(),
-                      rows: _getRowsComplemento(index),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),                          
-        ),
-      ],
-    );
-  }
-
-  List<DataColumn> _getColumnsComplemento() {
-    List<DataColumn> lista = [];
-    lista.add(
-      const DataColumn(
-        label: Text(''),
-        tooltip: '',      
-    ));
-    lista.add(const DataColumn(
-      label: Text(
-        "Nome",        
-      ),
-    ));
-    lista.add(const DataColumn(
-      numeric: true,
-      label: Text(
-        "Valor",
-      ),
-    ));
-    return lista;
-  }
-
-  List<DataRow> _getRowsComplemento(int index) {
-    List<DataRow> lista = [];
-    for (var comandaDetalheComplemento in widget.comandaMontado.listaComandaDetalheMontado![index].listaComandaDetalheComplemento!) {
-      List<DataCell> celulas = [];
-
-      celulas = [
-        DataCell(
-          getBotaoGenericoPdv(
-            descricao: 'Excluir',
-            cor: Colors.red.shade400, 
-            padding: const EdgeInsets.all(2),
-            textStyle: const TextStyle(color: Colors.white, fontSize: 12.0,),
-            onPressed: () {
-              _excluirComplemento(comandaDetalheComplemento, index);
-            }
-          ),
-        ),
-        DataCell(
-          Text(comandaDetalheComplemento.nomeProduto ?? '',),
-        ),
-        DataCell(
-          Text(Biblioteca.formatarValorDecimal(comandaDetalheComplemento.valorTotal),),
-        ),
-      ];
-
-      lista.add(DataRow(cells: celulas));
-    }
-    return lista;
   }
 
   void _excluirComplemento(ComandaDetalheComplemento comandaDetalheComplemento, int index) {
     gerarDialogBoxExclusao(context, () {
+      widget.comandaMontado.listaComandaDetalheMontado![index].listaComandaDetalheComplemento!
+      .removeWhere((item) => item.idProduto == comandaDetalheComplemento.idProduto);
+      // atualiza o valor total dos complementos no item
+      widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe = 
+      widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe!.copyWith(
+        valorTotalComplemento: _atualizarValorComplemento(widget.comandaMontado.listaComandaDetalheMontado![index]),
+      );
       setState(() {
-        widget.comandaMontado.listaComandaDetalheMontado![index].listaComandaDetalheComplemento!
-        .removeWhere((item) => item.idProduto == comandaDetalheComplemento.idProduto);
-      });
+        _atualizarTotais();
+      });      
     });
   } 
+
+  double _atualizarValorComplemento(ComandaDetalheMontado comandaDetalheMontado) {
+    double valorTotalComplemento = 0;
+    for (var complemento in comandaDetalheMontado.listaComandaDetalheComplemento!) {
+      valorTotalComplemento += complemento.valorTotal!;
+    }
+    return valorTotalComplemento;
+  }
 
   void _incrementarItem(int index) {
     setState(() {
@@ -611,19 +828,51 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
   }
 
   void _atualizarTotais() {
-    double totalGeral = 0;
+    double totalComplementos = 0;
+    double totalItens = 0;
     for (var item in widget.comandaMontado.listaComandaDetalheMontado!) {
-      totalGeral = totalGeral + item.comandaDetalhe!.valorTotal!;
+      totalItens = totalItens + item.comandaDetalhe!.valorTotal!;
+      totalComplementos = totalComplementos + item.comandaDetalhe!.valorTotalComplemento!;
     }
+    double totalGeral = totalItens + totalComplementos;
     final quantidadePessoas = widget.comandaMontado.comanda!.quantidadePessoas ?? 1;
     widget.comandaMontado.comanda = 
     widget.comandaMontado.comanda!.copyWith(
-      total: totalGeral,
-      valorPorPessoa: Biblioteca.dividirMonetario(totalGeral, quantidadePessoas),
+      valorSubtotal: totalGeral,
+      valorDesconto: valorDesconto,
+      valorTotal: totalGeral - valorDesconto,
+      valorPorPessoa: Biblioteca.dividirMonetario(totalGeral - valorDesconto, quantidadePessoas),
     );
   }
 
-  Future _executarFuncaoMenuButton(String operacaoValor) async {  
+  Future _tratarPerguntas(ComandaDetalheMontado comandaDetalheMontado) async {
+    List<RespostasSelecionadas> listaRespostasSelecionadas = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => ComandaCardapioPerguntaLookupPage(comandaDetalheMontado.produtoMontado!.cardapio!),
+        fullscreenDialog: true,
+      )
+    );        
+
+    var perguntaResposta = '';
+    for (var i = 0; i < listaRespostasSelecionadas.length; i++) {
+      perguntaResposta += listaRespostasSelecionadas[i].pergunta + ' [' + listaRespostasSelecionadas[i].resposta + ']\n'; 
+    }
+
+    final obsGravada = comandaDetalheMontado.comandaDetalhe!.observacao;
+
+    if (obsGravada != null && obsGravada != '') {
+      comandaDetalheMontado.comandaDetalhe = 
+        comandaDetalheMontado.comandaDetalhe!.copyWith(observacao: obsGravada + '\n' + perguntaResposta,);
+    } else {
+      comandaDetalheMontado.comandaDetalhe = 
+        comandaDetalheMontado.comandaDetalhe!.copyWith(observacao: perguntaResposta,);
+    }
+    setState(() {
+    }); 
+  }
+
+  Future _executarFuncaoMenuButtonItem(String operacaoValor) async {  
     final operacaoValorArray = operacaoValor.split(':'); 
     final operacao = operacaoValorArray[0];
     final valor = operacaoValorArray[1];
@@ -640,8 +889,16 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
       );
       if (retorno is List<dynamic>) {
         var observacao = '';
+        final obsGravada = widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe!.observacao;
+        if (obsGravada != null && obsGravada != '') {
+          observacao = obsGravada;
+        }
         for (var i = 0; i < retorno.length; i++) {
-          observacao += retorno[i] + '\n'; 
+          if (observacao == '') {
+            observacao += retorno[i]; 
+          } else {
+            observacao += '\n' + retorno[i]; 
+          }
         }
         setState(() {
           widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe = 
@@ -698,11 +955,65 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
                 valorTotal: _produtoMontado!.produto!.valorVenda,                
               )
             );
+            // atualiza o valor total dos complementos no item
+            widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe = 
+            widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe!.copyWith(
+              valorTotalComplemento: _atualizarValorComplemento(widget.comandaMontado.listaComandaDetalheMontado![index]),
+            );
             setState(() {
-            });        
+              _atualizarTotais();
+            });      
           }
         }
       }    
+    } else if (operacao == 'perguntas') {
+      if (widget.comandaMontado.listaComandaDetalheMontado![index].produtoMontado!.produto!.ippt == 'P') {
+        await _tratarPerguntas(widget.comandaMontado.listaComandaDetalheMontado![index] );
+      } else {
+        showInSnackBar('Produto não possui cardápio definido com perguntas e respostas', context);
+      }
+
+    }
+  }
+
+  Future _executarFuncaoMenuButtonGeral(String operacao) async {  
+    if (operacao == 'salvar_dados') {
+      await _salvar();
+      Navigator.pop(context);
+    } else if (operacao == 'desconto') {
+      final retorno = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => const InformaValorPage(title: 'Desconto na Comanda', operacao: 'DESCONTO_COMANDA', ),
+          fullscreenDialog: true,
+        )
+      ); 
+      if (retorno != false) {
+        valorDesconto = Biblioteca.calcularDesconto(widget.comandaMontado.comanda!.valorSubtotal!, retorno);
+      }
+      setState(() {
+        _atualizarTotais();
+      });
+    } else if (operacao == 'imprimir_comanda') {
+      await _salvar();
+      Navigator.of(context)
+        .push(MaterialPageRoute(
+          builder: (BuildContext context) { 
+            Sessao.comandaMontadoAtual = widget.comandaMontado;
+            if (Sessao.configuracaoPdv!.reciboFormatoPagina == '80') {
+              return const ComandaRelatorio80();
+            } else {
+              return const ComandaRelatorio80(); // TODO: implementar o relatório 57 
+            }
+          }))
+        .then((_) {
+        });     
+    } else if (operacao == 'emitir_nota') {
+      await _salvar();
+      await _emitirNota();
+    } else if (operacao == 'sair') {
+      await _salvar();
+      Navigator.pop(context);
     }
   }
 
@@ -711,69 +1022,65 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
     Sessao.retornoJsonLookup = jsonEncode(listaFiltrada);
   }
 
-  PopupMenuButton<String> _getPopupMenu(Function(String) onSelectedPopupMenuButton, int index) {
-    return PopupMenuButton<String> (
-      onSelected: onSelectedPopupMenuButton,
-      itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
-        PopupMenuItem<String>(
-          value: 'excluir:'+index.toString(),
-          child: Row(
-            children: const [
-              Icon(
-                Icons.delete, 
-                color: Colors.red,
-              ),
-              Text(
-                'Excluir',
-                style: TextStyle(
-                  decorationColor: Colors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold
-                ),                                    
-              ),
-            ],
-          ),          
-        ),
-        PopupMenuItem<String>(
-          value: 'complemento:'+index.toString(),
-          child: Row(
-            children: const [
-              Icon(
-                Icons.add_box, 
-                color: Colors.blue
-              ),
-              Text(
-                'Complemento',
-                style: TextStyle(
-                  decorationColor: Colors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold
-                ),                                    
-              ),
-            ],
-          ),
-        ),
-        PopupMenuItem<String>(
-          value: 'observacao:'+index.toString(),
-          child: Row(
-            children: const [
-              Icon(
-                Icons.add_box, 
-                color: Colors.green
-              ),
-              Text(
-                'Observação',
-                style: TextStyle(
-                  decorationColor: Colors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold
-                ),                                    
-              ),
-            ],
-          ),
-        ),
-      ],
+  Future _emitirNota() async {
+    Sessao.listaVendaAtualDetalhe = [];
+    final taxaDesconto = Biblioteca.dividirMonetario(
+      ((widget.comandaMontado.comanda!.valorDesconto ?? 0) * 100),
+      (widget.comandaMontado.comanda!.valorSubtotal ?? 0)
     );
+
+    Sessao.vendaAtual = 
+      PdvVendaCabecalho(
+        id: null, 
+        idPdvMovimento: Sessao.movimento!.id, 
+        idCliente: widget.comandaMontado.cliente?.id,
+        idColaborador: widget.comandaMontado.colaborador?.id,
+        statusVenda: 'A',
+        dataVenda: DateTime.now(),
+        horaVenda: Biblioteca.formatarHora(DateTime.now()),
+        tipoOperacao: Sessao.configuracaoPdv!.moduloFiscalPrincipal ?? 'REC',
+        taxaDesconto: taxaDesconto,
+      );
+    int idInserido = await Sessao.db.pdvVendaCabecalhoDao.inserir(Sessao.vendaAtual!);
+    Sessao.vendaAtual = await Sessao.db.pdvVendaCabecalhoDao.consultarObjeto(idInserido);
+
+    // monta a lista da venda
+    for (var item in widget.comandaMontado.listaComandaDetalheMontado!) {
+      VendaDetalhe vendaDetalheItem = VendaDetalhe(
+        pdvVendaDetalhe: PdvVendaDetalhe(
+          id: null, 
+          idProduto: item.produtoMontado!.produto!.id,
+          gtin: item.produtoMontado!.produto!.gtin == '' ? item.produtoMontado!.produto!.id.toString() : item.produtoMontado!.produto!.gtin,
+          cst: item.produtoMontado!.produto!.cst,
+          movimentaEstoque: item.produtoMontado!.produto!.ippt == 'T' ? 'S' : 'N', // TODO: baixar o estoque com base na ficha técnica
+          quantidade: item.comandaDetalhe!.quantidade!,
+          valorUnitario: item.comandaDetalhe!.valorUnitario,
+          valorTotalItem: item.comandaDetalhe!.valorTotal,
+          valorTotal: item.comandaDetalhe!.valorTotal,            
+        ),
+        produto: item.produtoMontado!.produto,
+      );
+      Sessao.listaVendaAtualDetalhe.add(vendaDetalheItem);
+      for (var complemento in item.listaComandaDetalheComplemento!) {
+        final produto = await Sessao.db.produtoDao.consultarObjeto(complemento.idProduto!);
+        VendaDetalhe vendaDetalheComplemento = VendaDetalhe(
+          pdvVendaDetalhe: PdvVendaDetalhe(
+            id: null, 
+            idProduto: produto!.id,
+            gtin: produto.gtin == '' ? produto.id.toString() : produto.gtin,
+            cst: produto.cst,
+            movimentaEstoque: produto.ippt == 'T' ? 'S' : 'N', 
+            quantidade: complemento.quantidade!,
+            valorUnitario: complemento.valorUnitario,
+            valorTotalItem: complemento.valorTotal,
+            valorTotal: complemento.valorTotal,            
+          ),
+          produto: produto,
+        );
+        Sessao.listaVendaAtualDetalhe.add(vendaDetalheComplemento);
+      }
+    }
+    Sessao.emitirNotaDaComanda(context);
   }
 
 }

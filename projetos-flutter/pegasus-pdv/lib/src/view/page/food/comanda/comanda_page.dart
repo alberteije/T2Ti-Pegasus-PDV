@@ -300,7 +300,9 @@ class _ComandaPageState extends State<ComandaPage> {
             children: [
               Text('Quantidade de Itens: ' + comandaMontado.listaComandaDetalheMontado!.length.toString(), style: const TextStyle(fontSize: 14.0, color: Colors.black54, fontWeight: FontWeight.bold)),
               Text('Quantidade de Pessoas: ' + (comandaMontado.comanda!.quantidadePessoas?.toString() ?? '0'), style: const TextStyle(fontSize: 14.0, color: Colors.black54, fontWeight: FontWeight.bold)),
-              Text('Valor Total: ' + Biblioteca.formatarValorDecimal(comandaMontado.comanda!.total), style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.bold)),
+              Text('Valor Subtotal: ' + Biblioteca.formatarValorDecimal(comandaMontado.comanda!.valorSubtotal), style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.bold)),
+              Text('Valor Desconto: ' + Biblioteca.formatarValorDecimal(comandaMontado.comanda!.valorDesconto), style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.bold)),
+              Text('Valor Total: ' + Biblioteca.formatarValorDecimal(comandaMontado.comanda!.valorTotal), style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.bold)),
               Text('Valor por Pessoa: '  + Biblioteca.formatarValorDecimal(comandaMontado.comanda!.valorPorPessoa), style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.bold)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -311,9 +313,9 @@ class _ComandaPageState extends State<ComandaPage> {
                     onPressed: () async { _adicionarItens(comandaMontado); }, 
                   ),
                   IconButton(
-                    tooltip: 'Excluir Comanda',
-                    icon: const Icon(Icons.delete),
-                    onPressed: () async { _excluirComanda(comandaMontado); }, 
+                    tooltip: 'Cancelar Comanda',
+                    icon: const Icon(Icons.cancel),
+                    onPressed: () async { _cancelarComanda(comandaMontado); }, 
                   ),
                 ],
               ),
@@ -327,7 +329,22 @@ class _ComandaPageState extends State<ComandaPage> {
   /// MÉTODOS  
   Future _consultarComandas() async {
     if (widget.tipo == 'I') {
-      listaComandaMontado = await Sessao.db.comandaDao.consultarListaMontado(widget.mesa.id!);
+      if (widget.comandaMontado == null) { // não está vindo da página com a relação de comandas
+        listaComandaMontado = 
+          await Sessao.db.comandaDao.consultarListaMontado(
+            idMesa: widget.mesa.id!, 
+            codigoCompartilhado: 0, 
+            situacao: 'A'
+          );
+      } else { // veio da página que lista as comandas
+        listaComandaMontado = 
+          await Sessao.db.comandaDao.consultarListaMontado(
+            idMesa: widget.comandaMontado!.comanda!.idMesa!, 
+            codigoCompartilhado: widget.comandaMontado!.comanda!.codigoCompartilhado!, 
+            situacao: widget.comandaMontado!.comanda!.situacao!            
+          );
+      }
+      // }
       if (listaComandaMontado.isEmpty) {
         _adicionarComanda();
       }
@@ -347,14 +364,30 @@ class _ComandaPageState extends State<ComandaPage> {
           dataChegada: Biblioteca.removerTempoDaData(DateTime.now()),
           horaChegada: Biblioteca.formatarHora(DateTime.now()),
           quantidadePessoas: 1,
+          codigoCompartilhado: listaComandaMontado.isNotEmpty ? listaComandaMontado[0].comanda!.id! : null,
           tipo: widget.tipo, // indoor
+          situacao: 'A',
         ),
         cliente: Cliente(id: null),
         colaborador: Colaborador(id: null),
         listaComandaDetalheMontado: [],
       );
-      await Sessao.db.comandaDao.inserir(comandaMontado);
-      listaComandaMontado = await Sessao.db.comandaDao.consultarListaMontado(widget.mesa.id!);
+      comandaMontado.comanda = await Sessao.db.comandaDao.inserir(comandaMontado);
+
+      // se for a primeira comanda, coloca o código compartilhado nela
+      if (listaComandaMontado.isEmpty) {
+        comandaMontado.comanda = comandaMontado.comanda!.copyWith(
+          codigoCompartilhado: comandaMontado.comanda!.id!,
+        );
+        await Sessao.db.comandaDao.alterar(comandaMontado);
+      }
+      listaComandaMontado = 
+        await Sessao.db.comandaDao.consultarListaMontado(
+          idMesa: comandaMontado.comanda!.idMesa!, 
+          codigoCompartilhado: comandaMontado.comanda!.codigoCompartilhado!, 
+          situacao: comandaMontado.comanda!.situacao!            
+        );
+
       final mesa = widget.mesa.copyWith(disponivel: 'N');
       await Sessao.db.mesaDao.alterar(mesa);
     } else { 
@@ -370,6 +403,7 @@ class _ComandaPageState extends State<ComandaPage> {
               horaChegada: Biblioteca.formatarHora(DateTime.now()),
               quantidadePessoas: 1,
               tipo: widget.tipo, // takeout ou delivery
+              situacao: 'A',
             ),
             cliente: Cliente(id: null),
             colaborador: Colaborador(id: null),
@@ -384,25 +418,38 @@ class _ComandaPageState extends State<ComandaPage> {
     });
   }
 
-  Future _excluirComanda(ComandaMontado comandaMontado) async {
-    gerarDialogBoxConfirmacao(context, 'Deseja excluir a comanda?', () async {
-      await Sessao.db.comandaDao.excluir(comandaMontado);
-      await _consultarComandas();
-      if (listaComandaMontado.isEmpty) {
-        final mesa = widget.mesa.copyWith(disponivel: 'S');
-        await Sessao.db.mesaDao.alterar(mesa);
-        Navigator.pop(context);  
-      }
-    });    
+  Future _cancelarComanda(ComandaMontado comandaMontado) async {
+    if (comandaMontado.comanda!.situacao == 'C') {
+      showInSnackBar('Essa comanda já foi cancelada!', context, corFundo: Colors.white);
+    } else {
+      gerarDialogBoxConfirmacao(context, 'Deseja cancelar a comanda?', () async {
+        comandaMontado.comanda = comandaMontado.comanda!.copyWith(
+          dataSaida: Biblioteca.removerTempoDaData(DateTime.now()),
+          horaSaida: Biblioteca.formatarHora(DateTime.now()),
+          situacao: 'C',
+        );
+        await Sessao.db.comandaDao.excluir(comandaMontado);
+        await _consultarComandas();
+        if (listaComandaMontado.isEmpty) {
+          final mesa = widget.mesa.copyWith(disponivel: 'S');
+          await Sessao.db.mesaDao.alterar(mesa);
+          Navigator.pop(context);  
+        }
+      }); 
+    } 
   }
 
   Future _adicionarItens(ComandaMontado comandaMontado) async {
-    comandaMontado.cliente ??= Cliente(id: null);
-    comandaMontado.colaborador ??= Colaborador(id: null);
+    if (comandaMontado.comanda!.situacao == 'C') {
+      showInSnackBar('Essa comanda foi cancelada!', context, corFundo: Colors.white);
+    } else {
+      comandaMontado.cliente ??= Cliente(id: null);
+      comandaMontado.colaborador ??= Colaborador(id: null);
 
-    Navigator.push(
-      context, MaterialPageRoute(builder: (_) => ComandaDetalhePage(comandaMontado))
-    ).then((value) async { await _consultarComandas(); });
+      Navigator.push(
+        context, MaterialPageRoute(builder: (_) => ComandaDetalhePage(comandaMontado))
+      ).then((value) async { await _consultarComandas(); });
+    }
   }
 
 }

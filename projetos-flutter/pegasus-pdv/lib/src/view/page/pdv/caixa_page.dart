@@ -90,6 +90,12 @@ class _CaixaPageState extends State<CaixaPage> {
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
 
+  void refresh() {
+    setState(() {
+      _atualizarTotais();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -99,6 +105,8 @@ class _CaixaPageState extends State<CaixaPage> {
         onInvoke: _tratarAcoesAtalhos,
       ),
     };
+
+    Sessao.refrescarCaixaCallBack = refresh;
 
     WidgetsBinding.instance!.addPostFrameCallback((_) => _verificarRegistro());
     WidgetsBinding.instance!.addPostFrameCallback((_) => _verificarNotasPendentesContingencia());

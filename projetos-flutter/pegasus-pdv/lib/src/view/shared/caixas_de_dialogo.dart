@@ -146,7 +146,7 @@ gerarDialogBoxConfirmacao(BuildContext? context, String mensagem, Function onOkP
       title: 'Pergunta do Sistema',
       desc: mensagem,
       showCloseIcon: true,
-      btnCancelOnPress: () {},
+      btnCancelOnPress: onCancelPressed,
       btnOkOnPress: onOkPressed,
       btnOkText: 'Sim',
       btnCancelText: 'Não',

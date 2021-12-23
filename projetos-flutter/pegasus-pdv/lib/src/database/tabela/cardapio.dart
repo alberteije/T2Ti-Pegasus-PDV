@@ -48,6 +48,14 @@ class Cardapios extends Table {
   TextColumn get ingredientes => text().named('INGREDIENTES').withLength(min: 0, max: 250).nullable()();
 }
 
+class RespostasSelecionadas {
+  int idPergunta;
+  String pergunta;
+  String resposta;
+
+  RespostasSelecionadas({required this.idPergunta, required this.pergunta, required this.resposta});
+}
+
 class Cardapio extends DataClass implements Insertable<Cardapio> {
   final int? id;
   final int? idProduto;

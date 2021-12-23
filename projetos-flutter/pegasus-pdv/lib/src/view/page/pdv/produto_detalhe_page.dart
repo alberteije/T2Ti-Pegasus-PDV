@@ -70,19 +70,6 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
   void initState() {
     super.initState();
 
-    // EIJE - 22102021 - comentado para observar o comportamento do novo widget
-    // _quantidadeController.afterChange = (_, __) {
-    //   _quantidadeController.selection = TextSelection.collapsed(
-    //     offset: _quantidadeController.text.length,
-    //   );
-    // };
-
-    // _descontoController.afterChange = (_, __) {
-    //   _descontoController.selection = TextSelection.collapsed(
-    //     offset: _descontoController.text.length,
-    //   );
-    // };
-
     _shortcutMap = getAtalhosCaixa();
     _actionMap = <Type, Action<Intent>>{
       AtalhoTelaIntent: CallbackAction<AtalhoTelaIntent>(

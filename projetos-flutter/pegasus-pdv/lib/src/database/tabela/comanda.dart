@@ -53,10 +53,14 @@ class Comandas extends Table {
   TextColumn get horaChegada => text().named('HORA_CHEGADA').withLength(min: 0, max: 8).nullable()();
   DateTimeColumn get dataSaida => dateTime().named('DATA_SAIDA').nullable()();
   TextColumn get horaSaida => text().named('HORA_SAIDA').withLength(min: 0, max: 8).nullable()();
-  RealColumn get total => real().named('TOTAL').nullable()();
+  RealColumn get valorSubtotal => real().named('VALOR_SUBTOTAL').nullable()();
+  RealColumn get valorDesconto => real().named('VALOR_DESCONTO').nullable()();
+  RealColumn get valorTotal => real().named('VALOR_TOTAL').nullable()();
   TextColumn get tipo => text().named('TIPO').withLength(min: 0, max: 1).nullable()();
   IntColumn get quantidadePessoas => integer().named('QUANTIDADE_PESSOAS').nullable()();
   RealColumn get valorPorPessoa => real().named('VALOR_POR_PESSOA').nullable()();
+  TextColumn get situacao => text().named('SITUACAO').withLength(min: 0, max: 1).nullable()(); // Aberta | Cancelada | Fechada
+  IntColumn get codigoCompartilhado => integer().named('CODIGO_COMPARTILHADO').nullable()();
 }
 
 class ComandaMontado {
@@ -73,6 +77,7 @@ class ComandaMontado {
     this.mesa,
     this.listaComandaDetalheMontado,
   });
+
 }
 
 class Comanda extends DataClass implements Insertable<Comanda> {
@@ -86,10 +91,14 @@ class Comanda extends DataClass implements Insertable<Comanda> {
   final String? horaChegada;
   final DateTime? dataSaida;
   final String? horaSaida;
-  final double? total;
+  final double? valorSubtotal;
+  final double? valorDesconto;
+  final double? valorTotal;
   final String? tipo;
   final int? quantidadePessoas;
   final double? valorPorPessoa;
+  final String? situacao;
+  final int? codigoCompartilhado;
 
   Comanda(
     {
@@ -103,10 +112,14 @@ class Comanda extends DataClass implements Insertable<Comanda> {
       this.horaChegada,
       this.dataSaida,
       this.horaSaida,
-      this.total,
+      this.valorSubtotal,
+      this.valorDesconto,
+      this.valorTotal,
       this.tipo,
       this.quantidadePessoas,
       this.valorPorPessoa,
+      this.situacao,
+      this.codigoCompartilhado,
     }
   );
 
@@ -123,10 +136,14 @@ class Comanda extends DataClass implements Insertable<Comanda> {
       horaChegada: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}HORA_CHEGADA']),
       dataSaida: const DateTimeType().mapFromDatabaseResponse(data['${effectivePrefix}DATA_SAIDA']),
       horaSaida: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}HORA_SAIDA']),
-      total: const RealType().mapFromDatabaseResponse(data['${effectivePrefix}TOTAL']),
+      valorSubtotal: const RealType().mapFromDatabaseResponse(data['${effectivePrefix}VALOR_SUBTOTAL']),
+      valorDesconto: const RealType().mapFromDatabaseResponse(data['${effectivePrefix}VALOR_DESCONTO']),
+      valorTotal: const RealType().mapFromDatabaseResponse(data['${effectivePrefix}VALOR_TOTAL']),
       tipo: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}TIPO']),
       quantidadePessoas: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}QUANTIDADE_PESSOAS']),
       valorPorPessoa: const RealType().mapFromDatabaseResponse(data['${effectivePrefix}VALOR_POR_PESSOA']),
+      situacao: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}SITUACAO']),
+      codigoCompartilhado: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}CODIGO_COMPARTILHADO']),
     );
   }
 
@@ -163,8 +180,14 @@ class Comanda extends DataClass implements Insertable<Comanda> {
     if (!nullToAbsent || horaSaida != null) {
       map['HORA_SAIDA'] = Variable<String?>(horaSaida);
     }
-    if (!nullToAbsent || total != null) {
-      map['TOTAL'] = Variable<double?>(total);
+    if (!nullToAbsent || valorSubtotal != null) {
+      map['VALOR_SUBTOTAL'] = Variable<double?>(valorSubtotal);
+    }
+    if (!nullToAbsent || valorDesconto != null) {
+      map['VALOR_DESCONTO'] = Variable<double?>(valorDesconto);
+    }
+    if (!nullToAbsent || valorTotal != null) {
+      map['VALOR_TOTAL'] = Variable<double?>(valorTotal);
     }
     if (!nullToAbsent || tipo != null) {
       map['TIPO'] = Variable<String?>(tipo);
@@ -174,6 +197,12 @@ class Comanda extends DataClass implements Insertable<Comanda> {
     }
     if (!nullToAbsent || valorPorPessoa != null) {
       map['VALOR_POR_PESSOA'] = Variable<double?>(valorPorPessoa);
+    }
+    if (!nullToAbsent || situacao != null) {
+      map['SITUACAO'] = Variable<String?>(situacao);
+    }
+    if (!nullToAbsent || codigoCompartilhado != null) {
+      map['CODIGO_COMPARTILHADO'] = Variable<int?>(codigoCompartilhado);
     }
     return map;
   }
@@ -208,9 +237,15 @@ class Comanda extends DataClass implements Insertable<Comanda> {
       horaSaida: horaSaida == null && nullToAbsent
         ? const Value.absent()
         : Value(horaSaida),
-      total: total == null && nullToAbsent
+      valorSubtotal: valorSubtotal == null && nullToAbsent
         ? const Value.absent()
-        : Value(total),
+        : Value(valorSubtotal),
+      valorDesconto: valorDesconto == null && nullToAbsent
+        ? const Value.absent()
+        : Value(valorDesconto),
+      valorTotal: valorTotal == null && nullToAbsent
+        ? const Value.absent()
+        : Value(valorTotal),
       tipo: tipo == null && nullToAbsent
         ? const Value.absent()
         : Value(tipo),
@@ -220,6 +255,12 @@ class Comanda extends DataClass implements Insertable<Comanda> {
       valorPorPessoa: valorPorPessoa == null && nullToAbsent
         ? const Value.absent()
         : Value(valorPorPessoa),
+      situacao: situacao == null && nullToAbsent
+        ? const Value.absent()
+        : Value(situacao),
+      codigoCompartilhado: codigoCompartilhado == null && nullToAbsent
+        ? const Value.absent()
+        : Value(codigoCompartilhado),
     );
   }
 
@@ -236,10 +277,14 @@ class Comanda extends DataClass implements Insertable<Comanda> {
       horaChegada: serializer.fromJson<String>(json['horaChegada']),
       dataSaida: serializer.fromJson<DateTime>(json['dataSaida']),
       horaSaida: serializer.fromJson<String>(json['horaSaida']),
-      total: serializer.fromJson<double>(json['total']),
+      valorSubtotal: serializer.fromJson<double>(json['valorSubtotal']),
+      valorDesconto: serializer.fromJson<double>(json['valorDesconto']),
+      valorTotal: serializer.fromJson<double>(json['valorTotal']),
       tipo: serializer.fromJson<String>(json['tipo']),
       quantidadePessoas: serializer.fromJson<int>(json['quantidadePessoas']),
       valorPorPessoa: serializer.fromJson<double>(json['valorPorPessoa']),
+      situacao: serializer.fromJson<String>(json['situacao']),
+      codigoCompartilhado: serializer.fromJson<int>(json['codigoCompartilhado']),
     );
   }
 
@@ -257,10 +302,14 @@ class Comanda extends DataClass implements Insertable<Comanda> {
       'horaChegada': serializer.toJson<String?>(horaChegada),
       'dataSaida': serializer.toJson<DateTime?>(dataSaida),
       'horaSaida': serializer.toJson<String?>(horaSaida),
-      'total': serializer.toJson<double?>(total),
+      'valorSubtotal': serializer.toJson<double?>(valorSubtotal),
+      'valorDesconto': serializer.toJson<double?>(valorDesconto),
+      'valorTotal': serializer.toJson<double?>(valorTotal),
       'tipo': serializer.toJson<String?>(tipo),
       'quantidadePessoas': serializer.toJson<int?>(quantidadePessoas),
       'valorPorPessoa': serializer.toJson<double?>(valorPorPessoa),
+      'situacao': serializer.toJson<String?>(situacao),
+      'codigoCompartilhado': serializer.toJson<int?>(codigoCompartilhado),
     };
   }
 
@@ -276,10 +325,14 @@ class Comanda extends DataClass implements Insertable<Comanda> {
           String? horaChegada,
           DateTime? dataSaida,
           String? horaSaida,
-          double? total,
+          double? valorSubtotal,
+          double? valorDesconto,
+          double? valorTotal,
           String? tipo,
           int? quantidadePessoas,
           double? valorPorPessoa,
+          String? situacao,
+          int? codigoCompartilhado,
 		}) =>
       Comanda(
         id: id ?? this.id,
@@ -292,10 +345,14 @@ class Comanda extends DataClass implements Insertable<Comanda> {
         horaChegada: horaChegada ?? this.horaChegada,
         dataSaida: dataSaida ?? this.dataSaida,
         horaSaida: horaSaida ?? this.horaSaida,
-        total: total ?? this.total,
+        valorSubtotal: valorSubtotal ?? this.valorSubtotal,
+        valorDesconto: valorDesconto ?? this.valorDesconto,
+        valorTotal: valorTotal ?? this.valorTotal,
         tipo: tipo ?? this.tipo,
         quantidadePessoas: quantidadePessoas ?? this.quantidadePessoas,
         valorPorPessoa: valorPorPessoa ?? this.valorPorPessoa,
+        situacao: situacao ?? this.situacao,
+        codigoCompartilhado: codigoCompartilhado ?? this.codigoCompartilhado,
       );
   
   @override
@@ -311,10 +368,14 @@ class Comanda extends DataClass implements Insertable<Comanda> {
           ..write('horaChegada: $horaChegada, ')
           ..write('dataSaida: $dataSaida, ')
           ..write('horaSaida: $horaSaida, ')
-          ..write('total: $total, ')
+          ..write('valorSubtotal: $valorSubtotal, ')
+          ..write('valorDesconto: $valorDesconto, ')
+          ..write('valorTotal: $valorTotal, ')
           ..write('tipo: $tipo, ')
           ..write('quantidadePessoas: $quantidadePessoas, ')
           ..write('valorPorPessoa: $valorPorPessoa, ')
+          ..write('situacao: $situacao, ')
+          ..write('codigoCompartilhado: $codigoCompartilhado, ')
           ..write(')'))
         .toString();
   }
@@ -331,10 +392,14 @@ class Comanda extends DataClass implements Insertable<Comanda> {
       horaChegada,
       dataSaida,
       horaSaida,
-      total,
+      valorSubtotal,
+      valorDesconto,
+      valorTotal,
       tipo,
       quantidadePessoas,
       valorPorPessoa,
+      situacao,
+      codigoCompartilhado,
 	]);
   
   @override
@@ -351,10 +416,14 @@ class Comanda extends DataClass implements Insertable<Comanda> {
           other.horaChegada == horaChegada &&
           other.dataSaida == dataSaida &&
           other.horaSaida == horaSaida &&
-          other.total == total &&
+          other.valorSubtotal == valorSubtotal &&
+          other.valorDesconto == valorDesconto &&
+          other.valorTotal == valorTotal &&
           other.tipo == tipo &&
           other.quantidadePessoas == quantidadePessoas &&
-          other.valorPorPessoa == valorPorPessoa 
+          other.valorPorPessoa == valorPorPessoa &&
+          other.situacao == situacao &&
+          other.codigoCompartilhado == codigoCompartilhado 
 	   );
 }
 
@@ -370,10 +439,14 @@ class ComandasCompanion extends UpdateCompanion<Comanda> {
   final Value<String?> horaChegada;
   final Value<DateTime?> dataSaida;
   final Value<String?> horaSaida;
-  final Value<double?> total;
+  final Value<double?> valorSubtotal;
+  final Value<double?> valorDesconto;
+  final Value<double?> valorTotal;
   final Value<String?> tipo;
   final Value<int?> quantidadePessoas;
   final Value<double?> valorPorPessoa;
+  final Value<String?> situacao;
+  final Value<int?> codigoCompartilhado;
 
   const ComandasCompanion({
     this.id = const Value.absent(),
@@ -386,10 +459,14 @@ class ComandasCompanion extends UpdateCompanion<Comanda> {
     this.horaChegada = const Value.absent(),
     this.dataSaida = const Value.absent(),
     this.horaSaida = const Value.absent(),
-    this.total = const Value.absent(),
+    this.valorSubtotal = const Value.absent(),
+    this.valorDesconto = const Value.absent(),
+    this.valorTotal = const Value.absent(),
     this.tipo = const Value.absent(),
     this.quantidadePessoas = const Value.absent(),
     this.valorPorPessoa = const Value.absent(),
+    this.situacao = const Value.absent(),
+    this.codigoCompartilhado = const Value.absent(),
   });
 
   ComandasCompanion.insert({
@@ -403,10 +480,14 @@ class ComandasCompanion extends UpdateCompanion<Comanda> {
     this.horaChegada = const Value.absent(),
     this.dataSaida = const Value.absent(),
     this.horaSaida = const Value.absent(),
-    this.total = const Value.absent(),
+    this.valorSubtotal = const Value.absent(),
+    this.valorDesconto = const Value.absent(),
+    this.valorTotal = const Value.absent(),
     this.tipo = const Value.absent(),
     this.quantidadePessoas = const Value.absent(),
     this.valorPorPessoa = const Value.absent(),
+    this.situacao = const Value.absent(),
+    this.codigoCompartilhado = const Value.absent(),
   });
 
   static Insertable<Comanda> custom({
@@ -420,10 +501,14 @@ class ComandasCompanion extends UpdateCompanion<Comanda> {
     Expression<String>? horaChegada,
     Expression<DateTime>? dataSaida,
     Expression<String>? horaSaida,
-    Expression<double>? total,
+    Expression<double>? valorSubtotal,
+    Expression<double>? valorDesconto,
+    Expression<double>? valorTotal,
     Expression<String>? tipo,
     Expression<int>? quantidadePessoas,
     Expression<double>? valorPorPessoa,
+    Expression<String>? situacao,
+    Expression<int>? codigoCompartilhado,
   }) {
     return RawValuesInsertable({
       if (id != null) 'ID': id,
@@ -436,10 +521,14 @@ class ComandasCompanion extends UpdateCompanion<Comanda> {
       if (horaChegada != null) 'HORA_CHEGADA': horaChegada,
       if (dataSaida != null) 'DATA_SAIDA': dataSaida,
       if (horaSaida != null) 'HORA_SAIDA': horaSaida,
-      if (total != null) 'TOTAL': total,
+      if (valorSubtotal != null) 'VALOR_SUBTOTAL': valorSubtotal,
+      if (valorDesconto != null) 'VALOR_DESCONTO': valorDesconto,
+      if (valorTotal != null) 'VALOR_TOTAL': valorTotal,
       if (tipo != null) 'TIPO': tipo,
       if (quantidadePessoas != null) 'QUANTIDADE_PESSOAS': quantidadePessoas,
       if (valorPorPessoa != null) 'VALOR_POR_PESSOA': valorPorPessoa,
+      if (situacao != null) 'SITUACAO': situacao,
+      if (codigoCompartilhado != null) 'CODIGO_COMPARTILHADO': codigoCompartilhado,
     });
   }
 
@@ -455,10 +544,14 @@ class ComandasCompanion extends UpdateCompanion<Comanda> {
       Value<String>? horaChegada,
       Value<DateTime>? dataSaida,
       Value<String>? horaSaida,
-      Value<double>? total,
+      Value<double>? valorSubtotal,
+      Value<double>? valorDesconto,
+      Value<double>? valorTotal,
       Value<String>? tipo,
       Value<int>? quantidadePessoas,
       Value<double>? valorPorPessoa,
+      Value<String>? situacao,
+      Value<int>? codigoCompartilhado,
 	  }) {
     return ComandasCompanion(
       id: id ?? this.id,
@@ -471,10 +564,14 @@ class ComandasCompanion extends UpdateCompanion<Comanda> {
       horaChegada: horaChegada ?? this.horaChegada,
       dataSaida: dataSaida ?? this.dataSaida,
       horaSaida: horaSaida ?? this.horaSaida,
-      total: total ?? this.total,
+      valorSubtotal: valorSubtotal ?? this.valorSubtotal,
+      valorDesconto: valorDesconto ?? this.valorDesconto,
+      valorTotal: valorTotal ?? this.valorTotal,
       tipo: tipo ?? this.tipo,
       quantidadePessoas: quantidadePessoas ?? this.quantidadePessoas,
       valorPorPessoa: valorPorPessoa ?? this.valorPorPessoa,
+      situacao: situacao ?? this.situacao,
+      codigoCompartilhado: codigoCompartilhado ?? this.codigoCompartilhado,
     );
   }
 
@@ -511,8 +608,14 @@ class ComandasCompanion extends UpdateCompanion<Comanda> {
     if (horaSaida.present) {
       map['HORA_SAIDA'] = Variable<String?>(horaSaida.value);
     }
-    if (total.present) {
-      map['TOTAL'] = Variable<double?>(total.value);
+    if (valorSubtotal.present) {
+      map['VALOR_SUBTOTAL'] = Variable<double?>(valorSubtotal.value);
+    }
+    if (valorDesconto.present) {
+      map['VALOR_DESCONTO'] = Variable<double?>(valorDesconto.value);
+    }
+    if (valorTotal.present) {
+      map['VALOR_TOTAL'] = Variable<double?>(valorTotal.value);
     }
     if (tipo.present) {
       map['TIPO'] = Variable<String?>(tipo.value);
@@ -522,6 +625,12 @@ class ComandasCompanion extends UpdateCompanion<Comanda> {
     }
     if (valorPorPessoa.present) {
       map['VALOR_POR_PESSOA'] = Variable<double?>(valorPorPessoa.value);
+    }
+    if (situacao.present) {
+      map['SITUACAO'] = Variable<String?>(situacao.value);
+    }
+    if (codigoCompartilhado.present) {
+      map['CODIGO_COMPARTILHADO'] = Variable<int?>(codigoCompartilhado.value);
     }
     return map;
   }
@@ -539,10 +648,14 @@ class ComandasCompanion extends UpdateCompanion<Comanda> {
           ..write('horaChegada: $horaChegada, ')
           ..write('dataSaida: $dataSaida, ')
           ..write('horaSaida: $horaSaida, ')
-          ..write('total: $total, ')
+          ..write('valorSubtotal: $valorSubtotal, ')
+          ..write('valorDesconto: $valorDesconto, ')
+          ..write('valorTotal: $valorTotal, ')
           ..write('tipo: $tipo, ')
           ..write('quantidadePessoas: $quantidadePessoas, ')
           ..write('valorPorPessoa: $valorPorPessoa, ')
+          ..write('situacao: $situacao, ')
+          ..write('codigoCompartilhado: $codigoCompartilhado, ')
           ..write(')'))
         .toString();
   }
@@ -634,12 +747,26 @@ class $ComandasTable extends Comandas
   GeneratedColumn<String> get horaSaida => _horaSaida ??=
       GeneratedColumn<String>('HORA_SAIDA', aliasedName, true,
           typeName: 'TEXT', requiredDuringInsert: false);
-  final VerificationMeta _totalMeta =
-      const VerificationMeta('total');
-  GeneratedColumn<double>? _total;
+  final VerificationMeta _valorSubtotalMeta =
+      const VerificationMeta('valorSubtotal');
+  GeneratedColumn<double>? _valorSubtotal;
   @override
-  GeneratedColumn<double> get total => _total ??=
-      GeneratedColumn<double>('TOTAL', aliasedName, true,
+  GeneratedColumn<double> get valorSubtotal => _valorSubtotal ??=
+      GeneratedColumn<double>('VALOR_SUBTOTAL', aliasedName, true,
+          typeName: 'REAL', requiredDuringInsert: false);
+  final VerificationMeta _valorDescontoMeta =
+      const VerificationMeta('valorDesconto');
+  GeneratedColumn<double>? _valorDesconto;
+  @override
+  GeneratedColumn<double> get valorDesconto => _valorDesconto ??=
+      GeneratedColumn<double>('VALOR_DESCONTO', aliasedName, true,
+          typeName: 'REAL', requiredDuringInsert: false);
+  final VerificationMeta _valorTotalMeta =
+      const VerificationMeta('valorTotal');
+  GeneratedColumn<double>? _valorTotal;
+  @override
+  GeneratedColumn<double> get valorTotal => _valorTotal ??=
+      GeneratedColumn<double>('VALOR_TOTAL', aliasedName, true,
           typeName: 'REAL', requiredDuringInsert: false);
   final VerificationMeta _tipoMeta =
       const VerificationMeta('tipo');
@@ -662,6 +789,20 @@ class $ComandasTable extends Comandas
   GeneratedColumn<double> get valorPorPessoa => _valorPorPessoa ??=
       GeneratedColumn<double>('VALOR_POR_PESSOA', aliasedName, true,
           typeName: 'REAL', requiredDuringInsert: false);
+  final VerificationMeta _situacaoMeta =
+      const VerificationMeta('situacao');
+  GeneratedColumn<String>? _situacao;
+  @override
+  GeneratedColumn<String> get situacao => _situacao ??=
+      GeneratedColumn<String>('SITUACAO', aliasedName, true,
+          typeName: 'TEXT', requiredDuringInsert: false);
+  final VerificationMeta _codigoCompartilhadoMeta =
+      const VerificationMeta('codigoCompartilhado');
+  GeneratedColumn<int>? _codigoCompartilhado;
+  @override
+  GeneratedColumn<int> get codigoCompartilhado => _codigoCompartilhado ??=
+      GeneratedColumn<int>('CODIGO_COMPARTILHADO', aliasedName, true,
+          typeName: 'INTEGER', requiredDuringInsert: false);
 		    
   @override
   List<GeneratedColumn> get $columns => [
@@ -675,10 +816,14 @@ class $ComandasTable extends Comandas
         horaChegada,
         dataSaida,
         horaSaida,
-        total,
+        valorSubtotal,
+        valorDesconto,
+        valorTotal,
         tipo,
         quantidadePessoas,
         valorPorPessoa,
+        situacao,
+        codigoCompartilhado,
       ];
 
   @override
@@ -731,9 +876,17 @@ class $ComandasTable extends Comandas
         context.handle(_horaSaidaMeta,
             horaSaida.isAcceptableOrUnknown(data['HORA_SAIDA']!, _horaSaidaMeta));
     }
-    if (data.containsKey('TOTAL')) {
-        context.handle(_totalMeta,
-            total.isAcceptableOrUnknown(data['TOTAL']!, _totalMeta));
+    if (data.containsKey('VALOR_SUBTOTAL')) {
+        context.handle(_valorSubtotalMeta,
+            valorSubtotal.isAcceptableOrUnknown(data['VALOR_SUBTOTAL']!, _valorSubtotalMeta));
+    }
+    if (data.containsKey('VALOR_DESCONTO')) {
+        context.handle(_valorDescontoMeta,
+            valorDesconto.isAcceptableOrUnknown(data['VALOR_DESCONTO']!, _valorDescontoMeta));
+    }
+    if (data.containsKey('VALOR_TOTAL')) {
+        context.handle(_valorTotalMeta,
+            valorTotal.isAcceptableOrUnknown(data['VALOR_TOTAL']!, _valorTotalMeta));
     }
     if (data.containsKey('TIPO')) {
         context.handle(_tipoMeta,
@@ -746,6 +899,14 @@ class $ComandasTable extends Comandas
     if (data.containsKey('VALOR_POR_PESSOA')) {
         context.handle(_valorPorPessoaMeta,
             valorPorPessoa.isAcceptableOrUnknown(data['VALOR_POR_PESSOA']!, _valorPorPessoaMeta));
+    }
+    if (data.containsKey('SITUACAO')) {
+        context.handle(_situacaoMeta,
+            situacao.isAcceptableOrUnknown(data['SITUACAO']!, _situacaoMeta));
+    }
+    if (data.containsKey('CODIGO_COMPARTILHADO')) {
+        context.handle(_codigoCompartilhadoMeta,
+            codigoCompartilhado.isAcceptableOrUnknown(data['CODIGO_COMPARTILHADO']!, _codigoCompartilhadoMeta));
     }
     return context;
   }

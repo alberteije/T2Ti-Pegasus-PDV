@@ -486,13 +486,19 @@ class _MesaPageState extends State<MesaPage> {
           ],
         ),
         Container(
-          height: 35,
+          height: 40,
           foregroundDecoration: const BoxDecoration(gradient: LinearGradient(colors: [Color(0xff536dfe), Color(0xff8e99f3)]), backgroundBlendMode: BlendMode.multiply,),      
           padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text((mesa.observacao?.isNotEmpty ?? false) ? 'OBS' : '', style: const TextStyle(fontSize: 14.0, color: Colors.white, fontWeight: FontWeight.bold)),
+              widget.operacao ==  'COM' 
+              ? IconButton(
+                  tooltip: 'Encerrar Mesa',
+                  icon: const Icon(Icons.task_alt),
+                  onPressed: () async { _encerrarMesa(mesa); }, 
+                )
+              : Text((mesa.observacao?.isNotEmpty ?? false) ? 'OBS' : '', style: const TextStyle(fontSize: 14.0, color: Colors.white, fontWeight: FontWeight.bold)),
             ],
           ),
         ),
@@ -536,5 +542,31 @@ class _MesaPageState extends State<MesaPage> {
     }
     Navigator.pop(context, listaMesaReserva);
   }
+
+  Future _encerrarMesa(Mesa mesa) async {
+    gerarDialogBoxConfirmacao(context, 'Deseja encerrar o movimento de mesa? OBS: todas as comandas da mesa serão encerradas.', () async {
+    final listaComandaMontado = 
+      await Sessao.db.comandaDao.consultarListaMontado(
+        idMesa: mesa.id!, 
+        codigoCompartilhado: 0, 
+        situacao: 'A'
+      );      
+
+      for (var comandaMontado in listaComandaMontado) {
+        comandaMontado.comanda = comandaMontado.comanda!.copyWith(
+          dataSaida: Biblioteca.removerTempoDaData(DateTime.now()),
+          horaSaida: Biblioteca.formatarHora(DateTime.now()),
+          situacao: 'F',
+        );
+        await Sessao.db.comandaDao.alterar(comandaMontado);        
+      }
+      mesa = mesa.copyWith(
+        disponivel: 'S',
+      );
+      await Sessao.db.mesaDao.alterar(mesa);
+      await _consultarMesas();
+    });
+
+  }  
    
 }

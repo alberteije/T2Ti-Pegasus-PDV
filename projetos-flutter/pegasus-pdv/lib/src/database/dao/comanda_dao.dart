@@ -79,10 +79,16 @@ class ComandaDao extends DatabaseAccessor<AppDatabase> with _$ComandaDaoMixin {
     return listaComanda;
   }
 
-  Future<List<ComandaMontado>> consultarListaMontado(int idMesa) async {
+  Future<List<ComandaMontado>> consultarListaMontado({required int idMesa, required int codigoCompartilhado, required String situacao}) async {
     listaComandaMontado.clear();
 
-    listaComanda = await (customSelect("SELECT * FROM COMANDA WHERE ID_MESA = '" + idMesa.toString() + "'", 
+    String sql = "SELECT * FROM COMANDA WHERE ID_MESA = '" + idMesa.toString() + "'";
+    if (codigoCompartilhado > 0) {
+      sql += " and CODIGO_COMPARTILHADO = '" + codigoCompartilhado.toString() + "'";
+    }
+    sql += " and SITUACAO = '" + situacao + "'";
+
+    listaComanda = await (customSelect(sql, 
                                 readsFrom: { comandas }).map((row) {
                                   return Comanda.fromData(row.data, db);  
                                 }).get());
@@ -191,7 +197,7 @@ class ComandaDao extends DatabaseAccessor<AppDatabase> with _$ComandaDaoMixin {
   Future<Comanda?> inserir(ComandaMontado pObjeto) {
     return transaction(() async {
       final idInserido = await into(comandas).insert(pObjeto.comanda!);
-       await inserirFilhos(pObjeto);
+      await inserirFilhos(pObjeto);
       return consultarObjeto(idInserido);
     });    
   } 
@@ -204,10 +210,11 @@ class ComandaDao extends DatabaseAccessor<AppDatabase> with _$ComandaDaoMixin {
     });    
   } 
 
-  Future<int> excluir(ComandaMontado pObjeto) {
+  Future<bool> excluir(ComandaMontado pObjeto) {
     return transaction(() async {
-      await excluirFilhos(pObjeto);
-      return delete(comandas).delete(pObjeto.comanda!);
+      // await excluirFilhos(pObjeto);
+      // return delete(comandas).delete(pObjeto.comanda!);
+      return update(comandas).replace(pObjeto.comanda!);
     });    
   }
 

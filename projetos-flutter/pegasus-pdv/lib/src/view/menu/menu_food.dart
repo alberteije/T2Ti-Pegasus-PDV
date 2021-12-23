@@ -179,15 +179,16 @@ class MenuFood extends StatelessWidget {
                         rota: "/mesaPage",
                         onPressed: () { 
                           Navigator.push(
-                            context, MaterialPageRoute(builder: (_) => const MesaPage(title: 'Iniciar Comanda', operacao: 'COM',))
+                            context, MaterialPageRoute(builder: (_) => const MesaPage(title: 'Gerenciar Comandas', operacao: 'COM',))
                           );                          
                         }
                       ),
-                    terceiroBotao: BotaoMenu(
-                        icon: FontAwesomeIcons.bicycle,
-                        label: "Delivery",
-                        circleColor: Colors.blueGrey,
-                        rota: "/deliveryLista"),
+                    terceiroBotao: null,
+                    // terceiroBotao: BotaoMenu(
+                    //     icon: FontAwesomeIcons.bicycle,
+                    //     label: "Delivery",
+                    //     circleColor: Colors.blueGrey,
+                    //     rota: "/deliveryLista"),
                     quartoBotao: null,
                   ),
                ],

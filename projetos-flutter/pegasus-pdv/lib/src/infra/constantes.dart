@@ -50,7 +50,7 @@ class Constantes {
   static Constantes? _this;
   Constantes._() : super();
 
-  static const String versaoApp =  'versão 1.0.9 - Outubro/2021';
+  static const String versaoApp =  'versão 1.0.10 - Dezembro/2021';
 
 // #region Arquivo ENV
   static String chave = '#Sua-Chave-de-32-caracteres-aqui'; // #Sua-Chave-de-32-caracteres-aqui tem que alterar para produção e gerar os valores do ENV com a chave correta
@@ -82,7 +82,7 @@ class Constantes {
   static const int decimaisTaxa = 2;
   static final int decimaisValor = Sessao.configuracaoPdv!.decimaisValor ?? 2;
   static final int decimaisQuantidade = Sessao.configuracaoPdv!.decimaisQuantidade ?? 3;
-  static final int paginatedDataTableLinhasPorPagina = PaginatedDataTable.defaultRowsPerPage;
+  static const int paginatedDataTableLinhasPorPagina = PaginatedDataTable.defaultRowsPerPage;
 // #endregion Inteiros  
 
 
@@ -101,6 +101,7 @@ class Constantes {
 
 
 // #region Strings
+  static const String dadosSoftwareHouse =  'T2Ti.COM - WhatsApp: (61) 99610.3234';
   static const String nomeApp =  'T2Ti Pegasus PDV';
   static const String menuCadastrosString = 'T2Ti ERP Fenix - Cadastros';
   static const String menuFinanceiroString = 'T2Ti ERP Fenix - Financeiro';
