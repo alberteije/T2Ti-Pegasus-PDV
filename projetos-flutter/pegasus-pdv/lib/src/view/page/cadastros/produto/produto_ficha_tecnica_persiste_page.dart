@@ -39,6 +39,7 @@ import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
+import 'package:pegasus_pdv/src/controller/controller.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
@@ -107,8 +108,8 @@ class _ProdutoFichaTecnicaPersistePageState extends State<ProdutoFichaTecnicaPer
   @override
   Widget build(BuildContext context) {
     final _quantidadeController = MoneyMaskedTextController(precision: Constantes.decimaisQuantidade, initialValue: widget.produtoFichaTecnica?.quantidade ?? 0);
-    final _valorCustoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoFichaTecnica?.valorCusto ?? 0);
-    final _percentualCustoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoFichaTecnica?.percentualCusto ?? 0);
+    // final _valorCustoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoFichaTecnica?.valorCusto ?? 0);
+    // final _percentualCustoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoFichaTecnica?.percentualCusto ?? 0);
     final _importaProdutoController = TextEditingController();
     _importaProdutoController.text = produtoFichaTecnica?.descricao ?? '';
 
@@ -241,56 +242,56 @@ class _ProdutoFichaTecnicaPersistePageState extends State<ProdutoFichaTecnicaPer
                             ),
                           ],
                         ),
-                        const Divider(color: Colors.white,),
-                        BootstrapRow(
-                          height: 60,
-                          children: <BootstrapCol>[
-                            BootstrapCol(
-                              sizes: 'col-12',
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                textAlign: TextAlign.end,
-                                controller: _valorCustoController,
-                                decoration: getInputDecoration(
-                                  'Informe o Valor Custo',
-                                  'Valor Custo',
-                                  false),
-                                onSaved: (String? value) {
-                                },
-                                onChanged: (text) {
-                                  produtoFichaTecnica = produtoFichaTecnica!.copyWith(valorCusto: _valorCustoController.numberValue);
-                                  paginaMestreDetalheFoiAlterada = true;
-                                  _formFoiAlterado = true;
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Divider(color: Colors.white,),
-                        BootstrapRow(
-                          height: 60,
-                          children: <BootstrapCol>[
-                            BootstrapCol(
-                              sizes: 'col-12',
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                textAlign: TextAlign.end,
-                                controller: _percentualCustoController,
-                                decoration: getInputDecoration(
-                                  'Informe o Percentual Custo',
-                                  'Percentual Custo',
-                                  false),
-                                onSaved: (String? value) {
-                                },
-                                onChanged: (text) {
-                                  produtoFichaTecnica = produtoFichaTecnica!.copyWith(percentualCusto: _percentualCustoController.numberValue);
-                                  paginaMestreDetalheFoiAlterada = true;
-                                  _formFoiAlterado = true;
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
+                        // const Divider(color: Colors.white,),
+                        // BootstrapRow(
+                        //   height: 60,
+                        //   children: <BootstrapCol>[
+                        //     BootstrapCol(
+                        //       sizes: 'col-12',
+                        //       child: TextFormField(
+                        //         keyboardType: TextInputType.number,
+                        //         textAlign: TextAlign.end,
+                        //         controller: _valorCustoController,
+                        //         decoration: getInputDecoration(
+                        //           'Informe o Valor Custo',
+                        //           'Valor Custo',
+                        //           false),
+                        //         onSaved: (String? value) {
+                        //         },
+                        //         onChanged: (text) {
+                        //           produtoFichaTecnica = produtoFichaTecnica!.copyWith(valorCusto: _valorCustoController.numberValue);
+                        //           paginaMestreDetalheFoiAlterada = true;
+                        //           _formFoiAlterado = true;
+                        //         },
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+                        // const Divider(color: Colors.white,),
+                        // BootstrapRow(
+                        //   height: 60,
+                        //   children: <BootstrapCol>[
+                        //     BootstrapCol(
+                        //       sizes: 'col-12',
+                        //       child: TextFormField(
+                        //         keyboardType: TextInputType.number,
+                        //         textAlign: TextAlign.end,
+                        //         controller: _percentualCustoController,
+                        //         decoration: getInputDecoration(
+                        //           'Informe o Percentual Custo',
+                        //           'Percentual Custo',
+                        //           false),
+                        //         onSaved: (String? value) {
+                        //         },
+                        //         onChanged: (text) {
+                        //           produtoFichaTecnica = produtoFichaTecnica!.copyWith(percentualCusto: _percentualCustoController.numberValue);
+                        //           paginaMestreDetalheFoiAlterada = true;
+                        //           _formFoiAlterado = true;
+                        //         },
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
                         const Divider(color: Colors.white,),
                         BootstrapRow(
                           height: 60,
@@ -334,7 +335,7 @@ class _ProdutoFichaTecnicaPersistePageState extends State<ProdutoFichaTecnicaPer
   
   void _excluir() {
     gerarDialogBoxExclusao(context, () {
-      // listapro listaProdutoFichaTecnica!.remove(widget.produtoFichaTecnica);
+      ProdutoController.listaProdutoFichaTecnica.remove(widget.produtoFichaTecnica);
       Navigator.of(context).pop();
     });
   }

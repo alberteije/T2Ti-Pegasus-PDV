@@ -88,7 +88,8 @@ class Sessao {
   static List<PdvTotalTipoPagamento> listaDadosPagamento = [];
   static List<ContasReceberMontado> listaParcelamento = []; // guarda o parcelamento atual da venda para ser impresso no recibo
   static RetornoJsonErro? objetoJsonErro; // objeto de erro estático que armazena o último erro ocorrido na aplicação
-  static ComandaMontado? comandaMontadoAtual; // TODO: usado para o relatório - remover quando os relatórios forem arrumados
+  static ComandaMontado? comandaMontadoAtual; // TODO: usado para o relatório - remover quando os relatórios forem arrumados (centralizar e agrupar o código repetitivo dos relatórios)
+  static List<Municipio> listaMunicipios = []; // carrega uma lista de municipios com base no arquivo csv que está em assets
 
   /*
    [0] = codigo
@@ -150,11 +151,23 @@ class Sessao {
       }
     }
 
+    // carrega ibpt
     final arquivoIbptCsv = await rootBundle.loadString('assets/text/ibpt.csv');
     tabelaIbpt = const CsvToListConverter().convert(arquivoIbptCsv, fieldDelimiter: ';');
 
+    // carrega municipios
     final arquivoMunicipiosCsv = await rootBundle.loadString('assets/text/municipios.csv');
     tabelaMunicipios = const CsvToListConverter().convert(arquivoMunicipiosCsv, fieldDelimiter: ';');
+    listaMunicipios.clear();
+    for (var i = 0; i < tabelaMunicipios.length; i++) {
+      Municipio municipio = Municipio(
+        nome: Sessao.tabelaMunicipios[i][3],
+        uf: Sessao.tabelaMunicipios[i][1],
+        codigoIbge: Sessao.tabelaMunicipios[i][0].toString(),
+      );
+      listaMunicipios.add(municipio);
+    }
+
 
     if (kDebugMode && Biblioteca.isDesktop()) {
       await _gerarArquivoEnvProtegido();  

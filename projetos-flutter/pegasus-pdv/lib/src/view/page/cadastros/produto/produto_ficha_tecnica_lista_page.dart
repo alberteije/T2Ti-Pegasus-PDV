@@ -34,12 +34,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 import 'package:flutter/material.dart';
+import 'package:pegasus_pdv/src/controller/controller.dart';
 import 'package:pegasus_pdv/src/infra/biblioteca.dart';
 
 import 'package:pegasus_pdv/src/infra/constantes.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
-import 'package:pegasus_pdv/src/view/page/cadastros/produto/produto_page.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -140,7 +140,7 @@ class _ProdutoFichaTecnicaListaPageState extends State<ProdutoFichaTecnicaListaP
             title: 'Produto Ficha Tecnica - Inserindo',
             operacao: 'I')));
       if (_produtoFichaTecnica != null) { 
-        listaProdutoFichaTecnica.add(_produtoFichaTecnica);
+        ProdutoController.listaProdutoFichaTecnica.add(_produtoFichaTecnica);
       }
       setState(() {
         _getRows();
@@ -151,14 +151,15 @@ class _ProdutoFichaTecnicaListaPageState extends State<ProdutoFichaTecnicaListaP
     List<DataColumn> lista = [];
     lista.add(const DataColumn(label: Text('Produto / Insumo')));
     lista.add(const DataColumn(numeric: true, label: Text('Quantidade')));
-    lista.add(const DataColumn(numeric: true, label: Text('Valor Custo')));
-    lista.add(const DataColumn(numeric: true, label: Text('Percentual Custo')));
+    // TODO: adicionar os devidos cáculos para o valor e percentual de custo
+    // lista.add(const DataColumn(numeric: true, label: Text('Valor Custo')));
+    // lista.add(const DataColumn(numeric: true, label: Text('Percentual Custo')));
     return lista;
   }
 
   List<DataRow> _getRows() {
     List<DataRow> lista = [];
-    for (var produtoFichaTecnica in listaProdutoFichaTecnica) {
+    for (var produtoFichaTecnica in ProdutoController.listaProdutoFichaTecnica) {
       List<DataCell> _celulas = [];
 
       _celulas = [
@@ -168,12 +169,12 @@ class _ProdutoFichaTecnicaListaPageState extends State<ProdutoFichaTecnicaListaP
           DataCell(Text(Biblioteca.formatarValorDecimal(produtoFichaTecnica.quantidade)), onTap: () {
             _detalharProdutoFichaTecnica(widget.produto, produtoFichaTecnica, context);
           }),
-          DataCell(Text(Biblioteca.formatarValorDecimal(produtoFichaTecnica.valorCusto)), onTap: () {
-            _detalharProdutoFichaTecnica(widget.produto, produtoFichaTecnica, context);
-          }),
-          DataCell(Text(Biblioteca.formatarValorDecimal(produtoFichaTecnica.percentualCusto)), onTap: () {
-            _detalharProdutoFichaTecnica(widget.produto, produtoFichaTecnica, context);
-          }),
+          // DataCell(Text(Biblioteca.formatarValorDecimal(produtoFichaTecnica.valorCusto)), onTap: () {
+          //   _detalharProdutoFichaTecnica(widget.produto, produtoFichaTecnica, context);
+          // }),
+          // DataCell(Text(Biblioteca.formatarValorDecimal(produtoFichaTecnica.percentualCusto)), onTap: () {
+          //   _detalharProdutoFichaTecnica(widget.produto, produtoFichaTecnica, context);
+          // }),
       ];
 
       lista.add(DataRow(cells: _celulas));

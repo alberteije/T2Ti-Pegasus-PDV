@@ -88,6 +88,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
   final _ibgeController = MaskedTextController(mask: '0000000');
 
   List<EmpresaCnae> _listaCnae = [];
+  final List<String> _listaMunicipioNomes = [];
   
   @override
   void initState() {
@@ -108,8 +109,17 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
 
   Future _consultarCnae() async {
     await Sessao.db.empresaCnaeDao.consultarLista();
-    setState(() {
-    });
+  }
+
+  void _filtrarMunicipios() {
+    _listaMunicipioNomes.clear();
+    _listaMunicipioNomes.add('');
+    if (Sessao.empresa!.uf != null) {
+      final listaFiltrada = Sessao.listaMunicipios.where( ((municipio) => municipio.uf == Sessao.empresa!.uf)).toList();
+      for (var municipio in listaFiltrada) {
+        _listaMunicipioNomes.add(municipio.nome);
+      }
+    }
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -138,6 +148,8 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
     _ibgeController.text = Sessao.empresa?.codigoIbgeCidade?.toString() ?? '';
 
     _listaCnae = Sessao.db.empresaCnaeDao.listaEmpresaCnae;
+
+    _filtrarMunicipios();
 
     return FocusableActionDetector(
       actions: _actionMap,
@@ -433,59 +445,6 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                           height: 60,
                           children: <BootstrapCol>[
                             BootstrapCol(
-                              sizes: 'col-12 col-md-6',
-                              child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
-                                child: TextFormField(
-                                  validator: Sessao.configuracaoPdv!.modulo != 'G' 
-                                    ? ValidaCampoFormulario.validarObrigatorio 
-                                    : null,
-                                  maxLength: 10,
-                                  maxLines: 1,
-                                  controller: _numeroController,
-                                  decoration: getInputDecoration(
-                                    'Conteúdo para o campo Numero',
-                                    'Numero',
-                                    true,
-                                    paddingVertical: 18),
-                                  onSaved: (String? value) {
-                                  },
-                                  onChanged: (text) {
-                                    Sessao.empresa = Sessao.empresa!.copyWith(numero: text);
-                                  },
-                                ),
-                              ),
-                            ),
-                            BootstrapCol(
-                              sizes: 'col-12 col-md-6',
-                              child: Padding(
-                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
-                                child: InputDecorator(
-                                  decoration: getInputDecoration(
-                                    'Conteúdo para o campo Uf',
-                                    'Uf',
-                                    true),
-                                  isEmpty: Sessao.empresa?.uf == null,
-                                  child: getDropDownButton(Sessao.empresa!.uf,
-                                    (String? newValue) {
-                                      setState(() {
-                                        Sessao.empresa = Sessao.empresa!.copyWith(uf: newValue);
-                                      });
-                                  }, 
-                                  DropdownLista.listaUF,
-                                  validator: Sessao.configuracaoPdv!.modulo != 'G' 
-                                    ? ValidaCampoFormulario.validarObrigatorio 
-                                    : null,
-                                  )),                                                      
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Divider(color: Colors.white,),
-                        BootstrapRow(
-                          height: 60,
-                          children: <BootstrapCol>[
-                            BootstrapCol(
                               sizes: 'col-12',
                               child: TextFormField(
                                 maxLength: 100,
@@ -516,6 +475,29 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                   validator: Sessao.configuracaoPdv!.modulo != 'G' 
                                     ? ValidaCampoFormulario.validarObrigatorio 
                                     : null,
+                                  maxLength: 10,
+                                  maxLines: 1,
+                                  controller: _numeroController,
+                                  decoration: getInputDecoration(
+                                    'Conteúdo para o campo Numero',
+                                    'Numero',
+                                    false,),
+                                  onSaved: (String? value) {
+                                  },
+                                  onChanged: (text) {
+                                    Sessao.empresa = Sessao.empresa!.copyWith(numero: text);
+                                  },
+                                ),
+                              ),
+                            ),
+                            BootstrapCol(
+                              sizes: 'col-12 col-md-6',
+                              child: Padding(
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
+                                child: TextFormField(
+                                  validator: Sessao.configuracaoPdv!.modulo != 'G' 
+                                    ? ValidaCampoFormulario.validarObrigatorio 
+                                    : null,
                                   maxLength: 100,
                                   maxLines: 1,
                                   controller: _bairroController,
@@ -531,29 +513,68 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                 ),
                               ),
                             ),
+                          ],
+                        ),
+                        const Divider(color: Colors.white,),
+                        BootstrapRow(
+                          height: 60,
+                          children: <BootstrapCol>[
                             BootstrapCol(
                               sizes: 'col-12 col-md-6',
                               child: Padding(
                                 padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
-                                child: TextFormField(
+                                child: InputDecorator(
+                                  decoration: getInputDecoration(
+                                    'Conteúdo para o campo Uf',
+                                    'Uf',
+                                    true),
+                                  isEmpty: Sessao.empresa?.uf == null,
+                                  child: getDropDownButton(Sessao.empresa!.uf,
+                                    (String? newValue) {
+                                      setState(() {
+                                        Sessao.empresa = Sessao.empresa!.copyWith(uf: newValue, cidade: '');
+                                        _filtrarMunicipios();
+                                      });
+                                  }, 
+                                  DropdownLista.listaUF,
                                   validator: Sessao.configuracaoPdv!.modulo != 'G' 
                                     ? ValidaCampoFormulario.validarObrigatorio 
                                     : null,
-                                  maxLength: 100,
-                                  maxLines: 1,
-                                  controller: _cidadeController,
+                                  )),                                                      
+                              ),
+                            ),
+                            BootstrapCol(
+                              sizes: 'col-12 col-md-6',
+                              child: Padding(
+                                padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
+                                child: InputDecorator(
                                   decoration: getInputDecoration(
                                     'Conteúdo para o campo Cidade',
                                     'Cidade',
-                                    false),
-                                  onSaved: (String? value) {
-                                  },
-                                  onChanged: (text) {
-                                    Sessao.empresa = Sessao.empresa!.copyWith(cidade: text);
-                                  },
-                                ),
+                                    true),
+                                  isEmpty: Sessao.empresa?.cidade == null || Sessao.empresa?.cidade == '',
+                                  child: getDropDownButton(Sessao.empresa!.cidade,
+                                    (String? newValue) {
+                                      final municipio = Sessao.listaMunicipios
+                                      .where( 
+                                        (
+                                          (municipio) {
+                                            return municipio.nome == newValue && municipio.uf == Sessao.empresa!.uf;
+                                          } 
+                                        )                                      
+                                      ).last;
+                                      setState(() {
+                                        Sessao.empresa = Sessao.empresa!.copyWith(cidade: newValue, codigoIbgeCidade: int.tryParse(municipio.codigoIbge));
+                                      });
+                                  }, 
+                                  _listaMunicipioNomes,
+                                  validator: Sessao.configuracaoPdv!.modulo != 'G' 
+                                    ? ValidaCampoFormulario.validarObrigatorio 
+                                    : null,
+                                  )),                                                      
                               ),
                             ),
+                            
                           ],
                         ),
                         const Divider(color: Colors.white,),
@@ -586,47 +607,23 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                               sizes: 'col-12 col-md-6',
                               child: Padding(
                                 padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
-                                child: Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      flex: 1,
-                                      child: TextFormField(
-                                        validator: Sessao.configuracaoPdv!.modulo != 'G' 
-                                          ? ValidaCampoFormulario.validarObrigatorioNumerico 
-                                          : null,
-                                        maxLength: 7,
-                                        maxLines: 1,
-                                        controller: _ibgeController,
-                                        decoration: getInputDecoration(
-                                          'Conteúdo para o campo IBGE Município',
-                                          'Código Município IBGE',
-                                          false),
-                                        onSaved: (String? value) {
-                                        },
-                                        onChanged: (text) {
-                                          Sessao.empresa = Sessao.empresa!.copyWith(codigoIbgeCidade: int.tryParse(text));
-                                        },
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 0,
-                                      child: IconButton(
-                                        tooltip: 'Importar IBGE',
-                                        icon: ViewUtilLib.getIconBotaoLookup(),
-                                        onPressed: () async {
-                                          for (var i = 0; i < Sessao.tabelaMunicipios.length; i++) {
-                                            if (Sessao.tabelaMunicipios[i][3] == _cidadeController.text //nome_caixa_alta
-                                             || Sessao.tabelaMunicipios[i][3].toString().toLowerCase() == _cidadeController.text.toLowerCase()
-                                             || Sessao.tabelaMunicipios[i][4] == _cidadeController.text //nome_cursivo - com acentos
-                                             || Sessao.tabelaMunicipios[i][4].toString().toLowerCase() == _cidadeController.text.toLowerCase()
-                                            ) {
-                                              _ibgeController.text = Sessao.tabelaMunicipios[i][0].toString();
-                                            }
-                                          }        
-                                        },
-                                      ),
-                                    ),
-                                  ],
+                                child: TextFormField(
+                                  readOnly: true,
+                                  validator: Sessao.configuracaoPdv!.modulo != 'G' 
+                                    ? ValidaCampoFormulario.validarObrigatorioNumerico 
+                                    : null,
+                                  maxLength: 7,
+                                  maxLines: 1,
+                                  controller: _ibgeController,
+                                  decoration: getInputDecoration(
+                                    'Conteúdo para o campo IBGE Município',
+                                    'Código Município IBGE',
+                                    false),
+                                  onSaved: (String? value) {
+                                  },
+                                  onChanged: (text) {
+                                    Sessao.empresa = Sessao.empresa!.copyWith(codigoIbgeCidade: int.tryParse(text));
+                                  },
                                 ),
                               ),
                             ),

@@ -74,6 +74,19 @@ class Empresas extends Table {
   TextColumn get horaRegistro => text().named('HORA_REGISTRO').withLength(min: 0, max: 8).nullable()();
 }
 
+class Municipio {
+  String nome;
+  String uf;
+  String codigoIbge;
+
+  Municipio({
+    required this.nome,
+    required this.uf,
+    required this.codigoIbge,
+  });
+  
+}
+
 class Empresa extends DataClass implements Insertable<Empresa> {
   final int? id;
   final String? razaoSocial;

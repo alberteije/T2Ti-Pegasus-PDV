@@ -36,10 +36,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
+import 'package:pegasus_pdv/src/controller/controller.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
-import 'package:pegasus_pdv/src/view/page/cadastros/produto/produto_page.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
 import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
 
@@ -285,7 +285,7 @@ class _CardapioPersistePageState extends State<CardapioPersistePage> {
                                       if (_perguntaController.text.isEmpty) {
                                         showInSnackBar('Por favor, insira uma pergunta.', context, corFundo: Colors.red);
                                       } else {
-                                        listaCardapioPerguntaPadraoMontado.add(
+                                        ProdutoController.listaCardapioPerguntaPadraoMontado.add(
                                           CardapioPerguntaPadraoMontado(
                                             id: ++idMestre,
                                             cardapioPerguntaPadrao: CardapioPerguntaPadrao(id: null, pergunta: _perguntaController.text),
@@ -419,7 +419,7 @@ class _CardapioPersistePageState extends State<CardapioPersistePage> {
 
   List<DataRow> getRowsPergunta() {
     List<DataRow> lista = [];
-    for (var perguntaMontado in listaCardapioPerguntaPadraoMontado) {
+    for (var perguntaMontado in ProdutoController.listaCardapioPerguntaPadraoMontado) {
       List<DataCell> celulas = [];
 
       celulas = [
@@ -461,7 +461,7 @@ class _CardapioPersistePageState extends State<CardapioPersistePage> {
         if (perguntaMontado.id == perguntaMontadoSelecionada!.id) {
           perguntaMontadoSelecionada = null;  
         }
-        listaCardapioPerguntaPadraoMontado.removeWhere((item) => item.id == perguntaMontado.id);
+        ProdutoController.listaCardapioPerguntaPadraoMontado.removeWhere((item) => item.id == perguntaMontado.id);
       });
     });
   } 

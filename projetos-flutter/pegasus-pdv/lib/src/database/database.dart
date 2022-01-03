@@ -324,7 +324,6 @@ Future<void> _popularBancoSchema05(AppDatabase db) async {
   await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (17, '17', 'Retirar no Caixa')");
   await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (18, '18', 'Quente')");
   await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (19, '19', 'Frio')");
-
   // ---> TAXA_ENTREGA
   await db.customStatement("INSERT INTO TAXA_ENTREGA (ID, NOME, VALOR, ESTIMATIVA_MINUTOS) values (1, 'Perto - até 05 Km', '5', '15')");
   await db.customStatement("INSERT INTO TAXA_ENTREGA (ID, NOME, VALOR, ESTIMATIVA_MINUTOS) values (2, 'Intermediária - De 05 até 10 KM', '8', '20')");
@@ -371,7 +370,7 @@ Future<void> _popularBancoSchema05(AppDatabase db) async {
 
 Future<void> _popularBancoSchema04(AppDatabase db) async {
   // ---> CONFIGURACAO PDV
-  db.customStatement("UPDATE PDV_CONFIGURACAO SET DECIMAIS_QUANTIDADE = '3', DECIMAIS_VALOR = '2' WHERE ID = 1");
+  db.customStatement("UPDATE PDV_CONFIGURACAO SET DECIMAIS_QUANTIDADE = '3', DECIMAIS_VALOR = '2', RECIBO_FORMATO_PAGINA = '80' WHERE ID = 1");
   // ---> TIPO PAGAMENTO
   db.customStatement("UPDATE PDV_TIPO_PAGAMENTO SET CODIGO_PAGAMENTO_NFCE = '01' WHERE CODIGO = '01'");
   db.customStatement("UPDATE PDV_TIPO_PAGAMENTO SET CODIGO = '02', CODIGO_PAGAMENTO_NFCE = '02' WHERE CODIGO = '04'");

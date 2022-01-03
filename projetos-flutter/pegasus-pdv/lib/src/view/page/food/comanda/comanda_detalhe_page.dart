@@ -1052,7 +1052,7 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
           idProduto: item.produtoMontado!.produto!.id,
           gtin: item.produtoMontado!.produto!.gtin == '' ? item.produtoMontado!.produto!.id.toString() : item.produtoMontado!.produto!.gtin,
           cst: item.produtoMontado!.produto!.cst,
-          movimentaEstoque: item.produtoMontado!.produto!.ippt == 'T' ? 'S' : 'N', // TODO: baixar o estoque com base na ficha técnica
+          movimentaEstoque: item.produtoMontado!.produto!.ippt == 'T' ? 'S' : 'N', 
           quantidade: item.comandaDetalhe!.quantidade!,
           valorUnitario: item.comandaDetalhe!.valorUnitario,
           valorTotalItem: item.comandaDetalhe!.valorTotal,

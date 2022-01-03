@@ -65,8 +65,6 @@ class CompraPedidoCabecalhoPage extends StatefulWidget {
   final String? title;
   final String? operacao;
 
-  // static CompraPedidoCabecalho compraPedidoCabecalho;
-  // static List<CompraDetalhe> listaCompraDetalhe = [];
   static bool descontoNosItems = false;
 
   const CompraPedidoCabecalhoPage({this.compraPedidoCabecalhoMontado, this.title, this.operacao, Key? key}): super(key: key);

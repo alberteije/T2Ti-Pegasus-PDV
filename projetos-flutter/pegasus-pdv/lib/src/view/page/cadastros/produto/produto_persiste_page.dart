@@ -40,12 +40,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
+import 'package:pegasus_pdv/src/controller/controller.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
-import 'package:pegasus_pdv/src/view/page/cadastros/produto/produto_page.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_abas.dart';
@@ -93,7 +93,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
   }
 
   Future _carregarImagens() async {
-    listaProdutoImagem = await Sessao.db.produtoImagemDao.consultarListaFiltro('ID_PRODUTO', widget.produtoMontado!.produto!.id.toString());
+    ProdutoController.listaProdutoImagem = await Sessao.db.produtoImagemDao.consultarListaFiltro('ID_PRODUTO', widget.produtoMontado!.produto!.id.toString());
     setState(() {
     });
   }  
@@ -831,7 +831,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
 
   Future _exibirImagem(Uint8List data) async {
     setState(() {
-      listaProdutoImagem.add(ProdutoImagem(id: null, imagem: data));
+      ProdutoController.listaProdutoImagem.add(ProdutoImagem(id: null, imagem: data));
     });  
     Navigator.of(context).pop();
   }
@@ -851,7 +851,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
         ),
         delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
           return imagemStack(index);
-        }, childCount: listaProdutoImagem.length),
+        }, childCount: ProdutoController.listaProdutoImagem.length),
       )
     );
   }
@@ -876,8 +876,8 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
-            imagemImage(listaProdutoImagem[index]),
-            imagemColor(listaProdutoImagem[index]),
+            imagemImage(ProdutoController.listaProdutoImagem[index]),
+            imagemColor(ProdutoController.listaProdutoImagem[index]),
           ],
         ),
       ),

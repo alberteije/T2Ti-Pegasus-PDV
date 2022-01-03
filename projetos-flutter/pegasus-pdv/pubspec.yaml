@@ -118,7 +118,7 @@ msix_config:
   display_name: T2Ti Pegasus PDV
   publisher_display_name: T2Ti.COM
   identity_name: T2Ti.COM.T2TiPegasusPDV
-  msix_version: 1.0.9.0
+  msix_version: 1.0.10.0
   publisher: CN=0A6E4754-6ACC-44ED-81F6-94B57BF2E8BC
   logo_path: C:\T2Ti ERP\ERP 3.0 Programas e Fontes\Flutter\pegasus_pdv\assets\images\logo_pegasus_pdv.png
   capabilities: internetClient,systemManagement,pointOfService,bluetooth

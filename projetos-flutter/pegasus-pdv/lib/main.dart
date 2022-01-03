@@ -151,7 +151,7 @@ Widget _materialApp({bool? splash}) {
     ],
     supportedLocales: const [
       Locale('en', 'US'),
-      Locale('pt', 'PT'),
+      Locale('pt', 'BR'),
     ],
     debugShowCheckedModeBanner: false,
     title: Constantes.nomeApp,

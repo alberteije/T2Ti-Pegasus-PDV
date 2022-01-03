@@ -1,6 +1,6 @@
 /*
-Title: T2Ti ERP 3.0                                                                
-Description: Model que exporta os demais Controllers
+Title: T2Ti ERP 3.0
+Description: Controller utilizado para o Produto
                                                                                 
 The MIT License                                                                 
                                                                                 
@@ -33,17 +33,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'package:pegasus_pdv/src/database/database_classes.dart';
 
-// cadastros
-export 'package:pegasus_pdv/src/controller/cadastros/empresa_controller.dart';
-export 'package:pegasus_pdv/src/controller/cadastros/produto_controller.dart';
+class ProdutoController {
 
-// compras
-export 'package:pegasus_pdv/src/controller/compras/compra_pedido_cabecalho_controller.dart';
+  static List<ProdutoFichaTecnica> listaProdutoFichaTecnica = [];
+  static List<ProdutoImagem> listaProdutoImagem = [];
+  static List<CardapioPerguntaPadraoMontado> listaCardapioPerguntaPadraoMontado = [];
 
-// tributação
-export 'package:pegasus_pdv/src/controller/tributacao/tribut_operacao_fiscal_controller.dart';
-
-// pdv
-export 'package:pegasus_pdv/src/controller/pdv/nfce_controller.dart';
-export 'package:pegasus_pdv/src/controller/pdv/venda_controller.dart';
+}

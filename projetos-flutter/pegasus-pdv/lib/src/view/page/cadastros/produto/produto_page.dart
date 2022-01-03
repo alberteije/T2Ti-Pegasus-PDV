@@ -37,6 +37,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
+import 'package:pegasus_pdv/src/controller/controller.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
@@ -50,9 +51,6 @@ import 'produto_ficha_tecnica_lista_page.dart';
 import 'produto_persiste_page.dart';
 
 List<Aba> _todasAsAbas = <Aba>[];
-List<ProdutoFichaTecnica> listaProdutoFichaTecnica = [];
-List<ProdutoImagem> listaProdutoImagem = [];
-List<CardapioPerguntaPadraoMontado> listaCardapioPerguntaPadraoMontado = [];
 
 List<Aba> _getAbasAtivas() {
   List<Aba> retorno = [];
@@ -114,11 +112,11 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
 
   Future _carregarListas() async {
     if (widget.produtoMontado?.produto?.ippt == 'P') {
-      listaProdutoFichaTecnica = await Sessao.db.produtoFichaTecnicaDao.consultarListaFiltro('ID_PRODUTO', widget.produtoMontado!.produto!.id.toString());
-      listaCardapioPerguntaPadraoMontado = await Sessao.db.cardapioPerguntaPadraoDao.consultarListaPerguntaMontado(widget.produtoMontado!.cardapio?.id ?? 0);
+      ProdutoController.listaProdutoFichaTecnica = await Sessao.db.produtoFichaTecnicaDao.consultarListaFiltro('ID_PRODUTO', widget.produtoMontado!.produto!.id.toString());
+      ProdutoController.listaCardapioPerguntaPadraoMontado = await Sessao.db.cardapioPerguntaPadraoDao.consultarListaPerguntaMontado(widget.produtoMontado!.cardapio?.id ?? 0);
     } else {
-      listaProdutoFichaTecnica = [];
-      listaCardapioPerguntaPadraoMontado = [];
+      ProdutoController.listaProdutoFichaTecnica = [];
+      ProdutoController.listaCardapioPerguntaPadraoMontado = [];
     }
     setState(() {
     });
@@ -253,12 +251,22 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
         bool tudoCerto = false;
         if (widget.operacao == 'A') {
-          await Sessao.db.produtoDao.alterar(widget.produtoMontado!, listaProdutoFichaTecnica, listaProdutoImagem, listaCardapioPerguntaPadraoMontado);
+          await Sessao.db.produtoDao.alterar(
+            widget.produtoMontado!, 
+            ProdutoController.listaProdutoFichaTecnica, 
+            ProdutoController.listaProdutoImagem, 
+            ProdutoController.listaCardapioPerguntaPadraoMontado
+          );
           tudoCerto = true;
         } else {
           final produto = await Sessao.db.produtoDao.consultarObjetoFiltro('GTIN', widget.produtoMontado!.produto!.gtin!);
           if (produto == null) {
-            await Sessao.db.produtoDao.inserir(widget.produtoMontado!, listaProdutoFichaTecnica, listaProdutoImagem, listaCardapioPerguntaPadraoMontado);
+            await Sessao.db.produtoDao.inserir(
+              widget.produtoMontado!, 
+              ProdutoController.listaProdutoFichaTecnica, 
+              ProdutoController.listaProdutoImagem, 
+              ProdutoController.listaCardapioPerguntaPadraoMontado
+            );
             tudoCerto = true;
           } else {
             showInSnackBar('Já existe um produto cadastrado com o GTIN informado.', context);

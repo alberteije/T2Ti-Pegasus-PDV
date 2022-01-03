@@ -244,14 +244,32 @@ class ProdutoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoDaoMixin {
       if (listaVendaDetalhe != null) {
         for (var objeto in listaVendaDetalhe) {
           Produto? produto = await consultarObjeto(objeto.pdvVendaDetalhe!.idProduto!);
-          produto = produto?.copyWith(quantidadeEstoque: (produto.quantidadeEstoque ?? 0) - objeto.pdvVendaDetalhe!.quantidade!);
-          await update(produtos).replace(produto!);
+          if (produto?.ippt == 'T') {
+            produto = produto!.copyWith(quantidadeEstoque: (produto.quantidadeEstoque ?? 0) - objeto.pdvVendaDetalhe!.quantidade!);
+            await update(produtos).replace(produto);
+          } else if (produto?.ippt == 'P') {
+            final listaProdutoFichaTecnica = await db.produtoFichaTecnicaDao.consultarListaFiltro('ID_PRODUTO', produto!.id.toString());
+            for (var produtoFichaTecnica in listaProdutoFichaTecnica) {
+              Produto? produtoEstoque = await consultarObjeto(produtoFichaTecnica.idProdutoFilho!);
+              produtoEstoque = produtoEstoque!.copyWith(quantidadeEstoque: (produtoEstoque.quantidadeEstoque ?? 0) - produtoFichaTecnica.quantidade!);
+              await update(produtos).replace(produtoEstoque);
+            }
+          }
         }
       } else if (listaCompraDetalhe != null) {
         for (var objeto in listaCompraDetalhe) {
           Produto? produto = await consultarObjeto(objeto.compraPedidoDetalhe!.idProduto!);
-          produto = produto?.copyWith(quantidadeEstoque: (produto.quantidadeEstoque ?? 0) - objeto.compraPedidoDetalhe!.quantidade!);
-          await update(produtos).replace(produto!);
+          if (produto?.ippt == 'T') {
+            produto = produto?.copyWith(quantidadeEstoque: (produto.quantidadeEstoque ?? 0) - objeto.compraPedidoDetalhe!.quantidade!);
+            await update(produtos).replace(produto!);
+          } else if (produto?.ippt == 'P') {
+            final listaProdutoFichaTecnica = await db.produtoFichaTecnicaDao.consultarListaFiltro('ID_PRODUTO', produto!.id.toString());
+            for (var produtoFichaTecnica in listaProdutoFichaTecnica) {
+              Produto? produtoEstoque = await consultarObjeto(produtoFichaTecnica.idProdutoFilho!);
+              produtoEstoque = produtoEstoque!.copyWith(quantidadeEstoque: (produtoEstoque.quantidadeEstoque ?? 0) - produtoFichaTecnica.quantidade!);
+              await update(produtos).replace(produtoEstoque);
+            }
+          }
         }
       }
       return true;
