@@ -36,6 +36,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 package com.t2ti.retaguarda_sh.model.cadastros;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,17 +45,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import java.math.BigDecimal;
-import java.util.Date;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import com.t2ti.retaguarda_sh.model.nfe.NfeConfiguracao;
-import com.t2ti.retaguarda_sh.model.pdv.PdvPlanoPagamento;
-
-import java.util.Set;
-import javax.persistence.OneToMany;
-import javax.persistence.CascadeType;
 
 @Entity
 @Table(name="EMPRESA")
@@ -96,12 +88,6 @@ public class Empresa implements Serializable {
 
     @Column(name="EMAIL")
 	private String email;
-
-    @Column(name="ALIQUOTA_PIS")
-	private BigDecimal aliquotaPis;
-
-    @Column(name="ALIQUOTA_COFINS")
-	private BigDecimal aliquotaCofins;
 
     @Column(name="LOGRADOURO")
 	private String logradouro;
@@ -156,12 +142,6 @@ public class Empresa implements Serializable {
 
     @Column(name="HORA_REGISTRO")
 	private String horaRegistro;
-
-    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<NfeConfiguracao> listaNfeConfiguracao;
-
-    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<PdvPlanoPagamento> listaPdvPlanoPagamento;
 
 	public Empresa() {
 		//construtor padrão
@@ -253,22 +233,6 @@ public class Empresa implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-    public BigDecimal getAliquotaPis() {
-		return this.aliquotaPis;
-	}
-
-	public void setAliquotaPis(BigDecimal aliquotaPis) {
-		this.aliquotaPis = aliquotaPis;
-	}
-
-    public BigDecimal getAliquotaCofins() {
-		return this.aliquotaCofins;
-	}
-
-	public void setAliquotaCofins(BigDecimal aliquotaCofins) {
-		this.aliquotaCofins = aliquotaCofins;
 	}
 
     public String getLogradouro() {
@@ -414,28 +378,5 @@ public class Empresa implements Serializable {
 	public void setHoraRegistro(String horaRegistro) {
 		this.horaRegistro = horaRegistro;
 	}
-
-	public Set<NfeConfiguracao> getListaNfeConfiguracao() {
-		return this.listaNfeConfiguracao;
-	}
-
-	public void setListaNfeConfiguracao(Set<NfeConfiguracao> listaNfeConfiguracao) {
-		this.listaNfeConfiguracao = listaNfeConfiguracao;
-		for (NfeConfiguracao nfeConfiguracao : listaNfeConfiguracao) {
-			nfeConfiguracao.setEmpresa(this);
-		}
-	}
-
-    public Set<PdvPlanoPagamento> getListaPdvPlanoPagamento() {
-		return this.listaPdvPlanoPagamento;
-	}
-
-	public void setListaPdvPlanoPagamento(Set<PdvPlanoPagamento> listaPdvPlanoPagamento) {
-		this.listaPdvPlanoPagamento = listaPdvPlanoPagamento;
-		for (PdvPlanoPagamento pdvPlanoPagamento : listaPdvPlanoPagamento) {
-			pdvPlanoPagamento.setEmpresa(this);
-		}
-	}
-
 		
 }

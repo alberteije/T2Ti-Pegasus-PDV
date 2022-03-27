@@ -5,6 +5,6 @@
         "doctrine/orm": "2.7",
 		"firebase/php-jwt": "^5.2",
         "illuminate/database": "^8.25",
-        "phpmailer/phpmailer": "^6.5"
+        "phpmailer/phpmailer": "^6.5",
     }
 }

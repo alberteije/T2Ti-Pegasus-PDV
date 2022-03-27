@@ -25,7 +25,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.2" />
     <PackageReference Include="MySql.Data" Version="8.0.26" />
     <PackageReference Include="NHibernate" Version="5.3.9" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
     <PackageReference Include="PoweredSoft.DynamicLinq" Version="1.1.0" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.115.5" />
   </ItemGroup>
 
 

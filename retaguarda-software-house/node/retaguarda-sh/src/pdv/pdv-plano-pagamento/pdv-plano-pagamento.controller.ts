@@ -38,6 +38,8 @@ import { Crud, CrudController } from '@nestjsx/crud';
 import { PdvPlanoPagamentoService } from './pdv-plano-pagamento.service';
 import { PdvPlanoPagamento } from './pdv-plano-pagamento.entity';
 import { Request, Response } from 'express';
+import { Biblioteca } from '../../util/biblioteca';
+import { ObjetoPagSeguro } from '../../util/objeto.pagseguro';
 
 @Crud({
   model: {
@@ -52,35 +54,50 @@ import { Request, Response } from 'express';
 export class PdvPlanoPagamentoController implements CrudController<PdvPlanoPagamento> {
   constructor(public service: PdvPlanoPagamentoService) { }
 
-	@Post()
-	async inserir(@Req() request: Request) {
-		let objetoJson = request.body;
-		//let objetoPagSeguroEnviado = new ObjetoPagSeguro(objetoJson);
-		const retorno = await this.service.atualizar(objetoJson);
-		return retorno;
-	}
+  @Get('consulta-plano')
+	async consultarPlanoAtivo(
+    @Req() request: Request, 
+    @Res() response: Response
+  ) {
+    const cnpj = Biblioteca.decifrar(request.headers['cnpj'] as string);
+    const pdvPlanoPagamento = await this.service.consultarPlanoAtivo(cnpj);
 
-	@Get()
-	async consultarPlanoAtivo(@Req() request: Request, @Res() response: Response) {
-    let cnpj = request.headers['cnpj'] as string;
-    const retorno = await this.service.consultarPlanoAtivo(cnpj);
-
-    if (retorno == null) {
+    if (pdvPlanoPagamento == null) {
       response.status(404);
       response.send('Registro não localizado [Consultar Objeto PdvPlanoPagamento]');    
     } else {
+      const retorno = Biblioteca.cifrar(JSON.stringify(pdvPlanoPagamento));
+
+      response.setHeader('Content-Type', 'application/json');
       response.status(200);
       response.send(retorno);    
     }
   }  
 
-	@Post(':codigo')
+	@Post('insere-plano')
+	async inserirPlano(
+    @Req() request: Request, 
+    @Res() response: Response
+  ) {
+    const corpoRequisicao = Biblioteca.decifrar(request.body);
+    const objetoPagSeguro = new ObjetoPagSeguro(JSON.parse(corpoRequisicao));
+		const pdvPlanoPagamento = await this.service.atualizar(objetoPagSeguro);
+
+    const retorno = Biblioteca.cifrar(JSON.stringify(pdvPlanoPagamento));
+
+    response.setHeader('Content-Type', 'application/json');
+    response.status(200);
+		response.send(retorno);
+	}
+
+
+	@Post('confirma-transacao')
 	async confirmarTransacao(
     @Req() request: Request,
     @Res() response: Response,
-    @Param('codigo') codigo: string, 
   ) {
-    let cnpj = request.headers['cnpj'] as string;
+    const cnpj = Biblioteca.decifrar(request.headers['cnpj'] as string);
+    const codigo = Biblioteca.decifrar(request.headers['codigo'] as string);
     const retorno = await this.service.confirmarTransacao(codigo, cnpj);
 
     /*
@@ -89,6 +106,8 @@ export class PdvPlanoPagamentoController implements CrudController<PdvPlanoPagam
     404 - não achou o código da transação no banco de dados
     418 - achou o código da transação, mas ele já foi utilizado
     */
+
+    response.setHeader('Content-Type', 'application/json');
     response.status(retorno);
 		response.send(retorno);
 	}  

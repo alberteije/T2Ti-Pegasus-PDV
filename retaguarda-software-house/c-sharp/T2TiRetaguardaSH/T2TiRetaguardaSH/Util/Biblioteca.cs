@@ -41,6 +41,12 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Net;
 using System.Net.Mail;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Engines;
+using Org.BouncyCastle.Crypto.Modes;
+using Org.BouncyCastle.Crypto.Paddings;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
 
 namespace T2TiRetaguardaSH.Util
 {
@@ -53,15 +59,15 @@ namespace T2TiRetaguardaSH.Util
             string nomeArquivoIni = "c:\\t2ti\\config-email.ini";
             IniFile iniFile = new IniFile(nomeArquivoIni);
 
-            string host = iniFile.IniReadString("Email", "Host");
-            int port = iniFile.IniReadInt("Email", "Port");
+            string host = iniFile.IniReadString("Email", "Host", "");
+            int port = iniFile.IniReadInt("Email", "Port", 0);
             //string from = iniFile.IniReadString("Email", "From");
             //string bccList = iniFile.get("Email", "BccList");
-            string userName = iniFile.IniReadString("Email", "Username");
-            string password = iniFile.IniReadString("Email", "Password");
+            string userName = iniFile.IniReadString("Email", "Username", "");
+            string password = iniFile.IniReadString("Email", "Password", "");
 
-            var fromAddress = new MailAddress(userName, "From Name");
-            var toAddress = new MailAddress(destino, "To Name");
+            var fromAddress = new MailAddress(userName);
+            var toAddress = new MailAddress(destino);
             
             var smtp = new SmtpClient
             {
@@ -78,6 +84,7 @@ namespace T2TiRetaguardaSH.Util
                 Body = corpo
             })
             {
+                message.IsBodyHtml = true;
                 smtp.Send(message);
             }
 
@@ -374,7 +381,7 @@ namespace T2TiRetaguardaSH.Util
 
         public static string DataParaTexto(DateTime pData)
         {
-            return pData.ToString("YYYY-MM-DD");
+            return pData.ToString("yyyy-MM-dd");
         }
 
         public static string DataParaHora(DateTime pData)
@@ -726,5 +733,40 @@ namespace T2TiRetaguardaSH.Util
             {
             }
         }
+
+        public static String Cifrar(String valor)
+        {
+            var key = Encoding.ASCII.GetBytes(Constantes.CHAVE);
+            var iv = Encoding.ASCII.GetBytes(Constantes.VETOR);
+            var input = Encoding.UTF8.GetBytes(valor);
+
+            // cifrar
+            IBufferedCipher cipher = CipherUtilities.GetCipher("AES/CTR/NoPadding");
+            cipher.Init(true, new ParametersWithIV(ParameterUtilities.CreateKeyParameter("AES", key), iv));
+            byte[] encryptedBytes = cipher.DoFinal(input);
+
+            return Convert.ToBase64String(encryptedBytes);
+        }
+
+        public static String Decifrar(String valor)
+        {
+            if (valor.Substring(0, 1) == "\"")
+            {
+                valor = valor.Substring(1, valor.Length - 2);
+            }
+
+            var key = Encoding.ASCII.GetBytes(Constantes.CHAVE);
+            var iv = Encoding.ASCII.GetBytes(Constantes.VETOR);
+            var input = Encoding.UTF8.GetBytes(valor);
+
+            // decifrar
+            IBufferedCipher cipher = CipherUtilities.GetCipher("AES/CTR/NoPadding");
+            byte[] toDecrypt = Convert.FromBase64String(valor);
+            cipher.Init(false, new ParametersWithIV(ParameterUtilities.CreateKeyParameter("AES", key), iv));
+            byte[] plainBytes = cipher.DoFinal(toDecrypt);
+
+            return Encoding.UTF8.GetString(plainBytes);
+        }
+
     }
 }

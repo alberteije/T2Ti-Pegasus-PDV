@@ -34,10 +34,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using T2TiRetaguardaSH.Models;
 using T2TiRetaguardaSH.Services;
+using T2TiRetaguardaSH.Util;
 
 namespace T2TiRetaguardaSH.Controllers
 {
@@ -68,7 +71,8 @@ namespace T2TiRetaguardaSH.Controllers
                     Filtro filtro = new Filtro(filter);
                     lista = _service.ConsultarListaFiltro(filtro);
                 }
-                return Ok(lista);
+                String retorno = JsonConvert.SerializeObject(lista, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                return Ok(Biblioteca.Cifrar(retorno));
             }
             catch (Exception ex)
             {
@@ -89,7 +93,8 @@ namespace T2TiRetaguardaSH.Controllers
                 }
                 else
                 {
-                    return Ok(objeto);
+                    String retorno = JsonConvert.SerializeObject(objeto, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                    return Ok(Biblioteca.Cifrar(retorno));
                 }
             }
             catch (Exception ex)
@@ -98,66 +103,66 @@ namespace T2TiRetaguardaSH.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult InserirPdvTipoPlano([FromBody]PdvTipoPlano objJson)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return StatusCode(400, new RetornoJsonErro(400, "Objeto inválido [Inserir PdvTipoPlano]", null));
-                }
-                _service.Inserir(objJson);
+        //[HttpPost]
+        //public IActionResult InserirPdvTipoPlano([FromBody]PdvTipoPlano objJson)
+        //{
+        //    try
+        //    {
+        //        if (!ModelState.IsValid)
+        //        {
+        //            return StatusCode(400, new RetornoJsonErro(400, "Objeto inválido [Inserir PdvTipoPlano]", null));
+        //        }
+        //        _service.Inserir(objJson);
 
-                return CreatedAtRoute("ConsultarObjetoPdvTipoPlano", new { id = objJson.Id }, objJson);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Inserir PdvTipoPlano]", ex));
-            }
-        }
+        //        return CreatedAtRoute("ConsultarObjetoPdvTipoPlano", new { id = objJson.Id }, objJson);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Inserir PdvTipoPlano]", ex));
+        //    }
+        //}
 
-        [HttpPut("{id}")]
-        public IActionResult AlterarPdvTipoPlano([FromBody]PdvTipoPlano objJson, int id)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return StatusCode(400, new RetornoJsonErro(400, "Objeto inválido [Alterar PdvTipoPlano]", null));
-                }
+        //[HttpPut("{id}")]
+        //public IActionResult AlterarPdvTipoPlano([FromBody]PdvTipoPlano objJson, int id)
+        //{
+        //    try
+        //    {
+        //        if (!ModelState.IsValid)
+        //        {
+        //            return StatusCode(400, new RetornoJsonErro(400, "Objeto inválido [Alterar PdvTipoPlano]", null));
+        //        }
 
-                if (objJson.Id != id)
-                {
-                    return StatusCode(400, new RetornoJsonErro(400, "Objeto inválido [Alterar PdvTipoPlano] - ID do objeto difere do ID da URL.", null));
-                }
+        //        if (objJson.Id != id)
+        //        {
+        //            return StatusCode(400, new RetornoJsonErro(400, "Objeto inválido [Alterar PdvTipoPlano] - ID do objeto difere do ID da URL.", null));
+        //        }
 
-                _service.Alterar(objJson);
+        //        _service.Alterar(objJson);
 
-                return ConsultarObjetoPdvTipoPlano(id);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Alterar PdvTipoPlano]", ex));
-            }
-        }
+        //        return ConsultarObjetoPdvTipoPlano(id);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Alterar PdvTipoPlano]", ex));
+        //    }
+        //}
 
-        [HttpDelete("{id}")]
-        public IActionResult ExcluirPdvTipoPlano(int id)
-        {
-            try
-            {
-                var objeto = _service.ConsultarObjeto(id);
+        //[HttpDelete("{id}")]
+        //public IActionResult ExcluirPdvTipoPlano(int id)
+        //{
+        //    try
+        //    {
+        //        var objeto = _service.ConsultarObjeto(id);
 
-                _service.Excluir(objeto);
+        //        _service.Excluir(objeto);
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Excluir PdvTipoPlano]", ex));
-            }
-        }
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Excluir PdvTipoPlano]", ex));
+        //    }
+        //}
 
     }
 }

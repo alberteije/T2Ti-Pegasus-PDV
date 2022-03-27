@@ -37,48 +37,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 class EmpresaController extends ControllerBase
 {
 
-    public function consultarLista($request, $response, $args)
-    {
-        try {
-            if (count($request->getQueryParams()) > 0) {
-                $filtro = new Filtro($request->getQueryParams()['filter']);
-                $listaConsulta = EmpresaService::consultarListaFiltroValor($filtro);
-            } else {
-                $listaConsulta = EmpresaService::consultarLista();
-            }
-            $retorno = json_encode($listaConsulta);
-            $response->getBody()->write($retorno);
-            return $response->withHeader('Content-Type', 'application/json');
-        } catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Erro no Servidor [Consultar Lista Empresa]', $e);
-        }
-    }
-
-    public function consultarObjeto($request, $response, $args)
-    {
-        try {
-            $objeto = EmpresaService::consultarObjeto($args['id']);
-
-            if ($objeto == null) {
-                return parent::tratarErro($response, 404, 'Registro não localizado [Consultar Objeto Empresa]', null);
-            } else {
-                $retorno = json_encode($objeto);
-                $response->getBody()->write($retorno);
-                return $response
-                    ->withHeader('Content-Type', 'application/json');
-            }
-        } catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Erro no Servidor [Consultar Objeto Empresa]', $e);
-        }
-    }
-
     public function atualizar($request, $response, $args)
     {
         try {
-			// pegar o objeto da requisição
-			$objJson = json_decode($request->getBody());
+			$objJson = json_decode(Biblioteca::decifrar($request->getBody()));
             $retorno = json_encode(EmpresaService::atualizar($objJson));
-            $response->getBody()->write($retorno);
+            $response->getBody()->write(Biblioteca::cifrar($retorno));
             return $response
                 ->withHeader('Content-Type', 'application/json');
         } catch (Exception $e) {
@@ -89,25 +53,11 @@ class EmpresaController extends ControllerBase
     public function registrar($request, $response, $args)
     {
         try {
-			// pegar o objeto da requisição
-			$objJson = json_decode($request->getBody());
-
-            $headers = $request->getHeaders();
-            $operacao = $headers['operacao'];
-            $codigoConfirmacao = $headers['codigo-confirmacao'];
-
-			switch ($operacao) {
-				case 'registrar':
-					$empresa = EmpresaService::registrar($objJson);
-				case 'reenviar-email':
-					$empresa = EmpresaService::enviarEmailConfirmacao($objJson);
-				case 'confirmar-codigo':
-					$empresa = EmpresaService::conferirCodigoConfirmacao($objJson, $codigoConfirmacao);
-			}
-
+			$objJson = json_decode(Biblioteca::decifrar($request->getBody()));
+            $empresa = EmpresaService::registrar($objJson);
             $retorno = json_encode($empresa);
 
-            $response->getBody()->write($retorno);
+            $response->getBody()->write(Biblioteca::cifrar($retorno));
             return $response
                 ->withHeader('Content-Type', 'application/json');
         } catch (Exception $e) {
@@ -115,47 +65,114 @@ class EmpresaController extends ControllerBase
         }
     }
 
-    public function alterar($request, $response, $args)
+    public function enviarEmailConfirmacao($request, $response, $args)
+    {
+        try {
+			$objJson = json_decode(Biblioteca::decifrar($request->getBody()));
+            $empresa = EmpresaService::enviarEmailConfirmacao($objJson);
+            $retorno = json_encode($empresa);
+
+            $response->getBody()->write(Biblioteca::cifrar($retorno));
+            return $response
+                ->withHeader('Content-Type', 'application/json');
+        } catch (Exception $e) {
+            return parent::tratarErro($response, 500, 'Objeto inválido [Registrar Empresa]', $e);
+        }
+    }
+
+    public function conferirCodigoConfirmacao($request, $response, $args)
     {
         try {
 			// pegar o objeto da requisição
-			$objJson = json_decode($request->getBody());
-
-            $objBanco = EmpresaService::consultarObjeto($objJson->id);
-
-            if ($objBanco == null) {
-                return parent::tratarErro($response, 400, 'Objeto inválido [Alterar Empresa]', null);
-            } else {
-				$objBanco->mapear($objJson);
-				
-				EmpresaService::alterar($objJson, $objBanco);
-				
-                $retorno = json_encode($objBanco);
-                $response->getBody()->write($retorno);
-                return $response
-                    ->withHeader('Content-Type', 'application/json');
-            }
+			$objJson = json_decode(Biblioteca::decifrar($request->getBody()));
+            $codigoConfirmacao = Biblioteca::decifrar($request->getHeaders()['codigo-confirmacao'][0]);            
+            $empresa = EmpresaService::conferirCodigoConfirmacao($objJson, $codigoConfirmacao);
+            $retorno = json_encode($empresa);
+            
+            $response->getBody()->write(Biblioteca::cifrar($retorno));
+            return $response
+                ->withHeader('Content-Type', 'application/json');
         } catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Objeto inválido [Alterar Empresa]', $e);
+            return parent::tratarErro($response, 500, 'Objeto inválido [Registrar Empresa]', $e);
         }
     }
 
-    public function excluir($request, $response, $args)
-    {
-        try {
-            $objBanco = EmpresaService::consultarObjeto($args['id']);
+    // public function consultarLista($request, $response, $args)
+    // {
+    //     try {
+    //         if (count($request->getQueryParams()) > 0) {
+    //             $filtro = new Filtro($request->getQueryParams()['filter']);
+    //             $listaConsulta = EmpresaService::consultarListaFiltroValor($filtro);
+    //         } else {
+    //             $listaConsulta = EmpresaService::consultarLista();
+    //         }
+    //         $retorno = json_encode($listaConsulta);
+    //         $response->getBody()->write($retorno);
+    //         return $response->withHeader('Content-Type', 'application/json');
+    //     } catch (Exception $e) {
+    //         return parent::tratarErro($response, 500, 'Erro no Servidor [Consultar Lista Empresa]', $e);
+    //     }
+    // }
 
-            if ($objBanco == null) {
-                return parent::tratarErro($response, 400, 'Objeto inválido [Excluir Empresa]', null);
-            } else {
-                EmpresaService::excluir($objBanco);
+    // public function consultarObjeto($request, $response, $args)
+    // {
+    //     try {
+    //         $objeto = EmpresaService::consultarObjeto($args['id']);
 
-                return $response
-                    ->withStatus(200)
-                    ->withHeader('Content-Type', 'application/json');
-            }
-        } catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Objeto inválido [Excluir Empresa]', $e);
-        }
-    }
+    //         if ($objeto == null) {
+    //             return parent::tratarErro($response, 404, 'Registro não localizado [Consultar Objeto Empresa]', null);
+    //         } else {
+    //             $retorno = json_encode($objeto);
+    //             $response->getBody()->write($retorno);
+    //             return $response
+    //                 ->withHeader('Content-Type', 'application/json');
+    //         }
+    //     } catch (Exception $e) {
+    //         return parent::tratarErro($response, 500, 'Erro no Servidor [Consultar Objeto Empresa]', $e);
+    //     }
+    // }
+
+    // public function alterar($request, $response, $args)
+    // {
+    //     try {
+	// 		// pegar o objeto da requisição
+	// 		$objJson = json_decode($request->getBody());
+
+    //         $objBanco = EmpresaService::consultarObjeto($objJson->id);
+
+    //         if ($objBanco == null) {
+    //             return parent::tratarErro($response, 400, 'Objeto inválido [Alterar Empresa]', null);
+    //         } else {
+	// 			$objBanco->mapear($objJson);
+				
+	// 			EmpresaService::alterar($objJson, $objBanco);
+				
+    //             $retorno = json_encode($objBanco);
+    //             $response->getBody()->write($retorno);
+    //             return $response
+    //                 ->withHeader('Content-Type', 'application/json');
+    //         }
+    //     } catch (Exception $e) {
+    //         return parent::tratarErro($response, 500, 'Objeto inválido [Alterar Empresa]', $e);
+    //     }
+    // }
+
+    // public function excluir($request, $response, $args)
+    // {
+    //     try {
+    //         $objBanco = EmpresaService::consultarObjeto($args['id']);
+
+    //         if ($objBanco == null) {
+    //             return parent::tratarErro($response, 400, 'Objeto inválido [Excluir Empresa]', null);
+    //         } else {
+    //             EmpresaService::excluir($objBanco);
+
+    //             return $response
+    //                 ->withStatus(200)
+    //                 ->withHeader('Content-Type', 'application/json');
+    //         }
+    //     } catch (Exception $e) {
+    //         return parent::tratarErro($response, 500, 'Objeto inválido [Excluir Empresa]', $e);
+    //     }
+    // }
 }

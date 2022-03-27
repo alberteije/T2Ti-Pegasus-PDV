@@ -51,4 +51,6 @@ define("DECIMAIS_QUANTIDADE", 3);
 define("DECIMAIS_VALOR", 2);
 define("MAXIMO_REGISTROS_RETORNADOS", 50);
 define("ENDERECO_SERVIDOR", '127.0.0.1');
+define("ALGORITMO_CIFRA", 'aes-256-ctr'); 
 define("CHAVE", '#Sua-Chave-de-32-caracteres-aqui'); // TODO: alterar qunando for para produção
+define("VETOR", '#Seu-Vetor-aqui#'); // TODO: alterar qunando for para produção

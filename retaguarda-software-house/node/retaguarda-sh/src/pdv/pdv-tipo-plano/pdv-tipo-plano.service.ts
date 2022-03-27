@@ -37,7 +37,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { PdvTipoPlano } from './pdv-tipo-plano.entity';
-import { getConnection, QueryRunner } from 'typeorm';
+import { getConnection, MoreThan } from 'typeorm';
 
 @Injectable()
 export class PdvTipoPlanoService extends TypeOrmCrudService<PdvTipoPlano> {
@@ -45,50 +45,10 @@ export class PdvTipoPlanoService extends TypeOrmCrudService<PdvTipoPlano> {
   constructor(
     @InjectRepository(PdvTipoPlano) repository) { super(repository); }
 
-	async persistir(pdvTipoPlano: PdvTipoPlano, operacao: string): Promise<PdvTipoPlano> {
-	  let objetoRetorno: PdvTipoPlano;
-	
-	  const connection = getConnection();
-	  const queryRunner = connection.createQueryRunner();
-	
-	  await queryRunner.connect();
-	  await queryRunner.startTransaction();
-	  try {
-	    if (operacao == 'A') {
-	      await this.excluirFilhos(queryRunner, pdvTipoPlano.id);
-	    }
-	    objetoRetorno = await queryRunner.manager.save(pdvTipoPlano);
-	    await queryRunner.commitTransaction();
-	  } catch (erro) {
-	    await queryRunner.rollbackTransaction();
-	    throw (erro);
-	  } finally {
-	    await queryRunner.release();
-	  }
-	  return objetoRetorno;
-	}
-  
-	async excluirMestreDetalhe(id: number) {
-	  const connection = getConnection();
-	  const queryRunner = connection.createQueryRunner();
-	
-	  await queryRunner.connect();
-	  await queryRunner.startTransaction();
-	  try {
-	    await this.excluirFilhos(queryRunner, id);
-	    await queryRunner.query('delete from pdvTipoPlano where id=' + id);
-	    await queryRunner.commitTransaction();
-	  } catch (erro) {
-	    await queryRunner.rollbackTransaction();
-	    throw (erro);
-	  } finally {
-	    await queryRunner.release();
-	  }
-	}
-
-	async excluirFilhos(queryRunner: QueryRunner, id: number) {
-		await queryRunner.query('delete from PDV_PLANO_PAGAMENTO where ID_PDV_TIPO_PLANO=' + id);
-		
+	async consultarLista(): Promise<PdvTipoPlano[]> {
+		const connection = getConnection();  	    
+		const listaPlano = await connection.getRepository(PdvTipoPlano).find( { id: MoreThan(0) } );
+		return listaPlano;
 	}
 	
 }

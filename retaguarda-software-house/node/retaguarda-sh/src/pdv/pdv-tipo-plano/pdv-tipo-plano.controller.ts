@@ -33,10 +33,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Req, Res } from '@nestjs/common';
 import { Crud, CrudController } from '@nestjsx/crud';
+import { Request, Response } from 'express';
 import { PdvTipoPlanoService } from './pdv-tipo-plano.service';
 import { PdvTipoPlano } from './pdv-tipo-plano.entity';
+import { Biblioteca } from '../../util/biblioteca';
 
 @Crud({
   model: {
@@ -50,5 +52,18 @@ import { PdvTipoPlano } from './pdv-tipo-plano.entity';
 @Controller('pdv-tipo-plano')
 export class PdvTipoPlanoController implements CrudController<PdvTipoPlano> {
   constructor(public service: PdvTipoPlanoService) { }
+
+	@Get()
+	async consultarLista(
+    @Req() request: Request,
+    @Res() response: Response,
+  ) {
+    const listaPdvTipoPlano = await this.service.consultarLista();
+    const retorno = Biblioteca.cifrar(JSON.stringify(listaPdvTipoPlano));
+
+    response.setHeader('Content-Type', 'application/json');
+    response.status(200);
+		response.send(retorno);
+	}
 
 }

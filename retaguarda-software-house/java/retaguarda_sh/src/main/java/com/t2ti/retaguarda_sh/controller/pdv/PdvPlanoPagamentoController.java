@@ -35,28 +35,23 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 package com.t2ti.retaguarda_sh.controller.pdv;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.t2ti.retaguarda_sh.exception.ExcecaoGenericaServidorException;
 import com.t2ti.retaguarda_sh.exception.RecursoNaoEncontradoException;
-import com.t2ti.retaguarda_sh.exception.RequisicaoRuimException;
 import com.t2ti.retaguarda_sh.model.pdv.PdvPlanoPagamento;
-import com.t2ti.retaguarda_sh.model.transiente.Filtro;
 import com.t2ti.retaguarda_sh.model.transiente.ObjetoPagSeguro;
 import com.t2ti.retaguarda_sh.service.pdv.PdvPlanoPagamentoService;
+import com.t2ti.retaguarda_sh.util.Biblioteca;
 
 @RestController
 @RequestMapping(value = "/pdv-plano-pagamento", produces = "application/json;charset=UTF-8")
@@ -65,44 +60,36 @@ public class PdvPlanoPagamentoController {
 	@Autowired
 	private PdvPlanoPagamentoService service;
 	
-	@GetMapping
-	public List<PdvPlanoPagamento> consultarLista(@RequestParam(required = false) String filter) {
-		try {
-			if (filter == null) {
-				return service.consultarLista();
-			} else {
-				// define o filtro
-				Filtro filtro = new Filtro(filter);
-				return service.consultarLista(filtro);				
-			}
-		} catch (Exception e) {
-			throw new ExcecaoGenericaServidorException("Erro no Servidor [Consultar Lista PdvPlanoPagamento] - Exceção: " + e.getMessage());
-		}
-	}
-
-	@GetMapping("/{cnpj}")
-	public PdvPlanoPagamento consultarObjeto(@RequestHeader("cnpj") String cnpj) {
-		try {
-			return service.consultarPlanoAtivo(cnpj);
+	@GetMapping(value = "/consulta-plano")
+	public String consultarPlanoAtivo(@RequestHeader("cnpj") String cnpj) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {			
+			PdvPlanoPagamento pdvPlanoPagamento = service.consultarPlanoAtivo(Biblioteca.decifrar(cnpj));
+	        String retorno = objectMapper.writeValueAsString(pdvPlanoPagamento);	        
+	        return Biblioteca.cifrar(retorno);
 		} catch (NoSuchElementException e) {
-			throw new RecursoNaoEncontradoException("Registro não localizado [Consultar Objeto PdvPlanoPagamento].");
+			throw new RecursoNaoEncontradoException("Plano inexistente ou expirado.");
 		} catch (Exception e) {
 			throw new ExcecaoGenericaServidorException(
 					"Erro no Servidor [Consultar Objeto PdvPlanoPagamento] - Exceção: " + e.getMessage());
 		}
 	}
 	
-	@PostMapping
-	public PdvPlanoPagamento inserir(@RequestBody ObjetoPagSeguro objJson) {
+	@PostMapping(value = "/insere-plano")
+	public String inserirPlano(@RequestBody String corpoRequisicao) {
+		ObjectMapper objectMapper = new ObjectMapper();
 		try {
-			return service.atualizar(objJson);
+			ObjetoPagSeguro objetoPagSeguro = objectMapper.readValue(Biblioteca.decifrar(corpoRequisicao), ObjetoPagSeguro.class);
+			PdvPlanoPagamento pdvPlanoPagamento = service.atualizar(objetoPagSeguro);
+	        String retorno = objectMapper.writeValueAsString(pdvPlanoPagamento);	        
+	        return Biblioteca.cifrar(retorno);
 		} catch (Exception e) {
-			throw new ExcecaoGenericaServidorException("Erro no Servidor [Atualizar PdvPlanoPagamento] - Exceção: " + e.getMessage());
+			throw new ExcecaoGenericaServidorException("Erro no Servidor [Inserir Plano PdvPlanoPagamento] - Exceção: " + e.getMessage());
 		}
 	}
 
-	@PostMapping("/{codigo}")
-	public int confirmarTransacao(@PathVariable String codigo, @RequestHeader("cnpj") String cnpj) {
+	@PostMapping(value = "/confirma-transacao")
+	public int confirmarTransacao(@RequestHeader("codigo") String codigo, @RequestHeader("cnpj") String cnpj) {
 		try {
 		    /*
     	      Vamos usar os códigos HTTP para nossa conveniência:
@@ -110,38 +97,53 @@ public class PdvPlanoPagamentoController {
     	      404 - não achou o código da transação no banco de dados
     	      418 - achou o código da transação, mas ele já foi utilizado
 		    */			
-			return service.confirmarTransacao(codigo, cnpj);
+			return service.confirmarTransacao(Biblioteca.decifrar(codigo), Biblioteca.decifrar(cnpj));
 		} catch (Exception e) {
-			throw new ExcecaoGenericaServidorException("Erro no Servidor [Atualizar PdvPlanoPagamento] - Exceção: " + e.getMessage());
+			throw new ExcecaoGenericaServidorException("Erro no Servidor [Confirmar Transacao PdvPlanoPagamento] - Exceção: " + e.getMessage());
 		}
 	}
 	
-	@PutMapping("/{id}")
-	public PdvPlanoPagamento alterar(@RequestBody PdvPlanoPagamento objJson, @PathVariable Integer id) {	
-		try {			
-			if (!objJson.getId().equals(id)) {
-				throw new RequisicaoRuimException("Objeto inválido [Alterar PdvPlanoPagamento] - ID do objeto difere do ID da URL.");
-			}
-
-			PdvPlanoPagamento objeto = service.consultarObjeto(objJson.getId());
-			if (objeto != null) {
-				return service.salvar(objJson);				
-			} else
-			{
-				throw new RequisicaoRuimException("Objeto com ID inválido [Alterar PdvPlanoPagamento].");				
-			}
-		} catch (Exception e) {
-			throw new ExcecaoGenericaServidorException("Erro no Servidor [Alterar PdvPlanoPagamento] - Exceção: " + e.getMessage());
-		}
-	}
+//	@PutMapping("/{id}")
+//	public PdvPlanoPagamento alterar(@RequestBody PdvPlanoPagamento objJson, @PathVariable Integer id) {	
+//		try {			
+//			if (!objJson.getId().equals(id)) {
+//				throw new RequisicaoRuimException("Objeto inválido [Alterar PdvPlanoPagamento] - ID do objeto difere do ID da URL.");
+//			}
+//
+//			PdvPlanoPagamento objeto = service.consultarObjeto(objJson.getId());
+//			if (objeto != null) {
+//				return service.salvar(objJson);				
+//			} else
+//			{
+//				throw new RequisicaoRuimException("Objeto com ID inválido [Alterar PdvPlanoPagamento].");				
+//			}
+//		} catch (Exception e) {
+//			throw new ExcecaoGenericaServidorException("Erro no Servidor [Alterar PdvPlanoPagamento] - Exceção: " + e.getMessage());
+//		}
+//	}
 	
-	@DeleteMapping("/{id}")
-	public void excluir(@PathVariable Integer id) {
-		try {
-			service.excluir(id);
-		} catch (Exception e) {
-			throw new ExcecaoGenericaServidorException("Erro no Servidor [Excluir PdvPlanoPagamento] - Exceção: " + e.getMessage());
-		}
-	}
+//	@GetMapping
+//	public List<PdvPlanoPagamento> consultarLista(@RequestParam(required = false) String filter) {
+//		try {
+//			if (filter == null) {
+//				return service.consultarLista();
+//			} else {
+//				// define o filtro
+//				Filtro filtro = new Filtro(filter);
+//				return service.consultarLista(filtro);				
+//			}
+//		} catch (Exception e) {
+//			throw new ExcecaoGenericaServidorException("Erro no Servidor [Consultar Lista PdvPlanoPagamento] - Exceção: " + e.getMessage());
+//		}
+//	}
+	
+//	@DeleteMapping("/{id}")
+//	public void excluir(@PathVariable Integer id) {
+//		try {
+//			service.excluir(id);
+//		} catch (Exception e) {
+//			throw new ExcecaoGenericaServidorException("Erro no Servidor [Excluir PdvPlanoPagamento] - Exceção: " + e.getMessage());
+//		}
+//	}
 	
 }

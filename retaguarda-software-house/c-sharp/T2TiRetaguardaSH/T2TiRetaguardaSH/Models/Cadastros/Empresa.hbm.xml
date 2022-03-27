@@ -15,8 +15,6 @@
 	<property name="DataConstituicao" column="DATA_CONSTITUICAO" />
 	<property name="Tipo" column="TIPO" />
 	<property name="Email" column="EMAIL" />
-	<property name="AliquotaPis" column="ALIQUOTA_PIS" />
-	<property name="AliquotaCofins" column="ALIQUOTA_COFINS" />
 	<property name="Logradouro" column="LOGRADOURO" />
 	<property name="Numero" column="NUMERO" />
 	<property name="Complemento" column="COMPLEMENTO" />
@@ -34,17 +32,7 @@
 	<property name="Simei" column="SIMEI" />
 	<property name="EmailPagamento" column="EMAIL_PAGAMENTO" />
   <property name="DataRegistro" column="DATA_REGISTRO" />
-    <property name="HoraRegistro" column="HORA_REGISTRO" />
-
-
-    <bag name="ListaNfeConfiguracao" table="nfe_configuracao" cascade="all-delete-orphan" inverse="true">
-	  <key column="ID_EMPRESA"/>
-	  <one-to-many class="NfeConfiguracao"/>
-	</bag>
-	<bag name="ListaPdvPlanoPagamento" table="pdv_plano_pagamento" cascade="all-delete-orphan" inverse="true">
-	  <key column="ID_EMPRESA"/>
-	  <one-to-many class="PdvPlanoPagamento"/>
-	</bag>
+  <property name="HoraRegistro" column="HORA_REGISTRO" />
 	    
   </class>
 </hibernate-mapping>

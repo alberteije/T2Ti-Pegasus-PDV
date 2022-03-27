@@ -34,10 +34,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
-using System.Collections.Generic;
 using T2TiRetaguardaSH.Models;
 using T2TiRetaguardaSH.Services;
+using T2TiRetaguardaSH.Util;
 
 namespace T2TiRetaguardaSH.Controllers
 {
@@ -52,44 +54,23 @@ namespace T2TiRetaguardaSH.Controllers
             _service = new PdvPlanoPagamentoService();
         }
 
+        [Route("consulta-plano")]
         [HttpGet]
-        public IActionResult ConsultarListaPdvPlanoPagamento([FromQuery]string filter)
+        public IActionResult ConsultarPlanoAtivo()
         {
             try
             {
-                IEnumerable<PdvPlanoPagamento> lista;
-                if (filter == null)
+                string cnpj = Request.Headers["cnpj"];
+                var plano = _service.ConsultarPlanoAtivo(Biblioteca.Decifrar(cnpj));
+
+                if (plano == null)
                 {
-                    lista = _service.ConsultarLista();
+                    return StatusCode(404, new RetornoJsonErro(404, "Plano inexistente ou expirado.", null));
                 }
                 else
                 {
-                    // define o filtro
-                    Filtro filtro = new Filtro(filter);
-                    lista = _service.ConsultarListaFiltro(filtro);
-                }
-                return Ok(lista);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Consultar Lista PdvPlanoPagamento]", ex));
-            }
-        }
-
-        [HttpGet("{cnpj}", Name = "ConsultarObjetoPdvPlanoPagamento")]
-        public IActionResult ConsultarObjetoPdvPlanoPagamento(string cnpj)
-        {
-            try
-            {
-                var objeto = _service.ConsultarPlanoAtivo(cnpj);
-
-                if (objeto == null)
-                {
-                    return StatusCode(404, new RetornoJsonErro(404, "Registro não localizado [Consultar Objeto PdvPlanoPagamento]", null));
-                }
-                else
-                {
-                    return Ok(objeto);
+                    String retorno = JsonConvert.SerializeObject(plano, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                    return Ok(Biblioteca.Cifrar(retorno));
                 }
             }
             catch (Exception ex)
@@ -97,12 +78,31 @@ namespace T2TiRetaguardaSH.Controllers
                 return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Consultar Objeto PdvPlanoPagamento]", ex));
             }
         }
-        
-        [HttpPost("{codigo}")]
-        public IActionResult ConfirmarTransacao(string codigo)
+
+        [Route("insere-plano")]
+        [HttpPost]
+        public IActionResult InserirPdvPlanoPagamento([FromBody]String corpoRequisicao)
+        {
+            try
+            {
+                ObjetoPagSeguro objetoPagSeguro = JsonConvert.DeserializeObject<ObjetoPagSeguro>(Biblioteca.Decifrar(corpoRequisicao));
+                PdvPlanoPagamento pdvPlanoPagamento = _service.Atualizar(objetoPagSeguro);
+                String retorno = JsonConvert.SerializeObject(pdvPlanoPagamento, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                return Ok(Biblioteca.Cifrar(retorno));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Inserir PdvPlanoPagamento]", ex));
+            }
+        }
+
+        [Route("confirma-transacao")]
+        [HttpPost]
+        public IActionResult ConfirmarTransacao()
         {
             string cnpj = Request.Headers["cnpj"];
-            var retorno = _service.ConfirmarTransacao(codigo, cnpj);
+            string codigo = Request.Headers["codigo"];
+            var retorno = _service.ConfirmarTransacao(Biblioteca.Decifrar(codigo), Biblioteca.Decifrar(cnpj));
             /*
     	      Vamos usar os códigos HTTP para nossa conveniência:
     	      200 - achou a transação e vinculou o ID da empresa
@@ -112,41 +112,48 @@ namespace T2TiRetaguardaSH.Controllers
             return StatusCode(retorno, retorno);
         }
 
-        [HttpPost]
-        public IActionResult InserirPdvPlanoPagamento([FromBody]ObjetoPagSeguro objJson)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return StatusCode(400, new RetornoJsonErro(400, "Objeto inválido [Inserir PdvPlanoPagamento]", null));
-                }
-                PdvPlanoPagamento retorno = _service.Atualizar(objJson);
 
-                return CreatedAtRoute("ConsultarObjetoPdvPlanoPagamento", new { id = retorno.Id }, objJson);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Inserir PdvPlanoPagamento]", ex));
-            }
-        }
+        //[HttpGet]
+        //public IActionResult ConsultarListaPdvPlanoPagamento([FromQuery]string filter)
+        //{
+        //    try
+        //    {
+        //        IEnumerable<PdvPlanoPagamento> lista;
+        //        if (filter == null)
+        //        {
+        //            lista = _service.ConsultarLista();
+        //        }
+        //        else
+        //        {
+        //            // define o filtro
+        //            Filtro filtro = new Filtro(filter);
+        //            lista = _service.ConsultarListaFiltro(filtro);
+        //        }
+        //        return Ok(lista);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Consultar Lista PdvPlanoPagamento]", ex));
+        //    }
+        //}
 
-        [HttpDelete("{id}")]
-        public IActionResult ExcluirPdvPlanoPagamento(int id)
-        {
-            try
-            {
-                var objeto = _service.ConsultarObjeto(id);
 
-                _service.Excluir(objeto);
+        //[HttpDelete("{id}")]
+        //public IActionResult ExcluirPdvPlanoPagamento(int id)
+        //{
+        //    try
+        //    {
+        //        var objeto = _service.ConsultarObjeto(id);
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Excluir PdvPlanoPagamento]", ex));
-            }
-        }
+        //        _service.Excluir(objeto);
+
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Excluir PdvPlanoPagamento]", ex));
+        //    }
+        //}
 
     }
 }

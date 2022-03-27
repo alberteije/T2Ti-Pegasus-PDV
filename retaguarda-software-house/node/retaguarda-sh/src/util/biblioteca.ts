@@ -33,9 +33,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author T2Ti.COM
 @version 1.0
 ********************************************************************************/
-import * as fs from "fs";
-const {exec} = require('child_process');
-import * as INI from "easy-ini";
+import * as fs from 'fs';
+import { exec } from 'child_process';
+import { Ini } from 'ini';
+import { Constantes } from './constantes';
+const crypto = require('crypto');
 
 export class Biblioteca {
 
@@ -329,12 +331,10 @@ export class Biblioteca {
 	}
 
     static killTask(appName: string) {
-        exec('taskkill /im ${appName} /t', (err, stdout, stderr) => {
+        exec(`taskkill /im ${appName} /t`, (err, stdout, stderr) => {
             if (err) {
               throw err
             }        
-            // console.log('stdout', stdout)
-            // console.log('stderr', err)
           })                
     }
 	
@@ -346,14 +346,14 @@ export class Biblioteca {
 	// fonte: https://morioh.com/p/ca75996654d1
     static enviarEmail(assunto: string, destino: string, corpo: string): boolean {
         let nomeArquivoIni = "c:\\t2ti\\config-email.ini";
-        const iniFile = new INI(fs.readFileSync(nomeArquivoIni, {encoding: 'utf8'}));
+        const iniFile = new Ini(fs.readFileSync(nomeArquivoIni, {encoding: 'utf8'}));
         
-		let host = iniFile.getKeyIfExists('Host').val;
-		let port = iniFile.getKeyIfExists('Port').val;
-		let from = iniFile.getKeyIfExists('From').val;
+		let host = iniFile.getKeyIfExists('Host') == null ? '' : iniFile.getKeyIfExists('Host').val;
+		let port = iniFile.getKeyIfExists('Port') == null ? '' : iniFile.getKeyIfExists('Port').val;
+		let from = iniFile.getKeyIfExists('From') == null ? '' : iniFile.getKeyIfExists('From').val;
 		//let bccList = iniFile.getKeyIfExists('BccList').val;
-		let userName = iniFile.getKeyIfExists('Username').val;
-		let password = iniFile.getKeyIfExists('Password').val;
+		let userName = iniFile.getKeyIfExists('Username') == null ? '' : iniFile.getKeyIfExists('Username').val;
+		let password = iniFile.getKeyIfExists('Password') == null ? '' : iniFile.getKeyIfExists('Password').val;
 
         var nodemailer = require('nodemailer');
         var mail = nodemailer.createTransport({
@@ -383,5 +383,25 @@ export class Biblioteca {
 
         return true
     }
-    
+
+    static cifrar(valor: string): string {
+        const algorithm = 'aes-256-ctr';
+        const cipher = crypto.createCipheriv(algorithm, Constantes.CHAVE, Constantes.VETOR);
+        const valor_cifrado = cipher.update(valor);
+        const valor_cifrado_base64 = valor_cifrado.toString('base64');
+        return valor_cifrado_base64;        
+    }
+
+    static decifrar(valor: string): string {
+        const algorithm = 'aes-256-ctr';
+        const decipher = crypto.createDecipheriv(algorithm, Constantes.CHAVE, Constantes.VETOR);
+        const valor_decifrado_base64 = Buffer.from(valor, 'base64');
+        const valor_decifrado = decipher.update(valor_decifrado_base64);
+        return valor_decifrado.toString();        
+    }
+
+    static dateToSQL(data: Date): string {
+        return data.toISOString().split('T')[0];
+    }
+
 }

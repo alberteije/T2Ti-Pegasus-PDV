@@ -37,7 +37,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { PdvPlanoPagamento } from './pdv-plano-pagamento.entity';
-import { getConnection, QueryRunner } from 'typeorm';
+import { getConnection, Like, Raw } from 'typeorm';
 import { Biblioteca } from '../../util/biblioteca';
 import { ObjetoPagSeguro } from '../../util/objeto.pagseguro';
 import { PdvTipoPlano, Empresa } from '../../entities-export';
@@ -48,6 +48,22 @@ export class PdvPlanoPagamentoService extends TypeOrmCrudService<PdvPlanoPagamen
   constructor(
     @InjectRepository(PdvPlanoPagamento) repository) { super(repository); }
 
+	async consultarPlanoAtivo(cnpj: string): Promise<PdvPlanoPagamento> {
+        const connection = getConnection();
+        const queryRunner = connection.createQueryRunner();  
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        const empresa = await connection.getRepository(Empresa).findOne( { where: { cnpj: cnpj }} );
+        if (empresa != null) {
+			const plano = await connection.getRepository(PdvPlanoPagamento).findOne( 
+						{ where: { empresa: empresa, dataPlanoExpira: Raw((alias) => `${alias} >= NOW()`) }} 
+					);
+			return plano;
+		} else {
+			return null;
+		}
+	}	
 
 	async atualizar(objetoPagSeguroEnviado: ObjetoPagSeguro): Promise<PdvPlanoPagamento> {
 		let objetoRetorno: PdvPlanoPagamento;
@@ -118,21 +134,6 @@ export class PdvPlanoPagamentoService extends TypeOrmCrudService<PdvPlanoPagamen
 		}
 	}
  
-	async consultarPlanoAtivo(cnpj: string): Promise<PdvPlanoPagamento> {
-        const connection = getConnection();
-        const queryRunner = connection.createQueryRunner();  
-        await queryRunner.connect();
-        await queryRunner.startTransaction();
-
-        let empresa = await connection.manager.findOne(Empresa, { where: { cnpj: cnpj }} );
-        if (empresa != null) {
-			let plano = await connection.manager.findOne(PdvPlanoPagamento, { where: { empresa: empresa, dataPlanoExpira: Date.now }} );
-			return plano;
-		} else {
-			return null;
-		}
-	}	
-
 	async confirmarTransacao(codigoTransacao: string, cnpj: string): Promise<number> {
         const connection = getConnection();
         const queryRunner = connection.createQueryRunner();  

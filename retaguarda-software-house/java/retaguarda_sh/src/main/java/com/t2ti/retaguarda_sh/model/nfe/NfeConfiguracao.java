@@ -44,6 +44,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import java.math.BigDecimal;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -208,6 +210,17 @@ public class NfeConfiguracao implements Serializable {
 	@JsonIgnore
 	@JoinColumn(name="ID_EMPRESA")
     private Empresa empresa;
+
+    @Transient
+	private Integer idEmpresa; // o objeto vem do cliente com o idEmpresa. Para evitar problemas no método atualizar do NFeConfiguracaoController, vamos utilizar esse recurso
+    
+	public Integer getIdEmpresa() {
+		return idEmpresa;
+	}
+
+	public void setIdEmpresa(Integer idEmpresa) {
+		this.idEmpresa = idEmpresa;
+	}
 
 	public NfeConfiguracao() {
 		//construtor padrão

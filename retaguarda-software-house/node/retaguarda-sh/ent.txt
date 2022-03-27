@@ -1,0 +1,1 @@
+NFE.SetCertificado(C:\ACBrMonitor\10793118000178\10793118000178.pfx,c22a11)

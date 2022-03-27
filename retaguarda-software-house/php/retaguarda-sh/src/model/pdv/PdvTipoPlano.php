@@ -91,14 +91,13 @@ class PdvTipoPlano extends EloquentModel implements \JsonSerializable
 
     public function getValorAttribute() 
 	{
-		return $this->attributes['VALOR'];
+		return (double)$this->attributes['VALOR'];
 	}
 
 	public function setValorAttribute($valor) 
 	{
 		$this->attributes['VALOR'] = $valor;
 	}
-
 
     /**
      * Mapping

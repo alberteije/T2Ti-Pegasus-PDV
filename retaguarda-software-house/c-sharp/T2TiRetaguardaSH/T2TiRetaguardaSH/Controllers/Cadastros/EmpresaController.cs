@@ -34,10 +34,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
-using System.Collections.Generic;
 using T2TiRetaguardaSH.Models;
 using T2TiRetaguardaSH.Services;
+using T2TiRetaguardaSH.Util;
 
 namespace T2TiRetaguardaSH.Controllers
 {
@@ -52,64 +54,16 @@ namespace T2TiRetaguardaSH.Controllers
             _service = new EmpresaService();
         }
 
-        [HttpGet]
-        public IActionResult ConsultarListaEmpresa([FromQuery]string filter)
-        {
-            try
-            {
-                IEnumerable<Empresa> lista;
-                if (filter == null)
-                {
-                    lista = _service.ConsultarLista();
-                }
-                else
-                {
-                    // define o filtro
-                    Filtro filtro = new Filtro(filter);
-                    lista = _service.ConsultarListaFiltro(filtro);
-                }
-                return Ok(lista);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Consultar Lista Empresa]", ex));
-            }
-        }
-
-        [HttpGet("{cnpj}", Name = "ConsultarObjetoEmpresa")]
-        public IActionResult ConsultarObjetoEmpresa(string cnpj)
-        {
-            try
-            {
-                var objeto = _service.ConsultarObjetoFiltro("CNPJ = '" + cnpj + "'");
-
-                if (objeto == null)
-                {
-                    return StatusCode(404, new RetornoJsonErro(404, "Registro não localizado [Consultar Objeto Empresa]", null));
-                }
-                else
-                {
-                    return Ok(objeto);
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Consultar Objeto Empresa]", ex));
-            }
-        }
-
         [HttpPost]
-        public IActionResult AtualizarEmpresa([FromBody]Empresa objJson)
+        public IActionResult AtualizarEmpresa([FromBody]String corpoRequisicao)
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return StatusCode(400, new RetornoJsonErro(400, "Objeto inválido [Atualizar Empresa]", null));
-                }
-                _service.Atualizar(objJson);
-
-                return CreatedAtRoute("ConsultarObjetoEmpresa", new { cnpj = objJson.Cnpj }, objJson);
+                Empresa empresa = JsonConvert.DeserializeObject<Empresa>(Biblioteca.Decifrar(corpoRequisicao));
+                _service.Atualizar(empresa);
+                empresa = _service.ConsultarObjetoFiltro("CNPJ = '" + empresa.Cnpj + "'");
+                String retorno = JsonConvert.SerializeObject(empresa, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                return Ok(Biblioteca.Cifrar(retorno));
             }
             catch (Exception ex)
             {
@@ -117,81 +71,147 @@ namespace T2TiRetaguardaSH.Controllers
             }
         }
 
-        [HttpPost("{cnpj}")]
-        public IActionResult RegistrarEmpresa([FromBody]Empresa objJson, string cnpj)
+        [Route("registra-empresa")]
+        [HttpPost]
+        public IActionResult RegistrarEmpresa([FromBody]String corpoRequisicao)
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return StatusCode(400, new RetornoJsonErro(400, "Objeto inválido [Registrar Empresa]", null));
-                }
-
-                string operacao = Request.Headers["operacao"];
-                string codigoConfirmacao = Request.Headers["confirmar-codigo"];
-
-                switch (operacao)
-                {
-                    case "registrar":
-                        _service.Registrar(objJson);
-                        break;
-                    case "reenviar-email":
-                        _service.EnviarEmailConfirmacao(objJson);
-                        break;
-                    case "confirmar-codigo":
-                        _service.ConferirCodigoConfirmacao(objJson, codigoConfirmacao);
-                        break;
-                }
-
-                return CreatedAtRoute("ConsultarObjetoEmpresa", new { cnpj = objJson.Cnpj }, objJson);
+                Empresa empresa = JsonConvert.DeserializeObject<Empresa>(Biblioteca.Decifrar(corpoRequisicao));
+                _service.Registrar(empresa);
+                empresa = _service.ConsultarObjetoFiltro("CNPJ = '" + empresa.Cnpj + "'");
+                String retorno = JsonConvert.SerializeObject(empresa, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                return Ok(Biblioteca.Cifrar(retorno));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Atualizar Empresa]", ex));
+                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Registrar Empresa]", ex));
             }
         }
 
-        [HttpPut("{id}")]
-        public IActionResult AlterarEmpresa([FromBody]Empresa objJson, int id)
+        [Route("envia-email-confirmacao")]
+        [HttpPost]
+        public IActionResult EnviarEmailConfirmacao([FromBody]String corpoRequisicao)
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return StatusCode(400, new RetornoJsonErro(400, "Objeto inválido [Alterar Empresa]", null));
-                }
-
-                if (objJson.Id != id)
-                {
-                    return StatusCode(400, new RetornoJsonErro(400, "Objeto inválido [Alterar Empresa] - ID do objeto difere do ID da URL.", null));
-                }
-
-                _service.Alterar(objJson);
-
-                return ConsultarObjetoEmpresa(objJson.Cnpj);
+                Empresa empresa = JsonConvert.DeserializeObject<Empresa>(Biblioteca.Decifrar(corpoRequisicao));
+                _service.EnviarEmailConfirmacao(empresa);
+                empresa = _service.ConsultarObjetoFiltro("CNPJ = '" + empresa.Cnpj + "'");
+                String retorno = JsonConvert.SerializeObject(empresa, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                return Ok(Biblioteca.Cifrar(retorno));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Alterar Empresa]", ex));
+                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Enviar Email Confirmacao]", ex));
             }
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult ExcluirEmpresa(int id)
+        [Route("confere-codigo-confirmacao")]
+        [HttpPost]
+        public IActionResult ConferirCodigoConfirmacao([FromBody]String corpoRequisicao)
         {
             try
             {
-                var objeto = _service.ConsultarObjeto(id);
-
-                _service.Excluir(objeto);
-
-                return Ok();
+                Empresa empresa = JsonConvert.DeserializeObject<Empresa>(Biblioteca.Decifrar(corpoRequisicao));
+                _service.ConferirCodigoConfirmacao(empresa, Biblioteca.Decifrar(Request.Headers["codigo-confirmacao"]));
+                empresa = _service.ConsultarObjetoFiltro("CNPJ = '" + empresa.Cnpj + "'");
+                String retorno = JsonConvert.SerializeObject(empresa, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                return Ok(Biblioteca.Cifrar(retorno));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Excluir Empresa]", ex));
+                return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Conferir Codigo Confirmacao]", ex));
             }
         }
+
+        //[HttpGet]
+        //public IActionResult ConsultarListaEmpresa([FromQuery]string filter)
+        //{
+        //    try
+        //    {
+        //        IEnumerable<Empresa> lista;
+        //        if (filter == null)
+        //        {
+        //            lista = _service.ConsultarLista();
+        //        }
+        //        else
+        //        {
+        //            // define o filtro
+        //            Filtro filtro = new Filtro(filter);
+        //            lista = _service.ConsultarListaFiltro(filtro);
+        //        }
+        //        return Ok(lista);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Consultar Lista Empresa]", ex));
+        //    }
+        //}
+
+        //[HttpGet("{cnpj}", Name = "ConsultarObjetoEmpresa")]
+        //public IActionResult ConsultarObjetoEmpresa(string cnpj)
+        //{
+        //    try
+        //    {
+        //        var objeto = _service.ConsultarObjetoFiltro("CNPJ = '" + cnpj + "'");
+
+        //        if (objeto == null)
+        //        {
+        //            return StatusCode(404, new RetornoJsonErro(404, "Registro não localizado [Consultar Objeto Empresa]", null));
+        //        }
+        //        else
+        //        {
+        //            return Ok(objeto);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Consultar Objeto Empresa]", ex));
+        //    }
+        //}
+
+        //[HttpPut("{id}")]
+        //public IActionResult AlterarEmpresa([FromBody]Empresa objJson, int id)
+        //{
+        //    try
+        //    {
+        //        if (!ModelState.IsValid)
+        //        {
+        //            return StatusCode(400, new RetornoJsonErro(400, "Objeto inválido [Alterar Empresa]", null));
+        //        }
+
+        //        if (objJson.Id != id)
+        //        {
+        //            return StatusCode(400, new RetornoJsonErro(400, "Objeto inválido [Alterar Empresa] - ID do objeto difere do ID da URL.", null));
+        //        }
+
+        //        _service.Alterar(objJson);
+
+        //        return ConsultarObjetoEmpresa(objJson.Cnpj);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Alterar Empresa]", ex));
+        //    }
+        //}
+
+        //[HttpDelete("{id}")]
+        //public IActionResult ExcluirEmpresa(int id)
+        //{
+        //    try
+        //    {
+        //        var objeto = _service.ConsultarObjeto(id);
+
+        //        _service.Excluir(objeto);
+
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new RetornoJsonErro(500, "Erro no Servidor [Excluir Empresa]", ex));
+        //    }
+        //}
 
     }
 }

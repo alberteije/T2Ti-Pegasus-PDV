@@ -9,12 +9,6 @@
 	<property name="Plano" column="PLANO" />
 	<property name="ModuloFiscal" column="MODULO_FISCAL" />
 	<property name="Valor" column="VALOR" />
-
-
-	<bag name="ListaPdvPlanoPagamento" table="pdv_plano_pagamento" cascade="all-delete-orphan" inverse="true">
-	  <key column="ID_PDV_TIPO_PLANO"/>
-	  <one-to-many class="PdvPlanoPagamento"/>
-	</bag>
 	    
   </class>
 </hibernate-mapping>

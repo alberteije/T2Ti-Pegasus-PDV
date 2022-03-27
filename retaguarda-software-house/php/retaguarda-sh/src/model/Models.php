@@ -18,3 +18,7 @@ include 'nfe/NfeConfiguracao.php';
 include 'transiente/Filtro.php';
 include 'transiente/RetornoJsonErro.php';
 include 'transiente/ObjetoPagSeguro.php';
+include 'transiente/ObjetoNfe.php';
+
+// Sincroniza
+include 'sincroniza/ObjetoSincroniza.php';

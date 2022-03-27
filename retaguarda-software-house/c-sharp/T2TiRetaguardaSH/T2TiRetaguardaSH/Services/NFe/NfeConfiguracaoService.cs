@@ -123,7 +123,7 @@ namespace T2TiRetaguardaSH.Services
             }
         }
 
-        public AcbrMonitorPorta Atualizar(NfeConfiguracao nfeConfiguracao, string cnpj, int decimaisQuantidade, int decimaisValor) 
+        public NfeConfiguracao Atualizar(NfeConfiguracao nfeConfiguracao, string cnpj, int decimaisQuantidade, int decimaisValor) 
         {
             using (ISession Session = NHibernateHelper.GetSessionFactory().OpenSession())
             {
@@ -160,12 +160,15 @@ namespace T2TiRetaguardaSH.Services
 					}
 
 					// criar a pasta do monitor para a empresa
-					CriarPastaAcbrMonitor(cnpj);
+                    if (!Directory.Exists("C:\\ACBrMonitor\\" + cnpj))
+                    {
+                        CriarPastaAcbrMonitor(cnpj);
+                    }
 
-					// configurar o arquivo INI
-					ConfigurarArquivoIniMonitor(nfeConfiguracao, empresa, decimaisQuantidade, decimaisValor, portaMonitor.Id);
+                    // configurar o arquivo INI
+                    ConfigurarArquivoIniMonitor(nfeConfiguracao, empresa, decimaisQuantidade, decimaisValor, portaMonitor.Id);
 
-					return portaMonitor;					
+					return nfeConfiguracao;					
 				} 
 				else 
 				{
@@ -178,7 +181,7 @@ namespace T2TiRetaguardaSH.Services
 
         private void CriarPastaAcbrMonitor(string cnpj)
         {
-            string command = "c:\\ACBrMonitor\\CopiarBase.bat " + cnpj;
+            string command = "C:\\ACBrMonitor\\CopiarBase.bat " + cnpj;
             var process = Process.Start(command);
             process.WaitForExit();
         }
@@ -197,7 +200,7 @@ namespace T2TiRetaguardaSH.Services
                 //*******************************************************************************************
                 //  [ACBrMonitor]
                 //*******************************************************************************************
-                acbrMonitorIni.IniWriteString("ACBrMonitor", "TCP_Porta", portaMonitor.ToString());
+                //acbrMonitorIni.IniWriteString("ACBrMonitor", "TCP_Porta", portaMonitor.ToString());
 
                 //*******************************************************************************************
                 //  [ACBrNFeMonitor]
@@ -295,106 +298,9 @@ namespace T2TiRetaguardaSH.Services
             }
             finally
             {
-                Biblioteca.KillTask("ACBrMonitor_" + empresa.Cnpj + ".exe");
+                Biblioteca.KillTask("ACBrMonitor_" + empresa.Cnpj);
                 string caminhoExecutavel = caminhoComCnpj + "ACBrMonitor_" + empresa.Cnpj + ".exe";
                 Process.Start(caminhoExecutavel);
-            }
-
-        }
-
-        public void AtualizarCertificado(string certificadoBase64, string senha, string cnpj)
-        {
-            using (ISession Session = NHibernateHelper.GetSessionFactory().OpenSession())
-            {
-                string filtro = "CNPJ = '" + cnpj + "'";
-                Empresa empresa = new EmpresaService().ConsultarObjetoFiltro(filtro);
-                if (empresa != null)
-                {
-                    // encerra o Monitor
-                    Biblioteca.KillTask("ACBrMonitor_" + empresa.Cnpj + ".exe");
-
-                    // configura os caminhos
-                    string caminhoComCnpj = "C:\\ACBrMonitor\\" + empresa.Cnpj + '\\';
-                    string caminhoArquivoCertificado = caminhoComCnpj + empresa.Cnpj + ".pfx";
-
-                    // converte e salva o arquivo do certificado em disco
-                    byte[] certificadoBytes = Convert.FromBase64String(certificadoBase64);
-                    File.WriteAllBytes(caminhoArquivoCertificado, certificadoBytes);
-
-                    // vamos alterar o monitor para receber dados em arquivo TXT para armazenar os dados do certificado
-                    // faremos dessa maneira porque o monitor criptografa a senha
-                    string nomeArquivoIni = caminhoComCnpj + "ACBrMonitor.ini";
-                    IniFile acbrMonitorIni = new IniFile(nomeArquivoIni);
-
-                    try
-                    {
-                        //*******************************************************************************************
-                        //  [ACBrMonitor]
-                        //*******************************************************************************************
-                        acbrMonitorIni.IniWriteString("ACBrMonitor", "Modo_TCP", "0");
-                        acbrMonitorIni.IniWriteString("ACBrMonitor", "Modo_TXT", "1");
-                    }
-                    finally
-                    {
-                        string caminhoExecutavel = caminhoComCnpj + "ACBrMonitor_" + empresa.Cnpj + ".exe";
-                        Process.Start(caminhoExecutavel);
-                    }
-
-                    GerarArquivoEntradaMonitor(caminhoArquivoCertificado, senha, cnpj);
-
-                    while (!File.Exists("C:\\ACBrMonitor\\" + cnpj + "\\sai.txt")) { }
-
-                    // altera novamente o monitor para o modo TCP
-                    try
-                    {
-                        //*******************************************************************************************
-                        //  [ACBrMonitor]
-                        //*******************************************************************************************
-                        acbrMonitorIni.IniWriteString("ACBrMonitor", "Modo_TCP", "1");
-                        acbrMonitorIni.IniWriteString("ACBrMonitor", "Modo_TXT", "0");
-                    }
-                    finally
-                    {
-                        Biblioteca.KillTask("ACBrMonitor_" + empresa.Cnpj + ".exe");
-                        string caminhoExecutavel = caminhoComCnpj + "ACBrMonitor_" + empresa.Cnpj + ".exe";
-                        Process.Start(caminhoExecutavel);
-                    }
-
-                }
-            }
-
-        }
-        private void GerarArquivoEntradaMonitor(string caminhoArquivoCertificado, string senha, string cnpj)
-        {
-            try
-            {
-                //  apaga o arquivo 'SAI.TXT'
-                File.Delete("c:\\ACBrMonitor\\" + cnpj + "\\SAI.TXT");
-
-                //  cria o arquivo 'ENT.TXT'
-                StreamWriter ArquivoEntrada = new StreamWriter("c:\\ACBrMonitor\\" + cnpj + "\\ENT.TXT", true, Encoding.ASCII);
-                ArquivoEntrada.Write("NFE.SetCertificado(" + caminhoArquivoCertificado + "," + senha + ")");
-                ArquivoEntrada.Close();
-            }
-            finally
-            {
-            }
-        }
-        public bool GerarZipArquivosXml(string periodo, string cnpj)
-        {
-            using (ISession Session = NHibernateHelper.GetSessionFactory().OpenSession())
-            {
-                string filtro = "CNPJ = '" + cnpj + "'";
-                Empresa empresa = new EmpresaService().ConsultarObjetoFiltro(filtro);
-                if (empresa != null)
-                {
-                    ZipFile.CreateFromDirectory("C:\\ACBrMonitor\\" + cnpj + "\\DFes\\NFCe\\" + periodo, "C:\\ACBrMonitor\\" + cnpj + "\\NotasFiscaisNFCe_" + periodo + ".zip");
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
             }
         }
 

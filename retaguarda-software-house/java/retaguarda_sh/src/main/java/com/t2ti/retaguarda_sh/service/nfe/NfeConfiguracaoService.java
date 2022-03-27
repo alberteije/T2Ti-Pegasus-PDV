@@ -36,12 +36,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 package com.t2ti.retaguarda_sh.service.nfe;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Base64;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -52,7 +47,6 @@ import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.zeroturnaround.zip.ZipUtil;
 
 import com.t2ti.retaguarda_sh.model.cadastros.AcbrMonitorPorta;
 import com.t2ti.retaguarda_sh.model.cadastros.Empresa;
@@ -110,20 +104,21 @@ public class NfeConfiguracaoService {
 		repository.delete(objeto);
 	}
 
-	public AcbrMonitorPorta atualizar(NfeConfiguracao nfeConfiguracao, String cnpj, int decimaisQuantidade, int decimaisValor) throws IOException, InterruptedException {
+	public NfeConfiguracao atualizar(NfeConfiguracao nfeConfiguracao, String cnpj, int decimaisQuantidade, int decimaisValor) throws IOException, InterruptedException {
 		
 		String filtro = "CNPJ = '" + cnpj + "'";
 		Empresa empresa = empresaService.consultarObjetoFiltro(filtro);
 		if (empresa != null) {
-			// salva o objeto de configuração no banco de dados
-		    nfeConfiguracao.setEmpresa(empresa);
-		    nfeConfiguracao.getCaminhoSalvarXml().replaceAll("\\", "\\\\");
-		    nfeConfiguracao.getCaminhoSalvarPdf().replaceAll("\\", "\\\\");
+			nfeConfiguracao.setEmpresa(empresa);
+			filtro = "ID_EMPRESA = " + empresa.getId().toString();
+			NfeConfiguracao objetoBanco = consultarObjetoFiltro(filtro);
+			if (objetoBanco != null) {
+				nfeConfiguracao.setId(objetoBanco.getId());
+			}
 			repository.save(nfeConfiguracao);			
 
 			// verificar se já existe uma porta definida para o monitor da empresa
 			// ALTER TABLE acbr_monitor_porta AUTO_INCREMENT=3435; - executa um comando no banco de dados para definir a porta inicial para o ID
-			filtro = "ID_EMPRESA = " + empresa.getId().toString();
 			AcbrMonitorPorta portaMonitor = acbrMonitorPortaService.consultarObjetoFiltro(filtro);
 			if (portaMonitor == null) {
 			  portaMonitor = new AcbrMonitorPorta();
@@ -132,15 +127,17 @@ public class NfeConfiguracaoService {
 			}
 			
 			// criar a pasta do monitor para a empresa
-			final Process process = Runtime.getRuntime().exec("c:\\ACBrMonitor\\CopiarBase.bat " + cnpj);
-			process.waitFor();
-			// final int exitVal = process.waitFor();
-			// if exitVal == 0, the command succeeded		
+		    String PATH = "C:\\ACBrMonitor\\" + cnpj;
+		    File directory = new File(PATH);
+			if (!directory.exists()) {
+				final Process process = Runtime.getRuntime().exec("c:\\ACBrMonitor\\CopiarBase.bat " + cnpj);
+				process.waitFor();				
+			}
 
 			// configurar o arquivo INI
 			configurarArquivoIniMonitor(empresa, nfeConfiguracao, decimaisQuantidade, decimaisValor, portaMonitor.getId());
 			
-			return portaMonitor;					
+			return nfeConfiguracao;					
 		} else {
 			return null;
 		}
@@ -257,96 +254,9 @@ public class NfeConfiguracaoService {
 		    
 		    acbrMonitorIni.store();		    
 		} finally {
-		    Biblioteca.killTask("ACBrMonitor_" + empresa.getCnpj() + ".exe");
+		    Biblioteca.killTask("ACBrMonitor_" + empresa.getCnpj());
 		    String caminhoExecutavel = caminhoComCnpj + "ACBrMonitor_" + empresa.getCnpj() + ".exe";
 		    Runtime.getRuntime().exec(caminhoExecutavel);
-		}
-	}
-
-	@SuppressWarnings("resource")
-	public void atualizarCertificado(String certificadoBase64, String senha, String cnpj) throws FileNotFoundException, IOException {
-		String filtro = "CNPJ = '" + cnpj + "'";
-		Empresa empresa = empresaService.consultarObjetoFiltro(filtro);
-		if (empresa != null) {
-		    // encerra o Monitor
-		    Biblioteca.killTask("ACBrMonitor_" + empresa.getCnpj() + ".exe");
-
-		    // configura os caminhos
-			String caminhoComCnpj = "C:\\ACBrMonitor\\" + empresa.getCnpj() + '\\';
-		    String caminhoArquivoCertificado = caminhoComCnpj + empresa.getCnpj() + ".pfx";
-		    
-		    // converte e salva o arquivo do certificado em disco
-			byte[] certificadoBytes = Base64.getDecoder().decode(certificadoBase64);
-			new FileOutputStream(caminhoArquivoCertificado).write(certificadoBytes);
-			
-		    // vamos alterar o monitor para receber dados em arquivo TXT para armazenar os dados do certificado
-		    // faremos dessa maneira porque o monitor criptografa a senha
-			String nomeArquivoIni = caminhoComCnpj + "ACBrMonitor.ini"; 
-			Wini acbrMonitorIni = new Wini(new File(nomeArquivoIni));
-			
-			try {
-			    //*******************************************************************************************
-			    //  [ACBrMonitor]
-			    //*******************************************************************************************
-			    acbrMonitorIni.put("ACBrMonitor", "Modo_TCP", "0");
-			    acbrMonitorIni.put("ACBrMonitor", "Modo_TXT", "1");
-			    
-			    acbrMonitorIni.store();		    
-			} finally {
-			    String caminhoExecutavel = caminhoComCnpj + "ACBrMonitor_" + empresa.getCnpj() + ".exe";
-			    Runtime.getRuntime().exec(caminhoExecutavel);
-			}
-			
-			gerarArquivoEntradaMonitor(caminhoArquivoCertificado, senha, cnpj);
-			
-			File file = new File("c:\\ACBrMonitor" + empresa.getCnpj() + "\\sai.txt"); 
-			while (!file.exists()) {}
-			
-		    // altera novamente o monitor para o modo TCP
-			try {
-			    //*******************************************************************************************
-			    //  [ACBrMonitor]
-			    //*******************************************************************************************
-			    acbrMonitorIni.put("ACBrMonitor", "Modo_TCP", "1");
-			    acbrMonitorIni.put("ACBrMonitor", "Modo_TXT", "0");
-			    
-			    acbrMonitorIni.store();		    
-			} finally {
-			    Biblioteca.killTask("ACBrMonitor_" + empresa.getCnpj() + ".exe");
-			    String caminhoExecutavel = caminhoComCnpj + "ACBrMonitor_" + empresa.getCnpj() + ".exe";
-			    Runtime.getRuntime().exec(caminhoExecutavel);
-			}			
-		}
-		
-	}
-	
-	private void gerarArquivoEntradaMonitor(String caminhoArquivoCertificado, String senha, String cnpj) throws IOException
-	{
-		try
-		{
-			//  apaga o arquivo 'SAI.TXT'
-			File file = new File("c:\\ACBrMonitor\\" + cnpj + "\\sai.txt"); 
-			file.delete();
-
-			//  cria o arquivo 'ENT.TXT'
-			FileWriter ArquivoEntrada = new FileWriter("c:\\ACBrMonitor\\" + cnpj + "\\ENT.TXT");
-			PrintWriter gravarArquivo = new PrintWriter(ArquivoEntrada);
-			gravarArquivo.printf("NFE.SetCertificado(" + caminhoArquivoCertificado + "," + senha + ")");
-			ArquivoEntrada.close();
-		}
-		finally
-		{
-		}
-	}
-	
-	public boolean gerarZipArquivosXml(String periodo, String cnpj) {
-		String filtro = "CNPJ = '" + cnpj + "'";
-		Empresa empresa = empresaService.consultarObjetoFiltro(filtro);
-		if (empresa != null) {
-			ZipUtil.pack(new File("C:\\ACBrMonitor\\" + cnpj + "\\DFes\\NFCe\\" + periodo), new File("C:\\ACBrMonitor\\" + cnpj + "\\NotasFiscaisNFCe_" + periodo + ".zip"));
-			return true; 
-		} else {
-			return false;
 		}
 	}
 	

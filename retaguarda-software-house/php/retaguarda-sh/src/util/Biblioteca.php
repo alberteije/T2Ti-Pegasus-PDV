@@ -39,7 +39,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-
 class Biblioteca 
 {
 
@@ -409,6 +408,22 @@ class Biblioteca
         $arquivoIni[$secao][$chave] = $valor;
 	}
 
+	public static function iniReadString($secao, $chave, $arquivoIni) {
+		$ini = file( $arquivoIni );
+		foreach( $ini as $line ){
+			$line = trim( $line );
+			if (str_contains($line, "=")) {
+				list( $key, $value ) = explode( '=', $line, 2 );
+				$key = $key == null ? "" : trim($key);
+				$value = $value == null ? "" : trim($value);
+				if ($key === $chave) {
+					return $value;
+				}	
+			}
+		}
+		return "";
+	}
+
 	public static function pegarPlanoPdv($descricaoProduto) {
 		if (str_contains($descricaoProduto, 'Mensal')) {
 			return "M";
@@ -438,18 +453,47 @@ class Biblioteca
     }
 
 	public static function compactarPasta($pasta, $nomeArquivoZip) {
-		// Create new zip class
-		$zip = new ZipArchive;
-		if($zip -> open($nomeArquivoZip, ZipArchive::CREATE ) === TRUE) {      
-			// Store the path into the variable
-			$dir = opendir($pasta);       
-			while($file = readdir($dir)) {
-				if(is_file($pasta.$file)) {
-					$zip -> addFile($pasta.$file, $file);
-				}
+		// Get real path for our folder
+		$rootPath = realpath($pasta);
+		
+		// Initialize archive object
+		$zip = new ZipArchive();
+		$zip->open($nomeArquivoZip, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+		
+		// Create recursive directory iterator
+		/** @var SplFileInfo[] $files */
+		$files = new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator($rootPath),
+			RecursiveIteratorIterator::LEAVES_ONLY
+		);
+		
+		foreach ($files as $name => $file)
+		{
+			// Skip directories (they would be added automatically)
+			if (!$file->isDir())
+			{
+				// Get real and relative path for current file
+				$filePath = $file->getRealPath();
+				$relativePath = substr($filePath, strlen($rootPath) + 1);
+		
+				// Add current file to archive
+				$zip->addFile($filePath, $relativePath);
 			}
-			$zip ->close();
 		}		
+
+		// Zip archive will be created only after closing object
+		$zip->close();		
 	}
 
+	public static function cifrar(string $valor) {
+		$cifra_data = openssl_encrypt($valor, ALGORITMO_CIFRA, CHAVE, OPENSSL_RAW_DATA, VETOR);
+		$cifra_data_base64 = base64_encode($cifra_data);	
+		return $cifra_data_base64;
+	}
+
+	public static function decifrar(string $valor) {
+		$decifra_data_base64 = base64_decode($valor);
+		$decifra_data = openssl_decrypt($decifra_data_base64, ALGORITMO_CIFRA, CHAVE, OPENSSL_RAW_DATA, VETOR);
+		return $decifra_data;
+	}
 }

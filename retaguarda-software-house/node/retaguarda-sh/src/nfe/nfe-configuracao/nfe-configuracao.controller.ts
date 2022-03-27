@@ -33,12 +33,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import { Controller, Get, Header, Param, Post, Req, Res} from '@nestjs/common';
+import { Controller, Get, Header, Post, Req, Res, ValidationPipe} from '@nestjs/common';
 import { Crud, CrudController } from '@nestjsx/crud';
 import { Request, Response } from 'express';
 import { NfeConfiguracaoService } from './nfe-configuracao.service';
 import { NfeConfiguracao } from './nfe-configuracao.entity';
-import { Constantes } from '../../util/constantes';
+import { Biblioteca } from '../../util/biblioteca';
 import { createReadStream } from 'fs';
 
 @Crud({
@@ -50,60 +50,34 @@ import { createReadStream } from 'fs';
     },
   },
 })
+
 @Controller('nfe-configuracao')
 export class NfeConfiguracaoController implements CrudController<NfeConfiguracao> {
   constructor(public service: NfeConfiguracaoService) { }
 
-	@Post(':cnpj')
+  
+	@Post('atualiza-dados')
 	async atualizar(
     @Req() request: Request,
     @Res() response: Response,
-    @Param('cnpj') cnpj: string, 
   ) {
-		let objetoJson = request.body;
-		let nfeConfiguracao = new NfeConfiguracao(objetoJson);
-    let pdvConfiguracaoJson = request.headers['pdv-configuracao'];
-    let decimaisQuantidade = pdvConfiguracaoJson['decimaisQuantidade'];
-    let decimaisValor = pdvConfiguracaoJson['decimaisValor'];
+    const corpoRequisicao = Biblioteca.decifrar(request.body);
+    let nfeConfiguracao = new NfeConfiguracao(JSON.parse(corpoRequisicao));
+
+    const cnpj = Biblioteca.decifrar(request.headers['cnpj'] as string);
+    const pdvConfiguracaoJson = JSON.parse(Biblioteca.decifrar(request.headers['pdv-configuracao'] as string));
+    const decimaisQuantidade = pdvConfiguracaoJson['decimaisQuantidade'];
+    const decimaisValor = pdvConfiguracaoJson['decimaisValor'];
   
-    // chama o método atualizar do service e aguarda um objeto para a porta
-    const portaMonitor = await this.service.atualizar(nfeConfiguracao, cnpj, decimaisQuantidade, decimaisValor);
-    if (portaMonitor != null) {
-      response.setHeader('endereco-monitor', Constantes.ENDERECO_SERVIDOR);
-      response.setHeader('porta-monitor', portaMonitor.id);  
-    }
+    // chama o método atualizar do service
+    nfeConfiguracao = await this.service.atualizar(nfeConfiguracao, cnpj, decimaisQuantidade, decimaisValor);
 
+    const retorno = Biblioteca.cifrar(JSON.stringify(nfeConfiguracao));
+
+    response.setHeader('Content-Type', 'application/json');
     response.status(200);
-		response.send(objetoJson);
+		response.send(retorno);
 	}  
 
-	@Post()
-	async atualizarCertificado(@Req() request: Request,) {
-		let certificadoBase64 = request.body;
-    let senha = request.headers['hash-registro'] as string;
-    let cnpj = request.headers['cnpj'] as string;
-
-    // chama o método para atualizar o certificado
-    await this.service.atualizarCertificado(certificadoBase64, senha, cnpj);
-
-    return 'Certificado atualizado com sucesso.';
-	}  
-
-	@Get()
-	@Header('Content-Type', 'application/zip')
-	async retornarArquivosXmlPeriodo(@Req() request: Request, @Res() response: Response) {
-    let periodo = request.headers['periodo'] as string;
-    let cnpj = request.headers['cnpj'] as string;
-
-    const retorno = await this.service.gerarZipArquivosXml(periodo, cnpj);
-
-    if (retorno) {
-      let caminhoArquivo = "C:\\ACBrMonitor\\" + cnpj + "\\NotasFiscaisNFCe_" + periodo + ".zip";
-      const data = createReadStream(caminhoArquivo);
-      data.pipe(response);  
-    }
-
-
-	}  
   
 }

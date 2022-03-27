@@ -61,7 +61,7 @@ class PdvPlanoPagamentoService extends ServiceBase
       $empresaRetorno = Empresa::whereRaw($filtro)->get();
       if ($empresaRetorno->count() > 0) {
         $empresa = $empresaRetorno[0];
-        $filtro = 'ID_EMPRESA = ' . $empresa->id->ToString() . ' AND DATA_PLANO_EXPIRA >= ' . date('yyyy-MM-dd');
+        $filtro = 'ID_EMPRESA = ' . $empresa->id . ' AND DATA_PLANO_EXPIRA >= ' . date("Y-m-d");
         $plano = PdvPlanoPagamento::whereRaw($filtro)->get();
         if ($plano->count() > 0) {
           return $plano[0];

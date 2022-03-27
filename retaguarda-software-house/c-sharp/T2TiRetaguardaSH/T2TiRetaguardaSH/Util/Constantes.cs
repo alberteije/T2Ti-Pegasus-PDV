@@ -45,5 +45,6 @@ namespace T2TiRetaguardaSH.Util
         public static int MAXIMO_REGISTROS_RETORNADOS = 50;
         public static string ENDERECO_SERVIDOR = "127.0.0.1";
         public static string CHAVE = "#Sua-Chave-de-32-caracteres-aqui"; // TODO: altere para produção
+        public static string VETOR = "#Seu-Vetor-aqui#"; // TODO: altere para produção
     }
 }

@@ -124,11 +124,12 @@ namespace T2TiRetaguardaSH.Util
 		/// <returns>string com o Nome do arquivo corrigido</returns>
 		private string corrigeFileName(string fileName)
 		{
-			fileName = fileName.ToLower();
-			if (fileName.IndexOf(".ini") == -1)
-			{
-				fileName += ".ini";
-			}
+			// 20020203 - EIJE - comentado, pois estou carregando o conteúdo do arquivo SAI.TXT do ACBr e não quero que insira o .ini no arquivo
+			//fileName = fileName.ToLower();
+			//if (fileName.IndexOf(".ini") == -1)
+			//{
+			//	fileName += ".ini";
+			//}
 			return fileName;
 		}
 

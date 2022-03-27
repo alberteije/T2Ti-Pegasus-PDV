@@ -61,10 +61,6 @@ namespace T2TiRetaguardaSH.Models
 
 		public string Email { get; set; }
 
-		public System.Nullable<System.Decimal> AliquotaPis { get; set; }
-
-		public System.Nullable<System.Decimal> AliquotaCofins { get; set; }
-
 		public string Logradouro { get; set; }
 
 		public string Numero { get; set; }
@@ -99,46 +95,6 @@ namespace T2TiRetaguardaSH.Models
 
 		public System.Nullable<System.DateTime> DataRegistro { get; set; }
 		public string HoraRegistro { get; set; }
-
-		private IList<NfeConfiguracao> listaNfeConfiguracao;
-		public IList<NfeConfiguracao> ListaNfeConfiguracao
-		{
-			get
-			{
-				return listaNfeConfiguracao;
-			}
-			set
-			{
-				if (value != null)
-				{
-					listaNfeConfiguracao = value;
-					foreach (NfeConfiguracao nfeConfiguracao in listaNfeConfiguracao)
-					{
-						nfeConfiguracao.Empresa = this;
-					}
-				}
-			}
-		}
-
-		private IList<PdvPlanoPagamento> listaPdvPlanoPagamento;
-		public IList<PdvPlanoPagamento> ListaPdvPlanoPagamento
-		{
-			get
-			{
-				return listaPdvPlanoPagamento;
-			}
-			set
-			{
-				if (value != null)
-				{
-					listaPdvPlanoPagamento = value;
-					foreach (PdvPlanoPagamento pdvPlanoPagamento in listaPdvPlanoPagamento)
-					{
-						pdvPlanoPagamento.Empresa = this;
-					}
-				}
-			}
-		}
 
     }
 }

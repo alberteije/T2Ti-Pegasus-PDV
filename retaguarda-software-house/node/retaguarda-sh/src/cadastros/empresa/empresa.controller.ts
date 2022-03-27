@@ -38,6 +38,7 @@ import { Crud, CrudController } from '@nestjsx/crud';
 import { Request, Response } from 'express';
 import { EmpresaService } from './empresa.service';
 import { Empresa } from './empresa.entity';
+import { Biblioteca } from '../../util/biblioteca';
 
 @Crud({
   model: {
@@ -53,35 +54,70 @@ export class EmpresaController implements CrudController<Empresa> {
   constructor(public service: EmpresaService) { }
 
 	@Post()
-	async atualizar(@Req() request: Request) {
-		let objetoJson = request.body;
-		let empresa = new Empresa(objetoJson);
-		const retorno = await this.service.atualizar(empresa);
-		return retorno;
-	}
-
-	@Post(':cnpj')
-	async registrar(
+	async atualizar(
     @Req() request: Request,
     @Res() response: Response,
-    @Param('cnpj') cnpj: string, 
   ) {
-		let objetoJson = request.body;
-		let empresa = new Empresa(objetoJson);
-    
-    let operacao = request.headers['operacao'];
-    let codigoConfirmacao = request.headers['codigo-confirmacao'] as string;
+    const corpoRequisicao = Biblioteca.decifrar(request.body);
+    let empresa = new Empresa(JSON.parse(corpoRequisicao));
+		empresa = await this.service.atualizar(empresa);		
 
-    switch (operacao) {
-      case "registrar":
-        empresa = await this.service.registrar(empresa);
-      case "reenviar-email":
-        empresa = await this.service.enviarEmailConfirmacao(empresa);
-      case "confirmar-codigo":
-        empresa = await this.service.conferirCodigoConfirmacao(empresa, codigoConfirmacao);
-    }
+    const retorno = Biblioteca.cifrar(JSON.stringify(empresa));
 
+    response.setHeader('Content-Type', 'application/json');
     response.status(200);
-		response.send(empresa);
+		response.send(retorno);
+	}
+
+	@Post('registra-empresa')
+	async registrarEmpresa(
+    @Req() request: Request,
+    @Res() response: Response,
+  ) {
+    const corpoRequisicao = Biblioteca.decifrar(request.body);
+    let empresa = new Empresa(JSON.parse(corpoRequisicao));
+    empresa = await this.service.registrar(empresa);		
+
+    const retorno = Biblioteca.cifrar(JSON.stringify(empresa));
+
+    response.setHeader('Content-Type', 'application/json');
+    response.status(200);
+		response.send(retorno);    
 	}   
+
+
+	@Post('envia-email-confirmacao')
+	async enviarEmailConfirmacao(
+    @Req() request: Request,
+    @Res() response: Response,
+  ) {
+    const corpoRequisicao = Biblioteca.decifrar(request.body);
+    let empresa = new Empresa(JSON.parse(corpoRequisicao));
+    empresa = await this.service.enviarEmailConfirmacao(empresa);		
+
+    const retorno = Biblioteca.cifrar(JSON.stringify(empresa));
+
+    response.setHeader('Content-Type', 'application/json');
+    response.status(200);
+		response.send(retorno);    
+	}     
+
+	@Post('confere-codigo-confirmacao')
+	async conferirCodigoConfirmacao(
+    @Req() request: Request,
+    @Res() response: Response,
+  ) {
+    const corpoRequisicao = Biblioteca.decifrar(request.body);
+    let empresa = new Empresa(JSON.parse(corpoRequisicao));
+    const codigoConfirmacao = Biblioteca.decifrar(request.headers['codigo-confirmacao'] as string);
+
+    empresa = await this.service.conferirCodigoConfirmacao(empresa, codigoConfirmacao);		
+
+    const retorno = Biblioteca.cifrar(JSON.stringify(empresa));
+
+    response.setHeader('Content-Type', 'application/json');
+    response.status(200);
+		response.send(retorno);
+  }
+  
 }

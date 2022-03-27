@@ -105,66 +105,6 @@ class NfeConfiguracaoController extends ControllerBase
         }
     }
 
-
-    public function atualizarCertificado($request, $response, $args)
-    {
-        try {
-            // pegaa a string base 64 do corpo
-            $certificadoBase64 = $request->getBody();
-
-            $headers = $request->getHeaders();
-            $senha = $headers['hash-registro'];
-            $cnpj = $headers['cnpj'];
-                        
-			// chama o método para atualizar o certificado
-			NfeConfiguracaoService::atualizarCertificado($certificadoBase64, $senha, $cnpj);
-
-            $retorno = 'Certificado atualizado com sucesso.';
-            $response->getBody()->write($retorno);
-
-            return $response
-                ->withStatus(200)
-                ->withHeader('Content-Type', 'application/json');
-        } catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Erro no Servidor [Atualizar NfeConfiguracao]', $e);
-        }
-    }
-
-    public function retornarArquivosXmlPeriodo($request, $response, $args)
-    {
-        try {
-            $headers = $request->getHeaders();
-            $periodo = $headers['periodo'];
-            $cnpj = $headers['cnpj'];
-
-            $retorno = NfeConfiguracaoService::gerarZipArquivosXml($periodo, $cnpj);
-
-            if ($retorno) {
-                $file = "C:\\ACBrMonitor\\" . $cnpj . "\\NotasFiscaisNFCe_" . $periodo . ".zip";
-                $fh = fopen($file, 'rb');
-                $stream = new Stream($fh); 
-    
-                return $response
-                            ->withHeader('Content-Type', 'application/zip')
-                            ->withHeader('Content-Description', 'File Transfer')
-                            ->withHeader('Content-Transfer-Encoding', 'binary')
-                            //->withHeader('Content-Disposition', 'attachment; filename="' . basename($file) . '"') - use se quiser forçar o download
-                            ->withHeader('Expires', '0')
-                            ->withHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-                            ->withHeader('Pragma', 'public')
-                            ->withBody($stream);     
-            } else {
-                return $response
-                ->withStatus(500)
-                ->withBody('Problemas na criação do arquivo [Retornar XML Período]')
-                ->withHeader('Content-Type', 'application/json');
-            }
-
-		} catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Erro no Servidor [Retornar XML Período]', $e);
-        }
-    }
-
     public function alterar($request, $response, $args)
     {
         try {

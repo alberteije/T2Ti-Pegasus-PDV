@@ -36,11 +36,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
-import { getConnection, QueryRunner } from 'typeorm';
-import { Empresa, AcbrMonitorPorta, NfeConfiguracao } from '../../entities-export';
+import { getConnection } from 'typeorm';
+import { Empresa, NfeConfiguracao } from '../../entities-export';
 import { Biblioteca } from '../../util/biblioteca';
 import * as fs from "fs";
-import * as INI from "easy-ini";
+import { Ini } from '../../util/ini';
 
 @Injectable()
 export class NfeConfiguracaoService extends TypeOrmCrudService<NfeConfiguracao> {
@@ -48,7 +48,7 @@ export class NfeConfiguracaoService extends TypeOrmCrudService<NfeConfiguracao> 
   constructor(
     @InjectRepository(NfeConfiguracao) repository) { super(repository); }
 
-    async atualizar(nfeConfiguracao: NfeConfiguracao, cnpj: string, decimaisQuantidade: number, decimaisValor: number): Promise<AcbrMonitorPorta> {
+    async atualizar(nfeConfiguracao: NfeConfiguracao, cnpj: string, decimaisQuantidade: number, decimaisValor: number): Promise<NfeConfiguracao> {
       const connection = getConnection();
       const queryRunner = connection.createQueryRunner();  
       await queryRunner.connect();
@@ -58,53 +58,53 @@ export class NfeConfiguracaoService extends TypeOrmCrudService<NfeConfiguracao> 
       let empresa = await connection.manager.findOne(Empresa, { where: { cnpj: cnpj }} );
       if (empresa != null) {
         nfeConfiguracao.empresa = empresa;
-        nfeConfiguracao.caminhoSalvarXml.replace("\\", "\\\\");
-        nfeConfiguracao.caminhoSalvarPdf.replace("\\", "\\\\");
+        let objetoBanco = await connection.manager.findOne(NfeConfiguracao, { where: { idEmpresa: empresa.id }} );
+        if (objetoBanco != null) {
+            nfeConfiguracao.id = objetoBanco.id;
+        }
         await queryRunner.manager.save(nfeConfiguracao);
 
         // verificar se já existe uma porta definida para o monitor da empresa
         // ALTER TABLE acbr_monitor_porta AUTO_INCREMENT=3435; - executa um comando no banco de dados para definir a porta inicial para o ID
-        let portaMonitor = await connection.manager.findOne(AcbrMonitorPorta, { where: { empresa: empresa }} );
-        if (portaMonitor == null) {
-          let portaMonitor = new AcbrMonitorPorta({});
-          portaMonitor.empresa = empresa;
-          await queryRunner.manager.save(portaMonitor);
-        }
+        // let portaMonitor = await connection.manager.findOne(AcbrMonitorPorta, { where: { empresa: empresa }} );
+        // if (portaMonitor == null) {
+        //   let portaMonitor = new AcbrMonitorPorta({});
+        //   portaMonitor.empresa = empresa;
+        //   await queryRunner.manager.save(portaMonitor);
+        // }
 
         // criar a pasta do monitor para a empresa
-        const exec = require('child_process').execSync;
-        var result = exec('cmd /c c:\\ACBrMonitor\\CopiarBase.bat ' + cnpj);        
-
-        // let caminhoComCnpj = 'C:\\ACBrMonitor\\' + empresa.cnpj + '\\';
-        // let caminhoExecutavel = caminhoComCnpj + 'ACBrMonitor_' + empresa.cnpj + '.exe';
-        // require('child_process').exec(caminhoExecutavel);
+        if (!fs.existsSync("c:\\ACBrMonitor\\" + cnpj)) {
+            const exec = require('child_process').execSync;
+            exec('cmd /c c:\\ACBrMonitor\\CopiarBase.bat ' + cnpj);        
+        }        
 
         // configurar o arquivo INI
-        await this.configurarArquivoIniMonitor(nfeConfiguracao, empresa, decimaisQuantidade, decimaisValor, portaMonitor.id);
+        await this.configurarArquivoIniMonitor(nfeConfiguracao, empresa, decimaisQuantidade, decimaisValor);
 
         await queryRunner.commitTransaction();
 
-        return portaMonitor;        
+        return nfeConfiguracao;        
       } else {
         return null;
       }
 
     }  
 
-    async configurarArquivoIniMonitor(nfeConfiguracao: NfeConfiguracao, empresa: Empresa, decimaisQuantidade: number, decimaisValor: number, portaMonitor: number) {
+    async configurarArquivoIniMonitor(nfeConfiguracao: NfeConfiguracao, empresa: Empresa, decimaisQuantidade: number, decimaisValor: number) {
       let caminhoComCnpj = 'C:\\ACBrMonitor\\' + empresa.cnpj + '\\';
       nfeConfiguracao.caminhoSalvarPdf = caminhoComCnpj + 'PDF';
       nfeConfiguracao.caminhoSalvarXml = caminhoComCnpj + 'DFes';
 
       let nomeArquivoIni = caminhoComCnpj + 'ACBrMonitor.ini';
       fs.writeFileSync(nomeArquivoIni, '');
-      const acbrMonitorIni = new INI(fs.readFileSync(nomeArquivoIni, {encoding: 'utf8'}));
+      const acbrMonitorIni = new Ini(fs.readFileSync(nomeArquivoIni, {encoding: 'utf8'}));
 
       try {
         //*******************************************************************************************
         //  [ACBrMonitor]
         //*******************************************************************************************
-        Biblioteca.iniWriteString('ACBrMonitor', 'TCP_Porta', portaMonitor.toString(), acbrMonitorIni);
+        // Biblioteca.iniWriteString('ACBrMonitor', 'TCP_Porta', portaMonitor.toString(), acbrMonitorIni);
 
         //*******************************************************************************************
         //  [ACBrNFeMonitor]
@@ -207,101 +207,6 @@ export class NfeConfiguracaoService extends TypeOrmCrudService<NfeConfiguracao> 
         let caminhoExecutavel = caminhoComCnpj + 'ACBrMonitor_' + empresa.cnpj + '.exe';
         require('child_process').exec(caminhoExecutavel);
       }
-    }
- 
-    async atualizarCertificado(certificadoBase64: string, senha: string, cnpj: string) {
-        const connection = getConnection();
-        const queryRunner = connection.createQueryRunner();  
-        await queryRunner.connect();
-        await queryRunner.startTransaction();
+    } 
 
-        let empresa = await connection.manager.findOne(Empresa, { where: { cnpj: cnpj }} );
-        if (empresa != null) {
-		    // encerra o Monitor
-            Biblioteca.killTask('ACBrMonitor_' + empresa.cnpj + '.exe');
-
-		    // configura os caminhos
-            let caminhoComCnpj = 'C:\\ACBrMonitor\\' + empresa.cnpj + '\\';
-		    let caminhoArquivoCertificado = caminhoComCnpj + empresa.cnpj + ".pfx";
-		    
-		    // converte e salva o arquivo do certificado em disco
-            let buff = new Buffer(certificadoBase64, 'base64');
-            fs.writeFileSync(caminhoArquivoCertificado, buff);
-
-		    // vamos alterar o monitor para receber dados em arquivo TXT para armazenar os dados do certificado
-		    // faremos dessa maneira porque o monitor criptografa a senha
-            let nomeArquivoIni = caminhoComCnpj + 'ACBrMonitor.ini';
-            fs.writeFileSync(nomeArquivoIni, '');
-            const acbrMonitorIni = new INI(fs.readFileSync(nomeArquivoIni, {encoding: 'utf8'}));
-			
-			try {
-                //*******************************************************************************************
-                //  [ACBrMonitor]
-                //*******************************************************************************************
-                Biblioteca.iniWriteString('Arquivos', 'Modo_TCP', '0', acbrMonitorIni);
-                Biblioteca.iniWriteString('Arquivos', 'Modo_TXT', '1', acbrMonitorIni);
-                
-                const arquivoFinalizado = acbrMonitorIni.createINIString();
-                fs.writeFileSync(nomeArquivoIni, arquivoFinalizado);
-            } finally {
-                let caminhoExecutavel = caminhoComCnpj + 'ACBrMonitor_' + empresa.cnpj + '.exe';
-                require('child_process').exec(caminhoExecutavel);
-            }
-			
-			await this.gerarArquivoEntradaMonitor(caminhoArquivoCertificado, senha, cnpj);
-			
-            while (!fs.existsSync("c:\\ACBrMonitor\\" + cnpj + "\\sai.txt")) { }
-			
-		    // altera novamente o monitor para o modo TCP
-			try {
-                //*******************************************************************************************
-                //  [ACBrMonitor]
-                //*******************************************************************************************
-                Biblioteca.iniWriteString('Arquivos', 'Modo_TCP', '1', acbrMonitorIni);
-                Biblioteca.iniWriteString('Arquivos', 'Modo_TXT', '0', acbrMonitorIni);
-                
-                const arquivoFinalizado = acbrMonitorIni.createINIString();
-                fs.writeFileSync(nomeArquivoIni, arquivoFinalizado);
-			} finally {
-                Biblioteca.killTask('ACBrMonitor_' + empresa.cnpj + '.exe');
-                let caminhoExecutavel = caminhoComCnpj + 'ACBrMonitor_' + empresa.cnpj + '.exe';
-                require('child_process').exec(caminhoExecutavel);
-            }			
-        }
-
-    }    
-
-    async gerarArquivoEntradaMonitor(caminhoArquivoCertificado: string, senha: string, cnpj: string) {
-        //  apaga o arquivo 'SAI.TXT'
-        let nomeArquivoApagar = "c:\\ACBrMonitor\\" + cnpj + "\\sai.txt";
-        try {
-            fs.unlinkSync(nomeArquivoApagar);
-            //file removed
-        } catch(err) {
-            console.error(err);
-        }		
-          
-        //  cria o arquivo 'ENT.TXT'
-        let nomeArquivo = "c:\\ACBrMonitor\\" + cnpj + "\\ENT.TXT";
-        let conteudoArquivo = "NFE.SetCertificado(" + caminhoArquivoCertificado + "," + senha + ")";
-        fs.writeFileSync(nomeArquivo, conteudoArquivo);
-    }        
-
-    async gerarZipArquivosXml(periodo: string, cnpj: string): Promise<boolean> {
-        const connection = getConnection();
-        const queryRunner = connection.createQueryRunner();  
-        await queryRunner.connect();
-        await queryRunner.startTransaction();
-
-        let empresa = await connection.manager.findOne(Empresa, { where: { cnpj: cnpj }} );
-        if (empresa != null) {
-            const pasta = 'C:\\ACBrMonitor\\' + cnpj + '\\DFes\\NFCe\\' + periodo;
-            const arquivoZip = 'C:\\ACBrMonitor\\' + cnpj + '\\NotasFiscaisNFCe_' + periodo + '.zip';
-            var zipper = require('zip-local');
-            zipper.sync.zip(pasta).compress().save(arquivoZip);
-            return true;
-        } else {
-            return false;
-        }
-    }
 }

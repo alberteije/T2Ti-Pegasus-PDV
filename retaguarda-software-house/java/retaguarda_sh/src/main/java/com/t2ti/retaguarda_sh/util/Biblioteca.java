@@ -57,11 +57,15 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -662,5 +666,51 @@ public class Biblioteca {
 	    } finally {
 	    }
 	}
+
+    public static String cifrar(String valor) throws java.lang.Exception {
+	    //Get Cipher Instance
+		Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");		
+        //Create SecretKeySpec
+        SecretKeySpec keySpec = new SecretKeySpec(Constantes.CHAVE.getBytes("UTF-8"), "AES");
+        //Create IvParameterSpec
+        IvParameterSpec ivSpec = new IvParameterSpec(Constantes.VETOR.getBytes("UTF-8"));   
+        //Initialize Cipher for ENCRYPT_MODE
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
+        byte[] valorParaBytes = valor.getBytes("UTF-8"); // 'valor' convertido para bytes
+        byte[] resultado = cipher.doFinal(valorParaBytes); 
+		String base64output = Base64.getEncoder().encodeToString(resultado);
+		return base64output;
+    }
 	
+    public static String decifrar(String valor) throws java.lang.Exception {
+	    byte[] decodedBytes = Base64.getDecoder().decode(valor);
+	    //Get Cipher Instance
+		Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");		
+        //Create SecretKeySpec
+        SecretKeySpec keySpec = new SecretKeySpec(Constantes.CHAVE.getBytes("UTF-8"), "AES");        
+        //Create IvParameterSpec
+        IvParameterSpec ivSpec = new IvParameterSpec(Constantes.VETOR.getBytes("UTF-8"));         
+        //Initialize Cipher for ENCRYPT_MODE
+        cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);        
+        //Perform Decryption
+        byte[] decryptedText = cipher.doFinal(decodedBytes);        
+        String textoDecifrado = new String(decryptedText);
+        return textoDecifrado;
+    }
+
+    public static BigDecimal getBigDecimal( Object value ) {
+        BigDecimal ret = null;
+        if( value != null ) {
+            if( value instanceof BigDecimal ) {
+                ret = (BigDecimal) value;
+            } else if( value instanceof String ) {
+                ret = new BigDecimal( (String) value );
+            } else if( value instanceof BigInteger ) {
+                ret = new BigDecimal( (BigInteger) value );
+            } else if( value instanceof Number ) {
+                ret = new BigDecimal( ((Number)value).doubleValue() );
+            }
+        }
+        return ret;
+    }    
 }

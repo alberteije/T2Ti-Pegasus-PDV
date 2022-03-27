@@ -49,25 +49,5 @@ namespace T2TiRetaguardaSH.Models
 
 		public System.Nullable<System.Decimal> Valor { get; set; }
 
-		private IList<PdvPlanoPagamento> listaPdvPlanoPagamento;
-		public IList<PdvPlanoPagamento> ListaPdvPlanoPagamento
-		{
-			get
-			{
-				return listaPdvPlanoPagamento;
-			}
-			set
-			{
-				if (value != null)
-				{
-					listaPdvPlanoPagamento = value;
-					foreach (PdvPlanoPagamento pdvPlanoPagamento in listaPdvPlanoPagamento)
-					{
-						pdvPlanoPagamento.PdvTipoPlano = this;
-					}
-				}
-			}
-		}
-
     }
 }

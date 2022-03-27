@@ -37,5 +37,6 @@ export class Constantes {
     constructor() { }
 
     static ENDERECO_SERVIDOR = '127.0.0.1';	
-    static CHAVE = '#Sua-Chave-de-32-caracteres-aqui';	
+    static CHAVE = '#Sua-Chave-de-32-caracteres-aqui';
+    static VETOR = '#Seu-Vetor-aqui#';	
 }

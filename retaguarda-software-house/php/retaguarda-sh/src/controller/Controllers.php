@@ -12,3 +12,9 @@ include 'cadastros/AcbrMonitorPortaController.php';
 
 // NF-e
 include 'nfe/NfeConfiguracaoController.php';
+
+// ACBr
+include 'acbr/AcbrMonitorController.php';
+
+// Sincronizacao
+include 'sincroniza/SincronizaController.php';

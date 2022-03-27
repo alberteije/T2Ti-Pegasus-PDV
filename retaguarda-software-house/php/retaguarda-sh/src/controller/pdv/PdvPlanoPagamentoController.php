@@ -37,33 +37,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 class PdvPlanoPagamentoController extends ControllerBase
 {
 
-    public function consultarLista($request, $response, $args)
-    {
-        try {
-            if (count($request->getQueryParams()) > 0) {
-                $filtro = new Filtro($request->getQueryParams()['filter']);
-                $listaConsulta = PdvPlanoPagamentoService::consultarListaFiltroValor($filtro);
-            } else {
-                $listaConsulta = PdvPlanoPagamentoService::consultarLista();
-            }
-            $retorno = json_encode($listaConsulta);
-            $response->getBody()->write($retorno);
-            return $response->withHeader('Content-Type', 'application/json');
-        } catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Erro no Servidor [Consultar Lista PdvPlanoPagamento]', $e);
-        }
-    }
-
     public function consultarObjeto($request, $response, $args)
     {
         try {
-            $objeto = PdvPlanoPagamentoService::consultarPlanoAtivo($args['cnpj']);
+            $cnpj = Biblioteca::decifrar($request->getHeaders()['cnpj'][0]);
+            $objeto = PdvPlanoPagamentoService::consultarPlanoAtivo($cnpj);
 
             if ($objeto == null) {
                 return parent::tratarErro($response, 404, 'Registro não localizado [Consultar Objeto PdvPlanoPagamento]', null);
             } else {
                 $retorno = json_encode($objeto);
-                $response->getBody()->write($retorno);
+                $response->getBody()->write(Biblioteca::cifrar($retorno));
                 return $response
                     ->withHeader('Content-Type', 'application/json');
             }
@@ -76,77 +60,30 @@ class PdvPlanoPagamentoController extends ControllerBase
     {
         try {
             // pegar o objeto da requisição
-            $objetoPagSeguroEnviado = json_decode($request->getBody());
+            $objetoPagSeguroEnviado = json_decode(Biblioteca::decifrar($request->getBody()));
 
             // valida o objeto
             if (!isset($objetoPagSeguroEnviado)) {
                 return parent::tratarErro($response, 400, 'Objeto inválido [Atualizar PdvPlanoPagamento] - objeto não enviado.', null);
             }
 
-            PdvPlanoPagamentoService::atualizar($objetoPagSeguroEnviado);
-			
-            $retorno = "Dados atualizados com sucesso.";
-            $response->getBody()->write($retorno);
-
+            $objeto = PdvPlanoPagamentoService::atualizar($objetoPagSeguroEnviado);
+            $retorno = json_encode($objeto);
+            $response->getBody()->write(Biblioteca::cifrar($retorno));
             return $response
-                ->withStatus(201)
                 ->withHeader('Content-Type', 'application/json');
         } catch (Exception $e) {
             return parent::tratarErro($response, 500, 'Erro no Servidor [Atualizar PdvPlanoPagamento]', $e);
         }
     }
 
-    public function alterar($request, $response, $args)
-    {
-        try {
-			// pegar o objeto da requisição
-			$objJson = json_decode($request->getBody());
-
-            $objBanco = PdvPlanoPagamentoService::consultarObjeto($objJson->id);
-
-            if ($objBanco == null) {
-                return parent::tratarErro($response, 400, 'Objeto inválido [Alterar PdvPlanoPagamento]', null);
-            } else {
-				$objBanco->mapear($objJson);
-				
-				PdvPlanoPagamentoService::salvar($objBanco);
-				
-                $retorno = json_encode($objBanco);
-                $response->getBody()->write($retorno);
-                return $response
-                    ->withHeader('Content-Type', 'application/json');
-            }
-        } catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Objeto inválido [Alterar PdvPlanoPagamento]', $e);
-        }
-    }
-
-    public function excluir($request, $response, $args)
-    {
-        try {
-            $objBanco = PdvPlanoPagamentoService::consultarObjeto($args['id']);
-
-            if ($objBanco == null) {
-                return parent::tratarErro($response, 400, 'Objeto inválido [Excluir PdvPlanoPagamento]', null);
-            } else {
-                PdvPlanoPagamentoService::excluir($objBanco);
-
-                return $response
-                    ->withStatus(200)
-                    ->withHeader('Content-Type', 'application/json');
-            }
-        } catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Objeto inválido [Excluir PdvPlanoPagamento]', $e);
-        }
-    }
-
     public function confirmarTransacao($request, $response, $args)
     {
         try {
-            $headers = $request->getHeaders();
-            $cnpj = $headers['cnpj'];
+            $cnpj = Biblioteca::decifrar($request->getHeaders()['cnpj'][0]);
+            $codigo = Biblioteca::decifrar($request->getHeaders()['codigo'][0]);
 
-            $retorno = PdvPlanoPagamentoService::confirmarTransacao($args['codigo'], $cnpj);
+            $retorno = PdvPlanoPagamentoService::confirmarTransacao($codigo, $cnpj);
             /*
                 Vamos usar os códigos HTTP para nossa conveniência:
                 200 - achou a transação e vinculou o ID da empresa
@@ -161,5 +98,67 @@ class PdvPlanoPagamentoController extends ControllerBase
             return parent::tratarErro($response, 500, 'Erro no Servidor [Gerar PDF NF-e]', $e);
         }
     }
+
+    // public function consultarLista($request, $response, $args)
+    // {
+    //     try {
+    //         if (count($request->getQueryParams()) > 0) {
+        
+    //             $filtro = new Filtro($request->getQueryParams()['filter']);
+    //             $listaConsulta = PdvPlanoPagamentoService::consultarListaFiltroValor($filtro);
+    //         } else {
+    //             $listaConsulta = PdvPlanoPagamentoService::consultarLista();
+    //         }
+    //         $retorno = json_encode($listaConsulta);
+    //         $response->getBody()->write($retorno);
+    //         return $response->withHeader('Content-Type', 'application/json');
+    //     } catch (Exception $e) {
+    //         return parent::tratarErro($response, 500, 'Erro no Servidor [Consultar Lista PdvPlanoPagamento]', $e);
+    //     }
+    // }
+
+    // public function alterar($request, $response, $args)
+    // {
+    //     try {
+	// 		// pegar o objeto da requisição
+	// 		$objJson = json_decode($request->getBody());
+
+    //         $objBanco = PdvPlanoPagamentoService::consultarObjeto($objJson->id);
+
+    //         if ($objBanco == null) {
+    //             return parent::tratarErro($response, 400, 'Objeto inválido [Alterar PdvPlanoPagamento]', null);
+    //         } else {
+	// 			$objBanco->mapear($objJson);
+				
+	// 			PdvPlanoPagamentoService::salvar($objBanco);
+				
+    //             $retorno = json_encode($objBanco);
+    //             $response->getBody()->write($retorno);
+    //             return $response
+    //                 ->withHeader('Content-Type', 'application/json');
+    //         }
+    //     } catch (Exception $e) {
+    //         return parent::tratarErro($response, 500, 'Objeto inválido [Alterar PdvPlanoPagamento]', $e);
+    //     }
+    // }
+
+    // public function excluir($request, $response, $args)
+    // {
+    //     try {
+    //         $objBanco = PdvPlanoPagamentoService::consultarObjeto($args['id']);
+
+    //         if ($objBanco == null) {
+    //             return parent::tratarErro($response, 400, 'Objeto inválido [Excluir PdvPlanoPagamento]', null);
+    //         } else {
+    //             PdvPlanoPagamentoService::excluir($objBanco);
+
+    //             return $response
+    //                 ->withStatus(200)
+    //                 ->withHeader('Content-Type', 'application/json');
+    //         }
+    //     } catch (Exception $e) {
+    //         return parent::tratarErro($response, 500, 'Objeto inválido [Excluir PdvPlanoPagamento]', $e);
+    //     }
+    // }
 
 }

@@ -46,5 +46,6 @@ public class Constantes {
     public static int DECIMAIS_VALOR = 2;
     public static int MAXIMO_REGISTROS_RETORNADOS = 50;
     public static String ENDERECO_SERVIDOR = "127.0.0.1";
-    public static String CHAVE = "#Sua-Chave-de-32-caracteres-aqui"; // TODO: altere para produção
+    public static String CHAVE = "#Sua-Chave-de-32-caracteres-aqui";
+    public static String VETOR = "#Seu-Vetor-aqui#";
 }

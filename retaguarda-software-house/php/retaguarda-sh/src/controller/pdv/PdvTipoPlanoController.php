@@ -47,99 +47,99 @@ class PdvTipoPlanoController extends ControllerBase
                 $listaConsulta = PdvTipoPlanoService::consultarLista();
             }
             $retorno = json_encode($listaConsulta);
-            $response->getBody()->write($retorno);
+            $response->getBody()->write(Biblioteca::cifrar($retorno));
             return $response->withHeader('Content-Type', 'application/json');
         } catch (Exception $e) {
             return parent::tratarErro($response, 500, 'Erro no Servidor [Consultar Lista PdvTipoPlano]', $e);
         }
     }
 
-    public function consultarObjeto($request, $response, $args)
-    {
-        try {
-            $objeto = PdvTipoPlanoService::consultarObjeto($args['id']);
+    // public function consultarObjeto($request, $response, $args)
+    // {
+    //     try {
+    //         $objeto = PdvTipoPlanoService::consultarObjeto($args['id']);
 
-            if ($objeto == null) {
-                return parent::tratarErro($response, 404, 'Registro não localizado [Consultar Objeto PdvTipoPlano]', null);
-            } else {
-                $retorno = json_encode($objeto);
-                $response->getBody()->write($retorno);
-                return $response
-                    ->withHeader('Content-Type', 'application/json');
-            }
-        } catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Erro no Servidor [Consultar Objeto PdvTipoPlano]', $e);
-        }
-    }
+    //         if ($objeto == null) {
+    //             return parent::tratarErro($response, 404, 'Registro não localizado [Consultar Objeto PdvTipoPlano]', null);
+    //         } else {
+    //             $retorno = json_encode($objeto);
+    //             $response->getBody()->write($retorno);
+    //             return $response
+    //                 ->withHeader('Content-Type', 'application/json');
+    //         }
+    //     } catch (Exception $e) {
+    //         return parent::tratarErro($response, 500, 'Erro no Servidor [Consultar Objeto PdvTipoPlano]', $e);
+    //     }
+    // }
 
-    public function inserir($request, $response, $args)
-    {
-        try {
-            // pegar o objeto da requisição
-            $objJson = json_decode($request->getBody());
+    // public function inserir($request, $response, $args)
+    // {
+    //     try {
+    //         // pegar o objeto da requisição
+    //         $objJson = json_decode($request->getBody());
 
-            // valida o objeto
-            if (!isset($objJson)) {
-                return parent::tratarErro($response, 400, 'Objeto inválido [Incluir PdvTipoPlano] - objeto não enviado.', null);
-            }
+    //         // valida o objeto
+    //         if (!isset($objJson)) {
+    //             return parent::tratarErro($response, 400, 'Objeto inválido [Incluir PdvTipoPlano] - objeto não enviado.', null);
+    //         }
 
-            $objEntidade = new PdvTipoPlano();
-			$objEntidade->mapear($objJson);
+    //         $objEntidade = new PdvTipoPlano();
+	// 		$objEntidade->mapear($objJson);
 
-			PdvTipoPlanoService::inserir($objJson, $objEntidade);
+	// 		PdvTipoPlanoService::inserir($objJson, $objEntidade);
 			
-            $retorno = json_encode($objEntidade);
-            $response->getBody()->write($retorno);
+    //         $retorno = json_encode($objEntidade);
+    //         $response->getBody()->write($retorno);
 
-            return $response
-                ->withStatus(201)
-                ->withHeader('Content-Type', 'application/json');
-        } catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Erro no Servidor [Inserir PdvTipoPlano]', $e);
-        }
-    }
+    //         return $response
+    //             ->withStatus(201)
+    //             ->withHeader('Content-Type', 'application/json');
+    //     } catch (Exception $e) {
+    //         return parent::tratarErro($response, 500, 'Erro no Servidor [Inserir PdvTipoPlano]', $e);
+    //     }
+    // }
 
-    public function alterar($request, $response, $args)
-    {
-        try {
-			// pegar o objeto da requisição
-			$objJson = json_decode($request->getBody());
+    // public function alterar($request, $response, $args)
+    // {
+    //     try {
+	// 		// pegar o objeto da requisição
+	// 		$objJson = json_decode($request->getBody());
 
-            $objBanco = PdvTipoPlanoService::consultarObjeto($objJson->id);
+    //         $objBanco = PdvTipoPlanoService::consultarObjeto($objJson->id);
 
-            if ($objBanco == null) {
-                return parent::tratarErro($response, 400, 'Objeto inválido [Alterar PdvTipoPlano]', null);
-            } else {
-				$objBanco->mapear($objJson);
+    //         if ($objBanco == null) {
+    //             return parent::tratarErro($response, 400, 'Objeto inválido [Alterar PdvTipoPlano]', null);
+    //         } else {
+	// 			$objBanco->mapear($objJson);
 				
-				PdvTipoPlanoService::alterar($objJson, $objBanco);
+	// 			PdvTipoPlanoService::alterar($objJson, $objBanco);
 				
-                $retorno = json_encode($objBanco);
-                $response->getBody()->write($retorno);
-                return $response
-                    ->withHeader('Content-Type', 'application/json');
-            }
-        } catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Objeto inválido [Alterar PdvTipoPlano]', $e);
-        }
-    }
+    //             $retorno = json_encode($objBanco);
+    //             $response->getBody()->write($retorno);
+    //             return $response
+    //                 ->withHeader('Content-Type', 'application/json');
+    //         }
+    //     } catch (Exception $e) {
+    //         return parent::tratarErro($response, 500, 'Objeto inválido [Alterar PdvTipoPlano]', $e);
+    //     }
+    // }
 
-    public function excluir($request, $response, $args)
-    {
-        try {
-            $objBanco = PdvTipoPlanoService::consultarObjeto($args['id']);
+    // public function excluir($request, $response, $args)
+    // {
+    //     try {
+    //         $objBanco = PdvTipoPlanoService::consultarObjeto($args['id']);
 
-            if ($objBanco == null) {
-                return parent::tratarErro($response, 400, 'Objeto inválido [Excluir PdvTipoPlano]', null);
-            } else {
-                PdvTipoPlanoService::excluir($objBanco);
+    //         if ($objBanco == null) {
+    //             return parent::tratarErro($response, 400, 'Objeto inválido [Excluir PdvTipoPlano]', null);
+    //         } else {
+    //             PdvTipoPlanoService::excluir($objBanco);
 
-                return $response
-                    ->withStatus(200)
-                    ->withHeader('Content-Type', 'application/json');
-            }
-        } catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Objeto inválido [Excluir PdvTipoPlano]', $e);
-        }
-    }
+    //             return $response
+    //                 ->withStatus(200)
+    //                 ->withHeader('Content-Type', 'application/json');
+    //         }
+    //     } catch (Exception $e) {
+    //         return parent::tratarErro($response, 500, 'Objeto inválido [Excluir PdvTipoPlano]', $e);
+    //     }
+    // }
 }
