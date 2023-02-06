@@ -8,4 +8,6 @@ part of 'delivery_acerto_dao.dart';
 
 mixin _$DeliveryAcertoDaoMixin on DatabaseAccessor<AppDatabase> {
   $DeliveryAcertosTable get deliveryAcertos => attachedDatabase.deliveryAcertos;
+  $DeliveryAcertoComandasTable get deliveryAcertoComandas =>
+      attachedDatabase.deliveryAcertoComandas;
 }

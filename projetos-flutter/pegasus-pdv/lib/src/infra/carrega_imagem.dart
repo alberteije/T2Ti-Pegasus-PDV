@@ -51,10 +51,10 @@ class CarregaImagem extends StatefulWidget {
       : super(key: key);
 
   @override
-  _CarregaImagemState createState() => _CarregaImagemState();
+  CarregaImagemState createState() => CarregaImagemState();
 }
 
-class _CarregaImagemState extends State<CarregaImagem> {
+class CarregaImagemState extends State<CarregaImagem> {
 
   final ImagePicker _pickerImagem = ImagePicker();
   final _imagemController = TextEditingController();

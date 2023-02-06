@@ -33,34 +33,87 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'delivery_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           Deliverys,
+          Comandas,
+          Colaboradors,
+          TaxaEntregas,
 		])
 class DeliveryDao extends DatabaseAccessor<AppDatabase> with _$DeliveryDaoMixin {
   final AppDatabase db;
 
   DeliveryDao(this.db) : super(db);
 
-  Future<List<Delivery>?> consultarLista() => select(deliverys).get();
+  List<Delivery> listaDelivery = [];
+  List<DeliveryMontado> listaDeliveryMontado = [];  
 
-  Future<List<Delivery>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM DELIVERY WHERE " + campo + " like '%" + valor + "%'", 
+  Future<List<Delivery>> consultarLista() async {
+    listaDelivery = await select(deliverys).get();
+    return listaDelivery;
+  } 
+
+  Future<List<Delivery>> consultarListaFiltro(String campo, String valor) async {
+    listaDelivery = await (customSelect("SELECT * FROM DELIVERY WHERE $campo like '%$valor%'", 
                                 readsFrom: { deliverys }).map((row) {
-                                  return Delivery.fromData(row.data, db);  
+                                  return Delivery.fromData(row.data);  
                                 }).get());
+    return listaDelivery;
+  }
+
+  Future<List<DeliveryMontado>?> consultarListaMontado({String? campo, dynamic valor}) async {
+    final consulta = select(deliverys)
+      .join([
+        leftOuterJoin(taxaEntregas, taxaEntregas.id.equalsExp(deliverys.idTaxaEntrega)),
+      ])
+      .join([
+        leftOuterJoin(colaboradors, colaboradors.id.equalsExp(deliverys.idColaborador)),
+      ])
+      .join([
+        leftOuterJoin(comandas, comandas.id.equalsExp(deliverys.idComanda)),
+      ]);
+
+    consulta.where(deliverys.id.isNotNull());    
+    // consulta.where(comandas.dataChegada.isBetweenValues(dataInicio, dataFim));    
+
+    if (campo != null && campo != '') {      
+      final coluna = comandas.$columns.where(((coluna) => coluna.$name == campo)).first;
+      if (coluna is TextColumn) {
+        consulta.where((coluna as TextColumn).like('%$valor%'));
+      } else if (coluna is IntColumn) {
+        consulta.where(coluna.equals(int.tryParse(valor)));
+      } else if (coluna is RealColumn) {
+        consulta.where(coluna.equals(double.tryParse(valor)));
+      }
+    }
+
+    listaDeliveryMontado = await consulta.map((row) {
+      final comanda = row.readTableOrNull(comandas);
+      final taxaEntrega = row.readTableOrNull(taxaEntregas);
+      final colaborador = row.readTableOrNull(colaboradors);
+      final delivery = row.readTableOrNull(deliverys);
+
+      return DeliveryMontado(
+        delivery: delivery,
+        comanda: comanda,
+        taxaEntrega: taxaEntrega,
+        colaborador: colaborador,
+      );
+    }).get();      
+
+    return listaDeliveryMontado;
   }
 
   Future<Delivery?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM DELIVERY WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM DELIVERY WHERE $campo = '$valor'", 
                                 readsFrom: { deliverys }).map((row) {
-                                  return Delivery.fromData(row.data, db);  
+                                  return Delivery.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -70,20 +123,27 @@ class DeliveryDao extends DatabaseAccessor<AppDatabase> with _$DeliveryDaoMixin 
     return (select(deliverys)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<Delivery> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from DELIVERY").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(Delivery pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(deliverys).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Delivery> pObjeto) {
+  Future<bool> alterar(Delivery pObjeto) {
     return transaction(() async {
       return update(deliverys).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<Delivery> pObjeto) {
+  Future<int> excluir(Delivery pObjeto) {
     return transaction(() async {
       return delete(deliverys).delete(pObjeto);
     });    

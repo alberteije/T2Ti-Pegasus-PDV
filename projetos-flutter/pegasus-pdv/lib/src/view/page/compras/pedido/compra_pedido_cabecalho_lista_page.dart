@@ -38,6 +38,7 @@ import 'package:intl/intl.dart';
 import 'package:pegasus_pdv/src/controller/controller.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -54,10 +55,10 @@ class CompraPedidoCabecalhoListaPage extends StatefulWidget {
   const CompraPedidoCabecalhoListaPage({Key? key}) : super(key: key); //usado quando esta tela for chamada pelo Estoque para fazer um pedido
 
   @override
-  _CompraPedidoCabecalhoListaPageState createState() => _CompraPedidoCabecalhoListaPageState();
+  CompraPedidoCabecalhoListaPageState createState() => CompraPedidoCabecalhoListaPageState();
 }
 
-class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoListaPage> {
+class CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoListaPage> {
   int? _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -80,7 +81,7 @@ class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoLi
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -95,12 +96,12 @@ class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoLi
   
   @override
   Widget build(BuildContext context) {
-    final _listaCompraPedidoCabecalhoMontado = Sessao.db.compraPedidoCabecalhoDao.listaCompraPedidoCabecalhoMontado;
+    final listaCompraPedidoCabecalhoMontado = Sessao.db.compraPedidoCabecalhoDao.listaCompraPedidoCabecalhoMontado;
 
-    final _CompraPedidoCabecalhoDataSource _compraPedidoCabecalhoDataSource = _CompraPedidoCabecalhoDataSource(_listaCompraPedidoCabecalhoMontado, context, _refrescarTela);
+    final _CompraPedidoCabecalhoDataSource compraPedidoCabecalhoDataSource = _CompraPedidoCabecalhoDataSource(listaCompraPedidoCabecalhoMontado, context, _refrescarTela);
 
     void _sort<T>(Comparable<T>? Function(CompraPedidoCabecalhoMontado compraPedidoCabecalhoMontado) getField, int columnIndex, bool ascending) {
-      _compraPedidoCabecalhoDataSource._sort<T>(getField, ascending);
+      compraPedidoCabecalhoDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -160,7 +161,7 @@ class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoLi
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
-              child: _listaCompraPedidoCabecalhoMontado == null
+              child: listaCompraPedidoCabecalhoMontado == null
               ? const Center(child: CircularProgressIndicator())
               : ListView(
                 controller: controllerScroll,
@@ -323,7 +324,7 @@ class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoLi
                           _sort<String>((CompraPedidoCabecalhoMontado compraPedidoCabecalho) => compraPedidoCabecalho.compraPedidoCabecalho!.numeroDocumentoEntrada, columnIndex, ascending),
                       ),
                     ],
-                    source: _compraPedidoCabecalhoDataSource,
+                    source: compraPedidoCabecalhoDataSource,
                   ),
                 ],
               ),
@@ -335,15 +336,16 @@ class _CompraPedidoCabecalhoListaPageState extends State<CompraPedidoCabecalhoLi
   }
 
   void _inserir() async {
-    final _colaborador = await Sessao.db.colaboradorDao.consultarObjeto(1);
+    final colaborador = await Sessao.db.colaboradorDao.consultarObjeto(1);
     CompraPedidoCabecalhoController.listaCompraDetalhe = CompraPedidoCabecalhoListaPage.listaCompraDetalhe ?? [];
+    if (!mounted) return;
     Navigator.of(context)
       .push(MaterialPageRoute(
         builder: (BuildContext context) => 
           CompraPedidoCabecalhoPage(
             compraPedidoCabecalhoMontado: CompraPedidoCabecalhoMontado(
               compraPedidoCabecalho: CompraPedidoCabecalhoListaPage.compraPedidoCabecalho,
-              colaborador: _colaborador,
+              colaborador: colaborador,
             ), 
             title: 'Pedido de Compra - Inserindo', 
             operacao: 'I'
@@ -401,7 +403,7 @@ class _CompraPedidoCabecalhoDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
-        DataCell(Text('${compraPedidoCabecalho.id ?? ''}'), onTap: () {
+        DataCell(Text('${compraPedidoCabecalho.id}'), onTap: () {
           _detalharCompraPedidoCabecalho(compraPedidoCabecalhoMontado, context, refrescarTela);
         }),
         DataCell(Text(compraPedidoCabecalhoMontado.colaborador?.nome ?? ''), onTap: () {
@@ -488,6 +490,7 @@ void _detalharCompraPedidoCabecalho(CompraPedidoCabecalhoMontado compraPedidoCab
   //carrega lista de detalhes
   CompraPedidoCabecalhoController.listaCompraDetalhe = 
     await Sessao.db.compraPedidoDetalheDao.consultarListaComProduto(compraPedidoCabecalhoMontado.compraPedidoCabecalho!.id!);
+  // ignore: use_build_context_synchronously
   Navigator.of(context)
     .push(MaterialPageRoute(
       builder: (BuildContext context) => CompraPedidoCabecalhoPage(

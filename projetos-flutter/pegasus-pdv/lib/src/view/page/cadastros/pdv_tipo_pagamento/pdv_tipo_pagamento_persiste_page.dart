@@ -38,7 +38,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -57,10 +57,10 @@ class PdvTipoPagamentoPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _PdvTipoPagamentoPersistePageState createState() => _PdvTipoPagamentoPersistePageState();
+  PdvTipoPagamentoPersistePageState createState() => PdvTipoPagamentoPersistePageState();
 }
 
-class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersistePage> {
+class PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersistePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -285,11 +285,14 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
             await Sessao.db.pdvTipoPagamentoDao.inserir(pdvTipoPagamento!);
             tudoCerto = true;
           } else {
+            if (!mounted) return;
             showInSnackBar('Já existe um tipo de pagamento cadastrado com o CÓDIGO informado.', context);
           }        
         }
         if (tudoCerto) {
+          if (!mounted) return;
           await Sessao.popularObjetosPrincipais(context); // pode afetar o parcelamento, por isso importante recarregar
+          if (!mounted) return;
           Navigator.of(context).pop();
         }
       });
@@ -309,6 +312,7 @@ class _PdvTipoPagamentoPersistePageState extends State<PdvTipoPagamentoPersisteP
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
       await Sessao.db.pdvTipoPagamentoDao.excluir(pdvTipoPagamento!);
+      if (!mounted) return;
       Navigator.of(context).pop();
     });
   }  

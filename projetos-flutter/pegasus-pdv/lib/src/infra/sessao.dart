@@ -40,11 +40,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 
+import 'package:pegasus_pdv/src/controller/controller.dart';
 import 'package:pegasus_pdv/src/infra/biblioteca.dart';
 
-import 'package:pegasus_pdv/src/model/retorno_json_erro.dart';
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
@@ -72,8 +73,10 @@ class Sessao {
   static bool abriuDialogBoxEspera = false;
   static late String retornoJsonLookup; // será usado para popular a grid da janela de lookup
   static String? retornoJsonNfce; //objeto retornado pelo ACBrMonitor
-  static late String caminhoBancoDados; // guarda o caminho para o banco de dados
-  static late String ultimoIniNfceEnviado; // guarda a string do último arquivo INI de NFC-e enviado para o ACBrMonitor
+  static String caminhoBancoDados = ''; // guarda o caminho para o banco de dados
+  static String ultimoIniNfceEnviado = ''; // guarda a string do último arquivo INI de NFC-e enviado para o ACBrMonitor
+  static String ultimoIniCfeEnviado = ''; // guarda a string do último arquivo INI do SAT enviado para o ACBrMonitor
+  static String ultimaChaveDeAcesso = ''; // guarda a chave de acesso devolvida pelo servidor quando da emissão da nota
   static bool cnaePermiteModuloFood = false; // se for true, o sistema permite a utilização do módulo Food
 
   static PdvMovimento? movimento;
@@ -81,8 +84,10 @@ class Sessao {
   static PdvConfiguracao? configuracaoPdv;
   static NfeConfiguracao? configuracaoNfce;
   static NfeNumero? numeroNfce;
+  static NfeNumero? numeroCfe;
   static NfcePlanoPagamento? nfcePlanoPagamento;
   static PdvVendaCabecalho? vendaAtual = PdvVendaCabecalho(id: null);
+  static PdvCaixa? pdvCaixa;
   static List<VendaDetalhe> listaVendaAtualDetalhe = [];
   static List<PdvTipoPagamento>? listaTipoPagamento = [];
   static List<PdvTotalTipoPagamento> listaDadosPagamento = [];
@@ -120,15 +125,51 @@ class Sessao {
   */ 
   static late List<List<dynamic>> tabelaMunicipios; // vamos carregar os dados do arquivo CSV
 
+  /*
+   [0] = codigo
+   [1] = descricao
+   [2] = inicio
+   [3] = fim
+   [4] = ato
+   [5] = numero
+   [6] = ano
+  */ 
+  static late List<List<dynamic>> tabelaNcm; // vamos carregar os dados do arquivo CSV
+
+  /*
+   [0] = codigo
+   [1] = ncm
+   [2] = descricao
+   [3] = anexo
+   [4] = segmento
+   [5] = item
+   [6] = convenios
+  */ 
+  static late List<List<dynamic>> tabelaCest; // vamos carregar os dados do arquivo CSV
+
 // #endregion objetos globais
 
   /// popula os objetos principais para a sessão
   static Future popularObjetosPrincipais(BuildContext context) async {
     db = Provider.of<AppDatabase>(context, listen: false);
-    if (movimento == null) {
-      await tratarMovimento();
-    }    
     empresa = await db.empresaDao.consultarObjeto(1); // pega a empresa - deve ter apenas um registro no banco de dados
+    
+    // id do dispositivo
+    pdvCaixa = await db.pdvCaixaDao.consultarObjeto(1); 
+    if (pdvCaixa == null) {
+      var dispositivo = await PlatformDeviceId.getDeviceId;
+      dispositivo = dispositivo?.trim();
+      pdvCaixa =  PdvCaixa( // se ainda não tiver um registro no caixa, insere (ocorre apenas uma vez)
+        id: null,
+        nome: dispositivo,
+        dataCadastro: DateTime.now(),
+      );
+      await db.pdvCaixaDao.inserir(pdvCaixa!);
+    }
+
+    if (movimento == null) {
+      await MovimentoController.tratarMovimento();
+    }    
     // se o logo estiver nulo, insere um logo padrão e o usuário poderá alterar depois na tela de cadastro da empresa
     if (empresa!.logotipo == null) {
       final logotipo = (await rootBundle.load('assets/images/sua_logo.png')).buffer.asUint8List();
@@ -140,20 +181,30 @@ class Sessao {
     configuracaoPdv = await db.pdvConfiguracaoDao.consultarObjeto(1); // pega a configuracao - deve ter apenas um registro no banco de dados
     configuracaoNfce = await db.nfeConfiguracaoDao.consultarObjeto(1); // pega a configuracao da NFC-e - deve ter apenas um registro no banco de dados
     numeroNfce = await db.nfeNumeroDao.consultarObjeto(1); // pega o numero da nfc-e
+    numeroCfe = await db.nfeNumeroDao.consultarObjeto(2); // pega o numero do cfe-sat
     nfcePlanoPagamento = await db.nfcePlanoPagamentoDao.consultarPlanoAtivo(); 
     listaTipoPagamento = await db.pdvTipoPagamentoDao.consultarLista(); // pega os tipos de pagamento e poe numa lista
 
     // módulo Food
-    final _listaCnae = await db.empresaCnaeDao.consultarLista();
-    for (var cnae in _listaCnae) {
-      if (cnae.codigo!.startsWith('56')) { // Alimentação
+    // TODO: descomente se quiser liberar o menu do módulo Food apenas para empresas com determinado CNAE
+    // final _listaCnae = await db.empresaCnaeDao.consultarLista();
+    // for (var cnae in _listaCnae) {
+    //   if (cnae.codigo!.startsWith('56')) { // Alimentação
         cnaePermiteModuloFood = true;  
-      }
-    }
+    //   }
+    // }
 
     // carrega ibpt
     final arquivoIbptCsv = await rootBundle.loadString('assets/text/ibpt.csv');
     tabelaIbpt = const CsvToListConverter().convert(arquivoIbptCsv, fieldDelimiter: ';');
+
+    // carrega ncm
+    final arquivoNcmCsv = await rootBundle.loadString('assets/text/ncm.csv');
+    tabelaNcm = const CsvToListConverter().convert(arquivoNcmCsv, fieldDelimiter: ';');
+
+    // carrega cest
+    final arquivoCestCsv = await rootBundle.loadString('assets/text/cest.csv');
+    tabelaCest = const CsvToListConverter().convert(arquivoCestCsv, fieldDelimiter: ';');
 
     // carrega municipios
     final arquivoMunicipiosCsv = await rootBundle.loadString('assets/text/municipios.csv');
@@ -166,8 +217,7 @@ class Sessao {
         codigoIbge: Sessao.tabelaMunicipios[i][0].toString(),
       );
       listaMunicipios.add(municipio);
-    }
-
+    }    
 
     if (kDebugMode && Biblioteca.isDesktop()) {
       await _gerarArquivoEnvProtegido();  
@@ -188,39 +238,18 @@ class Sessao {
     refrescarCaixaCallBack!();
   }
 
-  /// Passos:
-  /// 01-busca um movimento com status = 'A' (aberto)
-  /// 02-se não existir movimento, abre
-  /// 03-se existir um movimento
-  /// 03.1-verifica se o movimento é de outro dia
-  /// 03.1.1 - se for um movimento de outro dia, encerra movimento e abre outro
-  /// 03.1.2 - se for um movimento do mesmo dia, atribui para o movimento da sessão 
-  static Future tratarMovimento() async {
-    movimento = await db.pdvMovimentoDao.consultarObjeto('A'); 
-    if (movimento == null) {
-      movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.formatarHora(DateTime.now()), statusMovimento: 'A');
-      movimento = await db.pdvMovimentoDao.iniciarMovimento(movimento!);
-    } else {
-      if (Biblioteca.formatarData(movimento!.dataAbertura) != Biblioteca.formatarData(DateTime.now())) {
-        await db.pdvMovimentoDao.encerrarMovimento(movimento!);
-        movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.formatarHora(DateTime.now()), statusMovimento: 'A');
-        movimento = await db.pdvMovimentoDao.iniciarMovimento(movimento!);
-      }
-    }
-  }
-
   static Future _gerarArquivoEnvProtegido() async {
     var conteudoEnvProtegido = '';
 
-    conteudoEnvProtegido += 'SENTRY_DNS=' + Constantes.encrypter.encrypt(Constantes.sentryDns!, iv: Constantes.iv).base64 + '\n';
-    conteudoEnvProtegido += 'LINGUAGEM_SERVIDOR=' + Constantes.encrypter.encrypt(Constantes.linguagemServidor!, iv: Constantes.iv).base64 + '\n';
-    conteudoEnvProtegido += 'ENDERECO_SERVIDOR=' + Constantes.encrypter.encrypt(Constantes.enderecoServidor!, iv: Constantes.iv).base64 + '\n';
+    conteudoEnvProtegido += 'SENTRY_DNS=${Constantes.encrypter.encrypt(Constantes.sentryDns!, iv: Constantes.iv).base64}\n';
+    conteudoEnvProtegido += 'LINGUAGEM_SERVIDOR=${Constantes.encrypter.encrypt(Constantes.linguagemServidor!, iv: Constantes.iv).base64}\n';
+    conteudoEnvProtegido += 'ENDERECO_SERVIDOR=${Constantes.encrypter.encrypt(Constantes.enderecoServidor!, iv: Constantes.iv).base64}\n';
     if (Constantes.complementoEnderecoServidor!.isEmpty) {
       conteudoEnvProtegido += 'COMPLEMENTO_ENDERECO_SERVIDOR=\n';
     } else {
-      conteudoEnvProtegido += 'COMPLEMENTO_ENDERECO_SERVIDOR=' + Constantes.encrypter.encrypt(Constantes.complementoEnderecoServidor!, iv: Constantes.iv).base64 + '\n';
+      conteudoEnvProtegido += 'COMPLEMENTO_ENDERECO_SERVIDOR=${Constantes.encrypter.encrypt(Constantes.complementoEnderecoServidor!, iv: Constantes.iv).base64}\n';
     }
-    conteudoEnvProtegido += 'PORTA_SERVIDOR=' + Constantes.encrypter.encrypt(Constantes.portaServidor!, iv: Constantes.iv).base64;
+    conteudoEnvProtegido += 'PORTA_SERVIDOR=${Constantes.encrypter.encrypt(Constantes.portaServidor!, iv: Constantes.iv).base64}';
 
     final File file = File('.env-cifrado');
     await file.writeAsString(conteudoEnvProtegido);

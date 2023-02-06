@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'tribut_icms_uf_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           TributIcmsUfs,
 		])
 class TributIcmsUfDao extends DatabaseAccessor<AppDatabase> with _$TributIcmsUfDaoMixin {
@@ -51,9 +51,9 @@ class TributIcmsUfDao extends DatabaseAccessor<AppDatabase> with _$TributIcmsUfD
   Future<List<TributIcmsUf>> consultarLista() => select(tributIcmsUfs).get();
 
   Future<List<TributIcmsUf>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM TRIBUT_ICMS_UF WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM TRIBUT_ICMS_UF WHERE $campo like '%$valor%'", 
                                 readsFrom: { tributIcmsUfs }).map((row) {
-                                  return TributIcmsUf.fromData(row.data, db);  
+                                  return TributIcmsUf.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,24 +63,31 @@ class TributIcmsUfDao extends DatabaseAccessor<AppDatabase> with _$TributIcmsUfD
     return (select(tributIcmsUfs)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<TributIcmsUf> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from TRIBUT_ICMS_UF").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(TributIcmsUf pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(tributIcmsUfs).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<TributIcmsUf> pObjeto) {
+  Future<bool> alterar(TributIcmsUf pObjeto) {
     return transaction(() async {
       return update(tributIcmsUfs).replace(pObjeto);
     });    
   } 
 
   Future<int> atualizarUf(String uf) {
-    return customUpdate("update TRIBUT_ICMS_UF set UF_DESTINO = '" + uf + "'");
+    return customUpdate("update TRIBUT_ICMS_UF set UF_DESTINO = '$uf'");
   }
 
-  Future<int> excluir(Insertable<TributIcmsUf> pObjeto) {
+  Future<int> excluir(TributIcmsUf pObjeto) {
     return transaction(() async {
       return delete(tributIcmsUfs).delete(pObjeto);
     });    

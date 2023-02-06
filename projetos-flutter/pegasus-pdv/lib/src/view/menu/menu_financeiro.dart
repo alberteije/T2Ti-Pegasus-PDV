@@ -111,6 +111,7 @@ class MenuFinanceiro extends StatelessWidget {
                   const MenuTituloGrupoMenuInterno(titulo: "Grupo Financeiro"),
                   MenuInternoBotoes(
                     primeiroBotao: BotaoMenu(
+                        // ignore: deprecated_member_use
                         icon: FontAwesomeIcons.peopleCarry,
                         label: "Contas a Pagar",
                         circleColor: Colors.red,

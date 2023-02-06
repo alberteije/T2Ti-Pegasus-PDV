@@ -152,6 +152,8 @@ class Rotas {
 			case '/nfceInutilizaNumero':
 			  return MaterialPageRoute(builder: (_) => const NfceInutilizaNumeroPage());
 
+			case '/nfeDevolucao':
+			  return MaterialPageRoute(builder: (_) => const NfeDevolucaoPage());
 
       ////////////////////////////////////////////////////////// 
       /// FOOD
@@ -163,12 +165,18 @@ class Rotas {
 			case '/mesaPage':
 			  return MaterialPageRoute(builder: (_) => const MesaPage());
 
+			case '/cardapioPage':
+			  return MaterialPageRoute(builder: (_) => const CardapioPage());
+
 			case '/reservaLista':
 			  return MaterialPageRoute(builder: (_) => const ReservaListaPage());
 
 			case '/comandaObservacaoPadraoLista':
 			  return MaterialPageRoute(builder: (_) => const ComandaObservacaoPadraoListaPage());
-			  
+
+			case '/deliveryLista':
+			  return MaterialPageRoute(builder: (_) => const DeliveryListaPage());
+
       ////////////////////////////////////////////////////////// 
       /// DELIVERY
       //////////////////////////////////////////////////////////

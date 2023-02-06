@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'tribut_ipi_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           TributIpis,
 		])
 class TributIpiDao extends DatabaseAccessor<AppDatabase> with _$TributIpiDaoMixin {
@@ -51,9 +51,9 @@ class TributIpiDao extends DatabaseAccessor<AppDatabase> with _$TributIpiDaoMixi
   Future<List<TributIpi>> consultarLista() => select(tributIpis).get();
 
   Future<List<TributIpi>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM TRIBUT_IPI WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM TRIBUT_IPI WHERE $campo like '%$valor%'", 
                                 readsFrom: { tributIpis }).map((row) {
-                                  return TributIpi.fromData(row.data, db);  
+                                  return TributIpi.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,20 +63,27 @@ class TributIpiDao extends DatabaseAccessor<AppDatabase> with _$TributIpiDaoMixi
     return (select(tributIpis)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<TributIpi> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from TRIBUT_IPI").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(TributIpi pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(tributIpis).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<TributIpi> pObjeto) {
+  Future<bool> alterar(TributIpi pObjeto) {
     return transaction(() async {
       return update(tributIpis).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<TributIpi> pObjeto) {
+  Future<int> excluir(TributIpi pObjeto) {
     return transaction(() async {
       return delete(tributIpis).delete(pObjeto);
     });    

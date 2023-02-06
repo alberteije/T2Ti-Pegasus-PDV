@@ -33,14 +33,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'dart:convert';
+
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 part 'pdv_tipo_pagamento_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           PdvTipoPagamentos,
 		])
 class PdvTipoPagamentoDao extends DatabaseAccessor<AppDatabase> with _$PdvTipoPagamentoDaoMixin {
@@ -56,17 +59,17 @@ class PdvTipoPagamentoDao extends DatabaseAccessor<AppDatabase> with _$PdvTipoPa
   }
 
   Future<List<PdvTipoPagamento>?> consultarListaFiltro(String campo, String valor) async {
-    listaPdvTipoPagamento = await (customSelect("SELECT * FROM PDV_TIPO_PAGAMENTO WHERE " + campo + " like '%" + valor + "%'", 
+    listaPdvTipoPagamento = await (customSelect("SELECT * FROM PDV_TIPO_PAGAMENTO WHERE $campo like '%$valor%'", 
                                 readsFrom: { pdvTipoPagamentos }).map((row) {
-                                  return PdvTipoPagamento.fromData(row.data, db);  
+                                  return PdvTipoPagamento.fromData(row.data);  
                                 }).get());
     return listaPdvTipoPagamento;
   }
 
   Future<PdvTipoPagamento?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM PDV_TIPO_PAGAMENTO WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM PDV_TIPO_PAGAMENTO WHERE $campo = '$valor'", 
                                 readsFrom: { pdvTipoPagamentos }).map((row) {
-                                  return PdvTipoPagamento.fromData(row.data, db);  
+                                  return PdvTipoPagamento.fromData(row.data);  
                                 }).getSingleOrNull());
   }
 
@@ -76,23 +79,39 @@ class PdvTipoPagamentoDao extends DatabaseAccessor<AppDatabase> with _$PdvTipoPa
     return (select(pdvTipoPagamentos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<PdvTipoPagamento> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from PDV_TIPO_PAGAMENTO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(PdvTipoPagamento pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(pdvTipoPagamentos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<PdvTipoPagamento> pObjeto) {
+  Future<bool> alterar(PdvTipoPagamento pObjeto) {
     return transaction(() async {
       return update(pdvTipoPagamentos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<PdvTipoPagamento> pObjeto) {
+  Future<int> excluir(PdvTipoPagamento pObjeto) {
     return transaction(() async {
       return delete(pdvTipoPagamentos).delete(pObjeto);
     });    
+  }
+
+  Future<void> sincronizar(ObjetoSincroniza objetoSincroniza) async {
+    (delete(pdvTipoPagamentos)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = PdvTipoPagamento.fromJson(objetoJson);
+      into(pdvTipoPagamentos).insertOnConflictUpdate(objetoDart);
+    }
   }
 
 	static List<String> campos = <String>[

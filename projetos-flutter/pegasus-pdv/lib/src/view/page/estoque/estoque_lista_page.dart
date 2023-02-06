@@ -36,11 +36,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:flutter/material.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
@@ -54,10 +55,10 @@ class EstoqueListaPage extends StatefulWidget {
   const EstoqueListaPage({Key? key}) : super(key: key);
 
   @override
-  _EstoqueListaPageState createState() => _EstoqueListaPageState();
+  EstoqueListaPageState createState() => EstoqueListaPageState();
 }
 
-class _EstoqueListaPageState extends State<EstoqueListaPage> {
+class EstoqueListaPageState extends State<EstoqueListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -81,7 +82,7 @@ class _EstoqueListaPageState extends State<EstoqueListaPage> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -98,10 +99,10 @@ class _EstoqueListaPageState extends State<EstoqueListaPage> {
   Widget build(BuildContext context) {
     _listaProdutoMontado = Sessao.db.produtoDao.listaProdutoMontado;
 
-    final _ProdutoDataSource _produtoDataSource = _ProdutoDataSource(_listaProdutoMontado, context, _refrescarTela);
+    final _ProdutoDataSource produtoDataSource = _ProdutoDataSource(_listaProdutoMontado, context, _refrescarTela);
 
     void _sort<T>(Comparable<T>? Function(ProdutoMontado produtoMontado) getField, int columnIndex, bool ascending) {
-      _produtoDataSource._sort<T>(getField, ascending);
+      produtoDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -258,7 +259,7 @@ class _EstoqueListaPageState extends State<EstoqueListaPage> {
                           _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.valorVenda, columnIndex, ascending),
                       ),
                     ],
-                    source: _produtoDataSource,
+                    source: produtoDataSource,
                   ),
                 ],
               ),
@@ -390,7 +391,7 @@ class _ProdutoDataSource extends DataTableSource {
       }),
       index: index,
       cells: <DataCell>[
-        DataCell(Text('${produto.id ?? ''}'), onTap: () {
+        DataCell(Text('${produto.id}'), onTap: () {
         }),
         DataCell(
           Text(Constantes.formatoDecimalQuantidade.format(produto.quantidadeEstoque ?? 0),

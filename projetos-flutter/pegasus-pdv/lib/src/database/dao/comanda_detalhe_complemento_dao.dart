@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'comanda_detalhe_complemento_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           ComandaDetalheComplementos,
 		])
 class ComandaDetalheComplementoDao extends DatabaseAccessor<AppDatabase> with _$ComandaDetalheComplementoDaoMixin {
@@ -56,17 +56,17 @@ class ComandaDetalheComplementoDao extends DatabaseAccessor<AppDatabase> with _$
   }  
 
   Future<List<ComandaDetalheComplemento>?> consultarListaFiltro(String campo, String valor) async {
-    listaComandaDetalheComplemento = await (customSelect("SELECT * FROM COMANDA_DETALHE_COMPLEMENTO WHERE " + campo + " like '%" + valor + "%'", 
+    listaComandaDetalheComplemento = await (customSelect("SELECT * FROM COMANDA_DETALHE_COMPLEMENTO WHERE $campo like '%$valor%'", 
                                 readsFrom: { comandaDetalheComplementos }).map((row) {
-                                  return ComandaDetalheComplemento.fromData(row.data, db);  
+                                  return ComandaDetalheComplemento.fromData(row.data);  
                                 }).get());
     return listaComandaDetalheComplemento;
   }
     
   Future<ComandaDetalheComplemento?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM COMANDA_DETALHE_COMPLEMENTO WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM COMANDA_DETALHE_COMPLEMENTO WHERE $campo = '$valor'", 
                                 readsFrom: { comandaDetalheComplementos }).map((row) {
-                                  return ComandaDetalheComplemento.fromData(row.data, db);  
+                                  return ComandaDetalheComplemento.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -76,20 +76,27 @@ class ComandaDetalheComplementoDao extends DatabaseAccessor<AppDatabase> with _$
     return (select(comandaDetalheComplementos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<ComandaDetalheComplemento> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from COMANDA_DETALHE_COMPLEMENTO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(ComandaDetalheComplemento pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(comandaDetalheComplementos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<ComandaDetalheComplemento> pObjeto) {
+  Future<bool> alterar(ComandaDetalheComplemento pObjeto) {
     return transaction(() async {
       return update(comandaDetalheComplementos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<ComandaDetalheComplemento> pObjeto) {
+  Future<int> excluir(ComandaDetalheComplemento pObjeto) {
     return transaction(() async {
       return delete(comandaDetalheComplementos).delete(pObjeto);
     });    

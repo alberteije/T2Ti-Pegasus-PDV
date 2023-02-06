@@ -44,7 +44,6 @@ class MyAboutTile extends StatelessWidget {
   @override  
   Widget build(BuildContext context) {
     return AboutListTile(
-      child: const Text("Sobre o " + Constantes.nomeApp),
       dense: true,
       applicationIcon: const CircleAvatar(
         minRadius: 30,
@@ -61,6 +60,7 @@ class MyAboutTile extends StatelessWidget {
           height: 10.0,
         ),
         Text(
+          // ignore: prefer_interpolation_to_compose_strings
           "Você está usando o T2Ti Pegasus PDV. \n\n"
           "Esse software é multi-plataforma e pode ser  \n"
           "encontrado nas diversas stores (Google, Apple e Microsoft) \n"
@@ -72,7 +72,8 @@ class MyAboutTile extends StatelessWidget {
       ],
       applicationName: Constantes.nomeApp,
       applicationVersion: Constantes.versaoApp,
-      applicationLegalese: "Licença: MIT",      
+      applicationLegalese: "Licença: MIT",
+      child: const Text("Sobre o ${Constantes.nomeApp}"),      
     );
   }
 }

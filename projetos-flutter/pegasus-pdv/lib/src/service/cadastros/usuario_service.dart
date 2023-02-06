@@ -38,7 +38,6 @@ import 'dart:convert';
 import 'package:http/http.dart' show Client;
 
 import 'package:pegasus_pdv/src/service/service_base.dart';
-import 'package:pegasus_pdv/src/model/filtro.dart';
 import 'package:pegasus_pdv/src/model/model.dart';
 
 /// classe responsável por requisições ao servidor REST
@@ -89,7 +88,7 @@ class UsuarioService extends ServiceBase {
     final response = await clienteHTTP.post(
       Uri.tryParse('$endpoint/usuario')!,
       headers: {"content-type": "application/json"},
-      body: usuario.objetoEncodeJson(usuario),
+      body: usuario.objetoEncodeJson(),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -111,7 +110,7 @@ class UsuarioService extends ServiceBase {
     final response = await clienteHTTP.put(
       Uri.tryParse('$endpoint/usuario/$id')!,
       headers: {"content-type": "application/json"},
-      body: usuario.objetoEncodeJson(usuario),
+      body: usuario.objetoEncodeJson(),
     );
 
     if (response.statusCode == 200) {
@@ -148,7 +147,7 @@ class UsuarioService extends ServiceBase {
       headers: {
         "content-type": "application/json",
         },
-      body: usuario.objetoEncodeJson(usuario),
+      body: usuario.objetoEncodeJson(),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -171,7 +170,7 @@ class UsuarioService extends ServiceBase {
       headers: {
         "content-type": "application/json",
         },
-      body: usuario.objetoEncodeJson(usuario),
+      body: usuario.objetoEncodeJson(),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {

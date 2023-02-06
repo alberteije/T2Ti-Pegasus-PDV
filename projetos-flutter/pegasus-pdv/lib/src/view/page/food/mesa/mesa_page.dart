@@ -39,7 +39,7 @@ import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -62,10 +62,10 @@ class MesaPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _MesaPageState createState() => _MesaPageState();
+  MesaPageState createState() => MesaPageState();
 }
 
-class _MesaPageState extends State<MesaPage> {
+class MesaPageState extends State<MesaPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _quantidadeMesasController = MoneyMaskedTextController(
@@ -109,7 +109,7 @@ class _MesaPageState extends State<MesaPage> {
     };
     _foco.requestFocus();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _consultarMesas());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _consultarMesas());
   }
 
   Future _consultarMesas() async {
@@ -492,11 +492,15 @@ class _MesaPageState extends State<MesaPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              widget.operacao ==  'COM' 
-              ? IconButton(
-                  tooltip: 'Encerrar Mesa',
-                  icon: const Icon(Icons.task_alt),
-                  onPressed: () async { _encerrarMesa(mesa); }, 
+              widget.operacao == 'COM' 
+              ? (
+                  mesa.disponivel != 'S'
+                  ? IconButton(
+                      tooltip: 'Encerrar Mesa',
+                      icon: const Icon(Icons.task_alt),
+                      onPressed: () async { _encerrarMesa(mesa); }, 
+                    )
+                  : const Text('DISPONÍVEL', style: TextStyle(fontSize: 14.0, color: Colors.white, fontWeight: FontWeight.bold))
                 )
               : Text((mesa.observacao?.isNotEmpty ?? false) ? 'OBS' : '', style: const TextStyle(fontSize: 14.0, color: Colors.white, fontWeight: FontWeight.bold)),
             ],
@@ -510,6 +514,7 @@ class _MesaPageState extends State<MesaPage> {
   Future _gerarMesas() async {
     // verifica se já existem mesas no banco e se estão em uso
     final listaMesa = await Sessao.db.mesaDao.consultarListaFiltro('DISPONIVEL', 'N');
+    if (!mounted) return;
     if (listaMesa!.isNotEmpty) {
       gerarDialogBoxInformacao(context, 'Existem mesas em uso, procedimento não permitido.');
     } else {

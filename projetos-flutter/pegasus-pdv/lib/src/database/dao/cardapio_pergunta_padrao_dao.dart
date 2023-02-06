@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'cardapio_pergunta_padrao_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           CardapioPerguntaPadraos,
           CardapioRespostaPadraos,
 		])
@@ -52,16 +52,16 @@ class CardapioPerguntaPadraoDao extends DatabaseAccessor<AppDatabase> with _$Car
   Future<List<CardapioPerguntaPadrao>?> consultarLista() => select(cardapioPerguntaPadraos).get();
 
   Future<List<CardapioPerguntaPadrao>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM CARDAPIO_PERGUNTA_PADRAO WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM CARDAPIO_PERGUNTA_PADRAO WHERE $campo like '%$valor%'", 
                                 readsFrom: { cardapioPerguntaPadraos }).map((row) {
-                                  return CardapioPerguntaPadrao.fromData(row.data, db);  
+                                  return CardapioPerguntaPadrao.fromData(row.data);  
                                 }).get());
   }
 
   Future<CardapioPerguntaPadrao?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM CARDAPIO_PERGUNTA_PADRAO WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM CARDAPIO_PERGUNTA_PADRAO WHERE $campo = '$valor'", 
                                 readsFrom: { cardapioPerguntaPadraos }).map((row) {
-                                  return CardapioPerguntaPadrao.fromData(row.data, db);  
+                                  return CardapioPerguntaPadrao.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -74,9 +74,9 @@ class CardapioPerguntaPadraoDao extends DatabaseAccessor<AppDatabase> with _$Car
   Future<List<CardapioPerguntaPadraoMontado>> consultarListaPerguntaMontado(int idCardapio) async {
     final List<CardapioPerguntaPadraoMontado> listaRetorno = [];
 
-    final listaPerguntas = await (customSelect("SELECT * FROM CARDAPIO_PERGUNTA_PADRAO WHERE ID_CARDAPIO = '" + idCardapio.toString() + "'", 
+    final listaPerguntas = await (customSelect("SELECT * FROM CARDAPIO_PERGUNTA_PADRAO WHERE ID_CARDAPIO = '$idCardapio'", 
                                 readsFrom: { cardapioPerguntaPadraos }).map((row) {
-                                  return CardapioPerguntaPadrao.fromData(row.data, db);  
+                                  return CardapioPerguntaPadrao.fromData(row.data);  
                                 }).get());
 
     int idFake = 0;
@@ -87,9 +87,9 @@ class CardapioPerguntaPadraoDao extends DatabaseAccessor<AppDatabase> with _$Car
 
         // pega as respostas
         listaCardapioRespostaPadrao: await (
-          customSelect("SELECT * FROM CARDAPIO_RESPOSTA_PADRAO WHERE ID_CARDAPIO_PERGUNTA_PADRAO = '" + pergunta.id.toString() + "'", 
+          customSelect("SELECT * FROM CARDAPIO_RESPOSTA_PADRAO WHERE ID_CARDAPIO_PERGUNTA_PADRAO = '${pergunta.id}'", 
                                 readsFrom: { cardapioRespostaPadraos }).map((row) {
-                                  return CardapioRespostaPadrao.fromData(row.data, db);  
+                                  return CardapioRespostaPadrao.fromData(row.data);  
                                 }).get()),
 
       );
@@ -99,20 +99,27 @@ class CardapioPerguntaPadraoDao extends DatabaseAccessor<AppDatabase> with _$Car
     return listaRetorno;
   }  
 
-  Future<int> inserir(Insertable<CardapioPerguntaPadrao> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from CARDAPIO_PERGUNTA_PADRAO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(CardapioPerguntaPadrao pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(cardapioPerguntaPadraos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<CardapioPerguntaPadrao> pObjeto) {
+  Future<bool> alterar(CardapioPerguntaPadrao pObjeto) {
     return transaction(() async {
       return update(cardapioPerguntaPadraos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<CardapioPerguntaPadrao> pObjeto) {
+  Future<int> excluir(CardapioPerguntaPadrao pObjeto) {
     return transaction(() async {
       return delete(cardapioPerguntaPadraos).delete(pObjeto);
     });    

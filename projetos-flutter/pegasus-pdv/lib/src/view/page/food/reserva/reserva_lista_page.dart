@@ -36,11 +36,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:flutter/material.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
@@ -53,10 +54,10 @@ class ReservaListaPage extends StatefulWidget {
   const ReservaListaPage({Key? key}) : super(key: key);
 
   @override
-  _ReservaListaPageState createState() => _ReservaListaPageState();
+  ReservaListaPageState createState() => ReservaListaPageState();
 }
 
-class _ReservaListaPageState extends State<ReservaListaPage> {
+class ReservaListaPageState extends State<ReservaListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -82,7 +83,7 @@ class _ReservaListaPageState extends State<ReservaListaPage> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
   
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -103,12 +104,12 @@ class _ReservaListaPageState extends State<ReservaListaPage> {
   
   @override
   Widget build(BuildContext context) {
-    final _listaReservaMontado = Sessao.db.reservaDao.listaReservaMontado;
+    final listaReservaMontado = Sessao.db.reservaDao.listaReservaMontado;
 
-    final _ReservaDataSource _reservaDataSource = _ReservaDataSource(_listaReservaMontado, context, _refrescarTela);
+    final _ReservaDataSource reservaDataSource = _ReservaDataSource(listaReservaMontado, context, _refrescarTela);
   
     void _sort<T>(Comparable<T>? Function(ReservaMontado reservaMontado) getField, int columnIndex, bool ascending) {
-      _reservaDataSource._sort<T>(getField, ascending);
+      reservaDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -215,7 +216,7 @@ class _ReservaListaPageState extends State<ReservaListaPage> {
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
-              child: _listaReservaMontado == null
+              child: listaReservaMontado == null
               ? const Center(child: CircularProgressIndicator())
               : ListView(
                 padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
@@ -282,7 +283,7 @@ class _ReservaListaPageState extends State<ReservaListaPage> {
                           _sort<String>((ReservaMontado reservaMontado) => reservaMontado.reserva!.situacao, columnIndex, ascending),
                       ),
                     ],
-                    source: _reservaDataSource,
+                    source: reservaDataSource,
                   ),
                 ],
               ),
@@ -386,7 +387,7 @@ class _ReservaDataSource extends DataTableSource {
       }),
       index: index,
       cells: <DataCell>[
-        DataCell(Text(reservaMontado.reserva!.id?.toString() ?? ''), onTap: () {
+        DataCell(Text(reservaMontado.reserva!.id.toString()), onTap: () {
           _detalharReserva(reservaMontado, context, refrescarTela);
         }),
         DataCell(Text(reservaMontado.cliente?.nome?.toString() ?? ''), onTap: () {

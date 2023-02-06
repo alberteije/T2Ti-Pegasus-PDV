@@ -39,7 +39,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -59,10 +59,10 @@ class TributGrupoTributarioPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _TributGrupoTributarioPersistePageState createState() => _TributGrupoTributarioPersistePageState();
+  TributGrupoTributarioPersistePageState createState() => TributGrupoTributarioPersistePageState();
 }
 
-class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributarioPersistePage> {
+class TributGrupoTributarioPersistePageState extends State<TributGrupoTributarioPersistePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -259,6 +259,7 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
         } else {
           await Sessao.db.tributGrupoTributarioDao.inserir(tributGrupoTributario!);
         }
+        if (!mounted) return;
         Navigator.of(context).pop();
       });
     }
@@ -277,10 +278,12 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
       final listaProduto = await Sessao.db.produtoDao.consultarListaFiltro('ID_TRIBUT_GRUPO_TRIBUTARIO', tributGrupoTributario!.id.toString());
+      if (!mounted) return;
       if (listaProduto!.isNotEmpty) { 
         showInSnackBar('Existem produtos vinculados a este Grupo Tributário.', context);
       } else {
         await Sessao.db.tributGrupoTributarioDao.excluir(tributGrupoTributario!);
+        if (!mounted) return;
         Navigator.of(context).pop();
       }
     });
@@ -306,12 +309,13 @@ class _TributGrupoTributarioPersistePageState extends State<TributGrupoTributari
   Future<void> _atribuirGrupoAProdutos() async {
     if (_validarForm()) {
       if (tributGrupoTributario!.id == null) {
-        final _idInserido = await Sessao.db.tributGrupoTributarioDao.inserir(tributGrupoTributario!);
-        tributGrupoTributario = await Sessao.db.tributGrupoTributarioDao.consultarObjeto(_idInserido);
+        final idInserido = await Sessao.db.tributGrupoTributarioDao.inserir(tributGrupoTributario!);
+        tributGrupoTributario = await Sessao.db.tributGrupoTributarioDao.consultarObjeto(idInserido);
       }
-      final _registrosAtualizados = await Sessao.db.produtoDao.atualizarGrupoTributario(tributGrupoTributario!.id);
+      final registrosAtualizados = await Sessao.db.produtoDao.atualizarGrupoTributario(tributGrupoTributario!.id!);
+      if (!mounted) return;
       showInSnackBar(
-        'Foram atualizados ' + _registrosAtualizados.toString() + ' produtos.', 
+        'Foram atualizados $registrosAtualizados produtos.', 
         context, 
         corFundo: ViewUtilLib.getBackgroundColorSnackBarAzul()
       );

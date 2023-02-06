@@ -38,7 +38,7 @@ Based on: Flutter UI Challenges by Many - https://github.com/lohanidamodar/flutt
 import 'package:flutter/material.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_pdv.dart';
@@ -57,10 +57,10 @@ class EfetuaPagamentoPage extends StatefulWidget {
   const EfetuaPagamentoPage({Key? key, this.title}) : super(key: key);
 
   @override
-  _EfetuaPagamentoPageState createState() => _EfetuaPagamentoPageState();
+  EfetuaPagamentoPageState createState() => EfetuaPagamentoPageState();
 }
 
-class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
+class EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
   final _valorController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: Sessao.vendaAtual!.valorFinal ?? 0);
   
   final _tipoPagamentoFoco = FocusNode();
@@ -95,7 +95,7 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
     Sessao.listaDadosPagamento.clear();
     _valorFoco.requestFocus();        
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _zerarTotalRecebido());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _zerarTotalRecebido());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -486,11 +486,6 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
     return tipoFiltrado[0].descricao;
   }
 
-  bool _getPagamentoGeraParcelas(PdvTotalTipoPagamento itemPagamento){
-    final tipoFiltrado = Sessao.listaTipoPagamento!.where( ((tipo) => tipo.id == itemPagamento.idPdvTipoPagamento)).toList();    
-    return tipoFiltrado[0].geraParcelas == 'S';
-  }
-
   void _fechamentoRapido() {
     PdvTotalTipoPagamento itemPagamento = PdvTotalTipoPagamento(
       id: null,
@@ -499,6 +494,7 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
       horaVenda: Biblioteca.formatarHora(DateTime.now()),
       valor: Sessao.vendaAtual!.valorFinal
     );
+    Sessao.listaDadosPagamento.clear();
     Sessao.listaDadosPagamento.add(itemPagamento);
     _atualizarTotais();
     Navigator.pop(context, true);
@@ -506,7 +502,7 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
 
   void _adicionarPagamento() {
     if (_valorController.numberValue > 0) {
-      final pagamentoFiltrado = Sessao.listaDadosPagamento.where(((pagamento) => pagamento.idPdvTipoPagamento == _tipoPagamento!.id)).toList();    
+      final pagamentoFiltrado = Sessao.listaDadosPagamento.where(((pagamento) => pagamento.idPdvTipoPagamento == _tipoPagamento!.id!)).toList();    
       if (pagamentoFiltrado.isEmpty) {
         PdvTotalTipoPagamento itemPagamento = PdvTotalTipoPagamento(
           id: null,
@@ -563,13 +559,52 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
     });    
   }  
 
-  void _confirmar() {
+  Future<void> _confirmar() async {
     _atualizarTotais();
     if (_totalRecebido < Sessao.vendaAtual!.valorFinal!) {
       gerarDialogBoxInformacao(context, 'Valores informados não são suficientes para finalizar a venda.');
     } else {
-      _verificarParcelamento();
+      bool passouFiado = false;
+      final totalFiado = _verificarFiado();
+      if (totalFiado > 0) {
+        if (Sessao.vendaAtual!.idCliente == null) {
+          showInSnackBar("Para o controle de FIADO é preciso informar o cliente na venda.", context);          
+        } else {
+          ClienteFiado clienteFiado = ClienteFiado(
+            id: null,
+            idPdvVendaCabecalho: Sessao.vendaAtual!.id,
+            valorPendente: totalFiado,
+            dataLancamento: Sessao.vendaAtual!.dataVenda,
+            idCliente: Sessao.vendaAtual!.idCliente,
+          );
+          await Sessao.db.clienteFiadoDao.inserir(clienteFiado);
+          passouFiado = true;
+        }
+      }
+      if (passouFiado) {
+        _verificarParcelamento();
+      }
     }
+  }
+
+  bool _getPagamentoFiado(PdvTotalTipoPagamento itemPagamento){
+    final tipoFiltrado = Sessao.listaTipoPagamento!.where( ((tipo) => tipo.id == itemPagamento.idPdvTipoPagamento)).toList();    
+    return tipoFiltrado[0].codigo == '99';
+  }
+
+  double _verificarFiado() {
+    double totalFiado = 0;
+    for (var itemPagamento in Sessao.listaDadosPagamento) {
+      if (_getPagamentoFiado(itemPagamento)) {
+        totalFiado = totalFiado + itemPagamento.valor!;
+      }
+    }
+    return totalFiado;
+  }
+
+  bool _getPagamentoGeraParcelas(PdvTotalTipoPagamento itemPagamento){
+    final tipoFiltrado = Sessao.listaTipoPagamento!.where( ((tipo) => tipo.id == itemPagamento.idPdvTipoPagamento)).toList();    
+    return tipoFiltrado[0].geraParcelas == 'S';
   }
 
   void _verificarParcelamento() async {
@@ -583,6 +618,7 @@ class _EfetuaPagamentoPageState extends State<EfetuaPagamentoPage> {
       bool? finalizouParcelamento = await Navigator.of(context)
         .push(MaterialPageRoute(
             builder: (BuildContext context) => ParcelamentoReceitasPage(title: 'Parcelamento da Venda', totalParcelamento: totalParcelamento,)));
+      if (!mounted) return;
       if (finalizouParcelamento ?? false) {
         Navigator.pop(context, true);
       } else {

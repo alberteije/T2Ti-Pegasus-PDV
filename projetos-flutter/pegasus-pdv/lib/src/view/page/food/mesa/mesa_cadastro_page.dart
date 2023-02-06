@@ -37,7 +37,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/material.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 
@@ -50,10 +50,10 @@ class MesaCadastroPage extends StatefulWidget {
   final Mesa mesa;
 
   @override
-  _MesaCadastroPageState createState() => _MesaCadastroPageState();
+  MesaCadastroPageState createState() => MesaCadastroPageState();
 }
 
-class _MesaCadastroPageState extends State<MesaCadastroPage> {
+class MesaCadastroPageState extends State<MesaCadastroPage> {
   Mesa? mesa;
 
   @override

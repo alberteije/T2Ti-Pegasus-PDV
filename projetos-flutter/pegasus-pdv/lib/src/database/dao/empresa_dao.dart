@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'empresa_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           Empresas,
 		])
 class EmpresaDao extends DatabaseAccessor<AppDatabase> with _$EmpresaDaoMixin {
@@ -57,9 +57,9 @@ class EmpresaDao extends DatabaseAccessor<AppDatabase> with _$EmpresaDaoMixin {
   }
 
   Future<List<Empresa>?> consultarListaFiltro(String campo, String valor) async {
-    listaEmpresa = await (customSelect("SELECT * FROM EMPRESA WHERE " + campo + " like '%" + valor + "%'", 
+    listaEmpresa = await (customSelect("SELECT * FROM EMPRESA WHERE $campo like '%$valor%'", 
                                 readsFrom: { empresas }).map((row) {
-                                  return Empresa.fromData(row.data, db);  
+                                  return Empresa.fromData(row.data);  
                                 }).get());
     return listaEmpresa;
   }
@@ -72,17 +72,24 @@ class EmpresaDao extends DatabaseAccessor<AppDatabase> with _$EmpresaDaoMixin {
     return objetoDaSessao;
   } 
 
-  Future<int> inserir(Insertable<Empresa> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from EMPRESA").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(Empresa pObjeto) {
     return transaction(() async {
-      final empresa = removerDomains(pObjeto as Empresa);
+      final empresa = removerDomains(pObjeto);
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(empresas).insert(empresa);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Empresa> pObjeto, bool atualizarUfTributacao) {
+  Future<bool> alterar(Empresa pObjeto, bool atualizarUfTributacao) {
     return transaction(() async {
-      final empresa = removerDomains(pObjeto as Empresa);
+      final empresa = removerDomains(pObjeto);
       // atualizar a UF da tributação
       if (atualizarUfTributacao) {
         await db.tributIcmsUfDao.atualizarUf(pObjeto.uf!);
@@ -91,7 +98,7 @@ class EmpresaDao extends DatabaseAccessor<AppDatabase> with _$EmpresaDaoMixin {
     });    
   } 
 
-  Future<int> excluir(Insertable<Empresa> pObjeto) {
+  Future<int> excluir(Empresa pObjeto) {
     return transaction(() async {
       return delete(empresas).delete(pObjeto);
     });    

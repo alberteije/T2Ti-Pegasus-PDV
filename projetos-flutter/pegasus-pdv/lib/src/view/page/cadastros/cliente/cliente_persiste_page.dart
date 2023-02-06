@@ -40,9 +40,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 
-import 'package:pegasus_pdv/src/database/database_classes.dart';
-
 import 'package:pegasus_pdv/src/infra/infra.dart';
+
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/view/shared/dropdown_lista.dart';
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
@@ -61,10 +61,10 @@ class ClientePersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ClientePersistePageState createState() => _ClientePersistePageState();
+  ClientePersistePageState createState() => ClientePersistePageState();
 }
 
-class _ClientePersistePageState extends State<ClientePersistePage> {
+class ClientePersistePageState extends State<ClientePersistePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -109,33 +109,37 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _telefoneController = MaskedTextController(
+    final telefoneController = MaskedTextController(
       mask: Constantes.mascaraTELEFONE,
       text: cliente?.telefone ?? '',
     );
-    final _celularController = MaskedTextController(
+    final celularController = MaskedTextController(
       mask: Constantes.mascaraTELEFONE,
       text: cliente?.celular ?? '',
     );
-    final _cepController = MaskedTextController(
+    final cepController = MaskedTextController(
       mask: Constantes.mascaraCEP,
       text: cliente?.cep ?? '',
     );
-    final _cpfController = MaskedTextController(
+    final cpfController = MaskedTextController(
       mask: Constantes.mascaraCPF,
       text: cliente?.cpfCnpj?? '',
     );
-    final _cnpjController = MaskedTextController(
+    final cnpjController = MaskedTextController(
       mask: Constantes.mascaraCNPJ,
       text: cliente?.cpfCnpj ?? '',
     );
-    final _quantidadeFidelidadeController = MaskedTextController(
+    final quantidadeFidelidadeController = MaskedTextController(
       mask: Constantes.mascaraQUANTIDADE_INTEIRO,
       text: cliente?.fidelidadeQuantidade?.toString() ?? '0',
     );    
-    final _valorFidelidadeController = MoneyMaskedTextController(
+    final valorFidelidadeController = MoneyMaskedTextController(
       precision: Constantes.decimaisValor, 
       initialValue: cliente?.fidelidadeValor ?? 0
+    );
+    final valorTetoFiadoController = MoneyMaskedTextController(
+      precision: Constantes.decimaisValor, 
+      initialValue: cliente?.fiadoValorTeto ?? 0
     );
 
     return FocusableActionDetector(
@@ -310,7 +314,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                               child: TextFormField(
                                 maxLength: cliente?.tipoPessoa == 'Física' ? 14 : 18,
                                 keyboardType: TextInputType.number,
-                                controller: cliente?.tipoPessoa == 'Física' ? _cpfController : _cnpjController,
+                                controller: cliente?.tipoPessoa == 'Física' ? cpfController : cnpjController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Cpf Cnpj',
                                   'Cpf / Cnpj',
@@ -571,7 +575,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                               child: TextFormField(
                                 maxLength: 9,
                                 keyboardType: TextInputType.number,
-                                controller: _cepController,
+                                controller: cepController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Cep',
                                   'Cep',
@@ -693,7 +697,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                               child: TextFormField(
                                 maxLength: 14,
                                 keyboardType: TextInputType.number,
-                                controller: _telefoneController,
+                                controller: telefoneController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Telefone',
                                   'Telefone',
@@ -714,7 +718,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                               child: TextFormField(
                                 maxLength: 14,
                                 keyboardType: TextInputType.number,
-                                controller: _celularController,
+                                controller: celularController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Celular',
                                   'Celular',
@@ -735,21 +739,45 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                         height: 60,
                         children: <BootstrapCol>[
                           BootstrapCol(
-                            sizes: 'col-12',
-                            child: TextFormField(
-                              maxLength: 50,
-                              maxLines: 1,
-                              initialValue: cliente?.contato ?? '',
-                              decoration: getInputDecoration(
-                                'Conteúdo para o campo Contato',
-                                'Contato',
-                                false),
-                              onSaved: (String? value) {
-                              },
-                              onChanged: (text) {
-                                cliente = cliente!.copyWith(contato: text);
-                                _formFoiAlterado = true;
-                              },
+                            sizes: 'col-12 col-md-6',
+                            child: Padding(
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
+                              child: TextFormField(
+                                maxLength: 50,
+                                maxLines: 1,
+                                initialValue: cliente?.contato ?? '',
+                                decoration: getInputDecoration(
+                                  'Conteúdo para o campo Contato',
+                                  'Contato',
+                                  false),
+                                onSaved: (String? value) {
+                                },
+                                onChanged: (text) {
+                                  cliente = cliente!.copyWith(contato: text);
+                                  _formFoiAlterado = true;
+                                },
+                              ),
+                            ),
+                          ),
+                          BootstrapCol(
+                            sizes: 'col-12 col-md-6',
+                            child: Padding(
+                              padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
+                              child: TextFormField(
+                                keyboardType: TextInputType.number,
+                                textAlign: TextAlign.end,
+                                controller: valorTetoFiadoController,
+                                decoration: getInputDecoration(
+                                  'Valor do Teto para Venda no Fiado',
+                                  'Valor Teto Fiado',
+                                  false,),
+                                onSaved: (String? value) {
+                                },
+                                onChanged: (text) {
+                                  cliente = cliente!.copyWith(fiadoValorTeto: valorTetoFiadoController.numberValue);
+                                  _formFoiAlterado = true;
+                                },
+                              ),
                             ),
                           ),
                         ],
@@ -801,7 +829,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                             child: TextFormField(
                               keyboardType: TextInputType.number,
                               textAlign: TextAlign.end,
-                              controller: _quantidadeFidelidadeController,
+                              controller: quantidadeFidelidadeController,
                               decoration: getInputDecoration(
                                 'Quantidade de Vezes para Ativar a Fidelidade',
                                 'Quantidade',
@@ -810,7 +838,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                               onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                cliente = cliente!.copyWith(fidelidadeQuantidade: int.tryParse(_quantidadeFidelidadeController.text));
+                                cliente = cliente!.copyWith(fidelidadeQuantidade: int.tryParse(quantidadeFidelidadeController.text));
                                 _formFoiAlterado = true;
                               },
                             ),
@@ -820,7 +848,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                             child: TextFormField(
                               keyboardType: TextInputType.number,
                               textAlign: TextAlign.end,
-                              controller: _valorFidelidadeController,
+                              controller: valorFidelidadeController,
                               decoration: getInputDecoration(
                                 'Valor Atingido para Ativar a Fidelidade',
                                 'Valor',
@@ -829,7 +857,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
                               onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                cliente = cliente!.copyWith(fidelidadeValor: _valorFidelidadeController.numberValue);
+                                cliente = cliente!.copyWith(fidelidadeValor: valorFidelidadeController.numberValue);
                                 _formFoiAlterado = true;
                               },
                             ),
@@ -875,7 +903,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
           Sessao.db.clienteDao.alterar(cliente!);
         } else {
           Sessao.db.clienteDao.inserir(cliente!);
-       }
+        }
         Navigator.of(context).pop();
       });
     }
@@ -894,6 +922,7 @@ class _ClientePersistePageState extends State<ClientePersistePage> {
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
       await Sessao.db.clienteDao.excluir(widget.cliente!);
+      if (!mounted) return;
       Navigator.of(context).pop();
     });
   }  

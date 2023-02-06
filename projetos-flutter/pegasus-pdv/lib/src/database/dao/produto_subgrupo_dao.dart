@@ -33,14 +33,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'dart:convert';
+
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 part 'produto_subgrupo_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           ProdutoSubgrupos,
           ProdutoGrupos,
 		])
@@ -58,17 +61,17 @@ class ProdutoSubgrupoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoSub
   }  
 
   Future<List<ProdutoSubgrupo>?> consultarListaFiltro(String campo, String valor) async {
-    listaProdutoSubgrupo = await (customSelect("SELECT * FROM PRODUTO_SUBGRUPO WHERE " + campo + " like '%" + valor + "%'", 
+    listaProdutoSubgrupo = await (customSelect("SELECT * FROM PRODUTO_SUBGRUPO WHERE $campo like '%$valor%'", 
                                 readsFrom: { produtoSubgrupos }).map((row) {
-                                  return ProdutoSubgrupo.fromData(row.data, db);  
+                                  return ProdutoSubgrupo.fromData(row.data);  
                                 }).get());
     return listaProdutoSubgrupo;
   }
     
   Future<ProdutoSubgrupo?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM PRODUTO_SUBGRUPO WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM PRODUTO_SUBGRUPO WHERE $campo = '$valor'", 
                                 readsFrom: { produtoSubgrupos }).map((row) {
-                                  return ProdutoSubgrupo.fromData(row.data, db);  
+                                  return ProdutoSubgrupo.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -81,7 +84,7 @@ class ProdutoSubgrupoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoSub
     if (campo != null && campo != '') {      
       final coluna = produtoSubgrupos.$columns.where(((coluna) => coluna.$name == campo)).first;
       if (coluna is TextColumn) {
-        consulta.where((coluna as TextColumn).like('%'  + valor + '%'));
+        consulta.where((coluna as TextColumn).like('%$valor%'));
       } else if (coluna is IntColumn) {
         consulta.where(coluna.equals(int.tryParse(valor)));
       } else if (coluna is RealColumn) {
@@ -107,26 +110,41 @@ class ProdutoSubgrupoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoSub
     return (select(produtoSubgrupos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<ProdutoSubgrupo> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from PRODUTO_SUBGRUPO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(ProdutoSubgrupo pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(produtoSubgrupos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<ProdutoSubgrupo> pObjeto) {
+  Future<bool> alterar(ProdutoSubgrupo pObjeto) {
     return transaction(() async {
       return update(produtoSubgrupos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<ProdutoSubgrupo> pObjeto) {
+  Future<int> excluir(ProdutoSubgrupo pObjeto) {
     return transaction(() async {
       return delete(produtoSubgrupos).delete(pObjeto);
     });    
   }
 
-  
+  Future<void> sincronizar(ObjetoSincroniza objetoSincroniza) async {
+    (delete(produtoSubgrupos)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = ProdutoSubgrupo.fromJson(objetoJson);
+      into(produtoSubgrupos).insertOnConflictUpdate(objetoDart);
+    }
+  }
+ 
   
   static List<String> campos = <String>[
     'ID', 

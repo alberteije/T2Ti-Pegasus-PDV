@@ -38,8 +38,9 @@ import 'package:flutter/material.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -53,10 +54,10 @@ class ColaboradorListaPage extends StatefulWidget {
   const ColaboradorListaPage({Key? key}) : super(key: key);
 
   @override
-  _ColaboradorListaPageState createState() => _ColaboradorListaPageState();
+  ColaboradorListaPageState createState() => ColaboradorListaPageState();
 }
 
-class _ColaboradorListaPageState extends State<ColaboradorListaPage> {
+class ColaboradorListaPageState extends State<ColaboradorListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -78,7 +79,7 @@ class _ColaboradorListaPageState extends State<ColaboradorListaPage> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -99,12 +100,12 @@ class _ColaboradorListaPageState extends State<ColaboradorListaPage> {
   
   @override
   Widget build(BuildContext context) {
-    final _listaColaborador = Sessao.db.colaboradorDao.listaColaborador;
+    final listaColaborador = Sessao.db.colaboradorDao.listaColaborador;
 
-    final _ColaboradorDataSource _colaboradorDataSource = _ColaboradorDataSource(_listaColaborador, context, _refrescarTela);
+    final _ColaboradorDataSource colaboradorDataSource = _ColaboradorDataSource(listaColaborador, context, _refrescarTela);
 
     void _sort<T>(Comparable<T>? Function(Colaborador colaborador) getField, int columnIndex, bool ascending) {
-      _colaboradorDataSource._sort<T>(getField, ascending);
+      colaboradorDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -144,7 +145,7 @@ class _ColaboradorListaPageState extends State<ColaboradorListaPage> {
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
-              child: _listaColaborador == null
+              child: listaColaborador == null
               ? const Center(child: CircularProgressIndicator())
               : ListView(
                 padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
@@ -218,7 +219,7 @@ class _ColaboradorListaPageState extends State<ColaboradorListaPage> {
                           _sort<String>((Colaborador colaborador) => colaborador.entregadorVeiculo, columnIndex, ascending),
                       ),
                     ],
-                    source: _colaboradorDataSource,
+                    source: colaboradorDataSource,
                   ),
                 ],
               ),
@@ -308,7 +309,7 @@ class _ColaboradorDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
-        DataCell(Text('${colaborador.id ?? ''}'), onTap: () {
+        DataCell(Text('${colaborador.id}'), onTap: () {
           _detalharColaborador(colaborador, context, refrescarTela);
         }),
         DataCell(Text(colaborador.nome ?? ''), onTap: () {

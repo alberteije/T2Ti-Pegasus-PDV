@@ -36,11 +36,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:flutter/material.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 import 'package:pegasus_pdv/src/view/page/page.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
@@ -51,10 +52,10 @@ class ComandaListaPage extends StatefulWidget {
   const ComandaListaPage({Key? key}) : super(key: key);
 
   @override
-  _ComandaListaPageState createState() => _ComandaListaPageState();
+  ComandaListaPageState createState() => ComandaListaPageState();
 }
 
-class _ComandaListaPageState extends State<ComandaListaPage> {
+class ComandaListaPageState extends State<ComandaListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -80,7 +81,7 @@ class _ComandaListaPageState extends State<ComandaListaPage> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
   
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -99,12 +100,12 @@ class _ComandaListaPageState extends State<ComandaListaPage> {
   
   @override
   Widget build(BuildContext context) {
-    final _listaComandaMontado = Sessao.db.comandaDao.listaComandaMontado;
+    final listaComandaMontado = Sessao.db.comandaDao.listaComandaMontado;
 
-    final _ComandaDataSource _comandaDataSource = _ComandaDataSource(_listaComandaMontado, context, _refrescarTela);
+    final _ComandaDataSource comandaDataSource = _ComandaDataSource(listaComandaMontado, context, _refrescarTela);
   
     void _sort<T>(Comparable<T>? Function(ComandaMontado comandaMontado) getField, int columnIndex, bool ascending) {
-      _comandaDataSource._sort<T>(getField, ascending);
+      comandaDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -322,7 +323,7 @@ class _ComandaListaPageState extends State<ComandaListaPage> {
                           _sort<num>((ComandaMontado comandaMontado) => comandaMontado.comanda!.valorPorPessoa, columnIndex, ascending),
                       ),
                     ],
-                    source: _comandaDataSource,
+                    source: comandaDataSource,
                   ),
                 ],
               ),
@@ -363,7 +364,6 @@ class _ComandaListaPageState extends State<ComandaListaPage> {
     setState(() {
     });
   }
-
 }
 
 /// codigo referente a fonte de dados
@@ -414,7 +414,7 @@ class _ComandaDataSource extends DataTableSource {
       }),
       index: index,
       cells: <DataCell>[
-        DataCell(Text(comanda.id?.toString() ?? ''), onTap: () {
+        DataCell(Text(comanda.id.toString()), onTap: () {
           _detalharComanda(comandaMontado, context, refrescarTela);
         }),
         DataCell(Text(comandaMontado.colaborador?.nome ?? ''), onTap: () {

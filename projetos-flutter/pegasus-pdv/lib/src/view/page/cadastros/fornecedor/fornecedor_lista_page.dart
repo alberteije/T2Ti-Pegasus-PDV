@@ -41,7 +41,8 @@ import 'package:pegasus_pdv/src/database/database_classes.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
@@ -54,10 +55,10 @@ class FornecedorListaPage extends StatefulWidget {
   const FornecedorListaPage({Key? key}) : super(key: key);
 
   @override
-  _FornecedorListaPageState createState() => _FornecedorListaPageState();
+  FornecedorListaPageState createState() => FornecedorListaPageState();
 }
 
-class _FornecedorListaPageState extends State<FornecedorListaPage> {
+class FornecedorListaPageState extends State<FornecedorListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -79,7 +80,7 @@ class _FornecedorListaPageState extends State<FornecedorListaPage> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -100,12 +101,12 @@ class _FornecedorListaPageState extends State<FornecedorListaPage> {
   
   @override
   Widget build(BuildContext context) {
-    final _listaFornecedor = Sessao.db.fornecedorDao.listaFornecedor;
+    final listaFornecedor = Sessao.db.fornecedorDao.listaFornecedor;
 
-    final _FornecedorDataSource _fornecedorDataSource = _FornecedorDataSource(_listaFornecedor, context, _refrescarTela);
+    final _FornecedorDataSource fornecedorDataSource = _FornecedorDataSource(listaFornecedor, context, _refrescarTela);
 
     void _sort<T>(Comparable<T>? Function(Fornecedor fornecedor) getField, int columnIndex, bool ascending) {
-      _fornecedorDataSource._sort<T>(getField, ascending);
+      fornecedorDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -145,7 +146,7 @@ class _FornecedorListaPageState extends State<FornecedorListaPage> {
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
-              child: _listaFornecedor == null
+              child: listaFornecedor == null
               ? const Center(child: CircularProgressIndicator())
               : ListView(
                 padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
@@ -307,7 +308,7 @@ class _FornecedorListaPageState extends State<FornecedorListaPage> {
                           _sort<String>((Fornecedor fornecedor) => fornecedor.contato, columnIndex, ascending),
                       ),
                     ],
-                    source: _fornecedorDataSource,
+                    source: fornecedorDataSource,
                   ),
                 ],
               ),
@@ -398,7 +399,7 @@ class _FornecedorDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
-        DataCell(Text('${fornecedor.id ?? ''}'), onTap: () {
+        DataCell(Text('${fornecedor.id}'), onTap: () {
           _detalharFornecedor(fornecedor, context, refrescarTela);
         }),
         DataCell(Text(fornecedor.tipoPessoa ?? ''), onTap: () {

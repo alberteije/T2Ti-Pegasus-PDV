@@ -40,6 +40,7 @@ import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:pegasus_pdv/src/controller/controller.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -70,10 +71,10 @@ class CompraPedidoCabecalhoPage extends StatefulWidget {
   const CompraPedidoCabecalhoPage({this.compraPedidoCabecalhoMontado, this.title, this.operacao, Key? key}): super(key: key);
 
   @override
-  _CompraPedidoCabecalhoPageState createState() => _CompraPedidoCabecalhoPageState();
+  CompraPedidoCabecalhoPageState createState() => CompraPedidoCabecalhoPageState();
 }
 
-class _CompraPedidoCabecalhoPageState extends State<CompraPedidoCabecalhoPage> with SingleTickerProviderStateMixin {
+class CompraPedidoCabecalhoPageState extends State<CompraPedidoCabecalhoPage> with SingleTickerProviderStateMixin {
   TabController? _abasController;
   String _estiloBotoesAba = 'iconsAndText';
 
@@ -209,8 +210,8 @@ class _CompraPedidoCabecalhoPageState extends State<CompraPedidoCabecalhoPage> w
         } else {
           await Sessao.db.compraPedidoCabecalhoDao.inserir(CompraPedidoCabecalhoController.compraPedidoCabecalho!, CompraPedidoCabecalhoController.listaCompraDetalhe);
         }
-        Navigator.pop(context);
       });
+      Navigator.pop(context);
     } else {
       showInSnackBar("Por favor, corrija os erros apresentados antes de continuar.", context);
     }

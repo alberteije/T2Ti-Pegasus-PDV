@@ -36,11 +36,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:flutter/material.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
@@ -53,10 +54,10 @@ class ComandaObservacaoPadraoListaPage extends StatefulWidget {
   const ComandaObservacaoPadraoListaPage({Key? key}) : super(key: key);
 
   @override
-  _ComandaObservacaoPadraoListaPageState createState() => _ComandaObservacaoPadraoListaPageState();
+  ComandaObservacaoPadraoListaPageState createState() => ComandaObservacaoPadraoListaPageState();
 }
 
-class _ComandaObservacaoPadraoListaPageState extends State<ComandaObservacaoPadraoListaPage> {
+class ComandaObservacaoPadraoListaPageState extends State<ComandaObservacaoPadraoListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -78,7 +79,7 @@ class _ComandaObservacaoPadraoListaPageState extends State<ComandaObservacaoPadr
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
   
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -99,12 +100,12 @@ class _ComandaObservacaoPadraoListaPageState extends State<ComandaObservacaoPadr
   
   @override
   Widget build(BuildContext context) {
-    final _listaComandaObservacaoPadrao = Sessao.db.comandaObservacaoPadraoDao.listaComandaObservacaoPadrao;
+    final listaComandaObservacaoPadrao = Sessao.db.comandaObservacaoPadraoDao.listaComandaObservacaoPadrao;
 
-    final _ComandaObservacaoPadraoDataSource _comandaObservacaoPadraoDataSource = _ComandaObservacaoPadraoDataSource(_listaComandaObservacaoPadrao, context, _refrescarTela);
+    final _ComandaObservacaoPadraoDataSource comandaObservacaoPadraoDataSource = _ComandaObservacaoPadraoDataSource(listaComandaObservacaoPadrao, context, _refrescarTela);
   
     void _sort<T>(Comparable<T>? Function(ComandaObservacaoPadrao comandaObservacaoPadrao) getField, int columnIndex, bool ascending) {
-      _comandaObservacaoPadraoDataSource._sort<T>(getField, ascending);
+      comandaObservacaoPadraoDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -144,7 +145,7 @@ class _ComandaObservacaoPadraoListaPageState extends State<ComandaObservacaoPadr
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
-              child: _listaComandaObservacaoPadrao.isEmpty
+              child: listaComandaObservacaoPadrao.isEmpty
               ? const Center(child: CircularProgressIndicator())
               : ListView(
                 padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
@@ -180,7 +181,7 @@ class _ComandaObservacaoPadraoListaPageState extends State<ComandaObservacaoPadr
                           _sort<String>((ComandaObservacaoPadrao comandaObservacaoPadrao) => comandaObservacaoPadrao.descricao, columnIndex, ascending),
                       ),
                     ],
-                    source: _comandaObservacaoPadraoDataSource,
+                    source: comandaObservacaoPadraoDataSource,
                   ),
                 ],
               ),
@@ -268,7 +269,7 @@ class _ComandaObservacaoPadraoDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
-        DataCell(Text(comandaObservacaoPadrao.id?.toString() ?? ''), onTap: () {
+        DataCell(Text(comandaObservacaoPadrao.id.toString()), onTap: () {
           _detalharComandaObservacaoPadrao(comandaObservacaoPadrao, context, refrescarTela);
         }),
         DataCell(Text(comandaObservacaoPadrao.codigo ?? ''), onTap: () {

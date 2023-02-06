@@ -33,14 +33,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'dart:convert';
+
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 part 'tribut_configura_of_gt_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           TributConfiguraOfGts,
           TributIcmsUfs,
           TributCofins,
@@ -62,10 +65,18 @@ class TributConfiguraOfGtDao extends DatabaseAccessor<AppDatabase> with _$Tribut
     return listaTributConfiguraOfGt;
   }
 
+  Future<List<TributCofins>> consultarListaCofins() => select(tributCofinss).get();
+
+  Future<List<TributIcmsUf>> consultarListaIcms() => select(tributIcmsUfs).get();
+
+  Future<List<TributIpi>> consultarListaIpi() => select(tributIpis).get();
+
+  Future<List<TributPis>> consultarListaPis() => select(tributPiss).get();
+
   Future<List<TributConfiguraOfGt>?> consultarListaFiltro(String campo, String valor) async {
-    listaTributConfiguraOfGt = await (customSelect("SELECT * FROM TRIBUT_CONFIGURA_OF_GT WHERE " + campo + " like '%" + valor + "%'", 
+    listaTributConfiguraOfGt = await (customSelect("SELECT * FROM TRIBUT_CONFIGURA_OF_GT WHERE $campo like '%$valor%'", 
                                 readsFrom: { tributConfiguraOfGts }).map((row) {
-                                  return TributConfiguraOfGt.fromData(row.data, db);  
+                                  return TributConfiguraOfGt.fromData(row.data);  
                                 }).get());
     return listaTributConfiguraOfGt;
   }
@@ -156,9 +167,16 @@ class TributConfiguraOfGtDao extends DatabaseAccessor<AppDatabase> with _$Tribut
     return retorno;
   } 
 
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from TRIBUT_CONFIGURA_OF_GT").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
   Future<int> inserir(TributConfiguraOfGtMontado? pObjeto) {
     return transaction(() async {
       final tributacao = removerDomains(pObjeto!);
+      final maxId = await ultimoId();
+      tributacao.tributConfiguraOfGt = tributacao.tributConfiguraOfGt!.copyWith(id: maxId + 1);
       final idInserido = await into(tributConfiguraOfGts).insert(tributacao.tributConfiguraOfGt!);
       tributacao.tributConfiguraOfGt = tributacao.tributConfiguraOfGt!.copyWith(id: idInserido);
       await inserirFilhos(tributacao);
@@ -183,11 +201,16 @@ class TributConfiguraOfGtDao extends DatabaseAccessor<AppDatabase> with _$Tribut
   }
 
   Future<void> inserirFilhos(TributConfiguraOfGtMontado pObjeto) async {
-    pObjeto.tributIcmsUf = pObjeto.tributIcmsUf!.copyWith(idTributConfiguraOfGt: pObjeto.tributConfiguraOfGt!.id);
-    pObjeto.tributPis = pObjeto.tributPis!.copyWith(idTributConfiguraOfGt: pObjeto.tributConfiguraOfGt!.id);
-    pObjeto.tributCofins = pObjeto.tributCofins!.copyWith(idTributConfiguraOfGt: pObjeto.tributConfiguraOfGt!.id);
+    var maxId = await db.tributIcmsUfDao.ultimoId();
+    pObjeto.tributIcmsUf = pObjeto.tributIcmsUf!.copyWith(id: maxId+1, idTributConfiguraOfGt: pObjeto.tributConfiguraOfGt!.id!);
     await into(tributIcmsUfs).insert(pObjeto.tributIcmsUf!);  
+
+    maxId = await db.tributPisDao.ultimoId();
+    pObjeto.tributPis = pObjeto.tributPis!.copyWith(id: maxId+1, idTributConfiguraOfGt: pObjeto.tributConfiguraOfGt!.id!);
     await into(tributPiss).insert(pObjeto.tributPis!);  
+
+    maxId = await db.tributCofinsDao.ultimoId();
+    pObjeto.tributCofins = pObjeto.tributCofins!.copyWith(id: maxId+1, idTributConfiguraOfGt: pObjeto.tributConfiguraOfGt!.id!);
     await into(tributCofinss).insert(pObjeto.tributCofins!);  
   }
   
@@ -195,6 +218,51 @@ class TributConfiguraOfGtDao extends DatabaseAccessor<AppDatabase> with _$Tribut
     await (delete(tributIcmsUfs)..where((t) => t.idTributConfiguraOfGt.equals(pObjeto.tributConfiguraOfGt!.id!))).go();
     await (delete(tributPiss)..where((t) => t.idTributConfiguraOfGt.equals(pObjeto.tributConfiguraOfGt!.id!))).go();
     await (delete(tributCofinss)..where((t) => t.idTributConfiguraOfGt.equals(pObjeto.tributConfiguraOfGt!.id!))).go();
+  }
+
+  Future<void> sincronizar(ObjetoSincroniza objetoSincroniza) async {
+    (delete(tributConfiguraOfGts)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = TributConfiguraOfGt.fromJson(objetoJson);
+      into(tributConfiguraOfGts).insertOnConflictUpdate(objetoDart);
+    }
+  }
+
+  Future<void> sincronizarCofins(ObjetoSincroniza objetoSincroniza) async {
+    (delete(tributCofinss)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = TributCofins.fromJson(objetoJson);
+      into(tributCofinss).insertOnConflictUpdate(objetoDart);
+    }
+  }
+
+  Future<void> sincronizarIcms(ObjetoSincroniza objetoSincroniza) async {
+    (delete(tributIcmsUfs)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = TributIcmsUf.fromJson(objetoJson);
+      into(tributIcmsUfs).insertOnConflictUpdate(objetoDart);
+    }
+  }
+
+  Future<void> sincronizarIpi(ObjetoSincroniza objetoSincroniza) async {
+    (delete(tributIpis)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = TributIpi.fromJson(objetoJson);
+      into(tributIpis).insertOnConflictUpdate(objetoDart);
+    }
+  }
+
+  Future<void> sincronizarPis(ObjetoSincroniza objetoSincroniza) async {
+    (delete(tributPiss)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = TributPis.fromJson(objetoJson);
+      into(tributPiss).insertOnConflictUpdate(objetoDart);
+    }
   }
 
   TributConfiguraOfGtMontado removerDomains(TributConfiguraOfGtMontado tributacao) {

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 /*
 Title: T2Ti ERP 3.0                                                                
 Description: Página de configuração - Aba NFC-e
@@ -57,10 +59,10 @@ class ConfiguracaoAbaNfce extends StatefulWidget {
 
   
   @override
-  _ConfiguracaoAbaNfceState createState() => _ConfiguracaoAbaNfceState();
+  ConfiguracaoAbaNfceState createState() => ConfiguracaoAbaNfceState();
 }
 
-class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
+class ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
   String? _arquivoCertificadoBase64;
   String  _textoInformativo = '';
   String _ambiente = Sessao.configuracaoNfce!.webserviceAmbiente?.toString() ?? '2';
@@ -340,8 +342,8 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
                 key: GlobalKey(),
                 title: 
                 Biblioteca.isTelaPequena(context)! 
-                ? Text('Formato Página: ' + _formatoPagina)
-                : Text('Formato da Página: ' + _formatoPagina),                             
+                ? Text('Formato Página: $_formatoPagina')
+                : Text('Formato da Página: $_formatoPagina'),                             
                 backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.025),
                 children: <Widget>[
                   ListTile(
@@ -1100,6 +1102,7 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
           onPressed: () async {
             gerarDialogBoxEspera(context);
             await _salvar();
+            if (!mounted) return;
             Sessao.fecharDialogBoxEspera(context);
           }
         ),
@@ -1122,9 +1125,7 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
             } else if (_senhaCertificadoController.text == '') {
               gerarDialogBoxInformacao(context, 'Informe a senha do Certificado Digital.');
             } else {
-              gerarDialogBoxEspera(context);
               await _enviarCertificado();
-              Sessao.fecharDialogBoxEspera(context);
             }
           }
         ),
@@ -1142,6 +1143,7 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
     final retorno = await Sessao.db.nfeNumeroDao.alterar(Sessao.numeroNfce!);
     if (retorno) {
       Sessao.numeroNfce = await Sessao.db.nfeNumeroDao.consultarObjeto(1);
+      if (!mounted) return;
       showInSnackBar('Dados atualizados com sucesso!', context, corFundo: Colors.blue);
     }
   }
@@ -1161,8 +1163,8 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
     }    
     Sessao.configuracaoNfce = 
     Sessao.configuracaoNfce!.copyWith(
-      caminhoSalvarPdf: 'C:\\ACBrMonitor\\'+Sessao.empresa!.cnpj!+'\\PDF\\',
-      caminhoSalvarXml: 'C:\\ACBrMonitor\\'+Sessao.empresa!.cnpj!+'\\DFes\\',
+      caminhoSalvarPdf: 'C:\\ACBrMonitor\\${Sessao.empresa!.cnpj!}\\PDF\\',
+      caminhoSalvarXml: 'C:\\ACBrMonitor\\${Sessao.empresa!.cnpj!}\\DFes\\',
       webserviceAmbiente: int.tryParse(_ambiente),
       formatoImpressaoDanfe: int.tryParse(_formatoImpressaoDanfe),
       nfceModeloImpressao: _formatoPagina,
@@ -1205,19 +1207,24 @@ class _ConfiguracaoAbaNfceState extends State<ConfiguracaoAbaNfce> {
   Future _enviarCertificado() async {
     // use para uma release de testes
     // showInSnackBar('Essa é uma versão de Testes para desenvolvedores. Configure o ACBrMonitor manualmente.', context, corFundo: Colors.blue);
-    NfceService nfceService = NfceService();
-    final retorno = await nfceService.atualizarCertificadoDigital(_arquivoCertificadoBase64, _senhaCertificadoController.text);        
-    if (retorno) {
-      Sessao.configuracaoNfce = 
-      Sessao.configuracaoNfce!.copyWith(
-        certificadoDigitalSerie: _nomeCertificadoController.text,
-        certificadoDigitalSenha: Constantes.encrypter.encrypt(_senhaCertificadoController.text, iv: Constantes.iv).base64,
-      );
-      await Sessao.db.nfeConfiguracaoDao.alterar(Sessao.configuracaoNfce!);
-      showInSnackBar('Certificado enviado com sucesso.', context, corFundo: Colors.blue);
-    } else {
-      showInSnackBar('Ocorreu um problema ao tentar enviar o certificado para o Servidor.', context, corFundo: Colors.red);
-    }
+    gerarDialogBoxConfirmacao(context, 'Deseja enviar o certificado selecionado para o servidor?', () async {
+      gerarDialogBoxEspera(context);
+      NfceService nfceService = NfceService();
+      final retorno = await nfceService.atualizarCertificadoDigital(_arquivoCertificadoBase64!, _senhaCertificadoController.text);        
+      if (retorno) {
+        Sessao.configuracaoNfce = 
+        Sessao.configuracaoNfce!.copyWith(
+          certificadoDigitalSerie: _nomeCertificadoController.text,
+          certificadoDigitalSenha: Constantes.encrypter.encrypt(_senhaCertificadoController.text, iv: Constantes.iv).base64,
+        );
+        await Sessao.db.nfeConfiguracaoDao.alterar(Sessao.configuracaoNfce!);
+        Sessao.fecharDialogBoxEspera(context);
+        showInSnackBar('Certificado enviado com sucesso.', context, corFundo: Colors.blue);
+      } else {
+        Sessao.fecharDialogBoxEspera(context);
+        showInSnackBar('Ocorreu um problema ao tentar enviar o certificado para o Servidor.', context, corFundo: Colors.red);
+      }
+    });
   }
 
 }

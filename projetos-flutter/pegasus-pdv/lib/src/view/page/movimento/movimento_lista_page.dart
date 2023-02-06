@@ -35,7 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -49,10 +49,10 @@ class MovimentoListaPage extends StatefulWidget {
   const MovimentoListaPage({Key? key}) : super(key: key);
 
   @override
-  _MovimentoListaPageState createState() => _MovimentoListaPageState();
+  MovimentoListaPageState createState() => MovimentoListaPageState();
 }
 
-class _MovimentoListaPageState extends State<MovimentoListaPage> {
+class MovimentoListaPageState extends State<MovimentoListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -75,7 +75,7 @@ class _MovimentoListaPageState extends State<MovimentoListaPage> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -89,10 +89,10 @@ class _MovimentoListaPageState extends State<MovimentoListaPage> {
   Widget build(BuildContext context) {
     _listaMovimento = Sessao.db.pdvMovimentoDao.listaMovimento;
 
-    final _PdvMovimentoDataSource _pdvMovimentoDataSource = _PdvMovimentoDataSource(_listaMovimento, context, _refrescarTela);
+    final _PdvMovimentoDataSource pdvMovimentoDataSource = _PdvMovimentoDataSource(_listaMovimento, context, _refrescarTela);
 
     void _sort<T>(Comparable<T>? Function(PdvMovimento pdvMovimento) getField, int columnIndex, bool ascending) {
-      _pdvMovimentoDataSource._sort<T>(getField, ascending);
+      pdvMovimentoDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -268,7 +268,7 @@ class _MovimentoListaPageState extends State<MovimentoListaPage> {
                           _sort<String>((PdvMovimento pdvMovimento) => pdvMovimento.statusMovimento, columnIndex, ascending),
                       ),
                     ],
-                    source: _pdvMovimentoDataSource,
+                    source: pdvMovimentoDataSource,
                   ),
                 ],
               ),
@@ -321,7 +321,7 @@ class _PdvMovimentoDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
-        DataCell(Text('${pdvMovimento.id ?? ''}'), onTap: () {
+        DataCell(Text('${pdvMovimento.id}'), onTap: () {
           _imprimirPdvMovimento(pdvMovimento, context);
         }),
         DataCell(Text(pdvMovimento.dataAbertura != null ? DateFormat('dd/MM/yyyy').format(pdvMovimento.dataAbertura!) : ''), onTap: () {

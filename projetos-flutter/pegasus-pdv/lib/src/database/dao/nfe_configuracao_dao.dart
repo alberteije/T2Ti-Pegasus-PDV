@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'nfe_configuracao_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           NfeConfiguracaos,
 		])
 class NfeConfiguracaoDao extends DatabaseAccessor<AppDatabase> with _$NfeConfiguracaoDaoMixin {
@@ -51,9 +51,9 @@ class NfeConfiguracaoDao extends DatabaseAccessor<AppDatabase> with _$NfeConfigu
   Future<List<NfeConfiguracao>> consultarLista() => select(nfeConfiguracaos).get();
 
   Future<List<NfeConfiguracao>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM NFE_CONFIGURACAO WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM NFE_CONFIGURACAO WHERE $campo like '%$valor%'", 
                                 readsFrom: { nfeConfiguracaos }).map((row) {
-                                  return NfeConfiguracao.fromData(row.data, db);  
+                                  return NfeConfiguracao.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,20 +63,27 @@ class NfeConfiguracaoDao extends DatabaseAccessor<AppDatabase> with _$NfeConfigu
     return (select(nfeConfiguracaos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<NfeConfiguracao> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from NFE_CONFIGURACAO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(NfeConfiguracao pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(nfeConfiguracaos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<NfeConfiguracao> pObjeto) {
+  Future<bool> alterar(NfeConfiguracao pObjeto) {
     return transaction(() async {
       return update(nfeConfiguracaos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<NfeConfiguracao> pObjeto) {
+  Future<int> excluir(NfeConfiguracao pObjeto) {
     return transaction(() async {
       return delete(nfeConfiguracaos).delete(pObjeto);
     });    

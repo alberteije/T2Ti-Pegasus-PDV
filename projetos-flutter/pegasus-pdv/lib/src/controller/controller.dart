@@ -46,4 +46,11 @@ export 'package:pegasus_pdv/src/controller/tributacao/tribut_operacao_fiscal_con
 
 // pdv
 export 'package:pegasus_pdv/src/controller/pdv/nfce_controller.dart';
+export 'package:pegasus_pdv/src/controller/pdv/sat_controller.dart';
 export 'package:pegasus_pdv/src/controller/pdv/venda_controller.dart';
+export 'package:pegasus_pdv/src/controller/pdv/movimento_controller.dart';
+export 'package:pegasus_pdv/src/controller/pdv/sincroniza_controller.dart';
+export 'package:pegasus_pdv/src/controller/pdv/acbr_monitor_controller.dart';
+
+// ifood
+export 'package:pegasus_pdv/src/controller/ifood/ifood_controller.dart';

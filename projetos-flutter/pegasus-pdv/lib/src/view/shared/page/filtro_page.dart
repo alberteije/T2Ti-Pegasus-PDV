@@ -36,20 +36,20 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 
 class FiltroPage extends StatefulWidget {
   final String? title;
   final String? campoPesquisaPadrao;
   final List<String?>? colunas;
-  final bool? filtroPadrao;
+  final bool filtroPadrao;
 
   const FiltroPage({Key? key, 
                   this.title, 
                   this.campoPesquisaPadrao,
                   this.colunas, 
-                  this.filtroPadrao})
+                  required this.filtroPadrao})
       : super(key: key);
 
   @override
@@ -77,7 +77,7 @@ class FiltroPageState extends State<FiltroPage> {
     filtro.dataInicial = DateFormat('yyyy-MM-dd').format(_dataInicial);
     filtro.dataFinal = DateFormat('yyyy-MM-dd').format(_dataFinal);
 
-    if (widget.filtroPadrao!) {
+    if (widget.filtroPadrao) {
       filtro.condicao = 'cont';
     } else {
       filtro.condicao = 'between';
@@ -129,7 +129,7 @@ class FiltroPageState extends State<FiltroPage> {
               ),
               const SizedBox(height: 1.0),
               Visibility(
-                visible: widget.filtroPadrao ?? false,
+                visible: widget.filtroPadrao,
                 child: Container(
                   height: 90.0,
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -152,7 +152,7 @@ class FiltroPageState extends State<FiltroPage> {
               ),
               const SizedBox(height: 20.0),
               Visibility(
-                visible: widget.filtroPadrao ?? false,
+                visible: !widget.filtroPadrao,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -171,7 +171,7 @@ class FiltroPageState extends State<FiltroPage> {
               ),
               const SizedBox(height: 20.0),
               Visibility(
-                visible: widget.filtroPadrao ?? false,
+                visible: !widget.filtroPadrao,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[

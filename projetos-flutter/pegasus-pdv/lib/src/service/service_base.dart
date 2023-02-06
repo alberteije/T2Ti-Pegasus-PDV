@@ -33,18 +33,19 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'package:catcher/catcher.dart';
+
 import 'package:pegasus_pdv/src/infra/infra.dart';
-import 'package:pegasus_pdv/src/model/filtro.dart';
-import 'package:pegasus_pdv/src/model/retorno_json_erro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 class ServiceBase {
   /// define o cabeçalho enviado em todas as requisições que segue com o Token JWT
   static Map<String, String>? cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
-                              ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT} 
-                              : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT};
+                              ? {"content-type": "application/json", "authentication": "Bearer ${Sessao.tokenJWT}"} 
+                              : {"content-type": "application/json", "authorization": "Bearer ${Sessao.tokenJWT}"};
 
   // Servidor ERP
-  static final String _endpoint = Constantes.enderecoServidor! + ':' + Constantes.portaServidor!;// + Constantes.complementoEnderecoServidor;
+  static final String _endpoint = '${Constantes.enderecoServidor!}:${Constantes.portaServidor!}${Constantes.complementoEnderecoServidor!}';
   get endpoint => _endpoint;
   static var _url = '';
   get url => _url;
@@ -53,7 +54,7 @@ class ServiceBase {
   static const String _portaRelatorios = '80';
   static const String _enderecoServidorRelatorios = 'http://8d15a1b958cb.ngrok.io';
   static const String _complementoRelatorios = '/cgi-bin/repwebserver.dll/execute.pdf';
-  static const String _endpointRelatorios = _enderecoServidorRelatorios + ':' + _portaRelatorios + _complementoRelatorios;
+  static const String _endpointRelatorios = '$_enderecoServidorRelatorios:$_portaRelatorios$_complementoRelatorios';
   get endpointRelatorios => _endpointRelatorios;
   static var _urlRelatorios = '';
   get urlRelatorios => _urlRelatorios;
@@ -69,11 +70,11 @@ class ServiceBase {
 
     if (filtro != null) {
       if (filtro.condicao == 'cont') {
-        stringFiltro = '?filter=' + filtro.campo! + '||\$cont' + '||' + filtro.valor!;
+        stringFiltro = '?filter=${filtro.campo!}||\$cont||${filtro.valor!}';
       } else if (filtro.condicao == 'eq') {
-        stringFiltro = '?filter=' + filtro.campo! + '||\$eq' + '||' + filtro.valor!;
+        stringFiltro = '?filter=${filtro.campo!}||\$eq||${filtro.valor!}';
       } else if (filtro.condicao == 'between') {
-        stringFiltro = '?filter=' + filtro.campo! + '||\$between' + '||' + filtro.dataInicial! + ',' + filtro.dataFinal!;
+        stringFiltro = '?filter=${filtro.campo!}||\$between||${filtro.dataInicial!},${filtro.dataFinal!}';
       } else if (filtro.condicao == 'where') { // nesse caso o filtro já foi montado na janela
         if (Constantes.linguagemServidor != 'node') {
           filtro.where = filtro.where!.replaceAll('&filter=', '?');
@@ -94,15 +95,15 @@ class ServiceBase {
       }
 
       if (filtro.condicao == 'cont') {
-        stringFiltro = stringFiltro + filtro.campo! + " LIKE '%25" + filtro.valor! + "%25'";
+        stringFiltro = "$stringFiltro${filtro.campo!} LIKE '%25${filtro.valor!}%25'";
       } else if (filtro.condicao == 'eq') {
-        stringFiltro = stringFiltro + filtro.campo! + ' = ' + filtro.valor!;
+        stringFiltro = '$stringFiltro${filtro.campo!} = ${filtro.valor!}';
       } else if (filtro.condicao == 'between') {
-        stringFiltro = stringFiltro + filtro.campo! + ' between ' + filtro.dataInicial! + ' and ' + filtro.dataFinal!;
+        stringFiltro = '$stringFiltro${filtro.campo!} between ${filtro.dataInicial!} and ${filtro.dataFinal!}';
       }
     }
 
-    var stringParametros = "?reportname=" + entidade + "&aliasname=T2TIERP&username=Admin&password=&ParamFILTRO=" + stringFiltro;
+    var stringParametros = "?reportname=$entidade&aliasname=T2TIERP&username=Admin&password=&ParamFILTRO=$stringFiltro";
     _urlRelatorios = _endpointRelatorios + stringParametros;
   }
 
@@ -111,7 +112,15 @@ class ServiceBase {
   }
 
   Future tratarRetornoErro(String? corpo, Map<String, String>? headers, {Exception? exception}) async {
-    throw ('Erro: ' + DateTime.now().toIso8601String() + ' - Exceção: ' + (exception?.toString() ?? '') + ' - Mensagem: ' + (corpo?.toString() ?? ''));
+    // throw ('Erro: ' + DateTime.now().toIso8601String() + ' - Exceção: ' + (exception?.toString() ?? '') + ' - Mensagem: ' + (corpo?.toString() ?? ''));
+    String erro = 'Erro: ${DateTime.now().toIso8601String()} - Exceção: ${exception?.toString() ?? ''}';
+    StackTrace stack = StackTrace.fromString('Mensagem: ${corpo?.toString() ?? ''}');
+    
+    Catcher.reportCheckedError(
+      erro, 
+      stack
+    );
+
   }
 
 }

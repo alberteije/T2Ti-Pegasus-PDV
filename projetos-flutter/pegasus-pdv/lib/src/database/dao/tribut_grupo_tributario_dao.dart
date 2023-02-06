@@ -33,14 +33,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'dart:convert';
+
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 part 'tribut_grupo_tributario_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           TributGrupoTributarios,
 		])
 class TributGrupoTributarioDao extends DatabaseAccessor<AppDatabase> with _$TributGrupoTributarioDaoMixin {
@@ -56,9 +59,9 @@ class TributGrupoTributarioDao extends DatabaseAccessor<AppDatabase> with _$Trib
     return listaTributGrupoTributario;
   }
   Future<List<TributGrupoTributario>?> consultarListaFiltro(String campo, String valor) async {
-    listaTributGrupoTributario = await (customSelect("SELECT * FROM TRIBUT_GRUPO_TRIBUTARIO WHERE " + campo + " like '%" + valor + "%'", 
+    listaTributGrupoTributario = await (customSelect("SELECT * FROM TRIBUT_GRUPO_TRIBUTARIO WHERE $campo like '%$valor%'", 
                                 readsFrom: { tributGrupoTributarios }).map((row) {
-                                  return TributGrupoTributario.fromData(row.data, db);  
+                                  return TributGrupoTributario.fromData(row.data);  
                                 }).get());
     aplicarDomains();
     return listaTributGrupoTributario;
@@ -70,25 +73,41 @@ class TributGrupoTributarioDao extends DatabaseAccessor<AppDatabase> with _$Trib
     return (select(tributGrupoTributarios)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<TributGrupoTributario> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from TRIBUT_GRUPO_TRIBUTARIO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(TributGrupoTributario pObjeto) {
     return transaction(() async {
-      final grupoTributario = removerDomains(pObjeto as TributGrupoTributario);
+      final grupoTributario = removerDomains(pObjeto);
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(tributGrupoTributarios).insert(grupoTributario);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<TributGrupoTributario> pObjeto) {
+  Future<bool> alterar(TributGrupoTributario pObjeto) {
     return transaction(() async {
-      final grupoTributario = removerDomains(pObjeto as TributGrupoTributario);
+      final grupoTributario = removerDomains(pObjeto);
       return update(tributGrupoTributarios).replace(grupoTributario);
     });    
   } 
 
-  Future<int> excluir(Insertable<TributGrupoTributario> pObjeto) {
+  Future<int> excluir(TributGrupoTributario pObjeto) {
     return transaction(() async {
       return delete(tributGrupoTributarios).delete(pObjeto);
     });    
+  }
+
+  Future<void> sincronizar(ObjetoSincroniza objetoSincroniza) async {
+    (delete(tributGrupoTributarios)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = TributGrupoTributario.fromJson(objetoJson);
+      into(tributGrupoTributarios).insertOnConflictUpdate(objetoDart);
+    }
   }
 
   TributGrupoTributario removerDomains(TributGrupoTributario grupoTributario) {

@@ -33,14 +33,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'dart:convert';
+
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 part 'compra_pedido_detalhe_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           CompraPedidoDetalhes,
           Produtos,
 		])
@@ -52,9 +55,9 @@ class CompraPedidoDetalheDao extends DatabaseAccessor<AppDatabase> with _$Compra
   Future<List<CompraPedidoDetalhe>> consultarLista() => select(compraPedidoDetalhes).get();
 
   Future<List<CompraPedidoDetalhe>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM COMPRA_PEDIDO_DETALHE WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM COMPRA_PEDIDO_DETALHE WHERE $campo like '%$valor%'", 
                                 readsFrom: { compraPedidoDetalhes }).map((row) {
-                                  return CompraPedidoDetalhe.fromData(row.data, db);  
+                                  return CompraPedidoDetalhe.fromData(row.data);  
                                 }).get());
   }
 
@@ -80,23 +83,39 @@ class CompraPedidoDetalheDao extends DatabaseAccessor<AppDatabase> with _$Compra
     return (select(compraPedidoDetalhes)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<CompraPedidoDetalhe> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from COMPRA_PEDIDO_DETALHE").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(CompraPedidoDetalhe pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(compraPedidoDetalhes).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<CompraPedidoDetalhe> pObjeto) {
+  Future<bool> alterar(CompraPedidoDetalhe pObjeto) {
     return transaction(() async {
       return update(compraPedidoDetalhes).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<CompraPedidoDetalhe> pObjeto) {
+  Future<int> excluir(CompraPedidoDetalhe pObjeto) {
     return transaction(() async {
       return delete(compraPedidoDetalhes).delete(pObjeto);
     });    
+  }
+
+  Future<void> sincronizar(ObjetoSincroniza objetoSincroniza) async {
+    (delete(compraPedidoDetalhes)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = CompraPedidoDetalhe.fromJson(objetoJson);
+      into(compraPedidoDetalhes).insertOnConflictUpdate(objetoDart);
+    }
   }
 
   

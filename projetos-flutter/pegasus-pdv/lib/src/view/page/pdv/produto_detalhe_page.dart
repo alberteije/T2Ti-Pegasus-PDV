@@ -55,10 +55,10 @@ class ProdutoDetalhePage extends StatefulWidget {
   const ProdutoDetalhePage({Key? key, this.title, this.item}) : super(key: key);
 
   @override
-  _ProdutoDetalhePageState createState() => _ProdutoDetalhePageState();
+  ProdutoDetalhePageState createState() => ProdutoDetalhePageState();
 }
 
-class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
+class ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
   final _quantidadeController = MoneyMaskedTextController(precision: Constantes.decimaisQuantidade, initialValue: 0);
   final _descontoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: 0);
   final _focusNode = FocusNode();
@@ -212,6 +212,9 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
                                           'Quantidade',
                                           false),
                                   onChanged: (text) {
+                                    widget.item!.pdvVendaDetalhe = widget.item!.pdvVendaDetalhe!.copyWith(
+                                      valorTotalItem: _quantidadeController.numberValue * widget.item!.pdvVendaDetalhe!.valorUnitario!,
+                                    );
                                     _atualizarTotais();
                                   },
                                   onSubmitted: (value) {
@@ -235,6 +238,9 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
                                     if (_descontoController.numberValue >= 100) {
                                       _descontoController.updateValue(99.9);
                                     }
+                                    widget.item!.pdvVendaDetalhe = widget.item!.pdvVendaDetalhe!.copyWith(
+                                      valorTotalItem: _quantidadeController.numberValue * widget.item!.pdvVendaDetalhe!.valorUnitario!,
+                                    );
                                     _atualizarTotais();
                                   },
                                   onSubmitted: (value) {
@@ -383,17 +389,17 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
   }
 
   void _atualizarTotais() {
-    double _valorDesconto = Biblioteca.calcularDesconto(widget.item!.pdvVendaDetalhe!.valorTotalItem, _descontoController.numberValue);
-    double _valorTotalItem = _quantidadeController.numberValue * widget.item!.pdvVendaDetalhe!.valorUnitario!;
-    double _valorTotal = _quantidadeController.numberValue * widget.item!.pdvVendaDetalhe!.valorUnitario! - _valorDesconto;
+    double valorDesconto = Biblioteca.calcularDesconto(widget.item!.pdvVendaDetalhe!.valorTotalItem, _descontoController.numberValue);
+    double valorTotalItem = _quantidadeController.numberValue * widget.item!.pdvVendaDetalhe!.valorUnitario!;
+    double valorTotal = _quantidadeController.numberValue * widget.item!.pdvVendaDetalhe!.valorUnitario! - valorDesconto;
 
     setState(() {      
       widget.item!.pdvVendaDetalhe = widget.item!.pdvVendaDetalhe!.copyWith(
         quantidade: _quantidadeController.numberValue,
         taxaDesconto: _descontoController.numberValue,
-        valorDesconto: _valorDesconto,
-        valorTotalItem: _valorTotalItem,
-        valorTotal: _valorTotal,
+        valorDesconto: valorDesconto,
+        valorTotalItem: valorTotalItem,
+        valorTotal: valorTotal,
       );
       // remove o desconto do cabeçalho da venda
       Sessao.vendaAtual = Sessao.vendaAtual!.copyWith(

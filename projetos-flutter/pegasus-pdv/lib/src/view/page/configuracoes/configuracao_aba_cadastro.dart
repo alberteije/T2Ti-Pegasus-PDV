@@ -52,10 +52,10 @@ class ConfiguracaoAbaCadastro extends StatefulWidget {
   const ConfiguracaoAbaCadastro({Key? key, this.title, this.modulo}): super(key: key);
 
   @override
-  _ConfiguracaoAbaCadastroState createState() => _ConfiguracaoAbaCadastroState();
+  ConfiguracaoAbaCadastroState createState() => ConfiguracaoAbaCadastroState();
 }
 
-class _ConfiguracaoAbaCadastroState extends State<ConfiguracaoAbaCadastro> {
+class ConfiguracaoAbaCadastroState extends State<ConfiguracaoAbaCadastro> {
   final _emailController = TextEditingController(text: Sessao.empresa!.email ?? '');
   final _whatsappController = MaskedTextController(
     mask: Constantes.mascaraTELEFONE,

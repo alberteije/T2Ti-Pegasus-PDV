@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'ecf_sintegra_60m_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           EcfSintegra60Ms,
 		])
 class EcfSintegra60MDao extends DatabaseAccessor<AppDatabase> with _$EcfSintegra60MDaoMixin {
@@ -51,9 +51,9 @@ class EcfSintegra60MDao extends DatabaseAccessor<AppDatabase> with _$EcfSintegra
   Future<List<EcfSintegra60M>> consultarLista() => select(ecfSintegra60Ms).get();
 
   Future<List<EcfSintegra60M>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM ECF_SINTEGRA_60M WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM ECF_SINTEGRA_60M WHERE $campo like '%$valor%'", 
                                 readsFrom: { ecfSintegra60Ms }).map((row) {
-                                  return EcfSintegra60M.fromData(row.data, db);  
+                                  return EcfSintegra60M.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,20 +63,20 @@ class EcfSintegra60MDao extends DatabaseAccessor<AppDatabase> with _$EcfSintegra
     return (select(ecfSintegra60Ms)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<EcfSintegra60M> pObjeto) {
+  Future<int> inserir(EcfSintegra60M pObjeto) {
     return transaction(() async {
       final idInserido = await into(ecfSintegra60Ms).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<EcfSintegra60M> pObjeto) {
+  Future<bool> alterar(EcfSintegra60M pObjeto) {
     return transaction(() async {
       return update(ecfSintegra60Ms).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<EcfSintegra60M> pObjeto) {
+  Future<int> excluir(EcfSintegra60M pObjeto) {
     return transaction(() async {
       return delete(ecfSintegra60Ms).delete(pObjeto);
     });    

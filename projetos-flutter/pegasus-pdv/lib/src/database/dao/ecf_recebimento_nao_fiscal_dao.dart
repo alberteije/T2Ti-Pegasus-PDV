@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'ecf_recebimento_nao_fiscal_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           EcfRecebimentoNaoFiscals,
 		])
 class EcfRecebimentoNaoFiscalDao extends DatabaseAccessor<AppDatabase> with _$EcfRecebimentoNaoFiscalDaoMixin {
@@ -51,9 +51,9 @@ class EcfRecebimentoNaoFiscalDao extends DatabaseAccessor<AppDatabase> with _$Ec
   Future<List<EcfRecebimentoNaoFiscal>> consultarLista() => select(ecfRecebimentoNaoFiscals).get();
 
   Future<List<EcfRecebimentoNaoFiscal>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM ECF_RECEBIMENTO_NAO_FISCAL WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM ECF_RECEBIMENTO_NAO_FISCAL WHERE $campo like '%$valor%'", 
                                 readsFrom: { ecfRecebimentoNaoFiscals }).map((row) {
-                                  return EcfRecebimentoNaoFiscal.fromData(row.data, db);  
+                                  return EcfRecebimentoNaoFiscal.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,20 +63,20 @@ class EcfRecebimentoNaoFiscalDao extends DatabaseAccessor<AppDatabase> with _$Ec
     return (select(ecfRecebimentoNaoFiscals)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<EcfRecebimentoNaoFiscal> pObjeto) {
+  Future<int> inserir(EcfRecebimentoNaoFiscal pObjeto) {
     return transaction(() async {
       final idInserido = await into(ecfRecebimentoNaoFiscals).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<EcfRecebimentoNaoFiscal> pObjeto) {
+  Future<bool> alterar(EcfRecebimentoNaoFiscal pObjeto) {
     return transaction(() async {
       return update(ecfRecebimentoNaoFiscals).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<EcfRecebimentoNaoFiscal> pObjeto) {
+  Future<int> excluir(EcfRecebimentoNaoFiscal pObjeto) {
     return transaction(() async {
       return delete(ecfRecebimentoNaoFiscals).delete(pObjeto);
     });    

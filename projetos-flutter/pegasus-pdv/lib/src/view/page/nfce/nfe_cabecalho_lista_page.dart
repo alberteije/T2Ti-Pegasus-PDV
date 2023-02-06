@@ -33,13 +33,15 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 import 'package:pegasus_pdv/src/service/service.dart';
 import 'package:pegasus_pdv/src/controller/controller.dart';
@@ -53,10 +55,10 @@ class NfeCabecalhoListaPage extends StatefulWidget {
   const NfeCabecalhoListaPage({Key? key}) : super(key: key);
 
   @override
-  _NfeCabecalhoListaPageState createState() => _NfeCabecalhoListaPageState();
+  NfeCabecalhoListaPageState createState() => NfeCabecalhoListaPageState();
 }
 
-class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
+class NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
   int? _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -78,7 +80,7 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -92,11 +94,11 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
   Widget build(BuildContext context) {
     _listaNfeCabecalho = Sessao.db.nfeCabecalhoDao.listaNfeCabecalho;
 
-    final _NfeCabecalhoDataSource _nfeCabecalhoDataSource = 
+    final _NfeCabecalhoDataSource nfeCabecalhoDataSource = 
       _NfeCabecalhoDataSource(_listaNfeCabecalho, context, _refrescarTela, _transmitirNota);
 
     void _sort<T>(Comparable<T>? Function(NfeCabecalho nfeCabecalho) getField, int columnIndex, bool ascending) {
-      _nfeCabecalhoDataSource._sort<T>(getField, ascending);
+      nfeCabecalhoDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -174,7 +176,7 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
                           _sort<num>((NfeCabecalho nfeCabecalho) => nfeCabecalho.idPdvVendaCabecalho, columnIndex, ascending),
                       ),
                     ],
-                    source: _nfeCabecalhoDataSource,
+                    source: nfeCabecalhoDataSource,
                   ),
                 ],
               ),
@@ -191,64 +193,96 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
     });
   }
 
+  Future _transmitirNota(NfeCabecalho nfeCabecalhoContingenciada) async {
+    gerarDialogBoxEspera(context);
+    try {
+      NfceController.instanciarNfceMontado();
+      NfceController.nfeCabecalhoMontado!.nfeCabecalho = nfeCabecalhoContingenciada;      
+      NfceService nfceService = NfceService();
+      final retorno = await nfceService.transmitirNfceContingenciada(nfeCabecalhoContingenciada.chaveAcesso!);   
+      if (!mounted) return;     
+      if (retorno != null) {
+        if (retorno is String) {
+          Sessao.fecharDialogBoxEspera(context);
+          gerarDialogBoxErro(context, 'Ocorreu um problema na geração da NFC-e: \n$retorno');          
+        } else if (retorno is Uint8List) {
+          _imprimirDanfe(retorno);
+        }
+      } else {
+        Sessao.fecharDialogBoxEspera(context);
+      }
+    } catch (e) {
+      Sessao.fecharDialogBoxEspera(context);
+      gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: $e');
+    }   
+  }  
+
   // nesse método precisamos imprimir o danfe e também atualizar a nota inicial que está com status=9  
   // seu número precisa ser inutilizado ou ela precisa ser cancelada
-  Future _imprimirDanfe(String danfeBase64) async {
-    // Sessao.fecharDialogBoxEspera(context);
-    var decodeB64 = base64.decode(danfeBase64); 
+  Future _imprimirDanfe(Uint8List danfe) async {
+    Sessao.fecharDialogBoxEspera(context);
     Navigator.of(context)
       .push(MaterialPageRoute(
         builder: (BuildContext context) => PdfPage(
-          arquivoPdf: decodeB64, title: 'NFC-e')
+          arquivoPdf: danfe, title: 'NFC-e')
         )
       ).then(
         (value) async {
-          await _inutilizarNumero();
+          NfceController.nfeCabecalhoMontado!.nfeCabecalho = NfceController.nfeCabecalhoMontado!.nfeCabecalho!.copyWith(
+            statusNota: '4', // 4=autorizada
+            informacoesAddContribuinte: 'NOTA ORIGINAL IMPRESSA EM CONTINGENCIA OFFLINE.',
+          );
+          await Sessao.db.nfeCabecalhoDao.alterar(NfceController.nfeCabecalhoMontado!, atualizaFilhos: false);
+          await _atualizarNotaInicial();
         }
       );          
   }  
 
-  Future _inutilizarNumero() async {
-    // pesquisa pela nota com status igual a 9 - essa nota foi gerada e tentamos emiti-la, mas houve erro e outra foi impressa em contingência
-    nfceCabecalhoInicial.nfeCabecalho = 
-      await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(NfceController.nfeCabecalhoMontado!.nfeCabecalho!.idPdvVendaCabecalho!, status: '9');
-
-    // vamos inutilizar o número
-    NfceAcbrService servicoNfce = NfceAcbrService();
+  Future _atualizarNotaInicial() async {
+    gerarDialogBoxEspera(context);
     try {
-      NfceController.instanciarNfceMontado();
-      await servicoNfce.conectar(
-        context, 
-        formaEmissao: '1',
-        operacao: 'INUTILIZAR_NUMERO', 
-        chaveAcesso: nfceCabecalhoInicial.nfeCabecalho!.chaveAcesso,
-        funcaoDeCallBack: _atualizarNotaInicial, 
-      ).then((socket) {
-        NfceController.enviarComandoInutilizacaoNumero(
-          socket: socket!, 
-          cnpj: Sessao.empresa!.cnpj!, 
-          justificativa: 'NOTA EMITIDA EM CONTINGENCIA OFFLINE', 
-          ano: nfceCabecalhoInicial.nfeCabecalho!.dataHoraEmissao!.year.toString(), 
-          modelo: nfceCabecalhoInicial.nfeCabecalho!.codigoModelo!, 
-          serie: nfceCabecalhoInicial.nfeCabecalho!.serie!, 
-          numeroInicial: nfceCabecalhoInicial.nfeCabecalho!.numero!, 
-          numeroFinal: nfceCabecalhoInicial.nfeCabecalho!.numero!
+      // pesquisa pela nota com status igual a 9 - essa nota foi gerada e tentamos emiti-la, mas houve erro e outra foi impressa em contingência
+      nfceCabecalhoInicial.nfeCabecalho = 
+        await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(NfceController.nfeCabecalhoMontado!.nfeCabecalho!.idPdvVendaCabecalho!, status: '9');
+
+      // Caso essa nota tenha sido autorizada, vamos cancelá-la. Do contrário, inutilizaremos seu número (tarefa para o servidor)
+      NfceService nfceService = NfceService();
+      ObjetoNfe objetoNfe = ObjetoNfe(
+        cnpj: Sessao.empresa!.cnpj!, 
+        justificativa: 'OUTRA NOTA EMITIDA EM CONTINGENCIA OFFLINE. ESTA NOTA ORIGINAL FOI CANCELADA.', 
+        ano: nfceCabecalhoInicial.nfeCabecalho!.dataHoraEmissao!.year.toString(), 
+        modelo: nfceCabecalhoInicial.nfeCabecalho!.codigoModelo!, 
+        serie: nfceCabecalhoInicial.nfeCabecalho!.serie!, 
+        numeroInicial: nfceCabecalhoInicial.nfeCabecalho!.numero!, 
+        numeroFinal: nfceCabecalhoInicial.nfeCabecalho!.numero!,
+        chaveAcesso: nfceCabecalhoInicial.nfeCabecalho!.chaveAcesso!,
+      );
+      final retorno = await nfceService.tratarNotaAnteriorContingencia(objetoNfe);  
+
+      if (retorno.contains('Inutiliza')) {
+        nfceCabecalhoInicial.nfeCabecalho = nfceCabecalhoInicial.nfeCabecalho!.copyWith(
+          statusNota: '8', // 8=inutilizada
+          informacoesAddContribuinte: 'OUTRA NOTA EMITIDA EM CONTINGENCIA OFFLINE. ESTE NUMERO FOI INUTILIZADO.',
         );
-      });                 
+        await Sessao.db.nfeCabecalhoDao.alterar(nfceCabecalhoInicial, atualizaFilhos: false);
+        await _inserirDadosInutiliza();          
+      } else {
+        nfceCabecalhoInicial.nfeCabecalho = nfceCabecalhoInicial.nfeCabecalho!.copyWith(
+          statusNota: '5', // 5=cancelada
+          informacoesAddContribuinte: 'OUTRA NOTA EMITIDA EM CONTINGENCIA OFFLINE. ESTA NOTA ORIGINAL FOI CANCELADA.',
+        );
+        await Sessao.db.nfeCabecalhoDao.alterar(nfceCabecalhoInicial, atualizaFilhos: false);
+      }
+      if (!mounted) return;
+      Sessao.fecharDialogBoxEspera(context);
+      await _refrescarTela();
     } catch (e) {
       // se acontecer um erro aqui, não vamos fazer nada, a nota continuará com status=9 e seu número deverá ser inutilizado posteriormente
       // gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: ' + e.toString());
-    }   
+    }  
   }
 
-  Future _atualizarNotaInicial() async {
-    // atualiza nota
-    nfceCabecalhoInicial.nfeCabecalho = 
-    nfceCabecalhoInicial.nfeCabecalho!.copyWith(
-      statusNota: '8',
-    );
-    await Sessao.db.nfeCabecalhoDao.alterar(nfceCabecalhoInicial, atualizaFilhos: false).then((value) async => await _refrescarTela());
-    
+  Future _inserirDadosInutiliza() async {
     // insere registro na tabela de inutilização
     NfeNumeroInutilizado inutilizado = 
       NfeNumeroInutilizado(
@@ -259,26 +293,99 @@ class _NfeCabecalhoListaPageState extends State<NfeCabecalhoListaPage> {
         observacao: 'NOTA EMITIDA EM CONTINGENCIA OFFLINE',
       );
     await Sessao.db.nfeNumeroInutilizadoDao.inserir(inutilizado);
-  }
-
-  Future _transmitirNota(NfeCabecalho nfeCabecalhoContingenciada) async {
-    NfceAcbrService servicoNfce = NfceAcbrService();
-    try {
-      NfceController.instanciarNfceMontado();
-      NfceController.nfeCabecalhoMontado!.nfeCabecalho = nfeCabecalhoContingenciada;
-      await servicoNfce.conectar(
-        context, 
-        formaEmissao: '1',
-        funcaoDeCallBack: _imprimirDanfe, 
-        operacao: 'TRANSMITIR_CONTINGENCIADA', 
-        chaveAcesso: nfeCabecalhoContingenciada.chaveAcesso,
-      ).then((socket) async {
-        socket!.write('NFe.EnviarNFe("C:\\ACBrMonitor\\' + Sessao.empresa!.cnpj! + '\\LOG_NFe\\' + nfeCabecalhoContingenciada.chaveAcesso! + '-nfe.xml", "001", , , , "1", , )\r\n.\r\n');
-      });                 
-    } catch (e) {
-      gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: ' + e.toString());
-    }   
   }  
+
+  /////////////////////////////////////////
+  /// Utilize o código abaixo para se comunicar diretamente com o ACBrMonitor
+  /////////////////////////////////////////
+  // nesse método precisamos imprimir o danfe e também atualizar a nota inicial que está com status=9  
+  // seu número precisa ser inutilizado ou ela precisa ser cancelada
+  // Future _imprimirDanfe(String danfeBase64) async {
+  //   // Sessao.fecharDialogBoxEspera(context);
+  //   var decodeB64 = base64.decode(danfeBase64); 
+  //   Navigator.of(context)
+  //     .push(MaterialPageRoute(
+  //       builder: (BuildContext context) => PdfPage(
+  //         arquivoPdf: decodeB64, title: 'NFC-e')
+  //       )
+  //     ).then(
+  //       (value) async {
+  //         await _inutilizarNumero();
+  //       }
+  //     );          
+  // }  
+
+  // Future _inutilizarNumero() async {
+  //   // pesquisa pela nota com status igual a 9 - essa nota foi gerada e tentamos emiti-la, mas houve erro e outra foi impressa em contingência
+  //   nfceCabecalhoInicial.nfeCabecalho = 
+  //     await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(NfceController.nfeCabecalhoMontado!.nfeCabecalho!.idPdvVendaCabecalho!, status: '9');
+
+  //   // vamos inutilizar o número
+  //   NfceAcbrService servicoNfce = NfceAcbrService();
+  //   try {
+  //     NfceController.instanciarNfceMontado();
+  //     await servicoNfce.conectar(
+  //       context, 
+  //       formaEmissao: '1',
+  //       operacao: 'INUTILIZAR_NUMERO', 
+  //       chaveAcesso: nfceCabecalhoInicial.nfeCabecalho!.chaveAcesso,
+  //       funcaoDeCallBack: _atualizarNotaInicial, 
+  //     ).then((socket) {
+  //       NfceController.enviarComandoInutilizacaoNumero(
+  //         socket: socket!, 
+  //         cnpj: Sessao.empresa!.cnpj!, 
+  //         justificativa: 'NOTA EMITIDA EM CONTINGENCIA OFFLINE', 
+  //         ano: nfceCabecalhoInicial.nfeCabecalho!.dataHoraEmissao!.year.toString(), 
+  //         modelo: nfceCabecalhoInicial.nfeCabecalho!.codigoModelo!, 
+  //         serie: nfceCabecalhoInicial.nfeCabecalho!.serie!, 
+  //         numeroInicial: nfceCabecalhoInicial.nfeCabecalho!.numero!, 
+  //         numeroFinal: nfceCabecalhoInicial.nfeCabecalho!.numero!
+  //       );
+  //     });                 
+  //   } catch (e) {
+  //     // se acontecer um erro aqui, não vamos fazer nada, a nota continuará com status=9 e seu número deverá ser inutilizado posteriormente
+  //     // gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: ' + e.toString());
+  //   }   
+  // }
+
+  // Future _atualizarNotaInicial() async {
+  //   // atualiza nota
+  //   nfceCabecalhoInicial.nfeCabecalho = 
+  //   nfceCabecalhoInicial.nfeCabecalho!.copyWith(
+  //     statusNota: '8',
+  //   );
+  //   await Sessao.db.nfeCabecalhoDao.alterar(nfceCabecalhoInicial, atualizaFilhos: false).then((value) async => await _refrescarTela());
+    
+  //   // insere registro na tabela de inutilização
+  //   NfeNumeroInutilizado inutilizado = 
+  //     NfeNumeroInutilizado(
+  //       id: null,
+  //       serie: nfceCabecalhoInicial.nfeCabecalho!.serie,
+  //       numero: int.tryParse(nfceCabecalhoInicial.nfeCabecalho!.numero!),
+  //       dataInutilizacao: DateTime.now(),
+  //       observacao: 'NOTA EMITIDA EM CONTINGENCIA OFFLINE',
+  //     );
+  //   await Sessao.db.nfeNumeroInutilizadoDao.inserir(inutilizado);
+  // }
+
+  // Future _transmitirNota(NfeCabecalho nfeCabecalhoContingenciada) async {
+  //   NfceAcbrService servicoNfce = NfceAcbrService();
+  //   try {
+  //     NfceController.instanciarNfceMontado();
+  //     NfceController.nfeCabecalhoMontado!.nfeCabecalho = nfeCabecalhoContingenciada;
+  //     await servicoNfce.conectar(
+  //       context, 
+  //       formaEmissao: '1',
+  //       funcaoDeCallBack: _imprimirDanfe, 
+  //       operacao: 'TRANSMITIR_CONTINGENCIADA', 
+  //       chaveAcesso: nfeCabecalhoContingenciada.chaveAcesso,
+  //     ).then((socket) async {
+  //       socket!.write('NFe.EnviarNFe("C:\\ACBrMonitor\\' + Sessao.empresa!.cnpj! + '\\LOG_NFe\\' + nfeCabecalhoContingenciada.chaveAcesso! + '-nfe.xml", "001", , , , "1", , )\r\n.\r\n');
+  //     });                 
+  //   } catch (e) {
+  //     gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: ' + e.toString());
+  //   }   
+  // }  
 }
 
 /// codigo referente a fonte de dados

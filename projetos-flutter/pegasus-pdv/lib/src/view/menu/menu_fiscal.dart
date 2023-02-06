@@ -119,6 +119,7 @@ class MenuFiscal extends StatelessWidget {
                         circleColor: Colors.red,
                         rota: "/nfceContingenciadas"),
                     segundoBotao: BotaoMenu(
+                        // ignore: deprecated_member_use
                         icon: FontAwesomeIcons.sortNumericDown,
                         label: "Inutilizar Número",
                         circleColor: Colors.blue,

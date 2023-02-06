@@ -39,7 +39,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -60,10 +60,10 @@ class FornecedorPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _FornecedorPersistePageState createState() => _FornecedorPersistePageState();
+  FornecedorPersistePageState createState() => FornecedorPersistePageState();
 }
 
-class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
+class FornecedorPersistePageState extends State<FornecedorPersistePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -109,23 +109,23 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
   @override
   Widget build(BuildContext context) {
 
-    final _telefoneController = MaskedTextController(
+    final telefoneController = MaskedTextController(
       mask: Constantes.mascaraTELEFONE,
       text: fornecedor?.telefone ?? '',
     );
-    final _celularController = MaskedTextController(
+    final celularController = MaskedTextController(
       mask: Constantes.mascaraTELEFONE,
       text: fornecedor?.celular ?? '',
     );
-    final _cepController = MaskedTextController(
+    final cepController = MaskedTextController(
       mask: Constantes.mascaraCEP,
       text: fornecedor?.cep ?? '',
     );
-    final _cpfController = MaskedTextController(
+    final cpfController = MaskedTextController(
       mask: Constantes.mascaraCPF,
       text: fornecedor?.cpfCnpj?? '',
     );
-    final _cnpjController = MaskedTextController(
+    final cnpjController = MaskedTextController(
       mask: Constantes.mascaraCNPJ,
       text: fornecedor?.cpfCnpj ?? '',
     );
@@ -302,7 +302,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                               child: TextFormField(
                                 maxLength: fornecedor?.tipoPessoa == 'Física' ? 14 : 18,
                                 keyboardType: TextInputType.number,
-                                controller: fornecedor?.tipoPessoa == 'Física' ? _cpfController : _cnpjController,
+                                controller: fornecedor?.tipoPessoa == 'Física' ? cpfController : cnpjController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Cpf Cnpj',
                                   'Cpf / Cnpj',
@@ -561,7 +561,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                               child: TextFormField(
                                 maxLength: 9,
                                 keyboardType: TextInputType.number,
-                                controller: _cepController,
+                                controller: cepController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Cep',
                                   'Cep',
@@ -683,7 +683,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                               child: TextFormField(
                                 maxLength: 14,
                                 keyboardType: TextInputType.number,
-                                controller: _telefoneController,
+                                controller: telefoneController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Telefone',
                                   'Telefone',
@@ -704,7 +704,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
                               child: TextFormField(
                                 maxLength: 14,
                                 keyboardType: TextInputType.number,
-                                controller: _celularController,
+                                controller: celularController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Celular',
                                   'Celular',
@@ -782,7 +782,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
           Sessao.db.fornecedorDao.alterar(fornecedor!);
         } else {
           Sessao.db.fornecedorDao.inserir(fornecedor!);
-       }
+        }
         Navigator.of(context).pop();
       });
     }
@@ -801,6 +801,7 @@ class _FornecedorPersistePageState extends State<FornecedorPersistePage> {
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
       await Sessao.db.fornecedorDao.excluir(widget.fornecedor!);
+      if (!mounted) return;
       Navigator.of(context).pop();
     });
   }  

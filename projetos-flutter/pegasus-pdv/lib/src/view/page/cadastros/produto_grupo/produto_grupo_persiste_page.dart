@@ -38,7 +38,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -58,10 +58,10 @@ class ProdutoGrupoPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ProdutoGrupoPersistePageState createState() => _ProdutoGrupoPersistePageState();
+  ProdutoGrupoPersistePageState createState() => ProdutoGrupoPersistePageState();
 }
 
-class _ProdutoGrupoPersistePageState extends State<ProdutoGrupoPersistePage> {
+class ProdutoGrupoPersistePageState extends State<ProdutoGrupoPersistePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -217,6 +217,7 @@ class _ProdutoGrupoPersistePageState extends State<ProdutoGrupoPersistePage> {
         } else {
           await Sessao.db.produtoGrupoDao.inserir(produtoGrupo!);
         }
+        if (!mounted) return;
         Navigator.of(context).pop();
         showInSnackBar("Registro salvo com sucesso!", context, corFundo: Colors.green);
       });
@@ -235,7 +236,8 @@ class _ProdutoGrupoPersistePageState extends State<ProdutoGrupoPersistePage> {
   
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-	  await Sessao.db.produtoGrupoDao.excluir(produtoGrupo!);
+      await Sessao.db.produtoGrupoDao.excluir(produtoGrupo!);
+      if (!mounted) return;
       Navigator.of(context).pop();
       showInSnackBar("Registro excluído com sucesso!", context, corFundo: Colors.green);
     });

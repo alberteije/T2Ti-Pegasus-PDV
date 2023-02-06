@@ -39,7 +39,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -59,10 +59,10 @@ class ColaboradorPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ColaboradorPersistePageState createState() => _ColaboradorPersistePageState();
+  ColaboradorPersistePageState createState() => ColaboradorPersistePageState();
 }
 
-class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
+class ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -107,20 +107,20 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _telefoneController = MaskedTextController(
+    final telefoneController = MaskedTextController(
       mask: Constantes.mascaraTELEFONE,
       text: colaborador?.telefone ?? '',
     );
-    final _celularController = MaskedTextController(
+    final celularController = MaskedTextController(
       mask: Constantes.mascaraTELEFONE,
       text: colaborador?.celular ?? '',
     );
-    final _cpfController = MaskedTextController(
+    final cpfController = MaskedTextController(
       mask: Constantes.mascaraCPF,
       text: colaborador?.cpf?? '',
     );
-    final _comissaoVistaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: colaborador?.comissaoVista ?? 0);
-    final _comissaoPrazoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: colaborador?.comissaoPrazo ?? 0);
+    final comissaoVistaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: colaborador?.comissaoVista ?? 0);
+    final comissaoPrazoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: colaborador?.comissaoPrazo ?? 0);
 	
     return FocusableActionDetector(
       actions: _actionMap,
@@ -184,7 +184,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                               child: TextFormField(
                                 maxLength: 14,
                                 keyboardType: TextInputType.number,
-                                controller: _cpfController,
+                                controller: cpfController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Cpf',
                                   'Cpf',
@@ -211,7 +211,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                               child: TextFormField(
                                 maxLength: 14,
                                 keyboardType: TextInputType.number,
-                                controller: _telefoneController,
+                                controller: telefoneController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Telefone',
                                   'Telefone',
@@ -232,7 +232,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                               child: TextFormField(
                                 maxLength: 14,
                                 keyboardType: TextInputType.number,
-                                controller: _celularController,
+                                controller: celularController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Celular',
                                   'Celular',
@@ -284,7 +284,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 textAlign: TextAlign.end,
-                                controller: _comissaoVistaController,
+                                controller: comissaoVistaController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Comissao Vista',
                                   'Comissao Vista',
@@ -292,7 +292,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  colaborador = colaborador!.copyWith(comissaoVista: _comissaoVistaController.numberValue);
+                                  colaborador = colaborador!.copyWith(comissaoVista: comissaoVistaController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -305,7 +305,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 textAlign: TextAlign.end,
-                                controller: _comissaoPrazoController,
+                                controller: comissaoPrazoController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Comissao Prazo',
                                   'Comissao Prazo',
@@ -313,7 +313,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  colaborador = colaborador!.copyWith(comissaoPrazo: _comissaoPrazoController.numberValue);
+                                  colaborador = colaborador!.copyWith(comissaoPrazo: comissaoPrazoController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -390,7 +390,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
           Sessao.db.colaboradorDao.alterar(colaborador!);
         } else {
           Sessao.db.colaboradorDao.inserir(colaborador!);
-       }
+        }
         Navigator.of(context).pop();
       });
     }
@@ -409,6 +409,7 @@ class _ColaboradorPersistePageState extends State<ColaboradorPersistePage> {
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
       await Sessao.db.colaboradorDao.excluir(widget.colaborador!);
+      if (!mounted) return;
       Navigator.of(context).pop();
     });
   }  

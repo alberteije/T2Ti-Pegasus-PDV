@@ -33,14 +33,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'dart:convert';
+
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 part 'produto_imagem_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           ProdutoImagems,
 		])
 class ProdutoImagemDao extends DatabaseAccessor<AppDatabase> with _$ProdutoImagemDaoMixin {
@@ -56,17 +59,25 @@ class ProdutoImagemDao extends DatabaseAccessor<AppDatabase> with _$ProdutoImage
   }  
 
   Future<List<ProdutoImagem>> consultarListaFiltro(String campo, String valor) async {
-    listaProdutoImagem = await (customSelect("SELECT * FROM PRODUTO_IMAGEM WHERE " + campo + " like '%" + valor + "%'", 
+    listaProdutoImagem = await (customSelect("SELECT * FROM PRODUTO_IMAGEM WHERE $campo like '%$valor%'", 
                                 readsFrom: { produtoImagems }).map((row) {
-                                  return ProdutoImagem.fromData(row.data, db);  
+                                  return ProdutoImagem.fromData(row.data);  
                                 }).get());
     return listaProdutoImagem;
   }
-    
-  Future<ProdutoImagem?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM PRODUTO_IMAGEM WHERE " + campo + " = '" + valor + "'", 
+
+  Future<List<ProdutoImagem>> consultarListaPrimeiraImagemFiltro(String campo, String valor) async {
+    listaProdutoImagem = await (customSelect("SELECT * FROM PRODUTO_IMAGEM WHERE $campo like '%$valor%' LIMIT 1", 
                                 readsFrom: { produtoImagems }).map((row) {
-                                  return ProdutoImagem.fromData(row.data, db);  
+                                  return ProdutoImagem.fromData(row.data);  
+                                }).get());
+    return listaProdutoImagem;
+  }
+
+  Future<ProdutoImagem?> consultarObjetoFiltro(String campo, String valor) async {
+    return (customSelect("SELECT * FROM PRODUTO_IMAGEM WHERE $campo = '$valor'", 
+                                readsFrom: { produtoImagems }).map((row) {
+                                  return ProdutoImagem.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -76,26 +87,40 @@ class ProdutoImagemDao extends DatabaseAccessor<AppDatabase> with _$ProdutoImage
     return (select(produtoImagems)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<ProdutoImagem> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from PRODUTO_IMAGEM").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(ProdutoImagem pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(produtoImagems).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<ProdutoImagem> pObjeto) {
+  Future<bool> alterar(ProdutoImagem pObjeto) {
     return transaction(() async {
       return update(produtoImagems).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<ProdutoImagem> pObjeto) {
+  Future<int> excluir(ProdutoImagem pObjeto) {
     return transaction(() async {
       return delete(produtoImagems).delete(pObjeto);
     });    
   }
 
-  
+  Future<void> sincronizar(ObjetoSincroniza objetoSincroniza) async {
+    (delete(produtoImagems)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = ProdutoImagem.fromJson(objetoJson);
+      into(produtoImagems).insertOnConflictUpdate(objetoDart);
+    }
+  }  
   
   static List<String> campos = <String>[
     'ID', 

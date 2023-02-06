@@ -43,6 +43,7 @@ import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:pegasus_pdv/src/controller/controller.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -65,14 +66,17 @@ class CompraPedidoDetalhePersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _CompraPedidoDetalhePersistePageState createState() => _CompraPedidoDetalhePersistePageState();
+  CompraPedidoDetalhePersistePageState createState() => CompraPedidoDetalhePersistePageState();
 }
 
-class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePersistePage> {
+class CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePersistePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   bool _formFoiAlterado = false;
+
+  final _quantidadeController = MoneyMaskedTextController(precision: Constantes.decimaisQuantidade, initialValue: 0);
+  final _taxaDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: 0);
 
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
@@ -106,20 +110,21 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
   
   @override
   Widget build(BuildContext context) {
-	final _importaCfopController = TextEditingController();
-	_importaCfopController.text = widget.compraDetalhe!.compraPedidoDetalhe?.cfop as String? ?? '';
-	final _importaProdutoController = TextEditingController();
-	_importaProdutoController.text = widget.compraDetalhe!.produto?.nome ?? '';
-  final _quantidadeController = MoneyMaskedTextController(precision: Constantes.decimaisQuantidade, initialValue: widget.compraDetalhe!.compraPedidoDetalhe?.quantidade ?? 1);
-	final _valorUnitarioController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.compraDetalhe!.compraPedidoDetalhe?.valorUnitario ?? 0);
-	final _valorSubtotalController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.compraDetalhe!.compraPedidoDetalhe?.valorSubtotal ?? 0);
-	final _taxaDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.compraDetalhe!.compraPedidoDetalhe?.taxaDesconto ?? 0);
-	final _valorDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.compraDetalhe!.compraPedidoDetalhe?.valorDesconto ?? 0);
-	final _valorTotalController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.compraDetalhe!.compraPedidoDetalhe?.valorTotal ?? 0);
-	final _importaCstIcmsController = TextEditingController();
-	_importaCstIcmsController.text = widget.compraDetalhe!.compraPedidoDetalhe?.cst ?? '';
-	final _importaCsosnController = TextEditingController();
-	_importaCsosnController.text = widget.compraDetalhe!.compraPedidoDetalhe?.csosn ?? '';
+    _quantidadeController.updateValue(widget.compraDetalhe!.compraPedidoDetalhe?.quantidade ?? 1);
+    _taxaDescontoController.updateValue(widget.compraDetalhe!.compraPedidoDetalhe?.taxaDesconto ?? 0);
+
+    final importaCfopController = TextEditingController();
+    importaCfopController.text = widget.compraDetalhe!.compraPedidoDetalhe?.cfop as String? ?? '';
+    final importaProdutoController = TextEditingController();
+    importaProdutoController.text = widget.compraDetalhe!.produto?.nome ?? '';
+    final valorUnitarioController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.compraDetalhe!.compraPedidoDetalhe?.valorUnitario ?? 0);
+    final valorSubtotalController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.compraDetalhe!.compraPedidoDetalhe?.valorSubtotal ?? 0);
+    final valorDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.compraDetalhe!.compraPedidoDetalhe?.valorDesconto ?? 0);
+    final valorTotalController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.compraDetalhe!.compraPedidoDetalhe?.valorTotal ?? 0);
+    final importaCstIcmsController = TextEditingController();
+    importaCstIcmsController.text = widget.compraDetalhe!.compraPedidoDetalhe?.cst ?? '';
+    final importaCsosnController = TextEditingController();
+    importaCsosnController.text = widget.compraDetalhe!.compraPedidoDetalhe?.csosn ?? '';
 
     return FocusableActionDetector(
       actions: _actionMap,
@@ -163,7 +168,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                   child: SizedBox(
                                     child: TextFormField(
                                       validator: ValidaCampoFormulario.validarObrigatorio,
-                                      controller: _importaProdutoController,
+                                      controller: importaProdutoController,
                                       readOnly: true,
                                       decoration: getInputDecoration(
                                         'Conteúdo para o campo Produto',
@@ -186,7 +191,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                     icon: ViewUtilLib.getIconBotaoLookup(),
                                     onPressed: () async {
                                       ///chamando o lookup
-                                      Map<String, dynamic>? _objetoJsonRetorno =
+                                      Map<String, dynamic>? objetoJsonRetorno =
                                         await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -203,16 +208,16 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                               ),
                                               fullscreenDialog: true,
                                             ));
-                                      if (_objetoJsonRetorno != null) {
-                                        if (_objetoJsonRetorno['nome'] != null) {
-                                          _importaProdutoController.text = _objetoJsonRetorno['nome'];
-                                          widget.compraDetalhe!.produto = Produto(id: _objetoJsonRetorno['id'], nome: _objetoJsonRetorno['nome']);
+                                      if (objetoJsonRetorno != null) {
+                                        if (objetoJsonRetorno['nome'] != null) {
+                                          importaProdutoController.text = objetoJsonRetorno['nome'];
+                                          widget.compraDetalhe!.produto = Produto(id: objetoJsonRetorno['id'], nome: objetoJsonRetorno['nome']);
                                           widget.compraDetalhe!.compraPedidoDetalhe = 
                                             widget.compraDetalhe!.compraPedidoDetalhe!.copyWith
                                             (
-                                              idProduto: _objetoJsonRetorno['id'],
+                                              idProduto: objetoJsonRetorno['id'],
                                               quantidade: 1,
-                                              valorUnitario: _objetoJsonRetorno['valorCompra']?.toDouble() ?? _objetoJsonRetorno['valorVenda']?.toDouble() ?? 1,
+                                              valorUnitario: objetoJsonRetorno['valorCompra']?.toDouble() ?? objetoJsonRetorno['valorVenda']?.toDouble() ?? 1,
                                             );
                                           _atualizarTotais();
                                         }
@@ -262,7 +267,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                 keyboardType: TextInputType.number,
                                 readOnly: false,
                                 textAlign: TextAlign.end,
-                                controller: _valorUnitarioController,
+                                controller: valorUnitarioController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Valor Unitário',
@@ -272,7 +277,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  widget.compraDetalhe!.compraPedidoDetalhe = widget.compraDetalhe!.compraPedidoDetalhe!.copyWith(valorUnitario: _valorUnitarioController.numberValue);
+                                  widget.compraDetalhe!.compraPedidoDetalhe = widget.compraDetalhe!.compraPedidoDetalhe!.copyWith(valorUnitario: valorUnitarioController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
@@ -295,7 +300,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                 keyboardType: TextInputType.number,
                                 readOnly: true,
                                 textAlign: TextAlign.end,
-                                controller: _valorSubtotalController,
+                                controller: valorSubtotalController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Valor Subtotal',
@@ -304,7 +309,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  widget.compraDetalhe!.compraPedidoDetalhe = widget.compraDetalhe!.compraPedidoDetalhe!.copyWith(valorSubtotal: _valorSubtotalController.numberValue);
+                                  widget.compraDetalhe!.compraPedidoDetalhe = widget.compraDetalhe!.compraPedidoDetalhe!.copyWith(valorSubtotal: valorSubtotalController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                   _formFoiAlterado = true;
                                 },
@@ -347,7 +352,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                 keyboardType: TextInputType.number,
                                 readOnly: true,
                                 textAlign: TextAlign.end,
-                                controller: _valorDescontoController,
+                                controller: valorDescontoController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Valor Desconto',
@@ -356,7 +361,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  widget.compraDetalhe!.compraPedidoDetalhe = widget.compraDetalhe!.compraPedidoDetalhe!.copyWith(valorDesconto: _valorDescontoController.numberValue);
+                                  widget.compraDetalhe!.compraPedidoDetalhe = widget.compraDetalhe!.compraPedidoDetalhe!.copyWith(valorDesconto: valorDescontoController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                   _formFoiAlterado = true;
                                 },
@@ -372,7 +377,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                 keyboardType: TextInputType.number,
                                 readOnly: true,
                                 textAlign: TextAlign.end,
-                                controller: _valorTotalController,
+                                controller: valorTotalController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Valor Total',
@@ -381,7 +386,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  widget.compraDetalhe!.compraPedidoDetalhe = widget.compraDetalhe!.compraPedidoDetalhe!.copyWith(valorTotal: _valorTotalController.numberValue);
+                                  widget.compraDetalhe!.compraPedidoDetalhe = widget.compraDetalhe!.compraPedidoDetalhe!.copyWith(valorTotal: valorTotalController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                   _formFoiAlterado = true;
                                 },
@@ -433,8 +438,8 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
   }
   
   _atualizarTotais() {
-    double subTotal = Biblioteca.multiplicarMonetario(widget.compraDetalhe!.compraPedidoDetalhe!.quantidade, widget.compraDetalhe!.compraPedidoDetalhe!.valorUnitario);
-    double desconto = Biblioteca.calcularDesconto(widget.compraDetalhe!.compraPedidoDetalhe!.valorSubtotal, widget.compraDetalhe!.compraPedidoDetalhe!.taxaDesconto);
+    double subTotal = Biblioteca.multiplicarMonetario(_quantidadeController.numberValue, widget.compraDetalhe!.compraPedidoDetalhe!.valorUnitario);
+    double desconto = Biblioteca.calcularDesconto(subTotal, _taxaDescontoController.numberValue);
     setState(() {
       widget.compraDetalhe!.compraPedidoDetalhe = 
         widget.compraDetalhe!.compraPedidoDetalhe!.copyWith(
@@ -446,7 +451,7 @@ class _CompraPedidoDetalhePersistePageState extends State<CompraPedidoDetalhePer
   }
 
   void _excluir() {
-    gerarDialogBoxExclusao(context, () async {
+    gerarDialogBoxExclusao(context, () {
       CompraPedidoCabecalhoController.listaCompraDetalhe.remove(widget.compraDetalhe);
       Navigator.of(context).pop();
     });

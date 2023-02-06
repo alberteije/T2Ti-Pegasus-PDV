@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'fidelidade_utilizado_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           FidelidadeUtilizados,
 		])
 class FidelidadeUtilizadoDao extends DatabaseAccessor<AppDatabase> with _$FidelidadeUtilizadoDaoMixin {
@@ -51,16 +51,16 @@ class FidelidadeUtilizadoDao extends DatabaseAccessor<AppDatabase> with _$Fideli
   Future<List<FidelidadeUtilizado>?> consultarLista() => select(fidelidadeUtilizados).get();
 
   Future<List<FidelidadeUtilizado>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM FIDELIDADE_UTILIZADO WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM FIDELIDADE_UTILIZADO WHERE $campo like '%$valor%'", 
                                 readsFrom: { fidelidadeUtilizados }).map((row) {
-                                  return FidelidadeUtilizado.fromData(row.data, db);  
+                                  return FidelidadeUtilizado.fromData(row.data);  
                                 }).get());
   }
 
   Future<FidelidadeUtilizado?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM FIDELIDADE_UTILIZADO WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM FIDELIDADE_UTILIZADO WHERE $campo = '$valor'", 
                                 readsFrom: { fidelidadeUtilizados }).map((row) {
-                                  return FidelidadeUtilizado.fromData(row.data, db);  
+                                  return FidelidadeUtilizado.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -70,20 +70,27 @@ class FidelidadeUtilizadoDao extends DatabaseAccessor<AppDatabase> with _$Fideli
     return (select(fidelidadeUtilizados)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<FidelidadeUtilizado> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from FIDELIDADE_UTILIZADO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(FidelidadeUtilizado pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(fidelidadeUtilizados).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<FidelidadeUtilizado> pObjeto) {
+  Future<bool> alterar(FidelidadeUtilizado pObjeto) {
     return transaction(() async {
       return update(fidelidadeUtilizados).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<FidelidadeUtilizado> pObjeto) {
+  Future<int> excluir(FidelidadeUtilizado pObjeto) {
     return transaction(() async {
       return delete(fidelidadeUtilizados).delete(pObjeto);
     });    

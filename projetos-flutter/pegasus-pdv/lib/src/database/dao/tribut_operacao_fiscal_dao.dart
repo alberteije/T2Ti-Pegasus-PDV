@@ -33,14 +33,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'dart:convert';
+
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 part 'tribut_operacao_fiscal_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           TributOperacaoFiscals,
 		])
 class TributOperacaoFiscalDao extends DatabaseAccessor<AppDatabase> with _$TributOperacaoFiscalDaoMixin {
@@ -56,9 +59,9 @@ class TributOperacaoFiscalDao extends DatabaseAccessor<AppDatabase> with _$Tribu
   }
 
   Future<List<TributOperacaoFiscal>?> consultarListaFiltro(String campo, String valor) async {
-    listaTributOperacaoFiscal = await (customSelect("SELECT * FROM TRIBUT_OPERACAO_FISCAL WHERE " + campo + " like '%" + valor + "%'", 
+    listaTributOperacaoFiscal = await (customSelect("SELECT * FROM TRIBUT_OPERACAO_FISCAL WHERE $campo like '%$valor%'", 
                                 readsFrom: { tributOperacaoFiscals }).map((row) {
-                                  return TributOperacaoFiscal.fromData(row.data, db);  
+                                  return TributOperacaoFiscal.fromData(row.data);  
                                 }).get());
     return listaTributOperacaoFiscal;
   }
@@ -69,23 +72,39 @@ class TributOperacaoFiscalDao extends DatabaseAccessor<AppDatabase> with _$Tribu
     return (select(tributOperacaoFiscals)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<TributOperacaoFiscal> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from TRIBUT_OPERACAO_FISCAL").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(TributOperacaoFiscal pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(tributOperacaoFiscals).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<TributOperacaoFiscal> pObjeto) {
+  Future<bool> alterar(TributOperacaoFiscal pObjeto) {
     return transaction(() async {
       return update(tributOperacaoFiscals).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<TributOperacaoFiscal> pObjeto) {
+  Future<int> excluir(TributOperacaoFiscal pObjeto) {
     return transaction(() async {
       return delete(tributOperacaoFiscals).delete(pObjeto);
     });    
+  }
+
+  Future<void> sincronizar(ObjetoSincroniza objetoSincroniza) async {
+    (delete(tributOperacaoFiscals)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = TributOperacaoFiscal.fromJson(objetoJson);
+      into(tributOperacaoFiscals).insertOnConflictUpdate(objetoDart);
+    }
   }
 
 	static List<String> campos = <String>[

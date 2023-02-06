@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'ecf_impressora_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           EcfImpressoras,
 		])
 class EcfImpressoraDao extends DatabaseAccessor<AppDatabase> with _$EcfImpressoraDaoMixin {
@@ -51,9 +51,9 @@ class EcfImpressoraDao extends DatabaseAccessor<AppDatabase> with _$EcfImpressor
   Future<List<EcfImpressora>> consultarLista() => select(ecfImpressoras).get();
 
   Future<List<EcfImpressora>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM ECF_IMPRESSORA WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM ECF_IMPRESSORA WHERE $campo like '%$valor%'", 
                                 readsFrom: { ecfImpressoras }).map((row) {
-                                  return EcfImpressora.fromData(row.data, db);  
+                                  return EcfImpressora.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,20 +63,20 @@ class EcfImpressoraDao extends DatabaseAccessor<AppDatabase> with _$EcfImpressor
     return (select(ecfImpressoras)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<EcfImpressora> pObjeto) {
+  Future<int> inserir(EcfImpressora pObjeto) {
     return transaction(() async {
       final idInserido = await into(ecfImpressoras).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<EcfImpressora> pObjeto) {
+  Future<bool> alterar(EcfImpressora pObjeto) {
     return transaction(() async {
       return update(ecfImpressoras).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<EcfImpressora> pObjeto) {
+  Future<int> excluir(EcfImpressora pObjeto) {
     return transaction(() async {
       return delete(ecfImpressoras).delete(pObjeto);
     });    

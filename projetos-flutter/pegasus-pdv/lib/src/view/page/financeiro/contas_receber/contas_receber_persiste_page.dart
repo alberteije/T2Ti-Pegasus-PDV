@@ -42,6 +42,7 @@ import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -62,10 +63,10 @@ class ContasReceberPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ContasReceberPersistePageState createState() => _ContasReceberPersistePageState();
+  ContasReceberPersistePageState createState() => ContasReceberPersistePageState();
 }
 
-class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
+class ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -109,16 +110,16 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _taxaJuroController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasReceber?.taxaJuro ?? 0);
-    final _importaClienteController = TextEditingController();
-    _importaClienteController.text = widget.contasReceberMontado!.cliente?.nome ?? '';
-    final _taxaMultaController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasReceber?.taxaMulta ?? 0);
-    final _taxaDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasReceber?.taxaDesconto ?? 0);
-    final _valorJuroController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasReceber?.valorJuro ?? 0);
-    final _valorMultaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasReceber?.valorMulta ?? 0);
-    final _valorDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasReceber?.valorDesconto ?? 0);
-    final _valorRecebidoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasReceber?.valorRecebido ?? 0);
-    final _valorAReceberController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasReceber?.valorAReceber ?? 0);
+    final taxaJuroController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasReceber?.taxaJuro ?? 0);
+    final importaClienteController = TextEditingController();
+    importaClienteController.text = widget.contasReceberMontado!.cliente?.nome ?? '';
+    final taxaMultaController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasReceber?.taxaMulta ?? 0);
+    final taxaDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasReceber?.taxaDesconto ?? 0);
+    final valorJuroController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasReceber?.valorJuro ?? 0);
+    final valorMultaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasReceber?.valorMulta ?? 0);
+    final valorDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasReceber?.valorDesconto ?? 0);
+    final valorRecebidoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasReceber?.valorRecebido ?? 0);
+    final valorAReceberController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasReceber?.valorAReceber ?? 0);
 	
     return FocusableActionDetector(
       actions: _actionMap,
@@ -161,7 +162,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                   child: SizedBox(
                                     child: TextFormField(
                                       validator: ValidaCampoFormulario.validarObrigatorio,
-                                      controller: _importaClienteController,
+                                      controller: importaClienteController,
                                       readOnly: true,
                                       decoration: getInputDecoration(
                                         'Conteúdo para o campo Cliente',
@@ -183,7 +184,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                     icon: ViewUtilLib.getIconBotaoLookup(),
                                     onPressed: () async {
                                       ///chamando o lookup
-                                      Map<String, dynamic>? _objetoJsonRetorno =
+                                      Map<String, dynamic>? objetoJsonRetorno =
                                         await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -200,12 +201,12 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                             ),
                                             fullscreenDialog: true,
                                           ));
-                                      if (_objetoJsonRetorno != null) {
-                                        if (_objetoJsonRetorno['nome'] != null) {
-                                          _importaClienteController.text = _objetoJsonRetorno['nome'];
-                                          _contasReceber = _contasReceber!.copyWith(idCliente: _objetoJsonRetorno['id']);
+                                      if (objetoJsonRetorno != null) {
+                                        if (objetoJsonRetorno['nome'] != null) {
+                                          importaClienteController.text = objetoJsonRetorno['nome'];
+                                          _contasReceber = _contasReceber!.copyWith(idCliente: objetoJsonRetorno['id']);
                                           widget.contasReceberMontado!.cliente = widget.contasReceberMontado!.cliente!.copyWith(
-                                            nome: _objetoJsonRetorno['nome'],
+                                            nome: objetoJsonRetorno['nome'],
                                           );          
                                         }
                                       }
@@ -356,7 +357,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.end,
-                                controller: _valorAReceberController,
+                                controller: valorAReceberController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Valor a Receber',
@@ -364,7 +365,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasReceber = _contasReceber!.copyWith(valorAReceber: _valorAReceberController.numberValue);
+                                  _contasReceber = _contasReceber!.copyWith(valorAReceber: valorAReceberController.numberValue);
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
                                 },
@@ -379,7 +380,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.end,
-                                controller: _taxaDescontoController,
+                                controller: taxaDescontoController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Taxa Desconto',
@@ -387,10 +388,10 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  if (_taxaDescontoController.numberValue >= 100) {
-                                    _taxaDescontoController.updateValue(99.9);
+                                  if (taxaDescontoController.numberValue >= 100) {
+                                    taxaDescontoController.updateValue(99.9);
                                   }
-                                  _contasReceber = _contasReceber!.copyWith(taxaDesconto: _taxaDescontoController.numberValue);
+                                  _contasReceber = _contasReceber!.copyWith(taxaDesconto: taxaDescontoController.numberValue);
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
                                 },
@@ -406,7 +407,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                 keyboardType: TextInputType.number,
                                 readOnly: true,
                                 textAlign: TextAlign.end,
-                                controller: _valorDescontoController,
+                                controller: valorDescontoController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Valor Desconto',
@@ -415,7 +416,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasReceber = _contasReceber!.copyWith(valorDesconto: _valorDescontoController.numberValue);
+                                  _contasReceber = _contasReceber!.copyWith(valorDesconto: valorDescontoController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -435,7 +436,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.end,
-                                controller: _taxaJuroController,
+                                controller: taxaJuroController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Taxa Juros',
@@ -443,7 +444,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasReceber = _contasReceber!.copyWith(taxaJuro: _taxaJuroController.numberValue);
+                                  _contasReceber = _contasReceber!.copyWith(taxaJuro: taxaJuroController.numberValue);
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
                                 },
@@ -459,7 +460,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                 keyboardType: TextInputType.number,
                                 readOnly: true,
                                 textAlign: TextAlign.end,
-                                controller: _valorJuroController,
+                                controller: valorJuroController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Valor Juros',
@@ -468,7 +469,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasReceber = _contasReceber!.copyWith(valorJuro: _valorJuroController.numberValue);
+                                  _contasReceber = _contasReceber!.copyWith(valorJuro: valorJuroController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -482,7 +483,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.end,
-                                controller: _taxaMultaController,
+                                controller: taxaMultaController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Taxa Multa',
@@ -490,7 +491,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasReceber = _contasReceber!.copyWith(taxaMulta: _taxaMultaController.numberValue);
+                                  _contasReceber = _contasReceber!.copyWith(taxaMulta: taxaMultaController.numberValue);
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
                                 },
@@ -506,7 +507,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                 keyboardType: TextInputType.number,
                                 readOnly: true,
                                 textAlign: TextAlign.end,
-                                controller: _valorMultaController,
+                                controller: valorMultaController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Valor Multa',
@@ -515,7 +516,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasReceber = _contasReceber!.copyWith(valorMulta: _valorMultaController.numberValue);
+                                  _contasReceber = _contasReceber!.copyWith(valorMulta: valorMultaController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -534,7 +535,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                               keyboardType: TextInputType.number,
                               readOnly: true,
                               textAlign: TextAlign.end,
-                              controller: _valorRecebidoController,
+                              controller: valorRecebidoController,
                               decoration: getInputDecoration(
                                 '',
                                 'Valor Recebido',
@@ -543,7 +544,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
                               onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                _contasReceber = _contasReceber!.copyWith(valorRecebido: _valorRecebidoController.numberValue);
+                                _contasReceber = _contasReceber!.copyWith(valorRecebido: valorRecebidoController.numberValue);
                                 _formFoiAlterado = true;
                               },
                             ),
@@ -587,7 +588,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
       _autoValidate = AutovalidateMode.always;
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
     } else {
-      gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
+      gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () {
         _contasReceber = _contasReceber!.copyWith(statusRecebimento: 'A');
         form.save();
         if (_contasReceber!.dataRecebimento != null) {
@@ -617,6 +618,7 @@ class _ContasReceberPersistePageState extends State<ContasReceberPersistePage> {
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
       await Sessao.db.contasReceberDao.excluir(_contasReceber!);
+      if (!mounted) return;
       Navigator.of(context).pop();
     });
   }  

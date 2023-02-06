@@ -36,11 +36,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:flutter/material.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 import 'package:pegasus_pdv/src/view/page/page.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
@@ -52,10 +53,10 @@ class ProdutoListaPage extends StatefulWidget {
   const ProdutoListaPage({Key? key}) : super(key: key);
 
   @override
-  _ProdutoListaPageState createState() => _ProdutoListaPageState();
+  ProdutoListaPageState createState() => ProdutoListaPageState();
 }
 
-class _ProdutoListaPageState extends State<ProdutoListaPage> {
+class ProdutoListaPageState extends State<ProdutoListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -77,7 +78,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -98,12 +99,12 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
   
   @override
   Widget build(BuildContext context) {
-    final _listaProdutoMontado = Sessao.db.produtoDao.listaProdutoMontado;
+    final listaProdutoMontado = Sessao.db.produtoDao.listaProdutoMontado;
 
-    final _ProdutoDataSource _produtoDataSource = _ProdutoDataSource(_listaProdutoMontado, context, _refrescarTela);
+    final _ProdutoDataSource produtoDataSource = _ProdutoDataSource(listaProdutoMontado, context, _refrescarTela);
 
     void _sort<T>(Comparable<T>? Function(ProdutoMontado produtoMontado) getField, int columnIndex, bool ascending) {
-      _produtoDataSource._sort<T>(getField, ascending);
+      produtoDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -144,7 +145,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
             onRefresh: _refrescarTela,
             child: Scrollbar(
               // isAlwaysShown: true,
-              child: _listaProdutoMontado == null
+              child: listaProdutoMontado == null
               ? const Center(child: CircularProgressIndicator())
               : ListView(
                 padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
@@ -160,7 +161,7 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
                     sortColumnIndex: _sortColumnIndex,
                     sortAscending: _sortAscending,
                     columns: _pegarColunas(_sort),                    
-                    source: _produtoDataSource,
+                    source: produtoDataSource,
                   ),
                 ],
               ),
@@ -171,147 +172,147 @@ class _ProdutoListaPageState extends State<ProdutoListaPage> {
     );
   }
 
-  List<DataColumn> _pegarColunas(Function _sort) {
-    final List<DataColumn> _colunas = [];
-    _colunas.add(
+  List<DataColumn> _pegarColunas(Function sort) {
+    final List<DataColumn> colunas = [];
+    colunas.add(
       DataColumn(
         numeric: true,
         label: const Text('Id'),
         tooltip: 'Id',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.id, columnIndex, ascending),
+          sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.id, columnIndex, ascending),
       ),
     );
-    _colunas.add(
+    colunas.add(
       DataColumn(
         label: const Text('Tipo'),
         tooltip: 'Conteúdo para o campo Tipo',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produtoTipo!.descricao, columnIndex, ascending),
+          sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produtoTipo!.descricao, columnIndex, ascending),
       ),
     );
-    _colunas.add(
+    colunas.add(
       DataColumn(
         label: const Text('Subgrupo'),
         tooltip: 'Conteúdo para o campo Subgrupo',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produtoSubgrupo!.nome, columnIndex, ascending),
+          sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produtoSubgrupo!.nome, columnIndex, ascending),
       ),
     );
-    _colunas.add(
+    colunas.add(
       DataColumn(
         label: const Text('Unidade'),
         tooltip: 'Conteúdo para o campo Unidade',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produtoUnidade!.sigla, columnIndex, ascending),
+          sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produtoUnidade!.sigla, columnIndex, ascending),
       ),
     );
     if(Sessao.configuracaoPdv!.modulo != 'G') { // não mostra a coluna do grupo tributário para o módulo gratuito
-      _colunas.add(   
+      colunas.add(   
         DataColumn(
           label: const Text('Grupo Tributário'),
           tooltip: 'Conteúdo para o campo Grupo Tributário',
           onSort: (int columnIndex, bool ascending) =>
-            _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.tributGrupoTributario!.descricao, columnIndex, ascending),
+            sort<String>((ProdutoMontado produtoMontado) => produtoMontado.tributGrupoTributario!.descricao, columnIndex, ascending),
         ),
       );
     }
-    _colunas.add(
+    colunas.add(
       DataColumn(
         label: const Text('Gtin'),
         tooltip: 'Conteúdo para o campo Gtin',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produto!.gtin, columnIndex, ascending),
+          sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produto!.gtin, columnIndex, ascending),
       ),
     );
-    _colunas.add(
+    colunas.add(
       DataColumn(
         label: const Text('Codigo Interno'),
         tooltip: 'Conteúdo para o campo Codigo Interno',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produto!.codigoInterno, columnIndex, ascending),
+          sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produto!.codigoInterno, columnIndex, ascending),
       ),
     );
-    _colunas.add(
+    colunas.add(
       DataColumn(
         label: const Text('Nome'),
         tooltip: 'Conteúdo para o campo Nome',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produto!.nome, columnIndex, ascending),
+          sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produto!.nome, columnIndex, ascending),
       ),
     );
-    _colunas.add(
+    colunas.add(
       DataColumn(
         label: const Text('Descricao'),
         tooltip: 'Conteúdo para o campo Descricao',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produto!.descricao, columnIndex, ascending),
+          sort<String>((ProdutoMontado produtoMontado) => produtoMontado.produto!.descricao, columnIndex, ascending),
       ),
     );
-    _colunas.add(
+    colunas.add(
       DataColumn(
         numeric: true,
         label: const Text('Valor Compra'),
         tooltip: 'Conteúdo para o campo Valor Compra',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.valorCompra, columnIndex, ascending),
+          sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.valorCompra, columnIndex, ascending),
       ),
     );
-    _colunas.add(
+    colunas.add(
       DataColumn(
         numeric: true,
         label: const Text('Valor Venda'),
         tooltip: 'Conteúdo para o campo Valor Venda',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.valorVenda, columnIndex, ascending),
+          sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.valorVenda, columnIndex, ascending),
       ),
     );
-    _colunas.add(
+    colunas.add(
       DataColumn(
         numeric: true,
         label: const Text('Valor Custo'),
         tooltip: 'Conteúdo para o campo Valor Custo',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.valorCusto, columnIndex, ascending),
+          sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.valorCusto, columnIndex, ascending),
       ),
     );
-    _colunas.add(
+    colunas.add(
       DataColumn(
         numeric: true,
         label: const Text('Quantidade Estoque'),
         tooltip: 'Conteúdo para o campo Quantidade Estoque',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.quantidadeEstoque, columnIndex, ascending),
+          sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.quantidadeEstoque, columnIndex, ascending),
       ),
     );
-    _colunas.add(
+    colunas.add(
       DataColumn(
         numeric: true,
         label: const Text('Estoque Minimo'),
         tooltip: 'Conteúdo para o campo Estoque Minimo',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.estoqueMinimo, columnIndex, ascending),
+          sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.estoqueMinimo, columnIndex, ascending),
       ),
     );
-    _colunas.add(
+    colunas.add(
       DataColumn(
         numeric: true,
         label: const Text('Estoque Maximo'),
         tooltip: 'Conteúdo para o campo Estoque Maximo',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.estoqueMaximo, columnIndex, ascending),
+          sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.estoqueMaximo, columnIndex, ascending),
       ),
     );
-    _colunas.add(
+    colunas.add(
       DataColumn(
         numeric: true,
         label: const Text('IPPT'),
         tooltip: 'Produção [P]rópria ou [T]erceiros',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.ippt, columnIndex, ascending),
+          sort<num>((ProdutoMontado produtoMontado) => produtoMontado.produto!.ippt, columnIndex, ascending),
       ),
     );
-    return _colunas;
+    return colunas;
   }
 
   void _inserir() {
@@ -409,90 +410,90 @@ class _ProdutoDataSource extends DataTableSource {
   List<DataCell> _pegarCelulas(int index) {
     final ProdutoMontado produtoMontado = listaProduto![index];
     final Produto produto = produtoMontado.produto!;
-    List<DataCell> _celulas = [];
-    _celulas.add(
-      DataCell(Text('${produto.id ?? ''}'), onTap: () {
+    List<DataCell> celulas = [];
+    celulas.add(
+      DataCell(Text('${produto.id}'), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
-    _celulas.add(
+    celulas.add(
       DataCell(Text(produtoMontado.produtoTipo?.descricao ?? ''), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
-    _celulas.add(
+    celulas.add(
       DataCell(Text(produtoMontado.produtoSubgrupo?.nome ?? ''), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
-    _celulas.add(
+    celulas.add(
       DataCell(Text(produtoMontado.produtoUnidade?.sigla ?? ''), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
     if(Sessao.configuracaoPdv!.modulo != 'G') {
-      _celulas.add(
+      celulas.add(
         DataCell(Text(produtoMontado.tributGrupoTributario?.descricao ?? ''), onTap: () {
           _detalharProduto(produtoMontado, context, refrescarTela);
         }) 
       );
     }
-    _celulas.add(
+    celulas.add(
       DataCell(Text(produto.gtin ?? ''), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
-    _celulas.add(
+    celulas.add(
       DataCell(Text(produto.codigoInterno ?? ''), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
-    _celulas.add(
+    celulas.add(
       DataCell(Text(produto.nome ?? ''), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
-    _celulas.add(
+    celulas.add(
       DataCell(Text(produto.descricao ?? ''), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
-    _celulas.add(
+    celulas.add(
       DataCell(Text(Biblioteca.formatarValorDecimal(produto.valorCompra)), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
-    _celulas.add(
+    celulas.add(
       DataCell(Text(Biblioteca.formatarValorDecimal(produto.valorVenda)), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
-    _celulas.add(
+    celulas.add(
       DataCell(Text(Biblioteca.formatarValorDecimal(produto.valorCusto)), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
-    _celulas.add(
+    celulas.add(
       DataCell(Text(Biblioteca.formatarValorDecimal(produto.quantidadeEstoque)), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
-    _celulas.add(
+    celulas.add(
       DataCell(Text(Biblioteca.formatarValorDecimal(produto.estoqueMinimo)), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
-    _celulas.add(
+    celulas.add(
       DataCell(Text(Biblioteca.formatarValorDecimal(produto.estoqueMaximo)), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
-    _celulas.add(
+    celulas.add(
       DataCell(Text(produto.ippt ?? ''), onTap: () {
         _detalharProduto(produtoMontado, context, refrescarTela);
       }),
     );
-    return _celulas;
+    return celulas;
   }
 
   @override

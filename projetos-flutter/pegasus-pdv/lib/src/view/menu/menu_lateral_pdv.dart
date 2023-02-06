@@ -35,12 +35,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 Based on: Flutter UIKit by Pawan Kumar - https://github.com/iampawan/Flutter-UI-Kit
 *******************************************************************************/
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pegasus_pdv/src/controller/controller.dart';
+import 'package:pegasus_pdv/src/service/infra/sincroniza_service.dart';
 import 'package:pegasus_pdv/src/view/menu/menu_food.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -60,10 +62,10 @@ class MenuLateralPDV extends StatefulWidget {
 
 
   @override
-  _MenuLateralPDVState createState() => _MenuLateralPDVState();
+  MenuLateralPDVState createState() => MenuLateralPDVState();
 }
 
-class _MenuLateralPDVState extends State<MenuLateralPDV> {  
+class MenuLateralPDVState extends State<MenuLateralPDV> {  
 
   final ScrollController controllerScroll = ScrollController();
 
@@ -71,7 +73,7 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _verificarCnpjEmpresa());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _verificarCnpjEmpresa());
   }
   
   void _verificarCnpjEmpresa() {
@@ -199,6 +201,7 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
               leading: Icon(
+                // ignore: deprecated_member_use
                 FontAwesomeIcons.funnelDollar,
                 color: Colors.blueAccent.shade200,
               ),
@@ -260,6 +263,7 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
               leading: Icon(
+                // ignore: deprecated_member_use
                 FontAwesomeIcons.shoppingBasket,
                 color: Colors.blueGrey.shade700,
                 // color: Colors.deepOrange.shade700,
@@ -279,6 +283,7 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
               leading: Icon(
+                // ignore: deprecated_member_use
                 FontAwesomeIcons.truckLoading,
                 color: Colors.blueGrey.shade700,
                 // color: Colors.deepPurple.shade700,
@@ -298,6 +303,7 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
               leading: Icon(
+                // ignore: deprecated_member_use
                 FontAwesomeIcons.moneyBillAlt,
                 color: Colors.blueGrey.shade700,
                 // color: Colors.indigoAccent.shade700,
@@ -337,6 +343,7 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
               leading: Icon(
+                // ignore: deprecated_member_use
                 FontAwesomeIcons.shoppingCart,
                 color: Colors.blueAccent.shade700,
                 // color: Colors.deepOrange.shade700,
@@ -416,14 +423,17 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
               leading: const Icon(
+                // ignore: deprecated_member_use
                 FontAwesomeIcons.cog,
                 color: Colors.brown,
               ),
             ),
             ListTile(
               onTap: () async { 
-                const _url = 'https://www.youtube.com/playlist?list=PLMqoOoxxICPfegpWl8Mj2mthn5QocLGuL';
-                await canLaunch(_url) ? await launch(_url) : throw 'URL não pode ser carregada: $_url';
+                const url = 'https://www.youtube.com/playlist?list=PLMqoOoxxICPfegpWl8Mj2mthn5QocLGuL';
+                // ignore: deprecated_member_use
+                await canLaunch(url) ? await launch(url) : throw 'URL não pode ser carregada: $url';
+                if (!mounted) return;
                 Navigator.pop(context); 
               },
               title: const Text(
@@ -431,6 +441,7 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
               ),
               leading: Icon(
+                // ignore: deprecated_member_use
                 FontAwesomeIcons.questionCircle,
                 color: Colors.lightBlueAccent.shade700,
               ),
@@ -448,13 +459,16 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
                 // Navigator.pop(context); 
 
                 // %0D - serve para inserir uma quebra de linha
-                final _url = 'https://t2tisistemas.com/contact.php?'
+                // ignore: prefer_interpolation_to_compose_strings
+                final url = 'https://t2tisistemas.com/contact.php?'
                 'nome=' + Sessao.empresa!.nomeFantasia! + 
                 '&email=' + Sessao.empresa!.email! + 
                 '&assunto=Contato Pegasus PDV&mensagem='
                 'Olá Equipe T2Ti,'
                 '%0DEstou usando o T2Ti Pegasus PDV e preciso do seguinte auxílio: ';
-                await canLaunch(_url) ? await launch(_url) : throw 'URL não pode ser carregada: $_url';
+                // ignore: deprecated_member_use
+                await canLaunch(url) ? await launch(url) : throw 'URL não pode ser carregada: $url';
+                if (!mounted) return;
                 Navigator.pop(context); 
               },
               title: const Text(
@@ -470,13 +484,71 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
             const Divider(),
             ListTile(
               onTap: () async { 
-                if (Biblioteca.isDesktop()) {
-                  exit(0);
-                } else {
-                  Future.delayed(const Duration(milliseconds: 1000), () {
-                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                  });                  
-                }
+                gerarDialogBoxConfirmacao(context, 'Deseja subir os dados para o servidor?\n\nCertifique-se de que este é o dispositivo principal de cadastros e movimento.', () async {
+                  gerarDialogBoxEspera(context);
+                  // descomente o código abaixo para subir o banco de dados SQLite completo para o servidor
+                  File file = File(Sessao.caminhoBancoDados);
+                  String arquivoBase64 = base64.encode(file.readAsBytesSync());
+                  SincronizaService sincronizaService = SincronizaService();
+                  final retorno = await sincronizaService.subirDadosServidor(arquivoBase64);        
+                  // descomente para subir os dados no formato JSON
+                  // final retorno = await SincronizaController.subirTabelasCentrais();
+                  if (!mounted) return;
+                  if (retorno) {
+                    Navigator.popUntil(context, ModalRoute.withName('/'));
+                    showInSnackBar('Dados atualizados com sucesso no servidor.', context, corFundo: Colors.blue);
+                  } else {
+                    Navigator.popUntil(context, ModalRoute.withName('/'));
+                    showInSnackBar('Ocorreu um problema ao tentar enviar atualizar os dados no Servidor.', context, corFundo: Colors.red);
+                  }
+                });
+              },
+              title: const Text(
+                "Upload Dados",
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
+              ),
+              leading: Icon(
+                FontAwesomeIcons.upload,
+                color: Colors.blueAccent.shade700,
+              ),
+            ),
+
+            ListTile(
+              onTap: () async { 
+                gerarDialogBoxConfirmacao(context, 'Deseja atualizar os dados a partir do servidor?\n\nCertifique-se de que este NÃO é o dispositivo principal de cadastros e movimento.', () async {
+                  gerarDialogBoxEspera(context);
+                  final retorno = await SincronizaController.sincronizarDadosVindosDoServidor();
+                  if (!mounted) return;
+                  if (retorno) {
+                    Navigator.popUntil(context, ModalRoute.withName('/'));
+                    showInSnackBar('Dados sincronizados com sucesso.', context, corFundo: Colors.blue);
+                  } else {
+                    Navigator.popUntil(context, ModalRoute.withName('/'));
+                    showInSnackBar('Ocorreu um problema ao tentar baixar os dados do servidor.', context, corFundo: Colors.red);
+                  }
+                });
+              },
+              title: const Text(
+                "Download Dados",
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
+              ),
+              leading: Icon(
+                FontAwesomeIcons.download,
+                color: Colors.greenAccent.shade700,
+              ),
+            ),
+
+            ListTile(
+              onTap: () async { 
+                gerarDialogBoxConfirmacao(context, 'Deseja sair da aplicação?', () async {
+                  if (Biblioteca.isDesktop()) {
+                    exit(0);
+                  } else {
+                    Future.delayed(const Duration(milliseconds: 1000), () {
+                      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                    });                  
+                  }
+                });
               },
               title: const Text(
                 "Sair",
@@ -504,6 +576,7 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
           return const InformaValorPage(title: 'Suprimento', operacao: 'SUPRIMENTO', );
         });
 
+      if (!mounted) return;
       if (gravouSuprimento ?? false) {
         gerarDialogBoxInformacao(context, 'Suprimento realizado com sucesso.');
       }
@@ -515,6 +588,7 @@ class _MenuLateralPDVState extends State<MenuLateralPDV> {
           return const InformaValorPage(title: 'Sangria', operacao: 'SANGRIA', );
         });
 
+      if (!mounted) return;
       if (gravouSangria ?? false) {
         gerarDialogBoxInformacao(context, 'Sangria realizada com sucesso.');
       }

@@ -36,6 +36,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'dart:convert';
 
+import 'package:pegasus_pdv/src/infra/infra.dart';
+
 class NfcePlanoPagamentoModel {
 	int? id;
 	DateTime? dataSolicitacao;
@@ -65,15 +67,15 @@ class NfcePlanoPagamentoModel {
 
 	NfcePlanoPagamentoModel.fromJson(Map<String, dynamic> jsonDados) {
 		id = jsonDados['id'];
-    dataSolicitacao = jsonDados['dataSolicitacao'] != null ? DateTime.tryParse(jsonDados['dataSolicitacao'].toString().substring(0,10)) : null;
-    dataPagamento = jsonDados['dataPagamento'] != null ? DateTime.tryParse(jsonDados['dataPagamento'].toString().substring(0,10)) : null;
+    dataSolicitacao = Biblioteca.tratarDataJson(jsonDados['dataSolicitacao']);
+    dataPagamento = Biblioteca.tratarDataJson(jsonDados['dataPagamento']);
     plano = jsonDados['plano'];
     valor = jsonDados['valor']?.toDouble();
     statusPagamento = jsonDados['statusPagamento'];
     codigoTransacao = jsonDados['codigoTransacao'];
     metodoPagamento = jsonDados['metodoPagamento'];
     codigoTipoPagamento = jsonDados['codigoTipoPagamento'];
-    dataPlanoExpira = jsonDados['dataPlanoExpira'] != null ? DateTime.tryParse(jsonDados['dataPlanoExpira'].toString().substring(0,10)) : null;
+    dataPlanoExpira = Biblioteca.tratarDataJson(jsonDados['dataPlanoExpira']);
     emailPagamento = jsonDados['emailPagamento'];
 	}
 
@@ -95,9 +97,9 @@ class NfcePlanoPagamentoModel {
 	
 		return jsonDados;
 	}
-	
-	String objetoEncodeJson(NfcePlanoPagamentoModel objeto) {
-	  final jsonDados = objeto.toJson;
+
+	String objetoEncodeJson() {
+	  final jsonDados = toJson;
 	  return json.encode(jsonDados);
 	}
 	

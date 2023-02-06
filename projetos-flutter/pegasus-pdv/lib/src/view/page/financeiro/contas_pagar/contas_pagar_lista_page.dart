@@ -39,11 +39,12 @@ import 'package:flutter/gestures.dart';
 import 'package:intl/intl.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
@@ -57,10 +58,10 @@ class ContasPagarListaPage extends StatefulWidget {
   const ContasPagarListaPage({Key? key}) : super(key: key);
 
   @override
-  _ContasPagarListaPageState createState() => _ContasPagarListaPageState();
+  ContasPagarListaPageState createState() => ContasPagarListaPageState();
 }
 
-class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
+class ContasPagarListaPageState extends State<ContasPagarListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -91,7 +92,7 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -114,10 +115,10 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
   Widget build(BuildContext context) {
     _listaContasPagarMontado = Sessao.db.contasPagarDao.listaContasPagarMontado;
 
-    final _ContasPagarDataSource _contasPagarDataSource = _ContasPagarDataSource(_listaContasPagarMontado, context, _refrescarTela);
+    final _ContasPagarDataSource contasPagarDataSource = _ContasPagarDataSource(_listaContasPagarMontado, context, _refrescarTela);
 
     void _sort<T>(Comparable<T>? Function(ContasPagarMontado contasPagarMontado) getField, int columnIndex, bool ascending) {
-      _contasPagarDataSource._sort<T>(getField, ascending);
+      contasPagarDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -334,7 +335,7 @@ class _ContasPagarListaPageState extends State<ContasPagarListaPage> {
                             _sort<String>((ContasPagarMontado contasPagarMontado) => contasPagarMontado.contasPagar!.statusPagamento, columnIndex, ascending),
                         ),
                       ],
-                      source: _contasPagarDataSource,
+                      source: contasPagarDataSource,
                     ),
                   ],
                 ),
@@ -482,7 +483,7 @@ class _ContasPagarDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
-        DataCell(Text('${contasPagar.id ?? ''}'), onTap: () {
+        DataCell(Text('${contasPagar.id}'), onTap: () {
           _detalharContasPagar(contasPagarMontado, context, refrescarTela);
         }),
         DataCell(Text(contasPagarMontado.fornecedor?.nome ?? ''), onTap: () {

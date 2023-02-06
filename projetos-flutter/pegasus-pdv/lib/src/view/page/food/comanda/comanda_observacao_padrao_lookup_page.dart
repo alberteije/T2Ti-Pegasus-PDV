@@ -35,7 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'package:flutter/material.dart';
 
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -47,10 +47,10 @@ class ComandaObservacaoPadraoLookupPage extends StatefulWidget {
   const ComandaObservacaoPadraoLookupPage({Key? key}) : super(key: key);
 
   @override
-  _ComandaObservacaoPadraoLookupPageState createState() => _ComandaObservacaoPadraoLookupPageState();
+  ComandaObservacaoPadraoLookupPageState createState() => ComandaObservacaoPadraoLookupPageState();
 }
 
-class _ComandaObservacaoPadraoLookupPageState extends State<ComandaObservacaoPadraoLookupPage> {
+class ComandaObservacaoPadraoLookupPageState extends State<ComandaObservacaoPadraoLookupPage> {
   List<ComandaObservacaoPadrao> _listaComandaObservacaoPadrao = [];
   final _itensSelecionados = [];
 
@@ -68,7 +68,7 @@ class _ComandaObservacaoPadraoLookupPageState extends State<ComandaObservacaoPad
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
   
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {

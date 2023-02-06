@@ -39,6 +39,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -61,10 +62,10 @@ class ComandaPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ComandaPageState createState() => _ComandaPageState();
+  ComandaPageState createState() => ComandaPageState();
 }
 
-class _ComandaPageState extends State<ComandaPage> {
+class ComandaPageState extends State<ComandaPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Map<LogicalKeySet, Intent>? _shortcutMap; 
@@ -92,13 +93,13 @@ class _ComandaPageState extends State<ComandaPage> {
     _foco.requestFocus();
 
     if (widget.tipo == 'I') {
-      _titulo = widget.title! + ' [Mesa: ' + widget.mesa.numero! + ']';
+      _titulo = '${widget.title!} [Mesa: ${widget.mesa.numero!}]';
     } else {
       final tipo = widget.tipo == 'T' ? 'Takeout' : 'Delivery';
-      _titulo = widget.title! + ' [' + tipo + ']';
+      _titulo = '${widget.title!} [$tipo]';
     }
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _consultarComandas());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _consultarComandas());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -298,32 +299,59 @@ class _ComandaPageState extends State<ComandaPage> {
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
           child: Column(
             children: [
-              Text('Quantidade de Itens: ' + comandaMontado.listaComandaDetalheMontado!.length.toString(), style: const TextStyle(fontSize: 14.0, color: Colors.black54, fontWeight: FontWeight.bold)),
-              Text('Quantidade de Pessoas: ' + (comandaMontado.comanda!.quantidadePessoas?.toString() ?? '0'), style: const TextStyle(fontSize: 14.0, color: Colors.black54, fontWeight: FontWeight.bold)),
-              Text('Valor Subtotal: ' + Biblioteca.formatarValorDecimal(comandaMontado.comanda!.valorSubtotal), style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.bold)),
-              Text('Valor Desconto: ' + Biblioteca.formatarValorDecimal(comandaMontado.comanda!.valorDesconto), style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.bold)),
-              Text('Valor Total: ' + Biblioteca.formatarValorDecimal(comandaMontado.comanda!.valorTotal), style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.bold)),
-              Text('Valor por Pessoa: '  + Biblioteca.formatarValorDecimal(comandaMontado.comanda!.valorPorPessoa), style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.bold)),
+              Text('Quantidade de Itens: ${comandaMontado.listaComandaDetalheMontado!.length}', style: const TextStyle(fontSize: 14.0, color: Colors.black54, fontWeight: FontWeight.bold)),
+              Text('Quantidade de Pessoas: ${comandaMontado.comanda!.quantidadePessoas?.toString() ?? '0'}', style: const TextStyle(fontSize: 14.0, color: Colors.black54, fontWeight: FontWeight.bold)),
+              Text('Valor Subtotal: ${Biblioteca.formatarValorDecimal(comandaMontado.comanda!.valorSubtotal)}', style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.bold)),
+              Text('Valor Desconto: ${Biblioteca.formatarValorDecimal(comandaMontado.comanda!.valorDesconto)}', style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.bold)),
+              Text('Valor Total: ${Biblioteca.formatarValorDecimal(comandaMontado.comanda!.valorTotal)}', style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.bold)),
+              Text('Valor por Pessoa: ${Biblioteca.formatarValorDecimal(comandaMontado.comanda!.valorPorPessoa)}', style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.bold)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  IconButton(
-                    tooltip: 'Adicionar Itens',
-                    icon: const Icon(Icons.add_box),
-                    onPressed: () async { _adicionarItens(comandaMontado); }, 
-                  ),
-                  IconButton(
-                    tooltip: 'Cancelar Comanda',
-                    icon: const Icon(Icons.cancel),
-                    onPressed: () async { _cancelarComanda(comandaMontado); }, 
-                  ),
-                ],
+                children: _getBotoesComanda(comandaMontado),
               ),
             ],
           ),
         ),
       ],
     );
+  }
+
+  List<Widget> _getBotoesComanda(ComandaMontado comandaMontado) {
+    List<Widget> listaItems = [];
+
+    listaItems.add(
+      IconButton(
+        tooltip: 'Adicionar Itens',
+        icon: const Icon(Icons.add_box),
+        onPressed: () async { _adicionarItens(comandaMontado); }, 
+      ),
+    );
+
+    if (widget.tipo == 'D') {
+      listaItems.add(
+        IconButton(
+          tooltip: 'Delivery',
+          icon: const Icon(Icons.motorcycle),
+          onPressed: () async { _adicionarDelivery(comandaMontado); }, 
+        ),
+      );
+    }
+
+    listaItems.add(
+      IconButton(
+        tooltip: 'Cancelar Comanda',
+        icon: const Icon(Icons.cancel),
+        onPressed: () async { 
+          if (comandaMontado == listaComandaMontado[0]) { // não pode remover a comanda base
+            showInSnackBar('Essa comanda não pode ser cancelada!', context, corFundo: Colors.white);
+          } else {
+            _cancelarComanda(comandaMontado); 
+          }
+        }, 
+      ),
+    );
+
+    return listaItems;
   }
 
   /// MÉTODOS  
@@ -346,10 +374,10 @@ class _ComandaPageState extends State<ComandaPage> {
       }
       // }
       if (listaComandaMontado.isEmpty) {
-        _adicionarComanda();
+        await _adicionarComanda();
       }
     } else {
-      _adicionarComanda();
+      await _adicionarComanda();
     }
     setState(() {
     });
@@ -364,7 +392,7 @@ class _ComandaPageState extends State<ComandaPage> {
           dataChegada: Biblioteca.removerTempoDaData(DateTime.now()),
           horaChegada: Biblioteca.formatarHora(DateTime.now()),
           quantidadePessoas: 1,
-          codigoCompartilhado: listaComandaMontado.isNotEmpty ? listaComandaMontado[0].comanda!.id! : null,
+          codigoCompartilhado: listaComandaMontado.isNotEmpty ? listaComandaMontado[0].comanda!.id: null,
           tipo: widget.tipo, // indoor
           situacao: 'A',
         ),
@@ -377,7 +405,7 @@ class _ComandaPageState extends State<ComandaPage> {
       // se for a primeira comanda, coloca o código compartilhado nela
       if (listaComandaMontado.isEmpty) {
         comandaMontado.comanda = comandaMontado.comanda!.copyWith(
-          codigoCompartilhado: comandaMontado.comanda!.id!,
+          codigoCompartilhado: comandaMontado.comanda!.id,
         );
         await Sessao.db.comandaDao.alterar(comandaMontado);
       }
@@ -428,12 +456,21 @@ class _ComandaPageState extends State<ComandaPage> {
           horaSaida: Biblioteca.formatarHora(DateTime.now()),
           situacao: 'C',
         );
-        await Sessao.db.comandaDao.excluir(comandaMontado);
-        await _consultarComandas();
+        await Sessao.db.comandaDao.cancelarComanda(comandaMontado);
+        listaComandaMontado = 
+          await Sessao.db.comandaDao.consultarListaMontado(
+            idMesa: widget.mesa.id!, 
+            codigoCompartilhado: 0, 
+            situacao: 'A'
+          );
         if (listaComandaMontado.isEmpty) {
           final mesa = widget.mesa.copyWith(disponivel: 'S');
           await Sessao.db.mesaDao.alterar(mesa);
+          if (!mounted) return;
           Navigator.pop(context);  
+        } else {
+          setState(() {
+          });
         }
       }); 
     } 
@@ -442,6 +479,8 @@ class _ComandaPageState extends State<ComandaPage> {
   Future _adicionarItens(ComandaMontado comandaMontado) async {
     if (comandaMontado.comanda!.situacao == 'C') {
       showInSnackBar('Essa comanda foi cancelada!', context, corFundo: Colors.white);
+    } else if (comandaMontado.comanda!.situacao == 'F') {
+      showInSnackBar('Essa comanda foi finalizada!', context, corFundo: Colors.white);
     } else {
       comandaMontado.cliente ??= Cliente(id: null);
       comandaMontado.colaborador ??= Colaborador(id: null);
@@ -451,5 +490,36 @@ class _ComandaPageState extends State<ComandaPage> {
       ).then((value) async { await _consultarComandas(); });
     }
   }
+
+  Future _adicionarDelivery(ComandaMontado comandaMontado) async {
+    if (comandaMontado.comanda!.situacao == 'C') {
+      showInSnackBar('Essa comanda foi cancelada!', context, corFundo: Colors.white);
+    } else if (comandaMontado.comanda!.situacao == 'F') {
+      showInSnackBar('Essa comanda foi finalizada!', context, corFundo: Colors.white);
+    } else {
+      Delivery? delivery = await Sessao.db.deliveryDao.consultarObjetoFiltro('ID_COMANDA', comandaMontado.comanda!.id.toString());
+      if (delivery == null) {
+        Delivery delivery = Delivery(
+          id: null,
+          idComanda: comandaMontado.comanda!.id,
+          idColaborador: comandaMontado.comanda!.idColaborador,
+          nomeCliente: comandaMontado.cliente?.nome,
+          telefonePrincipal: comandaMontado.cliente?.telefone,
+          celular: comandaMontado.cliente?.celular,
+          logradouro: comandaMontado.cliente?.logradouro,
+          numero: comandaMontado.cliente?.numero,
+          complemento: comandaMontado.cliente?.complemento,
+          cep: comandaMontado.cliente?.cep,
+          bairro: comandaMontado.cliente?.bairro,
+          cidade: comandaMontado.cliente?.cidade,
+          uf: comandaMontado.cliente?.uf,
+        );
+        await Sessao.db.deliveryDao.inserir(delivery);
+      }
+      if (!mounted) return;
+      showInSnackBar('Delivery adicionado com sucesso!', context, corFundo: Colors.white);
+    }
+  }
+
 
 }

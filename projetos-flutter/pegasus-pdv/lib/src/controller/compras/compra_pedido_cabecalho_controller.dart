@@ -33,6 +33,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 
@@ -68,7 +69,7 @@ class CompraPedidoCabecalhoController {
                           : primeiroVencimento!.add(Duration(days: intervaloEntreParcelas! * i)),
           valorAPagar: num.parse((compraPedidoCabecalho!.valorTotal! / quantidadeParcelas).toStringAsFixed(Constantes.decimaisValor)) as double?,
           statusPagamento: 'A',
-          historico: 'Gerado pelo módulo compras. Parcela ' + (i+1).toString() + ' de ' + quantidadeParcelas.toString(),
+          historico: 'Gerado pelo módulo compras. Parcela ${i+1} de $quantidadeParcelas',
         );
       listaContasPagar.add(parcelaPagar);
       somaParcelas = somaParcelas + parcelaPagar.valorAPagar!;

@@ -53,10 +53,10 @@ class RegistroPage extends StatefulWidget {
   const RegistroPage({Key? key, this.title}): super(key: key);
 
   @override
-  _RegistroPageState createState() => _RegistroPageState();
+  RegistroPageState createState() => RegistroPageState();
 }
 
-class _RegistroPageState extends State<RegistroPage> {
+class RegistroPageState extends State<RegistroPage> {
   // final _emailController = TextEditingController(text: Sessao.empresa.email ?? '');
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -190,32 +190,33 @@ class _RegistroPageState extends State<RegistroPage> {
                     SingleChildScrollView(
                       child: Html(
                         data: htmlData,
-                        style: {
-                          "ul": Style(
-                            listStyleType: ListStyleType.SQUARE,
-                          ),
-                          "table": Style(
-                            backgroundColor: const Color.fromARGB(0x50, 0xee, 0xee, 0xee),
-                          ),
-                          "tr": Style(
-                            border: const Border(bottom: BorderSide(color: Colors.grey)),
-                          ),
-                          "th": Style(
-                            padding: const EdgeInsets.all(6),
-                            backgroundColor: Colors.grey,
-                          ),
-                          "td": Style(
-                            padding: const EdgeInsets.all(6),
-                            alignment: Alignment.topLeft,
-                          ),
-                          'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
-                        },
-                        onLinkTap: (url, _, __, ___) {
-                          debugPrint("Opening $url...");
-                        },
-                        onImageTap: (src, _, __, ___) {
-                          debugPrint(src);
-                        },
+                        // TODO: comentado por conta de migração para versão 3.7.1. do flutter - adaptar para nova versão
+                        // style: {
+                        //   "ul": Style(
+                        //     listStyleType: ListStyleType.SQUARE,
+                        //   ),
+                        //   "table": Style(
+                        //     backgroundColor: const Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                        //   ),
+                        //   "tr": Style(
+                        //     border: const Border(bottom: BorderSide(color: Colors.grey)),
+                        //   ),
+                        //   "th": Style(
+                        //     padding: const EdgeInsets.all(6),
+                        //     backgroundColor: Colors.grey,
+                        //   ),
+                        //   "td": Style(
+                        //     padding: const EdgeInsets.all(6),
+                        //     alignment: Alignment.topLeft,
+                        //   ),
+                        //   'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
+                        // },
+                        // onLinkTap: (url, _, __, ___) {
+                        //   debugPrint("Opening $url...");
+                        // },
+                        // onImageTap: (src, _, __, ___) {
+                        //   debugPrint(src);
+                        // },
                         onImageError: (exception, stackTrace) {
                           debugPrint(exception as String?);
                         },
@@ -372,12 +373,12 @@ class _RegistroPageState extends State<RegistroPage> {
     );
   }
 
-  List<Widget> _getBotoesRodape({BuildContext? context}) {
+  List<Widget> _getBotoesRodape({required BuildContext context}) {
     List<Widget> listaBotoes = [];
     if (!_pendenteDeConfirmacao) {
       listaBotoes.add(
         SizedBox(
-          width: 200,
+          width: Biblioteca.isTelaPequena(context)! ? 100 : 200,
           child: getBotaoGenericoPdv(
             descricao: 'Confirmar',
             cor: Colors.green, 
@@ -394,13 +395,14 @@ class _RegistroPageState extends State<RegistroPage> {
       );
       listaBotoes.add(
         SizedBox(
-          width: 200,
+          width: Biblioteca.isTelaPequena(context)! ? 100 : 200,
           child: getBotaoGenericoPdv(
             descricao: 'Reenviar Email',
             cor: Colors.blue, 
             onPressed: () async {
-              gerarDialogBoxEspera(context!);
+              gerarDialogBoxEspera(context);
               await _reenviarEmail();
+              if (!mounted) return;
               Sessao.fecharDialogBoxEspera(context);
             }
           ),
@@ -419,7 +421,7 @@ class _RegistroPageState extends State<RegistroPage> {
           cor: Colors.blueGrey, 
           onPressed: () {
             // Navigator.of(context!).pop();
-            Navigator.pushNamed(context!, '/empresaPersiste',);
+            Navigator.pushNamed(context, '/empresaPersiste',);
           }
         ),
       ),
@@ -443,6 +445,7 @@ class _RegistroPageState extends State<RegistroPage> {
         );
         await Sessao.db.empresaDao.alterar(Sessao.empresa!, Sessao.configuracaoPdv!.modulo != 'G');
         Sessao.empresa = await Sessao.db.empresaDao.consultarObjeto(1);
+        if (!mounted) return;
         Sessao.fecharDialogBoxEspera(context);
         gerarDialogBoxInformacao(context, 'Código confirmado com sucesso. Sistema liberado.', 
         onOkPressed: () { 
@@ -451,6 +454,7 @@ class _RegistroPageState extends State<RegistroPage> {
         });              
       }
     } else {
+      if (!mounted) return;
       Sessao.fecharDialogBoxEspera(context);
       gerarDialogBoxInformacao(context, 'Código inválido.', onOkPressed: () { Navigator.of(context).pop(); });      
     }
@@ -460,6 +464,7 @@ class _RegistroPageState extends State<RegistroPage> {
     EmpresaService servico = EmpresaService();
     EmpresaModel empresa = EmpresaModel.fromDB(Sessao.empresa!);
     final retorno = await servico.reenviarEmail(empresa);
+    if (!mounted) return;
     if (retorno) {
       showInSnackBar('E-Mail reenviado com sucesso.', context, corFundo: Colors.blue);    
     } else {
@@ -480,7 +485,8 @@ class _RegistroPageState extends State<RegistroPage> {
         );
         EmpresaModel? empresa = EmpresaModel.fromDB(Sessao.empresa!);
         EmpresaService servico = EmpresaService();
-        empresa = await servico.registrar(empresa);        
+        empresa = await servico.registrar(empresa);  
+        if (!mounted) return;      
         Sessao.fecharDialogBoxEspera(context);
         if (empresa != null) {
           if (empresa.registrado == 'P') {
@@ -498,6 +504,7 @@ class _RegistroPageState extends State<RegistroPage> {
             );
             await Sessao.db.empresaDao.alterar(Sessao.empresa!, Sessao.configuracaoPdv!.modulo != 'G');
             Sessao.empresa = await Sessao.db.empresaDao.consultarObjeto(1);
+            if (!mounted) return;
             Navigator.of(context).pop();
             showInSnackBar('Registro realizado com sucesso.', context, corFundo: Colors.blue);
           }

@@ -35,14 +35,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'dart:async';
 
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'mesa_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           Mesas,
 		])
 class MesaDao extends DatabaseAccessor<AppDatabase> with _$MesaDaoMixin {
@@ -58,17 +58,17 @@ class MesaDao extends DatabaseAccessor<AppDatabase> with _$MesaDaoMixin {
   }  
 
   Future<List<Mesa>?> consultarListaFiltro(String campo, String valor) async {
-    listaMesa = await (customSelect("SELECT * FROM MESA WHERE " + campo + " like '%" + valor + "%'", 
+    listaMesa = await (customSelect("SELECT * FROM MESA WHERE $campo like '%$valor%'", 
                                 readsFrom: { mesas }).map((row) {
-                                  return Mesa.fromData(row.data, db);  
+                                  return Mesa.fromData(row.data);  
                                 }).get());
     return listaMesa;
   }
     
   Future<Mesa?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM MESA WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM MESA WHERE $campo = '$valor'", 
                                 readsFrom: { mesas }).map((row) {
-                                  return Mesa.fromData(row.data, db);  
+                                  return Mesa.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -78,20 +78,27 @@ class MesaDao extends DatabaseAccessor<AppDatabase> with _$MesaDaoMixin {
     return (select(mesas)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<Mesa> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from MESA").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(Mesa pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(mesas).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Mesa> pObjeto) {
+  Future<bool> alterar(Mesa pObjeto) {
     return transaction(() async {
       return update(mesas).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<Mesa> pObjeto) {
+  Future<int> excluir(Mesa pObjeto) {
     return transaction(() async {
       return delete(mesas).delete(pObjeto);
     });    

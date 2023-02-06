@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'taxa_entrega_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           TaxaEntregas,
 		])
 class TaxaEntregaDao extends DatabaseAccessor<AppDatabase> with _$TaxaEntregaDaoMixin {
@@ -56,17 +56,17 @@ class TaxaEntregaDao extends DatabaseAccessor<AppDatabase> with _$TaxaEntregaDao
   }  
 
   Future<List<TaxaEntrega>?> consultarListaFiltro(String campo, String valor) async {
-    listaTaxaEntrega = await (customSelect("SELECT * FROM TAXA_ENTREGA WHERE " + campo + " like '%" + valor + "%'", 
+    listaTaxaEntrega = await (customSelect("SELECT * FROM TAXA_ENTREGA WHERE $campo like '%$valor%'", 
                                 readsFrom: { taxaEntregas }).map((row) {
-                                  return TaxaEntrega.fromData(row.data, db);  
+                                  return TaxaEntrega.fromData(row.data);  
                                 }).get());
     return listaTaxaEntrega;
   }
     
   Future<TaxaEntrega?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM TAXA_ENTREGA WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM TAXA_ENTREGA WHERE $campo = '$valor'", 
                                 readsFrom: { taxaEntregas }).map((row) {
-                                  return TaxaEntrega.fromData(row.data, db);  
+                                  return TaxaEntrega.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -76,20 +76,27 @@ class TaxaEntregaDao extends DatabaseAccessor<AppDatabase> with _$TaxaEntregaDao
     return (select(taxaEntregas)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<TaxaEntrega> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from TAXA_ENTREGA").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(TaxaEntrega pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(taxaEntregas).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<TaxaEntrega> pObjeto) {
+  Future<bool> alterar(TaxaEntrega pObjeto) {
     return transaction(() async {
       return update(taxaEntregas).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<TaxaEntrega> pObjeto) {
+  Future<int> excluir(TaxaEntrega pObjeto) {
     return transaction(() async {
       return delete(taxaEntregas).delete(pObjeto);
     });    

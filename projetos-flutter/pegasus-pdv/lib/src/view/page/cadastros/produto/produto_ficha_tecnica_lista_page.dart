@@ -39,7 +39,7 @@ import 'package:pegasus_pdv/src/infra/biblioteca.dart';
 
 import 'package:pegasus_pdv/src/infra/constantes.dart';
 
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -54,10 +54,10 @@ class ProdutoFichaTecnicaListaPage extends StatefulWidget {
   const ProdutoFichaTecnicaListaPage({Key? key, this.produto, this.foco, this.salvarProdutoCallBack}) : super(key: key);
 
   @override
-  _ProdutoFichaTecnicaListaPageState createState() => _ProdutoFichaTecnicaListaPageState();
+  ProdutoFichaTecnicaListaPageState createState() => ProdutoFichaTecnicaListaPageState();
 }
 
-class _ProdutoFichaTecnicaListaPageState extends State<ProdutoFichaTecnicaListaPage> {
+class ProdutoFichaTecnicaListaPageState extends State<ProdutoFichaTecnicaListaPage> {
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
 
@@ -109,7 +109,7 @@ class _ProdutoFichaTecnicaListaPageState extends State<ProdutoFichaTecnicaListaP
               padding: const EdgeInsets.all(2.0),
               children: <Widget>[
                 const Divider(color: Colors.black,),
-                Text('Produto Pai: ' + (widget.produto?.nome ?? ''),
+                Text('Produto Pai: ${widget.produto?.nome ?? ''}',
                   style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18.0, color: Colors.blue, fontStyle: FontStyle.italic),
                 ),
                 const Divider(color: Colors.black,),
@@ -130,17 +130,17 @@ class _ProdutoFichaTecnicaListaPageState extends State<ProdutoFichaTecnicaListaP
   }
 
   void _inserir() async {
-    ProdutoFichaTecnica? _produtoFichaTecnica = ProdutoFichaTecnica(id: null);
-    _produtoFichaTecnica = await Navigator.of(context)
+    ProdutoFichaTecnica? produtoFichaTecnica = ProdutoFichaTecnica(id: null);
+    produtoFichaTecnica = await Navigator.of(context)
       .push(MaterialPageRoute(
         builder: (BuildContext context) =>
           ProdutoFichaTecnicaPersistePage(
             produto: widget.produto,
-            produtoFichaTecnica: _produtoFichaTecnica,
+            produtoFichaTecnica: produtoFichaTecnica,
             title: 'Produto Ficha Tecnica - Inserindo',
             operacao: 'I')));
-      if (_produtoFichaTecnica != null) { 
-        ProdutoController.listaProdutoFichaTecnica.add(_produtoFichaTecnica);
+      if (produtoFichaTecnica != null) { 
+        ProdutoController.listaProdutoFichaTecnica.add(produtoFichaTecnica);
       }
       setState(() {
         _getRows();
@@ -160,9 +160,9 @@ class _ProdutoFichaTecnicaListaPageState extends State<ProdutoFichaTecnicaListaP
   List<DataRow> _getRows() {
     List<DataRow> lista = [];
     for (var produtoFichaTecnica in ProdutoController.listaProdutoFichaTecnica) {
-      List<DataCell> _celulas = [];
+      List<DataCell> celulas = [];
 
-      _celulas = [
+      celulas = [
           DataCell(Text(produtoFichaTecnica.descricao ?? ''), onTap: () { 
             _detalharProdutoFichaTecnica(widget.produto, produtoFichaTecnica, context);
           }),
@@ -177,7 +177,7 @@ class _ProdutoFichaTecnicaListaPageState extends State<ProdutoFichaTecnicaListaP
           // }),
       ];
 
-      lista.add(DataRow(cells: _celulas));
+      lista.add(DataRow(cells: celulas));
     }
     return lista;
   }

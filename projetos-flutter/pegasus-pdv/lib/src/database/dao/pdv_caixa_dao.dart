@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'pdv_caixa_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           PdvCaixas,
 		])
 class PdvCaixaDao extends DatabaseAccessor<AppDatabase> with _$PdvCaixaDaoMixin {
@@ -51,9 +51,9 @@ class PdvCaixaDao extends DatabaseAccessor<AppDatabase> with _$PdvCaixaDaoMixin 
   Future<List<PdvCaixa>> consultarLista() => select(pdvCaixas).get();
 
   Future<List<PdvCaixa>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM PDV_CAIXA WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM PDV_CAIXA WHERE $campo like '%$valor%'", 
                                 readsFrom: { pdvCaixas }).map((row) {
-                                  return PdvCaixa.fromData(row.data, db);  
+                                  return PdvCaixa.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,20 +63,27 @@ class PdvCaixaDao extends DatabaseAccessor<AppDatabase> with _$PdvCaixaDaoMixin 
     return (select(pdvCaixas)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<PdvCaixa> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from PDV_CAIXA").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(PdvCaixa pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(pdvCaixas).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<PdvCaixa> pObjeto) {
+  Future<bool> alterar(PdvCaixa pObjeto) {
     return transaction(() async {
       return update(pdvCaixas).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<PdvCaixa> pObjeto) {
+  Future<int> excluir(PdvCaixa pObjeto) {
     return transaction(() async {
       return delete(pdvCaixas).delete(pObjeto);
     });    

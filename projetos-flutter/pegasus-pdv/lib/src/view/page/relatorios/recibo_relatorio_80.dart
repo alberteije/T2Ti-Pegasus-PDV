@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 /*
 Title: T2Ti ERP 3.0                                                                
 Description: Página de relatório do recibo - formato Bobina 80 Colunas
@@ -54,10 +56,10 @@ class ReciboRelatorio80 extends StatefulWidget {
   const ReciboRelatorio80({Key? key}) : super(key: key);
 
   @override
-  _ReciboRelatorio80State createState() => _ReciboRelatorio80State();
+  ReciboRelatorio80State createState() => ReciboRelatorio80State();
 }
 
-class _ReciboRelatorio80State extends State<ReciboRelatorio80> {
+class ReciboRelatorio80State extends State<ReciboRelatorio80> {
   Map<LogicalKeySet, Intent>? _shortcutMap;
   Map<Type, Action<Intent>>? _actionMap;
 
@@ -131,18 +133,18 @@ class Recibo80 {
       Sessao.empresa!.logotipo!,
     );
 
-    final _fontNormal = await rootBundle.load('assets/fonts/lucida-console.ttf');
-    final _fontBold = await rootBundle.load('assets/fonts/roboto-bold.ttf');
-    final _fontItalic = await rootBundle.load('assets/fonts/roboto-italic.ttf');
+    final fontNormal = await rootBundle.load('assets/fonts/lucida-console.ttf');
+    final fontBold = await rootBundle.load('assets/fonts/roboto-bold.ttf');
+    final fontItalic = await rootBundle.load('assets/fonts/roboto-italic.ttf');
 
     // Add page to the PDF
     doc.addPage(
       pw.Page(
         pageTheme: _buildTheme(
           pageFormat,
-          pw.Font.ttf(_fontNormal),
-          pw.Font.ttf(_fontBold),
-          pw.Font.ttf(_fontItalic),
+          pw.Font.ttf(fontNormal),
+          pw.Font.ttf(fontBold),
+          pw.Font.ttf(fontItalic),
         ),
         build: (context) => pw.Column(
           children: [
@@ -210,6 +212,7 @@ class Recibo80 {
         pw.Container(
           alignment: pw.Alignment.center,
           child: pw.Text(
+            // ignore: prefer_interpolation_to_compose_strings
             'Email: ' + (Sessao.empresa!.email ?? '') +
             ' | ' +
             'Fone: ' + (Sessao.empresa!.fone ?? '') +
@@ -252,7 +255,7 @@ class Recibo80 {
         pw.Container(
           alignment: pw.Alignment.topLeft,
           child: pw.Text(
-            'Cliente: ' + (Sessao.vendaAtual!.nomeCliente ?? 'Nome Não Informado'),
+            'Cliente: ${Sessao.vendaAtual!.nomeCliente ?? 'Nome Não Informado'}',
             style: pw.TextStyle(
               color: _darkColor,
               fontWeight: pw.FontWeight.bold,
@@ -263,7 +266,7 @@ class Recibo80 {
         pw.Container(
           alignment: pw.Alignment.topLeft,
           child: pw.Text(
-            'CPF/CNPJ: ' + (Sessao.vendaAtual!.cpfCnpjCliente ?? ''),
+            'CPF/CNPJ: ${Sessao.vendaAtual!.cpfCnpjCliente ?? ''}',
             style: pw.TextStyle(
               fontWeight: pw.FontWeight.normal,
               fontSize: 10,
@@ -273,7 +276,7 @@ class Recibo80 {
         pw.Container(
           alignment: pw.Alignment.topRight,
           child: pw.Text(
-            'Data: ' + Biblioteca.formatarData(Sessao.vendaAtual!.dataVenda),
+            'Data: ${Biblioteca.formatarData(Sessao.vendaAtual!.dataVenda)}',
             style: pw.TextStyle(
               fontWeight: pw.FontWeight.normal,
               fontSize: 8,
@@ -292,7 +295,7 @@ class Recibo80 {
       return pw.Container(
         alignment: pw.Alignment.topRight,
         child: pw.Text(
-          'Vendedor: ' + Sessao.vendaAtual!.idColaborador.toString(),
+          'Vendedor: ${Sessao.vendaAtual!.idColaborador}',
           style: pw.TextStyle(
             fontWeight: pw.FontWeight.normal,
             fontSize: 8,

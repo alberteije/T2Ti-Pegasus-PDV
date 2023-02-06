@@ -35,7 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'dart:async';
 
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
@@ -43,7 +43,7 @@ import 'package:pegasus_pdv/src/infra/biblioteca.dart';
 
 part 'pdv_movimento_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           PdvMovimentos,
           PdvFechamentos,
 		])
@@ -60,9 +60,9 @@ class PdvMovimentoDao extends DatabaseAccessor<AppDatabase> with _$PdvMovimentoD
   }
 
   Future<List<PdvMovimento>?> consultarListaFiltro(String campo, String valor) async {
-    listaMovimento = await (customSelect("SELECT * FROM PDV_MOVIMENTO WHERE " + campo + " like '%" + valor + "%'", 
+    listaMovimento = await (customSelect("SELECT * FROM PDV_MOVIMENTO WHERE $campo like '%$valor%'", 
                                 readsFrom: { pdvMovimentos }).map((row) {
-                                  return PdvMovimento.fromData(row.data, db);  
+                                  return PdvMovimento.fromData(row.data);  
                                 }).get());
     return listaMovimento;
   }
@@ -82,26 +82,37 @@ class PdvMovimentoDao extends DatabaseAccessor<AppDatabase> with _$PdvMovimentoD
     return (select(pdvMovimentos)..where((t) => t.statusMovimento.equals(pStatus))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<PdvMovimento> pObjeto) {
+  Future<PdvMovimento?> consultarObjetoPorId(int pId) {
+    return (select(pdvMovimentos)..where((t) => t.id.equals(pId))).getSingleOrNull();
+  } 
+
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from PDV_MOVIMENTO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(PdvMovimento pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(pdvMovimentos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<PdvMovimento> pObjeto) {
+  Future<bool> alterar(PdvMovimento pObjeto) {
     return transaction(() async {
       return update(pdvMovimentos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<PdvMovimento> pObjeto) {
+  Future<int> excluir(PdvMovimento pObjeto) {
     return transaction(() async {
       return delete(pdvMovimentos).delete(pObjeto);
     });    
   }
 
-  Future<PdvMovimento?> iniciarMovimento(Insertable<PdvMovimento> pObjeto) {
+  Future<PdvMovimento?> iniciarMovimento(PdvMovimento pObjeto) {
     return transaction(() async {
       await into(pdvMovimentos).insert(pObjeto);
       return await db.pdvMovimentoDao.consultarObjeto('A');
@@ -111,8 +122,8 @@ class PdvMovimentoDao extends DatabaseAccessor<AppDatabase> with _$PdvMovimentoD
   Future<PdvMovimento?> encerrarMovimento(PdvMovimento pObjeto, {List<PdvFechamento>? listaFechamento}) {
     return transaction(() async {
       PdvVendaCabecalho? totaisVenda = await db.pdvVendaCabecalhoDao.consultarTotaisDia(pObjeto.id!);
-      PdvSuprimento? totaisSuprimento = await db.pdvSuprimentoDao.consultarTotaisDia(pObjeto.id);
-      PdvSangria? totaisSangria = await db.pdvSangriaDao.consultarTotaisDia(pObjeto.id);
+      PdvSuprimento? totaisSuprimento = await db.pdvSuprimentoDao.consultarTotaisDia(pObjeto.id!);
+      PdvSangria? totaisSangria = await db.pdvSangriaDao.consultarTotaisDia(pObjeto.id!);
       pObjeto = 
       pObjeto.copyWith(
         statusMovimento: 'F',

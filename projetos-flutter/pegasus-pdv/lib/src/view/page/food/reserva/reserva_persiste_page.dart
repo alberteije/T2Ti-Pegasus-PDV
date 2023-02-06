@@ -40,6 +40,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -62,10 +63,10 @@ class ReservaPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ReservaPersistePageState createState() => _ReservaPersistePageState();
+  ReservaPersistePageState createState() => ReservaPersistePageState();
 }
 
-class _ReservaPersistePageState extends State<ReservaPersistePage> {
+class ReservaPersistePageState extends State<ReservaPersistePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -112,20 +113,20 @@ class _ReservaPersistePageState extends State<ReservaPersistePage> {
 
   @override
   Widget build(BuildContext context) {	
-    final _importaClienteController = TextEditingController();
-    _importaClienteController.text =  widget.reservaMontado?.cliente?.nome ?? ''; 
-    final _horaReservaController = MaskedTextController(
+    final importaClienteController = TextEditingController();
+    importaClienteController.text =  widget.reservaMontado?.cliente?.nome ?? ''; 
+    final horaReservaController = MaskedTextController(
       mask: Constantes.mascaraHORA,
       text: _reserva?.horaReserva ?? '',
     );
-    final _telefoneContatoController = MaskedTextController(
+    final telefoneContatoController = MaskedTextController(
       mask: Constantes.mascaraTELEFONE,
       text: _reserva?.telefoneContato ?? '',
     );
-	  final _contatoController = TextEditingController(
+	  final contatoController = TextEditingController(
       text: _reserva?.nomeContato ?? ''
     );
-    final _quantidadePessoasController = MoneyMaskedTextController(
+    final quantidadePessoasController = MoneyMaskedTextController(
       decimalSeparator: '',
       thousandSeparator: '',    
       precision: 0, 
@@ -175,7 +176,7 @@ class _ReservaPersistePageState extends State<ReservaPersistePage> {
                                       child: SizedBox(
                                         child: TextFormField(
                                           // validator: ValidaCampoFormulario.validarObrigatorio,
-                                          controller: _importaClienteController,
+                                          controller: importaClienteController,
                                           readOnly: true,
                                           decoration: getInputDecoration(
                                             'Conteúdo para o campo Cliente',
@@ -196,7 +197,7 @@ class _ReservaPersistePageState extends State<ReservaPersistePage> {
                                         icon: ViewUtilLib.getIconBotaoLookup(),
                                         onPressed: () async {
                                           ///chamando o lookup
-                                          Map<String, dynamic>? _objetoJsonRetorno =
+                                          Map<String, dynamic>? objetoJsonRetorno =
                                             await Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -213,13 +214,13 @@ class _ReservaPersistePageState extends State<ReservaPersistePage> {
                                                 ),
                                                 fullscreenDialog: true,
                                               ));
-                                          if (_objetoJsonRetorno != null) {
-                                            if (_objetoJsonRetorno['nome'] != null) {
-                                              _importaClienteController.text = _objetoJsonRetorno['nome'];
-                                              _contatoController.text = _objetoJsonRetorno['nome'];
-                                              _reserva = _reserva!.copyWith(idCliente: _objetoJsonRetorno['id']);
+                                          if (objetoJsonRetorno != null) {
+                                            if (objetoJsonRetorno['nome'] != null) {
+                                              importaClienteController.text = objetoJsonRetorno['nome'];
+                                              contatoController.text = objetoJsonRetorno['nome'];
+                                              _reserva = _reserva!.copyWith(idCliente: objetoJsonRetorno['id']);
                                               widget.reservaMontado!.cliente = widget.reservaMontado!.cliente!.copyWith(
-                                                nome: _objetoJsonRetorno['nome'],
+                                                nome: objetoJsonRetorno['nome'],
                                               );          
                                             }
                                           }
@@ -267,7 +268,7 @@ class _ReservaPersistePageState extends State<ReservaPersistePage> {
                                   padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                   child: TextFormField(
                                     keyboardType: TextInputType.number,
-                                    controller: _horaReservaController,
+                                    controller: horaReservaController,
                                     decoration: getInputDecoration(
                                       'Informe a Hora Reserva',
                                       'Hora Reserva',
@@ -295,7 +296,7 @@ class _ReservaPersistePageState extends State<ReservaPersistePage> {
                                   validator: ValidaCampoFormulario.validarObrigatorio,
                                   maxLength: 100,
                                   maxLines: 1,
-                                  controller: _contatoController,
+                                  controller: contatoController,
                                   decoration: getInputDecoration(
                                     'Informe o Contato',
                                     'Contato',
@@ -321,7 +322,7 @@ class _ReservaPersistePageState extends State<ReservaPersistePage> {
                                   child: TextFormField(
                                     validator: ValidaCampoFormulario.validarNumericoMaiorQueZero,
                                     keyboardType: TextInputType.number,
-                                    controller: _quantidadePessoasController,
+                                    controller: quantidadePessoasController,
                                     decoration: getInputDecoration(
                                       'Informe a Quantidade de Pessoas',
                                       'Quantidade de Pessoas',
@@ -329,7 +330,7 @@ class _ReservaPersistePageState extends State<ReservaPersistePage> {
                                     onSaved: (String? value) {
                                     },
                                     onChanged: (text) {
-                                      _reserva = _reserva!.copyWith(quantidadePessoas: _quantidadePessoasController.numberValue.toInt());
+                                      _reserva = _reserva!.copyWith(quantidadePessoas: quantidadePessoasController.numberValue.toInt());
                                       _formFoiAlterado = true;
                                     },
                                   ),
@@ -342,7 +343,7 @@ class _ReservaPersistePageState extends State<ReservaPersistePage> {
                                   child: TextFormField(
                                     validator: ValidaCampoFormulario.validarObrigatorio,
                                     keyboardType: TextInputType.number,
-                                    controller: _telefoneContatoController,
+                                    controller: telefoneContatoController,
                                     decoration: getInputDecoration(
                                       'Informe o Telefone',
                                       'Telefone',
@@ -492,6 +493,7 @@ class _ReservaPersistePageState extends State<ReservaPersistePage> {
             _reserva = _reserva!.copyWith(situacao: 'A');
             await Sessao.db.reservaDao.inserir(_reserva!, listaMesa);
           }
+          if (!mounted) return;
           Navigator.of(context).pop();
           showInSnackBar("Registro salvo com sucesso!", context, corFundo: Colors.green);
         }
@@ -511,7 +513,8 @@ class _ReservaPersistePageState extends State<ReservaPersistePage> {
   
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-	  await Sessao.db.reservaDao.excluir(_reserva!);
+	    await Sessao.db.reservaDao.excluir(_reserva!);
+      if (!mounted) return;
       Navigator.of(context).pop();
       showInSnackBar("Registro excluído com sucesso!", context, corFundo: Colors.green);
     });

@@ -33,14 +33,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'dart:convert';
+
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 part 'fornecedor_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           Fornecedors,
 		])
 class FornecedorDao extends DatabaseAccessor<AppDatabase> with _$FornecedorDaoMixin {
@@ -56,9 +59,9 @@ class FornecedorDao extends DatabaseAccessor<AppDatabase> with _$FornecedorDaoMi
   }
 
   Future<List<Fornecedor>?> consultarListaFiltro(String campo, String valor) async {
-    listaFornecedor = await (customSelect("SELECT * FROM FORNECEDOR WHERE " + campo + " like '%" + valor + "%'", 
+    listaFornecedor = await (customSelect("SELECT * FROM FORNECEDOR WHERE $campo like '%$valor%'", 
                                 readsFrom: { fornecedors }).map((row) {
-                                  return Fornecedor.fromData(row.data, db);  
+                                  return Fornecedor.fromData(row.data);  
                                 }).get());
     return listaFornecedor;
   }
@@ -69,23 +72,39 @@ class FornecedorDao extends DatabaseAccessor<AppDatabase> with _$FornecedorDaoMi
     return (select(fornecedors)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<Fornecedor> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from FORNECEDOR").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(Fornecedor pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(fornecedors).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Fornecedor> pObjeto) {
+  Future<bool> alterar(Fornecedor pObjeto) {
     return transaction(() async {
       return update(fornecedors).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<Fornecedor> pObjeto) {
+  Future<int> excluir(Fornecedor pObjeto) {
     return transaction(() async {
       return delete(fornecedors).delete(pObjeto);
     });    
+  }
+
+  Future<void> sincronizar(ObjetoSincroniza objetoSincroniza) async {
+    (delete(fornecedors)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = Fornecedor.fromJson(objetoJson);
+      into(fornecedors).insertOnConflictUpdate(objetoDart);
+    }
   }
 
 	static List<String> campos = <String>[

@@ -8,7 +8,7 @@ part of 'comanda_detalhe_dao.dart';
 
 mixin _$ComandaDetalheDaoMixin on DatabaseAccessor<AppDatabase> {
   $ComandaDetalhesTable get comandaDetalhes => attachedDatabase.comandaDetalhes;
-  $ProdutosTable get produtos => attachedDatabase.produtos;
   $ComandaDetalheComplementosTable get comandaDetalheComplementos =>
       attachedDatabase.comandaDetalheComplementos;
+  $ProdutosTable get produtos => attachedDatabase.produtos;
 }

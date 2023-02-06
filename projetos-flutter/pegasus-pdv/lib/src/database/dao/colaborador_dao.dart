@@ -33,14 +33,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'dart:convert';
+
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 part 'colaborador_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           Colaboradors,
 		])
 class ColaboradorDao extends DatabaseAccessor<AppDatabase> with _$ColaboradorDaoMixin {
@@ -57,9 +60,9 @@ class ColaboradorDao extends DatabaseAccessor<AppDatabase> with _$ColaboradorDao
   }
 
   Future<List<Colaborador>?> consultarListaFiltro(String campo, String valor) async {
-    listaColaborador = await (customSelect("SELECT * FROM COLABORADOR WHERE " + campo + " like '%" + valor + "%'", 
+    listaColaborador = await (customSelect("SELECT * FROM COLABORADOR WHERE $campo like '%$valor%'", 
                                 readsFrom: { colaboradors }).map((row) {
-                                  return Colaborador.fromData(row.data, db);  
+                                  return Colaborador.fromData(row.data);  
                                 }).get());
     aplicarDomains();
     return listaColaborador;
@@ -71,25 +74,48 @@ class ColaboradorDao extends DatabaseAccessor<AppDatabase> with _$ColaboradorDao
     return (select(colaboradors)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<Colaborador> pObjeto) {
+  Future<Colaborador?> consultarObjetoFiltro(String campo, String valor) async {
+    return (customSelect("SELECT * FROM COLABORADOR WHERE $campo = '$valor'", 
+                                readsFrom: { colaboradors }).map((row) {
+                                  return Colaborador.fromData(row.data);  
+                                }).getSingleOrNull());
+  }  
+
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from COLABORADOR").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(Colaborador pObjeto) {
     return transaction(() async {
-      final colaborador = removerDomains(pObjeto as Colaborador);
+      final colaborador = removerDomains(pObjeto);
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(colaboradors).insert(colaborador);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Colaborador> pObjeto) {
+  Future<bool> alterar(Colaborador pObjeto) {
     return transaction(() async {
-      final colaborador = removerDomains(pObjeto as Colaborador);
+      final colaborador = removerDomains(pObjeto);
       return update(colaboradors).replace(colaborador);
     });    
   } 
 
-  Future<int> excluir(Insertable<Colaborador> pObjeto) {
+  Future<int> excluir(Colaborador pObjeto) {
     return transaction(() async {
       return delete(colaboradors).delete(pObjeto);
     });    
+  }
+
+  Future<void> sincronizar(ObjetoSincroniza objetoSincroniza) async {
+    (delete(colaboradors)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = Colaborador.fromJson(objetoJson);
+      into(colaboradors).insertOnConflictUpdate(objetoDart);
+    }
   }
 
   Colaborador removerDomains(Colaborador colaborador) {

@@ -35,14 +35,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'dart:async';
 
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'pdv_venda_cabecalho_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           PdvVendaCabecalhos,
           PdvVendaDetalhes,
           PdvTotalTipoPagamentos,
@@ -65,13 +65,13 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
   }
 
   Future<List<PdvVendaCabecalho>?> consultarListaFiltro(String campo, String valor, {String? filtroAdicional}) async {
-    String sql = "SELECT * FROM PDV_VENDA_CABECALHO WHERE " + campo + " like '%" + valor + "%' ";
+    String sql = "SELECT * FROM PDV_VENDA_CABECALHO WHERE $campo like '%$valor%' ";
     if (filtroAdicional != null) {
-      sql += " AND " + filtroAdicional;
+      sql += " AND $filtroAdicional";
     }
     listaPdvVendaCabecalho = await (customSelect(sql, 
             readsFrom: { pdvVendaCabecalhos }).map((row) {
-              return PdvVendaCabecalho.fromData(row.data, db);  
+              return PdvVendaCabecalho.fromData(row.data);  
             }).get());
     return listaPdvVendaCabecalho;
   }
@@ -82,50 +82,38 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
     if (status != null) {
       switch (status) {
         case 'Fechadas':
-          sql = sql + " STATUS_VENDA = 'F' ";
+          sql = "$sql STATUS_VENDA = 'F' ";
           break;
         case 'Abertas':
-          sql = sql + " STATUS_VENDA = 'A' ";
+          sql = "$sql STATUS_VENDA = 'A' ";
           break;
         case 'Canceladas':
-          sql = sql + " STATUS_VENDA = 'C' ";
+          sql = "$sql STATUS_VENDA = 'C' ";
           break;
         case 'Todas':
-          sql = sql + " STATUS_VENDA LIKE '%' ";
+          sql = "$sql STATUS_VENDA LIKE '%' ";
           break;
         default:
       }
     } else {
-      sql = sql + " STATUS_VENDA LIKE '%' ";
+      sql = "$sql STATUS_VENDA LIKE '%' ";
     }
 
     if (mes != null && ano != null) {
-      sql = sql + 
-      " and  "
-      " strftime('%m', date(DATA_VENDA, 'unixepoch')) = '$mes'" 
-      " and  "
-      " strftime('%Y', date(DATA_VENDA, 'unixepoch')) = '$ano'";
+      sql = "$sql and   strftime('%m', date(DATA_VENDA, 'unixepoch')) = '$mes' and   strftime('%Y', date(DATA_VENDA, 'unixepoch')) = '$ano'";
     }
 
     listaPdvVendaCabecalho = await (customSelect(sql, 
             readsFrom: { pdvVendaCabecalhos }).map((row) {
-              return PdvVendaCabecalho.fromData(row.data, db);  
+              return PdvVendaCabecalho.fromData(row.data);  
             }).get());
     return listaPdvVendaCabecalho;
   }
 
   Future<PdvVendaCabecalho?> consultarTotaisDia(int idMovimento) async {
-    return (customSelect("SELECT "  
-    " sum(VALOR_VENDA) as VALOR_VENDA, "
-    " sum(VALOR_DESCONTO) as VALOR_DESCONTO, "
-    " sum(VALOR_FINAL) as VALOR_FINAL, "
-    " sum(VALOR_RECEBIDO) as VALOR_RECEBIDO, "
-    " sum(VALOR_TROCO) as VALOR_TROCO, "
-    " sum(VALOR_CANCELADO) as VALOR_CANCELADO "
-    " FROM PDV_VENDA_CABECALHO "
-    " WHERE ID_PDV_MOVIMENTO = '" + idMovimento.toString() + "'", 
+    return (customSelect("SELECT  sum(VALOR_VENDA) as VALOR_VENDA,  sum(VALOR_DESCONTO) as VALOR_DESCONTO,  sum(VALOR_FINAL) as VALOR_FINAL,  sum(VALOR_RECEBIDO) as VALOR_RECEBIDO,  sum(VALOR_TROCO) as VALOR_TROCO,  sum(VALOR_CANCELADO) as VALOR_CANCELADO  FROM PDV_VENDA_CABECALHO  WHERE ID_PDV_MOVIMENTO = '$idMovimento'", 
       readsFrom: { pdvVendaCabecalhos }).map((row) {
-        return PdvVendaCabecalho.fromData(row.data, db);  
+        return PdvVendaCabecalho.fromData(row.data);  
       }).getSingleOrNull());
   }
 
@@ -139,15 +127,7 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
       diasPeriodo = '360';
     }
 
-    final sql = "select SUM(VALOR_FINAL) AS TOTAL from PDV_VENDA_CABECALHO "
-                "where "
-                "STATUS_VENDA='F' "
-                "and " 
-                "( "
-                "date(DATA_VENDA, 'unixepoch') "
-                "between "
-                "date('now','-"+ diasPeriodo + " day') AND date('now') "
-                ")";
+    final sql = "select SUM(VALOR_FINAL) AS TOTAL from PDV_VENDA_CABECALHO where STATUS_VENDA='F' and ( date(DATA_VENDA, 'unixepoch') between date('now','-$diasPeriodo day') AND date('now') )";
     final resultado = await customSelect(sql).getSingleOrNull();
     return resultado?.data["TOTAL"] ?? 0;
   }
@@ -163,15 +143,7 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
       diasPeriodo = '360';
     }
 
-    final sql = "select DATA_VENDA, SUM(VALOR_FINAL) AS TOTAL from PDV_VENDA_CABECALHO "
-                "where "
-                "STATUS_VENDA='F' "
-                "and " 
-                "( "
-                "date(DATA_VENDA, 'unixepoch') "
-                "between "
-                "date('now','-"+ diasPeriodo + " day') AND date('now') "
-                ") GROUP BY DATA_VENDA ORDER BY DATA_VENDA";
+    final sql = "select DATA_VENDA, SUM(VALOR_FINAL) AS TOTAL from PDV_VENDA_CABECALHO where STATUS_VENDA='F' and ( date(DATA_VENDA, 'unixepoch') between date('now','-$diasPeriodo day') AND date('now') ) GROUP BY DATA_VENDA ORDER BY DATA_VENDA";
     final resultado = await customSelect(sql).get();
 
     for (QueryRow registro in resultado) {
@@ -189,17 +161,24 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
     return (select(pdvVendaCabecalhos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<PdvVendaCabecalho> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from PDV_VENDA_CABECALHO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(PdvVendaCabecalho pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(pdvVendaCabecalhos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<PdvVendaCabecalho> pObjeto, List<VendaDetalhe> listaVendaDetalhe, 
+  Future<bool> alterar(PdvVendaCabecalho pObjeto, List<VendaDetalhe> listaVendaDetalhe, 
   {List<PdvTotalTipoPagamento>? listaDadosPagamento}) {
     return transaction(() async {
-      await excluirFilhos(pObjeto as PdvVendaCabecalho);
+      await excluirFilhos(pObjeto);
       await inserirFilhos(pObjeto, listaVendaDetalhe, listaDadosPagamento);
       if (pObjeto.statusVenda == 'F') {
         await db.produtoDao.decrementarEstoque(listaVendaDetalhe: listaVendaDetalhe);
@@ -210,16 +189,16 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
 
   Future<bool> cancelarVenda(PdvVendaCabecalho pdvVendaCabecalho) {
     return transaction(() async {
-      final listaVendaDetalhe = await db.pdvVendaDetalheDao.consultarListaComProduto(pdvVendaCabecalho.id);
+      final listaVendaDetalhe = await db.pdvVendaDetalheDao.consultarListaComProduto(pdvVendaCabecalho.id!);
       await db.produtoDao.incrementarEstoque(listaVendaDetalhe: listaVendaDetalhe);
       await db.contasReceberDao.excluirReceitasDeUmaVenda(pdvVendaCabecalho.id!);
       return update(pdvVendaCabecalhos).replace(pdvVendaCabecalho);
     });    
   }
 
-  Future<int> excluir(Insertable<PdvVendaCabecalho> pObjeto) {
+  Future<int> excluir(PdvVendaCabecalho pObjeto) {
     return transaction(() async {
-      await excluirFilhos(pObjeto as PdvVendaCabecalho);
+      await excluirFilhos(pObjeto);
       return delete(pdvVendaCabecalhos).delete(pObjeto);
     });    
   }
@@ -227,21 +206,23 @@ class PdvVendaCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$PdvVenda
   Future<void> inserirFilhos(PdvVendaCabecalho pdvVendaCabecalho, List<VendaDetalhe> listaVendaDetalhe, List<PdvTotalTipoPagamento>? listaDadosPagamento) async {
     // items da venda
     for (var objeto in listaVendaDetalhe) {
-      objeto.pdvVendaDetalhe = objeto.pdvVendaDetalhe!.copyWith(idPdvVendaCabecalho: pdvVendaCabecalho.id);
+      final maxId = await db.pdvVendaDetalheDao.ultimoId();
+      objeto.pdvVendaDetalhe = objeto.pdvVendaDetalhe!.copyWith(id: maxId+1, idPdvVendaCabecalho: pdvVendaCabecalho.id!);
       await into(pdvVendaDetalhes).insert(objeto.pdvVendaDetalhe!);  
     }
     // pagamentos
     if (listaDadosPagamento != null) {
       for (var objeto in listaDadosPagamento) {
-        objeto = objeto.copyWith(idPdvVendaCabecalho: pdvVendaCabecalho.id);
+        final maxId = await db.pdvTotalTipoPagamentoDao.ultimoId();
+        objeto = objeto.copyWith(id: maxId+1, idPdvVendaCabecalho: pdvVendaCabecalho.id!);
         await into(pdvTotalTipoPagamentos).insert(objeto);  
       }
     }
   }
   
   Future<void> excluirFilhos(PdvVendaCabecalho pdvVendaCabecalho) async {
-    await (delete(pdvVendaDetalhes)..where((t) => t.idPdvVendaCabecalho.equals(pdvVendaCabecalho.id!))).go();
-    await (delete(pdvTotalTipoPagamentos)..where((t) => t.idPdvVendaCabecalho.equals(pdvVendaCabecalho.id!))).go();
+    await (delete(pdvVendaDetalhes)..where((t) => t.idPdvVendaCabecalho.equals(pdvVendaCabecalho.id))).go();
+    await (delete(pdvTotalTipoPagamentos)..where((t) => t.idPdvVendaCabecalho.equals(pdvVendaCabecalho.id))).go();
   }
 
 	static List<String> campos = <String>[

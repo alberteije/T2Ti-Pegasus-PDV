@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'log_importacao_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           LogImportacaos,
 		])
 class LogImportacaoDao extends DatabaseAccessor<AppDatabase> with _$LogImportacaoDaoMixin {
@@ -51,9 +51,9 @@ class LogImportacaoDao extends DatabaseAccessor<AppDatabase> with _$LogImportaca
   Future<List<LogImportacao>> consultarLista() => select(logImportacaos).get();
 
   Future<List<LogImportacao>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM LOG_IMPORTACAO WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM LOG_IMPORTACAO WHERE $campo like '%$valor%'", 
                                 readsFrom: { logImportacaos }).map((row) {
-                                  return LogImportacao.fromData(row.data, db);  
+                                  return LogImportacao.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,20 +63,20 @@ class LogImportacaoDao extends DatabaseAccessor<AppDatabase> with _$LogImportaca
     return (select(logImportacaos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<LogImportacao> pObjeto) {
+  Future<int> inserir(LogImportacao pObjeto) {
     return transaction(() async {
       final idInserido = await into(logImportacaos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<LogImportacao> pObjeto) {
+  Future<bool> alterar(LogImportacao pObjeto) {
     return transaction(() async {
       return update(logImportacaos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<LogImportacao> pObjeto) {
+  Future<int> excluir(LogImportacao pObjeto) {
     return transaction(() async {
       return delete(logImportacaos).delete(pObjeto);
     });    

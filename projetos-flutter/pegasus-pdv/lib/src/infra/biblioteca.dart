@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 /*
 Title: T2Ti ERP 3.0                                                                
 Description: Classe que armazena alguns métodos úteis para as classes da aplicação.
@@ -201,12 +203,27 @@ class Biblioteca {
     }
   }
 
+  static String formatarDataAAMM(DateTime? data) {
+    if (data == null) {
+      return '';
+    } else {    
+      var formatter = DateFormat('yyMM');
+      String dataHoraFormatada = formatter.format(data);
+      return dataHoraFormatada;
+    }
+  }
+
   static String formatarMes(DateTime data) {
     var formatter = DateFormat('MM');
     String mesFormatado = formatter.format(data);
     return mesFormatado;
   }
 
+  static String formatarMesAno(DateTime data) {
+    var formatter = DateFormat('MM/yyyy');
+    String mesFormatado = formatter.format(data);
+    return mesFormatado;
+  }
   static String formatarValorDecimal(double? valor) {
     return Constantes.formatoDecimalValor.format(valor ?? 0);
   }
@@ -224,6 +241,18 @@ class Biblioteca {
       return DateTime(data.year, data.month, data.day, 0, 0, 0, 0, 0); // zera o tempo
     } else {
       return data;
+    }
+  }
+
+  static DateTime? tratarDataJson(dynamic data) {
+    if (data != null) {
+      if (data is int) {
+        return DateTime.fromMicrosecondsSinceEpoch(data * 1000);
+      } else {
+        return DateTime.tryParse(data.toString().substring(0, 10));
+      }
+    } else {
+      return null;
     }
   }
 
@@ -280,6 +309,63 @@ class Biblioteca {
     } on SocketException catch (_) {
       return false;
     }
+  }
+
+///
+/// Retorna o(s) numDig Dígitos de Controle Módulo 11 do
+/// dado, limitando o Valor de Multiplicação em limiteMultiplicacao,
+/// multiplicando a soma por 10, se indicado:
+///
+///    Números Comuns:   numDig:   limiteMultiplicacao:   x10:
+///      CPF                2         12      true
+///      CNPJ               2          9      true
+///      PIS,C/C,Age        1          9      true
+///      RG SSP-SP          1          9      false
+/// 
+/// [valor] String dado contendo o número (sem o DV)
+/// [quantidadeDigitos] Número de dígitos a calcular
+/// [limiteMultiplicacao] Limite de multiplicação 
+/// [x10] Se true multiplica soma por 10
+///
+/// Baseado em: https://www.cjdinfo.com.br/solucao-javascript-calculo-digito-modulo-11
+
+  static String calcularModulo11(String valor, int quantidadeDigitos, int limiteMultiplicacao, bool x10){  
+    dynamic mult = 0;
+    dynamic soma = 0;
+    dynamic dig = 0;
+      
+    if(!x10) quantidadeDigitos = 1;
+    for(var n = 1; n <= quantidadeDigitos; n++){
+      soma = 0;
+      mult = 2;
+      for(var i = valor.length - 1; i>=0; i--){
+        soma += (mult * int.tryParse(valor[i]));
+        if(++mult > limiteMultiplicacao) mult = 2;
+      }
+      if(x10){
+        dig = ((soma * 10) % 11) % 10;
+      } else {
+        dig = soma % 11;
+        if(dig == 10) dig = "X";
+      }
+      valor = valor + dig.toString();
+    }
+    return valor.substring(valor.length-quantidadeDigitos, valor.length);
+  }
+
+  static String cifrar(String valor) {
+    if (Constantes.linguagemServidor == "c") {
+      return "\"" + Constantes.encrypter.encrypt(valor, iv: Constantes.iv).base64 + "\"";
+    } else {
+      return Constantes.encrypter.encrypt(valor, iv: Constantes.iv).base64;
+    }
+  }
+
+  static String decifrar(String valor) {
+    if (valor.substring(0, 1) == "\"") {
+      valor = valor.substring(1, valor.length - 1);  
+    }
+    return Constantes.encrypter.decrypt64(valor, iv: Constantes.iv);
   }
 
   static int retornarCodigoIbgeUf(String? uf) {

@@ -38,9 +38,11 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+// ignore: depend_on_referenced_packages
 import 'package:pdf/pdf.dart';
+// ignore: depend_on_referenced_packages
 import 'package:pdf/widgets.dart' as pw;
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:printing/printing.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
@@ -56,10 +58,10 @@ class EncerraMovimentoRelatorio extends StatefulWidget {
   const EncerraMovimentoRelatorio({Key? key, this.movimento}): super(key: key);
 
   @override
-  _EncerraMovimentoRelatorioState createState() => _EncerraMovimentoRelatorioState();
+  EncerraMovimentoRelatorioState createState() => EncerraMovimentoRelatorioState();
 }
 
-class _EncerraMovimentoRelatorioState extends State<EncerraMovimentoRelatorio> {
+class EncerraMovimentoRelatorioState extends State<EncerraMovimentoRelatorio> {
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
 
@@ -73,7 +75,7 @@ class _EncerraMovimentoRelatorioState extends State<EncerraMovimentoRelatorio> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _carregarListas());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _carregarListas());
   }
 
   Future _carregarListas() async {
@@ -142,18 +144,18 @@ class Relatorio {
       (await rootBundle.load('assets/images/rodape_recibo.png')).buffer.asUint8List(),
     );
 
-    final _fontNormal = await rootBundle.load('assets/fonts/roboto-normal.ttf');
-    final _fontBold = await rootBundle.load('assets/fonts/roboto-bold.ttf');
-    final _fontItalic = await rootBundle.load('assets/fonts/roboto-italic.ttf');
+    final fontNormal = await rootBundle.load('assets/fonts/roboto-normal.ttf');
+    final fontBold = await rootBundle.load('assets/fonts/roboto-bold.ttf');
+    final fontItalic = await rootBundle.load('assets/fonts/roboto-italic.ttf');
 
     // Add page to the PDF
     doc.addPage(
       pw.MultiPage(
         pageTheme: _buildTheme(
           pageFormat,
-          pw.Font.ttf(_fontNormal),
-          pw.Font.ttf(_fontBold),
-          pw.Font.ttf(_fontItalic),
+          pw.Font.ttf(fontNormal),
+          pw.Font.ttf(fontBold),
+          pw.Font.ttf(fontItalic),
         ),
         header: _buildHeader,
         footer: _buildFooter,
@@ -237,7 +239,7 @@ class Relatorio {
                     padding: const pw.EdgeInsets.only(top: 10),
                     alignment: pw.Alignment.bottomRight,
                     child: pw.Text(
-                      'Impresso em: ' + Biblioteca.formatarDataHora(DateTime.now()),
+                      'Impresso em: ${Biblioteca.formatarDataHora(DateTime.now())}',
                       style: pw.TextStyle(
                         color: _accentColor,
                         // fontWeight: pw.FontWeight.bold,
@@ -276,8 +278,7 @@ class Relatorio {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         pw.Text(
-          'Dados do Movimento [ ID = ' + _movimento!.id.toString() + ' ] - Status: ' 
-          + (_movimento!.statusMovimento == 'A' ? 'ABERTO' : 'FECHADO'),
+          'Dados do Movimento [ ID = ${_movimento!.id} ] - Status: ${_movimento!.statusMovimento == 'A' ? 'ABERTO' : 'FECHADO'}',
           style: pw.TextStyle(
             fontSize: 12,
             color: _baseColor,

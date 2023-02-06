@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 /*
 Title: T2Ti ERP 3.0                                                                
 Description: Página de relatório da comanda - formato Bobina 80 Colunas
@@ -54,10 +56,10 @@ class ComandaRelatorio80 extends StatefulWidget {
   const ComandaRelatorio80({Key? key}) : super(key: key);
 
   @override
-  _ComandaRelatorio80State createState() => _ComandaRelatorio80State();
+  ComandaRelatorio80State createState() => ComandaRelatorio80State();
 }
 
-class _ComandaRelatorio80State extends State<ComandaRelatorio80> {
+class ComandaRelatorio80State extends State<ComandaRelatorio80> {
   Map<LogicalKeySet, Intent>? _shortcutMap;
   Map<Type, Action<Intent>>? _actionMap;
 
@@ -126,18 +128,18 @@ class Comanda80 {
     // Create a PDF document.
     final doc = pw.Document();
 
-    final _fontNormal = await rootBundle.load('assets/fonts/lucida-console.ttf');
-    final _fontBold = await rootBundle.load('assets/fonts/roboto-bold.ttf');
-    final _fontItalic = await rootBundle.load('assets/fonts/roboto-italic.ttf');
+    final fontNormal = await rootBundle.load('assets/fonts/lucida-console.ttf');
+    final fontBold = await rootBundle.load('assets/fonts/roboto-bold.ttf');
+    final fontItalic = await rootBundle.load('assets/fonts/roboto-italic.ttf');
 
     // Add page to the PDF
     doc.addPage(
       pw.Page(
         pageTheme: _buildTheme(
           pageFormat,
-          pw.Font.ttf(_fontNormal),
-          pw.Font.ttf(_fontBold),
-          pw.Font.ttf(_fontItalic),
+          pw.Font.ttf(fontNormal),
+          pw.Font.ttf(fontBold),
+          pw.Font.ttf(fontItalic),
         ),
         build: (context) => pw.Column(
           children: [
@@ -183,7 +185,7 @@ class Comanda80 {
             pw.Container(
               alignment: pw.Alignment.center,
               child: pw.Text(
-                'COMANDA: ' + Sessao.comandaMontadoAtual!.comanda!.id.toString().padLeft(8, '0'),
+                'COMANDA: ${Sessao.comandaMontadoAtual!.comanda!.id.toString().padLeft(8, '0')}',
                 style: pw.TextStyle(                  
                   color: _baseColor,
                   fontWeight: pw.FontWeight.bold,
@@ -199,7 +201,7 @@ class Comanda80 {
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: [
           pw.Text(
-            'Data: ' + Biblioteca.formatarData(Sessao.comandaMontadoAtual!.comanda!.dataChegada),
+            'Data: ${Biblioteca.formatarData(Sessao.comandaMontadoAtual!.comanda!.dataChegada)}',
             style: pw.TextStyle(
               fontWeight: pw.FontWeight.normal,
               fontSize: 8,
@@ -207,7 +209,7 @@ class Comanda80 {
             ),
           ),
           pw.Text(
-            'Hora: ' + Sessao.comandaMontadoAtual!.comanda!.horaChegada!,
+            'Hora: ${Sessao.comandaMontadoAtual!.comanda!.horaChegada!}',
             style: pw.TextStyle(
               fontWeight: pw.FontWeight.normal,
               fontSize: 8,
@@ -242,7 +244,7 @@ class Comanda80 {
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
             pw.Text(
-              'Mesa: ' + Sessao.comandaMontadoAtual!.mesa!.numero!.padLeft(3, '0'),
+              'Mesa: ${Sessao.comandaMontadoAtual!.mesa!.numero!.padLeft(3, '0')}',
               style: pw.TextStyle(
                 fontWeight: pw.FontWeight.normal,
                 fontSize: 8,
@@ -250,7 +252,7 @@ class Comanda80 {
               ),
             ),
             pw.Text(
-              'Responsável: ' + nomeResponsavel,
+              'Responsável: $nomeResponsavel',
               style: pw.TextStyle(
                 fontWeight: pw.FontWeight.normal,
                 fontSize: 8,
@@ -264,7 +266,7 @@ class Comanda80 {
         pw.Row(
           children: [
             pw.Text(
-              'Quantidade de Pessoas na Comanda: ' + Sessao.comandaMontadoAtual!.comanda!.quantidadePessoas!.toString().padLeft(2, '0'),
+              'Quantidade de Pessoas na Comanda: ${Sessao.comandaMontadoAtual!.comanda!.quantidadePessoas!.toString().padLeft(2, '0')}',
               style: pw.TextStyle(
                 fontWeight: pw.FontWeight.normal,
                 fontSize: 8,
@@ -280,7 +282,7 @@ class Comanda80 {
       pw.Container(
         alignment: pw.Alignment.topLeft,
         child: pw.Text(
-          'Cliente: ' + nomeCliente,
+          'Cliente: $nomeCliente',
           style: pw.TextStyle(
             color: _darkColor,
             fontWeight: pw.FontWeight.bold,
@@ -816,7 +818,7 @@ class Comanda80 {
         pw.Paragraph(
           margin: const pw.EdgeInsets.fromLTRB(0, 1, 0, 0),
           textAlign: pw.TextAlign.left,
-          text: 'Cliente: ' + (Sessao.comandaMontadoAtual?.cliente?.nome ?? ''), 
+          text: 'Cliente: ${Sessao.comandaMontadoAtual?.cliente?.nome ?? ''}', 
           style: pw.TextStyle(
             color: _baseColor,
             fontSize: 9,
@@ -828,7 +830,7 @@ class Comanda80 {
         pw.Paragraph(
           margin: const pw.EdgeInsets.fromLTRB(0, 1, 0, 0),
           textAlign: pw.TextAlign.left,
-          text: 'Logradouro: ' + (Sessao.comandaMontadoAtual?.cliente?.logradouro ?? ''), 
+          text: 'Logradouro: ${Sessao.comandaMontadoAtual?.cliente?.logradouro ?? ''}', 
           style: pw.TextStyle(
             color: _baseColor,
             fontSize: 9,
@@ -840,7 +842,7 @@ class Comanda80 {
         pw.Paragraph(
           margin: const pw.EdgeInsets.fromLTRB(0, 1, 0, 0),
           textAlign: pw.TextAlign.left,
-          text: 'Número: ' + (Sessao.comandaMontadoAtual?.cliente?.numero ?? ''), 
+          text: 'Número: ${Sessao.comandaMontadoAtual?.cliente?.numero ?? ''}', 
           style: pw.TextStyle(
             color: _baseColor,
             fontSize: 9,
@@ -852,7 +854,7 @@ class Comanda80 {
         pw.Paragraph(
           margin: const pw.EdgeInsets.fromLTRB(0, 1, 0, 0),
           textAlign: pw.TextAlign.left,
-          text: 'Complemento: ' + (Sessao.comandaMontadoAtual?.cliente?.complemento ?? ''), 
+          text: 'Complemento: ${Sessao.comandaMontadoAtual?.cliente?.complemento ?? ''}', 
           style: pw.TextStyle(
             color: _baseColor,
             fontSize: 9,
@@ -864,7 +866,7 @@ class Comanda80 {
         pw.Paragraph(
           margin: const pw.EdgeInsets.fromLTRB(0, 1, 0, 0),
           textAlign: pw.TextAlign.left,
-          text: 'Bairro: ' + (Sessao.comandaMontadoAtual?.cliente?.bairro ?? ''), 
+          text: 'Bairro: ${Sessao.comandaMontadoAtual?.cliente?.bairro ?? ''}', 
           style: pw.TextStyle(
             color: _baseColor,
             fontSize: 9,
@@ -876,7 +878,7 @@ class Comanda80 {
         pw.Paragraph(
           margin: const pw.EdgeInsets.fromLTRB(0, 1, 0, 0),
           textAlign: pw.TextAlign.left,
-          text: 'Cidade: ' + (Sessao.comandaMontadoAtual?.cliente?.cidade ?? '') + ' - ' + (Sessao.comandaMontadoAtual?.cliente?.uf ?? ''), 
+          text: 'Cidade: ${Sessao.comandaMontadoAtual?.cliente?.cidade ?? ''} - ${Sessao.comandaMontadoAtual?.cliente?.uf ?? ''}', 
           style: pw.TextStyle(
             color: _baseColor,
             fontSize: 9,
@@ -888,7 +890,7 @@ class Comanda80 {
         pw.Paragraph(
           margin: const pw.EdgeInsets.fromLTRB(0, 1, 0, 0),
           textAlign: pw.TextAlign.left,
-          text: 'CEP: ' + (Sessao.comandaMontadoAtual?.cliente?.cep ?? ''), 
+          text: 'CEP: ${Sessao.comandaMontadoAtual?.cliente?.cep ?? ''}', 
           style: pw.TextStyle(
             color: _baseColor,
             fontSize: 9,
@@ -900,7 +902,7 @@ class Comanda80 {
         pw.Paragraph(
           margin: const pw.EdgeInsets.fromLTRB(0, 1, 0, 0),
           textAlign: pw.TextAlign.left,
-          text: 'Telefones: ' + (Sessao.comandaMontadoAtual?.cliente?.telefone ?? '') + ' - ' + (Sessao.comandaMontadoAtual?.cliente?.celular ?? ''), 
+          text: 'Telefones: ${Sessao.comandaMontadoAtual?.cliente?.telefone ?? ''} - ${Sessao.comandaMontadoAtual?.cliente?.celular ?? ''}', 
           style: pw.TextStyle(
             color: _baseColor,
             fontSize: 9,
@@ -940,7 +942,7 @@ class Comanda80 {
                 ),
               ),
               pw.Text(
-                Constantes.nomeApp + ' ' + Constantes.versaoApp,
+                '${Constantes.nomeApp} ${Constantes.versaoApp}',
                 style: pw.TextStyle(
                   color: _darkColor,
                   fontWeight: pw.FontWeight.normal,

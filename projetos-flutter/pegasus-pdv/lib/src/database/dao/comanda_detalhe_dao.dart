@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'comanda_detalhe_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           ComandaDetalhes,
           ComandaDetalheComplementos,
           Produtos,
@@ -53,31 +53,31 @@ class ComandaDetalheDao extends DatabaseAccessor<AppDatabase> with _$ComandaDeta
   Future<List<ComandaDetalhe>?> consultarLista() => select(comandaDetalhes).get();
 
   Future<List<ComandaDetalhe>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM COMANDA_DETALHE WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM COMANDA_DETALHE WHERE $campo like '%$valor%'", 
                                 readsFrom: { comandaDetalhes }).map((row) {
-                                  return ComandaDetalhe.fromData(row.data, db);  
+                                  return ComandaDetalhe.fromData(row.data);  
                                 }).get());
   }
 
   Future<ComandaDetalhe?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM COMANDA_DETALHE WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM COMANDA_DETALHE WHERE $campo = '$valor'", 
                                 readsFrom: { comandaDetalhes }).map((row) {
-                                  return ComandaDetalhe.fromData(row.data, db);  
+                                  return ComandaDetalhe.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
   Future<List<ComandaDetalheMontado>?> consultarListaMontado(int idComanda) async {
     final List<ComandaDetalheMontado> listaComandaDetalheMontado = [];
 
-    final listaComandaDetalhe = await (customSelect("SELECT * FROM COMANDA_DETALHE WHERE ID_COMANDA = '"  + idComanda.toString() + "'", 
+    final listaComandaDetalhe = await (customSelect("SELECT * FROM COMANDA_DETALHE WHERE ID_COMANDA = '$idComanda'", 
                                 readsFrom: { comandaDetalhes }).map((row) {
-                                  return ComandaDetalhe.fromData(row.data, db);  
+                                  return ComandaDetalhe.fromData(row.data);  
                                 }).get());
 
     for (var comandaDetalhe in listaComandaDetalhe) {
-      var listaComandaDetalheComplemento = await (customSelect("SELECT * FROM COMANDA_DETALHE_COMPLEMENTO WHERE ID_COMANDA_DETALHE = '"  + comandaDetalhe.id.toString() + "'", 
+      var listaComandaDetalheComplemento = await (customSelect("SELECT * FROM COMANDA_DETALHE_COMPLEMENTO WHERE ID_COMANDA_DETALHE = '${comandaDetalhe.id}'", 
                                 readsFrom: { comandaDetalheComplementos }).map((row) {
-                                  return ComandaDetalheComplemento.fromData(row.data, db);  
+                                  return ComandaDetalheComplemento.fromData(row.data);  
                                 }).get());
       ComandaDetalheMontado comandaDetalheMontado = ComandaDetalheMontado(
         comandaDetalhe: comandaDetalhe,
@@ -96,20 +96,33 @@ class ComandaDetalheDao extends DatabaseAccessor<AppDatabase> with _$ComandaDeta
     return (select(comandaDetalhes)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<ComandaDetalhe> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from COMANDA_DETALHE").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(ComandaDetalhe pObjeto, List<ComandaDetalheComplemento> listaComandaDetalheComplemento,) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(comandaDetalhes).insert(pObjeto);
+
+      for (var complemento in listaComandaDetalheComplemento) {
+        complemento = complemento.copyWith(idComandaDetalhe: idInserido);
+        await db.comandaDetalheComplementoDao.inserir(complemento);
+      }
+
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<ComandaDetalhe> pObjeto) {
+  Future<bool> alterar(ComandaDetalhe pObjeto) {
     return transaction(() async {
       return update(comandaDetalhes).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<ComandaDetalhe> pObjeto) {
+  Future<int> excluir(ComandaDetalhe pObjeto) {
     return transaction(() async {
       return delete(comandaDetalhes).delete(pObjeto);
     });    

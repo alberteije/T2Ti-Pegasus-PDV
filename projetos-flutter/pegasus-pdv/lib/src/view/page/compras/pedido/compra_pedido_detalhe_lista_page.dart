@@ -37,6 +37,7 @@ import 'package:flutter/material.dart';
 import 'package:pegasus_pdv/src/controller/controller.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -55,10 +56,10 @@ class CompraPedidoDetalheListaPage extends StatefulWidget {
   const CompraPedidoDetalheListaPage({Key? key, this.compraPedidoCabecalhoMontado, this.foco, this.salvarCompraPedidoCabecalhoCallBack}) : super(key: key);
 
   @override
-  _CompraPedidoDetalheListaPageState createState() => _CompraPedidoDetalheListaPageState();
+  CompraPedidoDetalheListaPageState createState() => CompraPedidoDetalheListaPageState();
 }
 
-class _CompraPedidoDetalheListaPageState extends State<CompraPedidoDetalheListaPage> {
+class CompraPedidoDetalheListaPageState extends State<CompraPedidoDetalheListaPage> {
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
 
@@ -126,17 +127,17 @@ class _CompraPedidoDetalheListaPageState extends State<CompraPedidoDetalheListaP
 
   void _inserir() async {
     if (_podeAlterarPedido()) {
-      CompraDetalhe? _compraDetalhe = CompraDetalhe();
-      _compraDetalhe = await Navigator.of(context)
+      CompraDetalhe? compraDetalhe = CompraDetalhe();
+      compraDetalhe = await Navigator.of(context)
         .push(MaterialPageRoute(
           builder: (BuildContext context) =>
             CompraPedidoDetalhePersistePage(
               compraPedidoCabecalho: CompraPedidoCabecalhoController.compraPedidoCabecalho,
-              compraDetalhe: _compraDetalhe,
+              compraDetalhe: compraDetalhe,
               title: 'Detalhes do Pedido - Inserindo',
               operacao: 'I')));
-      if (_compraDetalhe!= null) { 
-        CompraPedidoCabecalhoController.listaCompraDetalhe.add(_compraDetalhe);
+      if (compraDetalhe!= null) { 
+        CompraPedidoCabecalhoController.listaCompraDetalhe.add(compraDetalhe);
       }
       setState(() {
         _getRows();
@@ -161,10 +162,10 @@ class _CompraPedidoDetalheListaPageState extends State<CompraPedidoDetalheListaP
     List<DataRow> lista = [];
     for (var compraDetalhe in CompraPedidoCabecalhoController.listaCompraDetalhe) {
       if (compraDetalhe.compraPedidoDetalhe!.quantidade! > 0) {
-        List<DataCell> _celulas = [];
+        List<DataCell> celulas = [];
 
-        _celulas = [
-          DataCell(Text('${ compraDetalhe.compraPedidoDetalhe!.id ?? ''}'), onTap: () {
+        celulas = [
+          DataCell(Text('${ compraDetalhe.compraPedidoDetalhe!.id}'), onTap: () {
             _detalharCompraPedidoDetalhe(CompraPedidoCabecalhoController.compraPedidoCabecalho, compraDetalhe, context);
           }),
           DataCell(Text(compraDetalhe.produto?.nome ?? ''), onTap: () { 
@@ -190,7 +191,7 @@ class _CompraPedidoDetalheListaPageState extends State<CompraPedidoDetalheListaP
           }),
         ];
 
-        lista.add(DataRow(cells: _celulas));
+        lista.add(DataRow(cells: celulas));
       }
     }
     _atualizarTotais();

@@ -38,7 +38,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -59,10 +59,10 @@ class TaxaEntregaPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _TaxaEntregaPersistePageState createState() => _TaxaEntregaPersistePageState();
+  TaxaEntregaPersistePageState createState() => TaxaEntregaPersistePageState();
 }
 
-class _TaxaEntregaPersistePageState extends State<TaxaEntregaPersistePage> {
+class TaxaEntregaPersistePageState extends State<TaxaEntregaPersistePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -107,7 +107,7 @@ class _TaxaEntregaPersistePageState extends State<TaxaEntregaPersistePage> {
 
   @override
   Widget build(BuildContext context) {	
-    final _valorController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: taxaEntrega?.valor ?? 0);
+    final valorController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: taxaEntrega?.valor ?? 0);
 	
     return FocusableActionDetector(
       actions: _actionMap,
@@ -171,7 +171,7 @@ class _TaxaEntregaPersistePageState extends State<TaxaEntregaPersistePage> {
                             child: TextFormField(
                               keyboardType: TextInputType.number,
                               textAlign: TextAlign.end,
-                              controller: _valorController,
+                              controller: valorController,
                               decoration: getInputDecoration(
                                 'Informe o Valor',
                                 'Valor',
@@ -179,7 +179,7 @@ class _TaxaEntregaPersistePageState extends State<TaxaEntregaPersistePage> {
                               onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                taxaEntrega = taxaEntrega!.copyWith(valor: _valorController.numberValue);
+                                taxaEntrega = taxaEntrega!.copyWith(valor: valorController.numberValue);
                                 _formFoiAlterado = true;
                               },
                             ),
@@ -250,6 +250,7 @@ class _TaxaEntregaPersistePageState extends State<TaxaEntregaPersistePage> {
         } else {
           await Sessao.db.taxaEntregaDao.inserir(taxaEntrega!);
         }
+        if (!mounted) return;
         Navigator.of(context).pop();
         showInSnackBar("Registro salvo com sucesso!", context, corFundo: Colors.green);
       });
@@ -268,7 +269,8 @@ class _TaxaEntregaPersistePageState extends State<TaxaEntregaPersistePage> {
   
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-	  await Sessao.db.taxaEntregaDao.excluir(taxaEntrega!);
+	    await Sessao.db.taxaEntregaDao.excluir(taxaEntrega!);
+      if (!mounted) return;
       Navigator.of(context).pop();
       showInSnackBar("Registro excluído com sucesso!", context, corFundo: Colors.green);
     });

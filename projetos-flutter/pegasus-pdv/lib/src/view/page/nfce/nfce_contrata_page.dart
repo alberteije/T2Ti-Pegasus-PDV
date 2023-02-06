@@ -39,7 +39,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:crypto/crypto.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_pdv.dart';
@@ -56,10 +56,10 @@ class NfceContrataPage extends StatefulWidget {
   const NfceContrataPage({Key? key}) : super(key: key);
 
   @override
-  _NfceContrataPageState createState() => _NfceContrataPageState();
+  NfceContrataPageState createState() => NfceContrataPageState();
 }
 
-class _NfceContrataPageState extends State<NfceContrataPage> {
+class NfceContrataPageState extends State<NfceContrataPage> {
   List<PdvTipoPlanoModel>? _listaTipoPlano = [];
 
   Map<LogicalKeySet, Intent>? _shortcutMap; 
@@ -84,7 +84,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
       gutterSize: Constantes.flutterBootstrapGutterSize,
     );
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _carregarDados());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _carregarDados());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -101,7 +101,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
   Widget build(BuildContext context) {
 
     if (Sessao.nfcePlanoPagamento != null) {
-      _mensagemInformativa = 'Plano NFC-e ativo até ' + Biblioteca.formatarData(Sessao.nfcePlanoPagamento!.dataPlanoExpira);
+      _mensagemInformativa = 'Plano NFC-e ativo até ${Biblioteca.formatarData(Sessao.nfcePlanoPagamento!.dataPlanoExpira)}';
     }
 
     return FocusableActionDetector(
@@ -219,7 +219,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
                                               _listaTipoPlano!.isNotEmpty ? _listaTipoPlano![0].plano : '', 
                                               _listaTipoPlano!.isNotEmpty ? _listaTipoPlano![0].valor : 0, 
                                               Colors.blue.shade900, 
-                                              FontAwesomeIcons.calendarAlt,
+                                              FontAwesomeIcons.calendar,
                                             ),
                                             onTap: () {
                                               if (Sessao.nfcePlanoPagamento == null) {
@@ -479,7 +479,7 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
           descricao: Biblioteca.isMobile() ? 'Sair' : 'Sair [ESC]',
           cor: Colors.green, 
           onPressed: () {
-            Navigator.pop(context!);
+            Navigator.popUntil(context!, ModalRoute.withName('/'));
           }
         ),
       )
@@ -509,8 +509,10 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
       gerarDialogBoxEspera(context);
       NfceService servicoNfce = NfceService();
       final retorno = await servicoNfce.confirmarTransacao(_codigoTransacaoController.text);  
+      if (!mounted) return;
       if (retorno == 200) {
         await _verificarPlano();
+        if (!mounted) return;
         Sessao.fecharDialogBoxEspera(context);
       } else if (retorno == 202) {
         Sessao.fecharDialogBoxEspera(context);
@@ -535,11 +537,13 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
     gerarDialogBoxEspera(context);
 
     _listaTipoPlano = await servicoNfce.consultarListaTipoPlanoNfce();  
+    if (!mounted) return;
     if (_listaTipoPlano == null) {
       Sessao.fecharDialogBoxEspera(context); 
       Navigator.pop(context); // fecha janela de contratação
     } else {
-      await _verificarPlano();      
+      await _verificarPlano();     
+      if (!mounted) return; 
       Sessao.fecharDialogBoxEspera(context); 
       setState(() {
       });
@@ -552,21 +556,21 @@ class _NfceContrataPageState extends State<NfceContrataPage> {
     if (_podeContratar) {
       switch (tipoPlano) {	  
         case 'M' : 
-          const _url = 'https://pag.ae/7XsrnNVw4';
-          await canLaunch(_url) ? await launch(_url) : throw 'Houve um problema ao tentar abrir o link de pagamento: $_url';
+          const url = 'https://pag.ae/7XsrnNVw4';
+          await canLaunchUrl(Uri.parse(url)) ? await launchUrl(Uri.parse(url)) : throw 'Houve um problema ao tentar abrir o link de pagamento: $url';
           break;
         case 'S' : 
-          const _url = 'https://pag.ae/7XsAYgam9';
-          await canLaunch(_url) ? await launch(_url) : throw 'Houve um problema ao tentar abrir o link de pagamento: $_url';
+          const url = 'https://pag.ae/7XsAYgam9';
+          await canLaunchUrl(Uri.parse(url)) ? await launchUrl(Uri.parse(url)) : throw 'Houve um problema ao tentar abrir o link de pagamento: $url';
           break;
         case 'A' : 
-          const _url = 'https://pag.ae/7XsAYQKb8';
-          await canLaunch(_url) ? await launch(_url) : throw 'Houve um problema ao tentar abrir o link de pagamento: $_url';
+          const url = 'https://pag.ae/7XsAYQKb8';
+          await canLaunchUrl(Uri.parse(url)) ? await launchUrl(Uri.parse(url)) : throw 'Houve um problema ao tentar abrir o link de pagamento: $url';
           break;
         default:
       }      
     }
-
+    if (!mounted) return;
     Sessao.fecharDialogBoxEspera(context);
     setState(() {
     });

@@ -43,6 +43,7 @@ import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:pegasus_pdv/src/controller/controller.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -52,6 +53,7 @@ import 'package:pegasus_pdv/src/view/shared/widgets_abas.dart';
 import 'package:pegasus_pdv/src/view/shared/widgets_input.dart';
 
 import 'package:pegasus_pdv/src/view/shared/page/lookup_local_page.dart';
+import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
 
 class ProdutoPersistePage extends StatefulWidget {
   final ProdutoMontado? produtoMontado;
@@ -65,10 +67,10 @@ class ProdutoPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ProdutoPersistePageState createState() => _ProdutoPersistePageState();
+  ProdutoPersistePageState createState() => ProdutoPersistePageState();
 }
 
-class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
+class ProdutoPersistePageState extends State<ProdutoPersistePage> {
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
@@ -89,7 +91,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
 
     _foco.requestFocus();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _carregarImagens());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _carregarImagens());
   }
 
   Future _carregarImagens() async {
@@ -113,28 +115,28 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _importaProdutoUnidadeController = TextEditingController();
-    _importaProdutoUnidadeController.text = widget.produtoMontado?.produtoUnidade?.sigla ?? '';
-    final _importaTributGrupoTributarioController = TextEditingController();
-    _importaTributGrupoTributarioController.text = widget.produtoMontado?.tributGrupoTributario?.descricao ?? '';
-    final _importaProdutoTipoController = TextEditingController();
-    _importaProdutoTipoController.text = widget.produtoMontado?.produtoTipo?.descricao ?? '';
-    final _importaProdutoSubgrupoController = TextEditingController();
-    _importaProdutoSubgrupoController.text = widget.produtoMontado?.produtoSubgrupo?.nome ?? '';
+    final importaProdutoUnidadeController = TextEditingController();
+    importaProdutoUnidadeController.text = widget.produtoMontado?.produtoUnidade?.sigla ?? '';
+    final importaTributGrupoTributarioController = TextEditingController();
+    importaTributGrupoTributarioController.text = widget.produtoMontado?.tributGrupoTributario?.descricao ?? '';
+    final importaProdutoTipoController = TextEditingController();
+    importaProdutoTipoController.text = widget.produtoMontado?.produtoTipo?.descricao ?? '';
+    final importaProdutoSubgrupoController = TextEditingController();
+    importaProdutoSubgrupoController.text = widget.produtoMontado?.produtoSubgrupo?.nome ?? '';
 	
-    final _valorCompraController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.valorCompra ?? 0);
-    final _valorVendaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.valorVenda ?? 0);
-    final _valorCustoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.valorCusto ?? 0);
-    final _quantidadeEstoqueController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.quantidadeEstoque ?? 0);
-    final _estoqueMinimoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.estoqueMinimo ?? 0);
-    final _estoqueMaximoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.estoqueMaximo ?? 0);
+    final valorCompraController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.valorCompra ?? 0);
+    final valorVendaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.valorVenda ?? 0);
+    final valorCustoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.valorCusto ?? 0);
+    final quantidadeEstoqueController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.quantidadeEstoque ?? 0);
+    final estoqueMinimoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.estoqueMinimo ?? 0);
+    final estoqueMaximoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoMontado!.produto?.estoqueMaximo ?? 0);
 
-    final _ncmController = MaskedTextController(
-      mask: '00000000',
+    final ncmController = MaskedTextController(
+      mask: '0000.00.00',
       text: widget.produtoMontado!.produto!.codigoNcm ?? '',
     );
-    final _cestController = MaskedTextController(
-      mask: '0000000',
+    final cestController = MaskedTextController(
+      mask: '00.000.00',
       text: widget.produtoMontado!.produto!.codigoCest ?? '',
     );
 
@@ -171,7 +173,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                   child: TextFormField(
                                     focusNode: _foco,
                                     validator: ValidaCampoFormulario.validarObrigatorio,
-                                    controller: _importaProdutoUnidadeController,
+                                    controller: importaProdutoUnidadeController,
                                     readOnly: true,
                                     decoration: getInputDecoration(
                                       'Conteúdo para o campo Unidade',
@@ -191,7 +193,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                     icon: ViewUtilLib.getIconBotaoLookup(),
                                     onPressed: () async {
                                       ///chamando o lookup
-                                      Map<String, dynamic>? _objetoJsonRetorno =
+                                      Map<String, dynamic>? objetoJsonRetorno =
                                         await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -207,12 +209,12 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                           ),
                                           fullscreenDialog: true,
                                         ));
-                                      if (_objetoJsonRetorno != null) {
-                                        if (_objetoJsonRetorno['sigla'] != null) {
-                                          _importaProdutoUnidadeController.text = _objetoJsonRetorno['sigla'];
-                                          widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(idProdutoUnidade: _objetoJsonRetorno['id']);
+                                      if (objetoJsonRetorno != null) {
+                                        if (objetoJsonRetorno['sigla'] != null) {
+                                          importaProdutoUnidadeController.text = objetoJsonRetorno['sigla'];
+                                          widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(idProdutoUnidade: objetoJsonRetorno['id']);
                                           widget.produtoMontado!.produtoUnidade = widget.produtoMontado!.produtoUnidade!.copyWith(
-                                            sigla: _objetoJsonRetorno['sigla'],
+                                            sigla: objetoJsonRetorno['sigla'],
                                           );
                                         }
                                       }
@@ -237,7 +239,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                   child: TextFormField(
                                     focusNode: _foco,
                                     validator: ValidaCampoFormulario.validarObrigatorio,
-                                    controller: _importaProdutoTipoController,
+                                    controller: importaProdutoTipoController,
                                     readOnly: true,
                                     decoration: getInputDecoration(
                                       'Conteúdo para o campo Tipo',
@@ -257,7 +259,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                     icon: ViewUtilLib.getIconBotaoLookup(),
                                     onPressed: () async {
                                       ///chamando o lookup
-                                      Map<String, dynamic>? _objetoJsonRetorno =
+                                      Map<String, dynamic>? objetoJsonRetorno =
                                         await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -273,12 +275,12 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                           ),
                                           fullscreenDialog: true,
                                         ));
-                                      if (_objetoJsonRetorno != null) {
-                                        if (_objetoJsonRetorno['descricao'] != null) {
-                                          _importaProdutoTipoController.text = _objetoJsonRetorno['descricao'];
-                                          widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(idProdutoTipo: _objetoJsonRetorno['id']);
+                                      if (objetoJsonRetorno != null) {
+                                        if (objetoJsonRetorno['descricao'] != null) {
+                                          importaProdutoTipoController.text = objetoJsonRetorno['descricao'];
+                                          widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(idProdutoTipo: objetoJsonRetorno['id']);
                                           widget.produtoMontado!.produtoTipo = widget.produtoMontado!.produtoTipo!.copyWith(
-                                            descricao: _objetoJsonRetorno['descricao'],
+                                            descricao: objetoJsonRetorno['descricao'],
                                           );
                                         }
                                       }
@@ -303,7 +305,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                   child: TextFormField(
                                     focusNode: _foco,
                                     validator: ValidaCampoFormulario.validarObrigatorio,
-                                    controller: _importaProdutoSubgrupoController,
+                                    controller: importaProdutoSubgrupoController,
                                     readOnly: true,
                                     decoration: getInputDecoration(
                                       'Conteúdo para o campo Subgrupo',
@@ -323,7 +325,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                     icon: ViewUtilLib.getIconBotaoLookup(),
                                     onPressed: () async {
                                       ///chamando o lookup
-                                      Map<String, dynamic>? _objetoJsonRetorno =
+                                      Map<String, dynamic>? objetoJsonRetorno =
                                         await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -339,12 +341,12 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                           ),
                                           fullscreenDialog: true,
                                         ));
-                                      if (_objetoJsonRetorno != null) {
-                                        if (_objetoJsonRetorno['nome'] != null) {
-                                          _importaProdutoSubgrupoController.text = _objetoJsonRetorno['nome'];
-                                          widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(idProdutoSubgrupo: _objetoJsonRetorno['id']);
+                                      if (objetoJsonRetorno != null) {
+                                        if (objetoJsonRetorno['nome'] != null) {
+                                          importaProdutoSubgrupoController.text = objetoJsonRetorno['nome'];
+                                          widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(idProdutoSubgrupo: objetoJsonRetorno['id']);
                                           widget.produtoMontado!.produtoSubgrupo = widget.produtoMontado!.produtoSubgrupo!.copyWith(
-                                            nome: _objetoJsonRetorno['nome'],
+                                            nome: objetoJsonRetorno['nome'],
                                           );
                                         }
                                       }
@@ -374,7 +376,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                     child: TextFormField(
                                       focusNode: _foco,
                                       validator: ValidaCampoFormulario.validarObrigatorio,
-                                      controller: _importaTributGrupoTributarioController,
+                                      controller: importaTributGrupoTributarioController,
                                       readOnly: true,
                                       decoration: getInputDecoration(
                                         'Conteúdo para o campo Grupo Tributário',
@@ -394,7 +396,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                       icon: ViewUtilLib.getIconBotaoLookup(),
                                       onPressed: () async {
                                         ///chamando o lookup
-                                        Map<String, dynamic>? _objetoJsonRetorno =
+                                        Map<String, dynamic>? objetoJsonRetorno =
                                           await Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -410,12 +412,12 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                             ),
                                             fullscreenDialog: true,
                                           ));
-                                        if (_objetoJsonRetorno != null) {
-                                          if (_objetoJsonRetorno['descricao'] != null) {
-                                            _importaTributGrupoTributarioController.text = _objetoJsonRetorno['descricao'];
-                                            widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(idTributGrupoTributario: _objetoJsonRetorno['id']);
+                                        if (objetoJsonRetorno != null) {
+                                          if (objetoJsonRetorno['descricao'] != null) {
+                                            importaTributGrupoTributarioController.text = objetoJsonRetorno['descricao'];
+                                            widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(idTributGrupoTributario: objetoJsonRetorno['id']);
                                             widget.produtoMontado!.tributGrupoTributario = widget.produtoMontado!.tributGrupoTributario!.copyWith(
-                                              descricao: _objetoJsonRetorno['descricao'],
+                                              descricao: objetoJsonRetorno['descricao'],
                                             );
                                           }
                                         }
@@ -537,13 +539,24 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 validator: ValidaCampoFormulario.validarObrigatorio,
-                                controller: _ncmController,
+                                controller: ncmController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo NCM',
                                   'Código NCM',
                                   true,
                                   paddingVertical: 18),
                                 onSaved: (String? value) {
+                                  if (value!.isNotEmpty) {
+                                    bool achou = false;
+                                    for (var i = 0; i < Sessao.tabelaNcm.length; i++) {
+                                      if (Sessao.tabelaNcm[i][0] == value) {
+                                        achou = true;
+                                      }
+                                    }        
+                                    if (!achou) {
+                                      showInSnackBar('Código NCM parece inválido.', context, corFundo: Colors.red);
+                                    }
+                                  }
                                 },
                                 onChanged: (text) {
                                   widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(codigoNcm: text);
@@ -558,13 +571,24 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                               padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                               child: TextFormField(
                                 // validator: ValidaCampoFormulario.validarObrigatorio,
-                                controller: _cestController,
+                                controller: cestController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo CEST',
                                   'Código CEST',
                                   true,
                                   paddingVertical: 18),
                                 onSaved: (String? value) {
+                                  if (value!.isNotEmpty) {
+                                    bool achou = false;
+                                    for (var i = 0; i < Sessao.tabelaCest.length; i++) {
+                                      if (Sessao.tabelaCest[i][0] == value) {
+                                        achou = true;
+                                      }
+                                    }        
+                                    if (!achou) {
+                                      showInSnackBar('Código CEST parece inválido.', context, corFundo: Colors.red);
+                                    } 
+                                  }
                                 },
                                 onChanged: (text) {
                                   widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(codigoCest: text);
@@ -611,7 +635,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 textAlign: TextAlign.end,
-                                controller: _valorCompraController,
+                                controller: valorCompraController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Valor Compra',
                                   'Valor Compra',
@@ -619,7 +643,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(valorCompra: _valorCompraController.numberValue);
+                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(valorCompra: valorCompraController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -633,7 +657,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 validator: ValidaCampoFormulario.validarObrigatorioDouble,
                                 textAlign: TextAlign.end,
-                                controller: _valorVendaController,
+                                controller: valorVendaController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Valor Venda',
                                   'Valor Venda',
@@ -641,7 +665,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(valorVenda: _valorVendaController.numberValue);
+                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(valorVenda: valorVendaController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -655,7 +679,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 // validator: ValidaCampoFormulario.validarObrigatorioDouble,
                                 textAlign: TextAlign.end,
-                                controller: _valorCustoController,
+                                controller: valorCustoController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Valor Custo',
                                   'Valor Custo',
@@ -663,7 +687,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(valorCusto: _valorCustoController.numberValue);
+                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(valorCusto: valorCustoController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -682,7 +706,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 textAlign: TextAlign.end,
-                                controller: _quantidadeEstoqueController,
+                                controller: quantidadeEstoqueController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Quantidade Estoque',
                                   'Quantidade Estoque',
@@ -690,7 +714,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(quantidadeEstoque: _quantidadeEstoqueController.numberValue);
+                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(quantidadeEstoque: quantidadeEstoqueController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -703,7 +727,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 textAlign: TextAlign.end,
-                                controller: _estoqueMinimoController,
+                                controller: estoqueMinimoController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Estoque Minimo',
                                   'Estoque Minimo',
@@ -711,7 +735,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(estoqueMinimo: _estoqueMinimoController.numberValue);
+                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(estoqueMinimo: estoqueMinimoController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -724,7 +748,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                               child: TextFormField(
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 textAlign: TextAlign.end,
-                                controller: _estoqueMaximoController,
+                                controller: estoqueMaximoController,
                                 decoration: getInputDecoration(
                                   'Conteúdo para o campo Estoque Maximo',
                                   'Estoque Maximo',
@@ -732,7 +756,7 @@ class _ProdutoPersistePageState extends State<ProdutoPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(estoqueMaximo: _estoqueMaximoController.numberValue);
+                                  widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(estoqueMaximo: estoqueMaximoController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),

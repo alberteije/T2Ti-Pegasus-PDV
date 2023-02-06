@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'pdv_fechamento_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           PdvFechamentos,
 		])
 class PdvFechamentoDao extends DatabaseAccessor<AppDatabase> with _$PdvFechamentoDaoMixin {
@@ -51,16 +51,16 @@ class PdvFechamentoDao extends DatabaseAccessor<AppDatabase> with _$PdvFechament
   Future<List<PdvFechamento>> consultarLista() => select(pdvFechamentos).get();
 
   Future<List<PdvFechamento>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM PDV_FECHAMENTO WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM PDV_FECHAMENTO WHERE $campo like '%$valor%'", 
                                 readsFrom: { pdvFechamentos }).map((row) {
-                                  return PdvFechamento.fromData(row.data, db);  
+                                  return PdvFechamento.fromData(row.data);  
                                 }).get());
   }
 
   Future<List<PdvFechamento>> consultarListaMovimento(int idMovimento) async {
-    return (customSelect("SELECT * FROM PDV_FECHAMENTO WHERE ID_PDV_MOVIMENTO= '" + idMovimento.toString() + "'", 
+    return (customSelect("SELECT * FROM PDV_FECHAMENTO WHERE ID_PDV_MOVIMENTO= '$idMovimento'", 
                                 readsFrom: { pdvFechamentos }).map((row) {
-                                  return PdvFechamento.fromData(row.data, db);  
+                                  return PdvFechamento.fromData(row.data);  
                                 }).get());
   }
 
@@ -70,20 +70,27 @@ class PdvFechamentoDao extends DatabaseAccessor<AppDatabase> with _$PdvFechament
     return (select(pdvFechamentos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<PdvFechamento> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from PDV_FECHAMENTO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(PdvFechamento pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(pdvFechamentos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<PdvFechamento> pObjeto) {
+  Future<bool> alterar(PdvFechamento pObjeto) {
     return transaction(() async {
       return update(pdvFechamentos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<PdvFechamento> pObjeto) {
+  Future<int> excluir(PdvFechamento pObjeto) {
     return transaction(() async {
       return delete(pdvFechamentos).delete(pObjeto);
     });    

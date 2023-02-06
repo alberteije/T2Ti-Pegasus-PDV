@@ -38,7 +38,8 @@ Based on: Flutter UI Challenges by Many - https://github.com/lohanidamodar/flutt
 import 'package:flutter/material.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/controller/controller.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_pdv.dart';
@@ -56,10 +57,10 @@ class MovimentoEncerraPage extends StatefulWidget {
   const MovimentoEncerraPage({Key? key, this.title}) : super(key: key);
 
   @override
-  _MovimentoEncerraPageState createState() => _MovimentoEncerraPageState();
+  MovimentoEncerraPageState createState() => MovimentoEncerraPageState();
 }
 
-class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
+class MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
   final _valorController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: 0);
 
   final _tipoPagamentoFoco = FocusNode();
@@ -171,7 +172,7 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
                     height: 5.0,
                   ),
                   Text(
-                    "Informe os dados para encerrar o movimento [" + Sessao.movimento!.id.toString() + "]",
+                    "Informe os dados para encerrar o movimento [${Sessao.movimento!.id}]",
                     textAlign: TextAlign.center,
                     ),
                   const Divider(
@@ -510,7 +511,7 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
 
   void _adicionarPagamento() {
     if (_valorController.numberValue > 0) {
-      final pagamentoFiltrado = _listaFechamento.where(((pagamento) => pagamento.idPdvTipoPagamento == _tipoPagamento!.id)).toList();    
+      final pagamentoFiltrado = _listaFechamento.where(((pagamento) => pagamento.idPdvTipoPagamento == _tipoPagamento!.id!)).toList();    
       if (pagamentoFiltrado.isEmpty) {
         PdvFechamento itemPagamento = PdvFechamento(
           id: null,
@@ -547,16 +548,20 @@ class _MovimentoEncerraPageState extends State<MovimentoEncerraPage> {
 
   void _confirmar() {
     gerarDialogBoxConfirmacao(context, 'Deseja encerrar o movimento atual?', () async {
+      gerarDialogBoxEspera(context);
       _atualizarTotais();
       Sessao.movimento = await Sessao.db.pdvMovimentoDao.encerrarMovimento(Sessao.movimento!, listaFechamento: _listaFechamento);
+      await SincronizaController.subirDadosMovimento();
+      if (!mounted) return;
       Navigator.of(context)
         .push(MaterialPageRoute(
           builder: (BuildContext context) => EncerraMovimentoRelatorio(movimento: Sessao.movimento)))
         .then((_) async {
           Sessao.movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.formatarHora(DateTime.now()), statusMovimento: 'A');
           Sessao.movimento = await Sessao.db.pdvMovimentoDao.iniciarMovimento(Sessao.movimento!);
-          Navigator.of(context).pop();
-          Navigator.of(context).pop();
+          if (!mounted) return;
+          Navigator.popUntil(context, ModalRoute.withName('/'));
+          showInSnackBar('Movimento encerrado com sucesso.', context, corFundo: Colors.blue);
         });
     });
   }

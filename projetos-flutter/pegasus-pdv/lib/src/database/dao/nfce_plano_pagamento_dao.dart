@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'nfce_plano_pagamento_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           NfcePlanoPagamentos,
 		])
 class NfcePlanoPagamentoDao extends DatabaseAccessor<AppDatabase> with _$NfcePlanoPagamentoDaoMixin {
@@ -51,9 +51,9 @@ class NfcePlanoPagamentoDao extends DatabaseAccessor<AppDatabase> with _$NfcePla
   Future<List<NfcePlanoPagamento>> consultarLista() => select(nfcePlanoPagamentos).get();
 
   Future<List<NfcePlanoPagamento>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM NFCE_PLANO_PAGAMENTO WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM NFCE_PLANO_PAGAMENTO WHERE $campo like '%$valor%'", 
                                 readsFrom: { nfcePlanoPagamentos }).map((row) {
-                                  return NfcePlanoPagamento.fromData(row.data, db);  
+                                  return NfcePlanoPagamento.fromData(row.data);  
                                 }).get());
   }
 
@@ -71,20 +71,27 @@ class NfcePlanoPagamentoDao extends DatabaseAccessor<AppDatabase> with _$NfcePla
     ).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<NfcePlanoPagamento> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from NFCE_PLANO_PAGAMENTO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(NfcePlanoPagamento pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(nfcePlanoPagamentos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<NfcePlanoPagamento> pObjeto) {
+  Future<bool> alterar(NfcePlanoPagamento pObjeto) {
     return transaction(() async {
       return update(nfcePlanoPagamentos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<NfcePlanoPagamento> pObjeto) {
+  Future<int> excluir(NfcePlanoPagamento pObjeto) {
     return transaction(() async {
       return delete(nfcePlanoPagamentos).delete(pObjeto);
     });    

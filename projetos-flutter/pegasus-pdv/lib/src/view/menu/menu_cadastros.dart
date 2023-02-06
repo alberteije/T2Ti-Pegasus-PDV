@@ -126,6 +126,7 @@ class MenuCadastros extends StatelessWidget {
                         circleColor: Colors.orange,
                         rota: "/clienteLista"),
                     segundoBotao: BotaoMenu(
+                        // ignore: deprecated_member_use
                         icon: FontAwesomeIcons.truckLoading,
                         label: "Fornecedor",
                         circleColor: Colors.teal,
@@ -159,11 +160,13 @@ class MenuCadastros extends StatelessWidget {
                   const MenuTituloGrupoMenuInterno(titulo: "Grupo Produto"),
                   MenuInternoBotoes(
                     primeiroBotao: BotaoMenu(
+                        // ignore: deprecated_member_use
                         icon: FontAwesomeIcons.archive,
                         label: "Tipo Produto",
                         circleColor: Colors.indigo,
                         rota: "/produtoTipoLista"),
                     segundoBotao: BotaoMenu(
+                        // ignore: deprecated_member_use
                         icon: FontAwesomeIcons.archive,
                         label: "Unidade",
                         circleColor: Colors.orange,
@@ -173,6 +176,7 @@ class MenuCadastros extends StatelessWidget {
                   ),
                   MenuInternoBotoes(
                     primeiroBotao: BotaoMenu(
+                        // ignore: deprecated_member_use
                         icon: FontAwesomeIcons.boxes,
                         label: "Grupo",
                         circleColor: Colors.purple,
@@ -261,6 +265,7 @@ class MenuCadastros extends StatelessWidget {
                     primeiroBotao: null,
                     segundoBotao: null,
                     terceiroBotao: BotaoMenu(
+                        // ignore: deprecated_member_use
                         icon: FontAwesomeIcons.truckLoading,
                         label: "Configura Tributação",
                         circleColor: Colors.purple,

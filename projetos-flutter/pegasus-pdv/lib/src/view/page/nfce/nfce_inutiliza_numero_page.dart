@@ -37,10 +37,11 @@ Based on: Flutter UI Challenges by Many - https://github.com/lohanidamodar/flutt
 *******************************************************************************/
 import 'package:flutter/material.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_pdv.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 import 'package:pegasus_pdv/src/service/service.dart';
 import 'package:pegasus_pdv/src/controller/controller.dart';
 
@@ -53,10 +54,10 @@ class NfceInutilizaNumeroPage extends StatefulWidget {
   const NfceInutilizaNumeroPage({Key? key}): super(key: key);
 
   @override
-  _NfceInutilizaNumeroPageState createState() => _NfceInutilizaNumeroPageState();
+  NfceInutilizaNumeroPageState createState() => NfceInutilizaNumeroPageState();
 }
 
-class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
+class NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
   final _titulo = 'NFC-e Inutilizar Número(s)';
   final _subtitulo = 'Informe os dados para inutilização do(s) número(s) da NFC-e';
   final _valorFoco = FocusNode();
@@ -85,7 +86,7 @@ class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
     };
     _valorFoco.requestFocus();        
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _listarContingenciadasOrfas());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _listarContingenciadasOrfas());
   }
 
   Future<void> _tratarAcoesAtalhos(AtalhoTelaIntent intent) async {
@@ -357,30 +358,64 @@ class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
     return lista;
   }
 
+  /////////////////////////////////////////
+  /// Utilize o código abaixo para se comunicar diretamente com o ACBrMonitor
+  /////////////////////////////////////////
+  // Future _efetuarOperacao() async {
+  //   NfceAcbrService servicoNfce = NfceAcbrService();
+  //   try {
+  //     NfceController.instanciarNfceMontado();
+  //     await servicoNfce.conectar(
+  //       context, 
+  //       formaEmissao: '1',
+  //       operacao: 'INUTILIZAR_NUMERO', 
+  //       funcaoDeCallBack: _atualizarDadosLocais, 
+  //     ).then((socket) {
+  //       NfceController.enviarComandoInutilizacaoNumero(
+  //         socket: socket!, 
+  //         cnpj: Sessao.empresa!.cnpj!, 
+  //         justificativa: _justificativaController.text, 
+  //         ano: DateTime.now().year.toString(), 
+  //         modelo: Sessao.numeroNfce!.modelo!, 
+  //         serie: Sessao.numeroNfce!.serie!, 
+  //         numeroInicial: _numeroInicialController.text, 
+  //         numeroFinal: _numeroFinalController.text
+  //       );
+  //     });                 
+  //   } catch (e) {
+  //     gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: ' + e.toString());
+  //   }   
+  // }
+
   Future _efetuarOperacao() async {
-    NfceAcbrService servicoNfce = NfceAcbrService();
+    gerarDialogBoxEspera(context);
     try {
-      NfceController.instanciarNfceMontado();
-      await servicoNfce.conectar(
-        context, 
-        formaEmissao: '1',
-        operacao: 'INUTILIZAR_NUMERO', 
-        funcaoDeCallBack: _atualizarDadosLocais, 
-      ).then((socket) {
-        NfceController.enviarComandoInutilizacaoNumero(
-          socket: socket!, 
-          cnpj: Sessao.empresa!.cnpj!, 
-          justificativa: _justificativaController.text, 
-          ano: DateTime.now().year.toString(), 
-          modelo: Sessao.numeroNfce!.modelo!, 
-          serie: Sessao.numeroNfce!.serie!, 
-          numeroInicial: _numeroInicialController.text, 
-          numeroFinal: _numeroFinalController.text
-        );
-      });                 
+      NfceService nfceService = NfceService();
+      _numeroFinalController.text = _numeroFinalController.text == '' ? _numeroInicialController.text : _numeroFinalController.text;
+      ObjetoNfe objetoNfe = ObjetoNfe(
+        cnpj: Sessao.empresa!.cnpj!, 
+        justificativa: _justificativaController.text, 
+        ano: DateTime.now().year.toString(), 
+        modelo: Sessao.numeroNfce!.modelo!, 
+        serie: Sessao.numeroNfce!.serie!, 
+        numeroInicial: _numeroInicialController.text, 
+        numeroFinal: _numeroFinalController.text,
+        chaveAcesso: '',
+      );
+      final retorno = await nfceService.inutilizarNumeroNfce(objetoNfe); 
+      if (!mounted) return;
+      Sessao.fecharDialogBoxEspera(context);
+      if (retorno.isNotEmpty) {
+        if (retorno.contains('ERRO')) {
+          gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: \n$retorno');          
+        } else {
+          await _atualizarDadosLocais();
+        }
+      }       
     } catch (e) {
-      gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: ' + e.toString());
-    }   
+      Sessao.fecharDialogBoxEspera(context);
+      gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: $e');
+    }  
   }
 
   Future _atualizarDadosLocais() async {
@@ -410,7 +445,8 @@ class _NfceInutilizaNumeroPageState extends State<NfceInutilizaNumeroPage> {
         await Sessao.db.nfeCabecalhoDao.alterar(NfceController.nfeCabecalhoMontado!, atualizaFilhos: false);
       }
     }
-    
+    if (!mounted) return;
+    Sessao.fecharDialogBoxEspera(context);
     gerarDialogBoxInformacao(context, 'Número(s) inutilizados com sucesso.');
     setState(() {
     });

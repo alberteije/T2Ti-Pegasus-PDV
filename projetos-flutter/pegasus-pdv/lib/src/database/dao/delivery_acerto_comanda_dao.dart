@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'delivery_acerto_comanda_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           DeliveryAcertoComandas,
 		])
 class DeliveryAcertoComandaDao extends DatabaseAccessor<AppDatabase> with _$DeliveryAcertoComandaDaoMixin {
@@ -51,16 +51,16 @@ class DeliveryAcertoComandaDao extends DatabaseAccessor<AppDatabase> with _$Deli
   Future<List<DeliveryAcertoComanda>?> consultarLista() => select(deliveryAcertoComandas).get();
 
   Future<List<DeliveryAcertoComanda>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM DELIVERY_ACERTO_COMANDA WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM DELIVERY_ACERTO_COMANDA WHERE $campo like '%$valor%'", 
                                 readsFrom: { deliveryAcertoComandas }).map((row) {
-                                  return DeliveryAcertoComanda.fromData(row.data, db);  
+                                  return DeliveryAcertoComanda.fromData(row.data);  
                                 }).get());
   }
 
   Future<DeliveryAcertoComanda?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM DELIVERY_ACERTO_COMANDA WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM DELIVERY_ACERTO_COMANDA WHERE $campo = '$valor'", 
                                 readsFrom: { deliveryAcertoComandas }).map((row) {
-                                  return DeliveryAcertoComanda.fromData(row.data, db);  
+                                  return DeliveryAcertoComanda.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -70,20 +70,27 @@ class DeliveryAcertoComandaDao extends DatabaseAccessor<AppDatabase> with _$Deli
     return (select(deliveryAcertoComandas)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<DeliveryAcertoComanda> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from DELIVERY_ACERTO_COMANDA").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(DeliveryAcertoComanda pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(deliveryAcertoComandas).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<DeliveryAcertoComanda> pObjeto) {
+  Future<bool> alterar(DeliveryAcertoComanda pObjeto) {
     return transaction(() async {
       return update(deliveryAcertoComandas).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<DeliveryAcertoComanda> pObjeto) {
+  Future<int> excluir(DeliveryAcertoComanda pObjeto) {
     return transaction(() async {
       return delete(deliveryAcertoComandas).delete(pObjeto);
     });    

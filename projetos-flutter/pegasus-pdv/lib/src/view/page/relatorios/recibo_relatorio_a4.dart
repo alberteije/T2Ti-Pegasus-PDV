@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 /*
 Title: T2Ti ERP 3.0                                                                
 Description: Página de relatório do recibo - formato A4
@@ -50,10 +52,10 @@ class ReciboRelatorioA4 extends StatefulWidget {
 
 
   @override
-  _ReciboRelatorioA4State createState() => _ReciboRelatorioA4State();
+  ReciboRelatorioA4State createState() => ReciboRelatorioA4State();
 }
 
-class _ReciboRelatorioA4State extends State<ReciboRelatorioA4> {
+class ReciboRelatorioA4State extends State<ReciboRelatorioA4> {
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
 
@@ -127,18 +129,18 @@ class ReciboA4 {
       (await rootBundle.load('assets/images/rodape_recibo.png')).buffer.asUint8List(),
     );
 
-    final _fontNormal = await rootBundle.load('assets/fonts/roboto-normal.ttf');
-    final _fontBold = await rootBundle.load('assets/fonts/roboto-bold.ttf');
-    final _fontItalic = await rootBundle.load('assets/fonts/roboto-italic.ttf');
+    final fontNormal = await rootBundle.load('assets/fonts/roboto-normal.ttf');
+    final fontBold = await rootBundle.load('assets/fonts/roboto-bold.ttf');
+    final fontItalic = await rootBundle.load('assets/fonts/roboto-italic.ttf');
 
     // Add page to the PDF
     doc.addPage(
       pw.MultiPage(
         pageTheme: _buildTheme(
           pageFormat,
-          pw.Font.ttf(_fontNormal),
-          pw.Font.ttf(_fontBold),
-          pw.Font.ttf(_fontItalic),
+          pw.Font.ttf(fontNormal),
+          pw.Font.ttf(fontBold),
+          pw.Font.ttf(fontItalic),
         ),
         header: _cabecalho,
         footer: _rodape,
@@ -312,7 +314,7 @@ class ReciboA4 {
                           ),
                         ),
                         pw.TextSpan(
-                          text: 'CPF/CNPJ: ' + (Sessao.vendaAtual!.cpfCnpjCliente ?? ''),
+                          text: 'CPF/CNPJ: ${Sessao.vendaAtual!.cpfCnpjCliente ?? ''}',
                           style: pw.TextStyle(
                             fontWeight: pw.FontWeight.normal,
                             fontSize: 10,
@@ -334,7 +336,7 @@ class ReciboA4 {
       return pw.Container(
         alignment: pw.Alignment.topRight,
         child: pw.Text(
-          'Vendedor: ' + Sessao.vendaAtual!.idColaborador.toString(),
+          'Vendedor: ${Sessao.vendaAtual!.idColaborador}',
           style: pw.TextStyle(
             fontWeight: pw.FontWeight.normal,
             fontSize: 10,
@@ -430,13 +432,7 @@ class ReciboA4 {
                 ),
               ),
               pw.Text(
-                'Email: ' + (Sessao.empresa!.email ?? '') +
-                ' | ' +
-                'Fone: ' + (Sessao.empresa!.fone ?? '') +
-                ' | ' +
-                'Bairro: ' + (Sessao.empresa!.bairro ?? '') +
-                ' | ' +
-                'Cidade: ' + (Sessao.empresa!.cidade ?? ''),
+                'Email: ${Sessao.empresa!.email ?? ''} | Fone: ${Sessao.empresa!.fone ?? ''} | Bairro: ${Sessao.empresa!.bairro ?? ''} | Cidade: ${Sessao.empresa!.cidade ?? ''}',
                 style: pw.TextStyle(
                   fontSize: 8,
                   lineSpacing: 5,

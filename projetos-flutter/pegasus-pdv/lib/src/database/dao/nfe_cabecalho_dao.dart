@@ -34,14 +34,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 import 'package:flutter/foundation.dart';
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'nfe_cabecalho_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           NfeCabecalhos,
           NfeDestinatarios,
           NfeDetalhes,
@@ -63,9 +63,9 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
   }
 
   Future<List<NfeCabecalho>?> consultarListaFiltro(String campo, String valor) async {
-    listaNfeCabecalho = await (customSelect("SELECT * FROM NFE_CABECALHO WHERE " + campo + " like '%" + valor + "%'", 
+    listaNfeCabecalho = await (customSelect("SELECT * FROM NFE_CABECALHO WHERE $campo like '%$valor%'", 
                                 readsFrom: { nfeCabecalhos }).map((row) {
-                                  return NfeCabecalho.fromData(row.data, db);  
+                                  return NfeCabecalho.fromData(row.data);  
                                 }).get());
     return listaNfeCabecalho;
   }
@@ -77,19 +77,19 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
                 " and idvenda in (select ID_PDV_VENDA_CABECALHO from NFE_CABECALHO where status_nota='4' and ID_PDV_VENDA_CABECALHO=idvenda)";
     listaNfeCabecalho = await (customSelect(sql, 
                                 readsFrom: { nfeCabecalhos }).map((row) {
-                                  return NfeCabecalho.fromData(row.data, db);  
+                                  return NfeCabecalho.fromData(row.data);  
                                 }).get());
     return listaNfeCabecalho;
   }
 
   Future<NfeCabecalho?> consultarObjetoFiltro(String campo, String valor, {String? complemento}) async {
-    var sql = "SELECT * FROM NFE_CABECALHO WHERE " + campo + " = '" + valor + "'";
+    var sql = "SELECT * FROM NFE_CABECALHO WHERE $campo = '$valor'";
     if (complemento != null && complemento != '') {
       sql = sql + complemento;
     }
     final retorno = await customSelect(sql, 
                                 readsFrom: { nfeCabecalhos }).map((row) {
-                                  return NfeCabecalho.fromData(row.data, db);  
+                                  return NfeCabecalho.fromData(row.data);  
                                 }).getSingleOrNull();
       return retorno;
   }
@@ -98,15 +98,13 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
     String sql;
     if (status == null) {
       // não retorna as notas com status CONTINGENCIA (será transmitida e passada para 4) E OFFLINE (será cancelada ou inutilizada)
-      sql = "SELECT * FROM NFE_CABECALHO WHERE ID_PDV_VENDA_CABECALHO = '" + idVenda.toString() + "' AND " +
-      " (STATUS_NOTA <> '6' AND STATUS_NOTA <> '9')";
+      sql = "SELECT * FROM NFE_CABECALHO WHERE ID_PDV_VENDA_CABECALHO = '$idVenda' AND  (STATUS_NOTA <> '6' AND STATUS_NOTA <> '9')";
     } else {
-      sql = "SELECT * FROM NFE_CABECALHO WHERE ID_PDV_VENDA_CABECALHO = '" + idVenda.toString() + "' AND " +
-      " STATUS_NOTA = '$status'";
+      sql = "SELECT * FROM NFE_CABECALHO WHERE ID_PDV_VENDA_CABECALHO = '$idVenda' AND  STATUS_NOTA = '$status'";
     }
     final retorno = await customSelect(sql, 
                                 readsFrom: { nfeCabecalhos }).map((row) {
-                                  return NfeCabecalho.fromData(row.data, db);  
+                                  return NfeCabecalho.fromData(row.data);  
                                 }).getSingleOrNull();
       return retorno;
   }
@@ -121,35 +119,35 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
         if (objetoNfeCabecalhoMontado.nfeCabecalho != null) {
           // pega o destinatário
           objetoNfeCabecalhoMontado.nfeDestinatario = 
-            await customSelect("SELECT * FROM NFE_DESTINATARIO WHERE ID_NFE_CABECALHO = '" + objetoNfeCabecalhoMontado.nfeCabecalho!.id.toString() + "'", 
+            await customSelect("SELECT * FROM NFE_DESTINATARIO WHERE ID_NFE_CABECALHO = '${objetoNfeCabecalhoMontado.nfeCabecalho!.id}'", 
               readsFrom: { nfeDestinatarios }).map((row) {
-                return NfeDestinatario.fromData(row.data, db);  
+                return NfeDestinatario.fromData(row.data);  
               }).getSingleOrNull();
           // pega os detalhes
           objetoNfeCabecalhoMontado.listaNfeDetalheMontado = [];
-          final detalhes = await customSelect("SELECT * FROM NFE_DETALHE WHERE ID_NFE_CABECALHO = '" + objetoNfeCabecalhoMontado.nfeCabecalho!.id.toString() + "'", 
+          final detalhes = await customSelect("SELECT * FROM NFE_DETALHE WHERE ID_NFE_CABECALHO = '${objetoNfeCabecalhoMontado.nfeCabecalho!.id}'", 
                                     readsFrom: { nfeDetalhes }).map((row) {
-                                      return NfeDetalhe.fromData(row.data, db);  
+                                      return NfeDetalhe.fromData(row.data);  
                                     }).get();      
           // pega os impostos de cada detalhe
           for (var detalhe in detalhes) {
             // ICMS
             final icms = 
-            await customSelect("SELECT * FROM NFE_DETALHE_IMPOSTO_ICMS WHERE ID_NFE_DETALHE = '" + detalhe.id.toString() + "'", 
+            await customSelect("SELECT * FROM NFE_DETALHE_IMPOSTO_ICMS WHERE ID_NFE_DETALHE = '${detalhe.id}'", 
               readsFrom: { nfeDetalheImpostoIcmss }).map((row) {
-                return NfeDetalheImpostoIcms.fromData(row.data, db);  
+                return NfeDetalheImpostoIcms.fromData(row.data);  
               }).getSingleOrNull();
             // PIS
             final pis = 
-            await customSelect("SELECT * FROM NFE_DETALHE_IMPOSTO_PIS WHERE ID_NFE_DETALHE = '" + detalhe.id.toString() + "'", 
+            await customSelect("SELECT * FROM NFE_DETALHE_IMPOSTO_PIS WHERE ID_NFE_DETALHE = '${detalhe.id}'", 
               readsFrom: { nfeDetalheImpostoPiss }).map((row) {
-                return NfeDetalheImpostoPis.fromData(row.data, db);  
+                return NfeDetalheImpostoPis.fromData(row.data);  
               }).getSingleOrNull();
             // COFINS
             final cofins = 
-            await customSelect("SELECT * FROM NFE_DETALHE_IMPOSTO_COFINS WHERE ID_NFE_DETALHE = '" + detalhe.id.toString() + "'", 
+            await customSelect("SELECT * FROM NFE_DETALHE_IMPOSTO_COFINS WHERE ID_NFE_DETALHE = '${detalhe.id}'", 
               readsFrom: { nfeDetalheImpostoCofinss }).map((row) {
-                return NfeDetalheImpostoCofins.fromData(row.data, db);  
+                return NfeDetalheImpostoCofins.fromData(row.data);  
               }).getSingleOrNull();
             // monta tudo
             NfeDetalheMontado nfeDetalheMontado = NfeDetalheMontado(
@@ -163,7 +161,7 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
         }
         return objetoNfeCabecalhoMontado;
       } catch (e) {
-        debugPrint('Ocorreu um problema ao tentar emitir a NFC-e: ' + e.toString());
+        debugPrint('Ocorreu um problema ao tentar emitir a NFC-e: $e');
         return null;
       }
     });     
@@ -177,6 +175,8 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
 
   Future<int> inserir(NfeCabecalhoMontado nfeCabecalhoMontado) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      nfeCabecalhoMontado.nfeCabecalho = nfeCabecalhoMontado.nfeCabecalho!.copyWith(id: maxId + 1);
       final idInserido = await into(nfeCabecalhos).insert(nfeCabecalhoMontado.nfeCabecalho!);
       await inserirFilhos(nfeCabecalhoMontado, idInserido);
       await db.nfeNumeroDao.atualizarNumero();
@@ -206,24 +206,77 @@ class NfeCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$NfeCabecalhoD
   }
 
   Future<void> inserirFilhos(NfeCabecalhoMontado nfeCabecalhoMontado, int idMestre) async {
-    nfeCabecalhoMontado.nfeDestinatario = nfeCabecalhoMontado.nfeDestinatario!.copyWith(idNfeCabecalho: idMestre);
+    var maxId = await ultimoIdNfeDestinatario();
+    nfeCabecalhoMontado.nfeDestinatario = nfeCabecalhoMontado.nfeDestinatario!.copyWith(id: maxId+1, idNfeCabecalho: idMestre);
     await into(nfeDestinatarios).insert(nfeCabecalhoMontado.nfeDestinatario!);  
 
     for (var pagamento in nfeCabecalhoMontado.listaNfeInformacaoPagamento!) {
-      pagamento = pagamento.copyWith(idNfeCabecalho: idMestre);
+      maxId = await ultimoIdNfeInformacaoPagamento();
+      pagamento = pagamento.copyWith(id: maxId+1, idNfeCabecalho: idMestre);
       await into(nfeInformacaoPagamentos).insert(pagamento); 
     }
 
     for (var detalhe in nfeCabecalhoMontado.listaNfeDetalheMontado!) {
-      detalhe.nfeDetalhe = detalhe.nfeDetalhe!.copyWith(idNfeCabecalho: idMestre);
+      maxId = await ultimoIdNfeDetalhe();
+      detalhe.nfeDetalhe = detalhe.nfeDetalhe!.copyWith(id: maxId+1, idNfeCabecalho: idMestre);
       final idDetalhe = await into(nfeDetalhes).insert(detalhe.nfeDetalhe!);  
-      detalhe.nfeDetalheImpostoIcms = detalhe.nfeDetalheImpostoIcms!.copyWith(idNfeDetalhe: idDetalhe);
+      
+      maxId = await ultimoIdNfeDetalheImpostoIcms();
+      detalhe.nfeDetalheImpostoIcms = detalhe.nfeDetalheImpostoIcms!.copyWith(id: maxId+1, idNfeDetalhe: idDetalhe);
       await into(nfeDetalheImpostoIcmss).insert(detalhe.nfeDetalheImpostoIcms!);  
-      detalhe.nfeDetalheImpostoPis = detalhe.nfeDetalheImpostoPis!.copyWith(idNfeDetalhe: idDetalhe);
+
+      maxId = await ultimoIdNfeDetalheImpostoPis();
+      detalhe.nfeDetalheImpostoPis = detalhe.nfeDetalheImpostoPis!.copyWith(id: maxId+1, idNfeDetalhe: idDetalhe);
       await into(nfeDetalheImpostoPiss).insert(detalhe.nfeDetalheImpostoPis!);  
-      detalhe.nfeDetalheImpostoCofins = detalhe.nfeDetalheImpostoCofins!.copyWith(idNfeDetalhe: idDetalhe);
+
+      maxId = await ultimoIdNfeDetalheImpostoCofins();
+      detalhe.nfeDetalheImpostoCofins = detalhe.nfeDetalheImpostoCofins!.copyWith(id: maxId+1, idNfeDetalhe: idDetalhe);
       await into(nfeDetalheImpostoCofinss).insert(detalhe.nfeDetalheImpostoCofins!);  
     }
   }
-   
+
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from NFE_CABECALHO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> ultimoIdNfeDestinatario() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from NFE_DESTINATARIO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> ultimoIdNfeInformacaoPagamento() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from NFE_INFORMACAO_PAGAMENTO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> ultimoIdNfeDetalhe() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from NFE_DETALHE").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> ultimoIdNfeDetalheImpostoIcms() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from NFE_DETALHE_IMPOSTO_ICMS").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> ultimoIdNfeDetalheImpostoPis() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from NFE_DETALHE_IMPOSTO_PIS").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> ultimoIdNfeDetalheImpostoCofins() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from NFE_DETALHE_IMPOSTO_COFINS").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> marcaItemDevolvido(List<int> listaIdNfeDetalhe) {
+    String idItens = "(";
+    for (var item in listaIdNfeDetalhe) {
+      idItens += "$item,";
+    }
+    idItens = "${idItens.substring(0, idItens.length - 1)})";
+    return customUpdate("UPDATE NFE_DETALHE SET PERCENTUAL_DEVOLVIDO = 100 WHERE ID IN $idItens");
+  } 
+
 }

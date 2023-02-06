@@ -33,14 +33,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'dart:convert';
+
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 part 'produto_tipo_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           ProdutoTipos,
 		])
 class ProdutoTipoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoTipoDaoMixin {
@@ -56,17 +59,17 @@ class ProdutoTipoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoTipoDao
   }  
 
   Future<List<ProdutoTipo>?> consultarListaFiltro(String campo, String valor) async {
-    listaProdutoTipo = await (customSelect("SELECT * FROM PRODUTO_TIPO WHERE " + campo + " like '%" + valor + "%'", 
+    listaProdutoTipo = await (customSelect("SELECT * FROM PRODUTO_TIPO WHERE $campo like '%$valor%'", 
                                 readsFrom: { produtoTipos }).map((row) {
-                                  return ProdutoTipo.fromData(row.data, db);  
+                                  return ProdutoTipo.fromData(row.data);  
                                 }).get());
     return listaProdutoTipo;
   }
     
   Future<ProdutoTipo?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM PRODUTO_TIPO WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM PRODUTO_TIPO WHERE $campo = '$valor'", 
                                 readsFrom: { produtoTipos }).map((row) {
-                                  return ProdutoTipo.fromData(row.data, db);  
+                                  return ProdutoTipo.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -76,25 +79,40 @@ class ProdutoTipoDao extends DatabaseAccessor<AppDatabase> with _$ProdutoTipoDao
     return (select(produtoTipos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<ProdutoTipo> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from PRODUTO_TIPO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(ProdutoTipo pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(produtoTipos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<ProdutoTipo> pObjeto) {
+  Future<bool> alterar(ProdutoTipo pObjeto) {
     return transaction(() async {
       return update(produtoTipos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<ProdutoTipo> pObjeto) {
+  Future<int> excluir(ProdutoTipo pObjeto) {
     return transaction(() async {
       return delete(produtoTipos).delete(pObjeto);
     });    
   }
 
+  Future<void> sincronizar(ObjetoSincroniza objetoSincroniza) async {
+    (delete(produtoTipos)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = ProdutoTipo.fromJson(objetoJson);
+      into(produtoTipos).insertOnConflictUpdate(objetoDart);
+    }
+  }
   
   
   static List<String> campos = <String>[

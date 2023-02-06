@@ -36,11 +36,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:flutter/material.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
@@ -53,10 +54,10 @@ class TaxaEntregaListaPage extends StatefulWidget {
   const TaxaEntregaListaPage({Key? key}) : super(key: key);
 
   @override
-  _TaxaEntregaListaPageState createState() => _TaxaEntregaListaPageState();
+  TaxaEntregaListaPageState createState() => TaxaEntregaListaPageState();
 }
 
-class _TaxaEntregaListaPageState extends State<TaxaEntregaListaPage> {
+class TaxaEntregaListaPageState extends State<TaxaEntregaListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -78,7 +79,7 @@ class _TaxaEntregaListaPageState extends State<TaxaEntregaListaPage> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
   
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -99,12 +100,12 @@ class _TaxaEntregaListaPageState extends State<TaxaEntregaListaPage> {
   
   @override
   Widget build(BuildContext context) {
-    final _listaTaxaEntrega = Sessao.db.taxaEntregaDao.listaTaxaEntrega;
+    final listaTaxaEntrega = Sessao.db.taxaEntregaDao.listaTaxaEntrega;
 
-    final _TaxaEntregaDataSource _taxaEntregaDataSource = _TaxaEntregaDataSource(_listaTaxaEntrega, context, _refrescarTela);
+    final _TaxaEntregaDataSource taxaEntregaDataSource = _TaxaEntregaDataSource(listaTaxaEntrega, context, _refrescarTela);
   
     void _sort<T>(Comparable<T>? Function(TaxaEntrega taxaEntrega) getField, int columnIndex, bool ascending) {
-      _taxaEntregaDataSource._sort<T>(getField, ascending);
+      taxaEntregaDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -144,7 +145,7 @@ class _TaxaEntregaListaPageState extends State<TaxaEntregaListaPage> {
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
-              child: _listaTaxaEntrega == null
+              child: listaTaxaEntrega == null
               ? const Center(child: CircularProgressIndicator())
               : ListView(
                 padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
@@ -188,7 +189,7 @@ class _TaxaEntregaListaPageState extends State<TaxaEntregaListaPage> {
                           _sort<num>((TaxaEntrega taxaEntrega) => taxaEntrega.estimativaMinutos, columnIndex, ascending),
                       ),
                     ],
-                    source: _taxaEntregaDataSource,
+                    source: taxaEntregaDataSource,
                   ),
                 ],
               ),
@@ -276,7 +277,7 @@ class _TaxaEntregaDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
-        DataCell(Text(taxaEntrega.id?.toString() ?? ''), onTap: () {
+        DataCell(Text(taxaEntrega.id.toString()), onTap: () {
           _detalharTaxaEntrega(taxaEntrega, context, refrescarTela);
         }),
         DataCell(Text(taxaEntrega.nome ?? ''), onTap: () {

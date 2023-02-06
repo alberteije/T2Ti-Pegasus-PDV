@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'comanda_pedido_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           ComandaPedidos,
 		])
 class ComandaPedidoDao extends DatabaseAccessor<AppDatabase> with _$ComandaPedidoDaoMixin {
@@ -51,16 +51,16 @@ class ComandaPedidoDao extends DatabaseAccessor<AppDatabase> with _$ComandaPedid
   Future<List<ComandaPedido>?> consultarLista() => select(comandaPedidos).get();
 
   Future<List<ComandaPedido>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM COMANDA_PEDIDO WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM COMANDA_PEDIDO WHERE $campo like '%$valor%'", 
                                 readsFrom: { comandaPedidos }).map((row) {
-                                  return ComandaPedido.fromData(row.data, db);  
+                                  return ComandaPedido.fromData(row.data);  
                                 }).get());
   }
 
   Future<ComandaPedido?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM COMANDA_PEDIDO WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM COMANDA_PEDIDO WHERE $campo = '$valor'", 
                                 readsFrom: { comandaPedidos }).map((row) {
-                                  return ComandaPedido.fromData(row.data, db);  
+                                  return ComandaPedido.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -70,20 +70,27 @@ class ComandaPedidoDao extends DatabaseAccessor<AppDatabase> with _$ComandaPedid
     return (select(comandaPedidos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<ComandaPedido> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from COMANDA_PEDIDO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(ComandaPedido pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(comandaPedidos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<ComandaPedido> pObjeto) {
+  Future<bool> alterar(ComandaPedido pObjeto) {
     return transaction(() async {
       return update(comandaPedidos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<ComandaPedido> pObjeto) {
+  Future<int> excluir(ComandaPedido pObjeto) {
     return transaction(() async {
       return delete(comandaPedidos).delete(pObjeto);
     });    

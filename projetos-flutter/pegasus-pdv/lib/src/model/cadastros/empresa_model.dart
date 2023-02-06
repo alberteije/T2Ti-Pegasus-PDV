@@ -36,7 +36,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'dart:convert';
 
 import 'package:intl/intl.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 
 class EmpresaModel {
@@ -142,7 +142,7 @@ class EmpresaModel {
 		inscricaoMunicipal = jsonDados['inscricaoMunicipal'];
 		tipoRegime = jsonDados['tipoRegime'];
 		crt = jsonDados['crt'];
-		dataConstituicao = jsonDados['dataConstituicao'] != null ? DateTime.tryParse(jsonDados['dataConstituicao'].toString().substring(0,10)) : null;
+		dataConstituicao = Biblioteca.tratarDataJson(jsonDados['dataConstituicao']);
 		tipo = jsonDados['tipo'];
 		email = jsonDados['email'];
 		logradouro = jsonDados['logradouro'];
@@ -161,7 +161,7 @@ class EmpresaModel {
 		naturezaJuridica = jsonDados['naturezaJuridica'];
 		simei = jsonDados['simei'];
 		emailPagamento = jsonDados['emailPagamento'];
-		dataRegistro = jsonDados['dataRegistro'] != null ? DateTime.tryParse(jsonDados['dataRegistro'].toString().substring(0,10)) : null;
+		dataRegistro = Biblioteca.tratarDataJson(jsonDados['dataRegistro']);
 		horaRegistro = jsonDados['horaRegistro'];
 	}
 
@@ -238,8 +238,8 @@ class EmpresaModel {
     }
   }
 
-	String objetoEncodeJson(EmpresaModel objeto) {
-	  final jsonDados = objeto.toJson;
+	String objetoEncodeJson() {
+	  final jsonDados = toJson;
 	  return json.encode(jsonDados);
 	}
 	

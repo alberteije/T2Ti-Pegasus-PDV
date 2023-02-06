@@ -35,12 +35,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'package:flutter/material.dart';
 
+import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
@@ -53,10 +54,10 @@ class TributGrupoTributarioListaPage extends StatefulWidget {
   const TributGrupoTributarioListaPage({Key? key}) : super(key: key);
 
   @override
-  _TributGrupoTributarioListaPageState createState() => _TributGrupoTributarioListaPageState();
+  TributGrupoTributarioListaPageState createState() => TributGrupoTributarioListaPageState();
 }
 
-class _TributGrupoTributarioListaPageState extends State<TributGrupoTributarioListaPage> {
+class TributGrupoTributarioListaPageState extends State<TributGrupoTributarioListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -78,7 +79,7 @@ class _TributGrupoTributarioListaPageState extends State<TributGrupoTributarioLi
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
   
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -99,12 +100,12 @@ class _TributGrupoTributarioListaPageState extends State<TributGrupoTributarioLi
   
   @override
   Widget build(BuildContext context) {
-    final _listaTributGrupoTributario = Sessao.db.tributGrupoTributarioDao.listaTributGrupoTributario;
+    final listaTributGrupoTributario = Sessao.db.tributGrupoTributarioDao.listaTributGrupoTributario;
   
-    final _TributGrupoTributarioDataSource _tributGrupoTributarioDataSource = _TributGrupoTributarioDataSource(_listaTributGrupoTributario, context, _refrescarTela);
+    final _TributGrupoTributarioDataSource tributGrupoTributarioDataSource = _TributGrupoTributarioDataSource(listaTributGrupoTributario, context, _refrescarTela);
 
     void _sort<T>(Comparable<T>? Function(TributGrupoTributario tributGrupoTributario) getField, int columnIndex, bool ascending) {
-      _tributGrupoTributarioDataSource._sort<T>(getField, ascending);
+      tributGrupoTributarioDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -144,7 +145,7 @@ class _TributGrupoTributarioListaPageState extends State<TributGrupoTributarioLi
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
-              child: _listaTributGrupoTributario == null
+              child: listaTributGrupoTributario == null
               ? const Center(child: CircularProgressIndicator())
               : ListView(
                 padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
@@ -186,7 +187,7 @@ class _TributGrupoTributarioListaPageState extends State<TributGrupoTributarioLi
                           _sort<String>((TributGrupoTributario tributGrupoTributario) => tributGrupoTributario.observacao, columnIndex, ascending),
                       ),
                     ],
-                    source: _tributGrupoTributarioDataSource,
+                    source: tributGrupoTributarioDataSource,
                   ),
                 ],
               ),
@@ -275,7 +276,7 @@ class _TributGrupoTributarioDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
-        DataCell(Text('${tributGrupoTributario.id ?? ''}'), onTap: () {
+        DataCell(Text('${tributGrupoTributario.id}'), onTap: () {
           _detalharTributGrupoTributario(tributGrupoTributario, context, refrescarTela);
         }),
         DataCell(Text(tributGrupoTributario.descricao ?? ''), onTap: () {

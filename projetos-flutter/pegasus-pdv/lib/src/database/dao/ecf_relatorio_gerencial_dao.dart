@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'ecf_relatorio_gerencial_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           EcfRelatorioGerencials,
 		])
 class EcfRelatorioGerencialDao extends DatabaseAccessor<AppDatabase> with _$EcfRelatorioGerencialDaoMixin {
@@ -51,9 +51,9 @@ class EcfRelatorioGerencialDao extends DatabaseAccessor<AppDatabase> with _$EcfR
   Future<List<EcfRelatorioGerencial>> consultarLista() => select(ecfRelatorioGerencials).get();
 
   Future<List<EcfRelatorioGerencial>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM ECF_RELATORIO_GERENCIAL WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM ECF_RELATORIO_GERENCIAL WHERE $campo like '%$valor%'", 
                                 readsFrom: { ecfRelatorioGerencials }).map((row) {
-                                  return EcfRelatorioGerencial.fromData(row.data, db);  
+                                  return EcfRelatorioGerencial.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,20 +63,20 @@ class EcfRelatorioGerencialDao extends DatabaseAccessor<AppDatabase> with _$EcfR
     return (select(ecfRelatorioGerencials)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<EcfRelatorioGerencial> pObjeto) {
+  Future<int> inserir(EcfRelatorioGerencial pObjeto) {
     return transaction(() async {
       final idInserido = await into(ecfRelatorioGerencials).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<EcfRelatorioGerencial> pObjeto) {
+  Future<bool> alterar(EcfRelatorioGerencial pObjeto) {
     return transaction(() async {
       return update(ecfRelatorioGerencials).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<EcfRelatorioGerencial> pObjeto) {
+  Future<int> excluir(EcfRelatorioGerencial pObjeto) {
     return transaction(() async {
       return delete(ecfRelatorioGerencials).delete(pObjeto);
     });    

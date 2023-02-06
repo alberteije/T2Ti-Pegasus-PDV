@@ -50,6 +50,7 @@ export 'package:pegasus_pdv/src/view/page/movimento/movimento_lista_page.dart';
 // Cadastros
 export 'package:pegasus_pdv/src/view/page/cadastros/cliente/cliente_lista_page.dart';
 export 'package:pegasus_pdv/src/view/page/cadastros/cliente/cliente_persiste_page.dart';
+export 'package:pegasus_pdv/src/view/page/cadastros/cliente/cliente_fiado_lista_page.dart';
 
 export 'package:pegasus_pdv/src/view/page/cadastros/fornecedor/fornecedor_lista_page.dart';
 export 'package:pegasus_pdv/src/view/page/cadastros/fornecedor/fornecedor_persiste_page.dart';
@@ -134,6 +135,8 @@ export 'package:pegasus_pdv/src/view/page/nfce/nfe_cabecalho_persiste_page.dart'
 export 'package:pegasus_pdv/src/view/page/nfce/nfe_detalhe_lista_page.dart';
 export 'package:pegasus_pdv/src/view/page/nfce/nfce_inutiliza_numero_page.dart';
 export 'package:pegasus_pdv/src/view/page/nfce/nfce_contrata_page.dart';
+export 'package:pegasus_pdv/src/view/page/nfce/nfe_devolucao_page.dart';
+export 'package:pegasus_pdv/src/view/page/nfce/nfe_devolucao_persiste_page.dart';
 
 // food
 export 'package:pegasus_pdv/src/view/page/food/cozinha/cozinha_lista_page.dart';
@@ -151,7 +154,12 @@ export 'package:pegasus_pdv/src/view/page/food/comanda/comanda_observacao_padrao
 export 'package:pegasus_pdv/src/view/page/food/comanda/comanda_observacao_padrao_persiste_page.dart';
 export 'package:pegasus_pdv/src/view/page/food/comanda/comanda_observacao_padrao_lookup_page.dart';
 export 'package:pegasus_pdv/src/view/page/food/comanda/comanda_cardapio_pergunta_lookup_page.dart';
+export 'package:pegasus_pdv/src/view/page/food/cardapio_digital/cardapio_page.dart';
+export 'package:pegasus_pdv/src/view/page/food/cardapio_digital/cardapio_detalhe_page.dart';
 
 // delivery
 export 'package:pegasus_pdv/src/view/page/delivery/taxa_entrega/taxa_entrega_lista_page.dart';
 export 'package:pegasus_pdv/src/view/page/delivery/taxa_entrega/taxa_entrega_persiste_page.dart';
+export 'package:pegasus_pdv/src/view/page/delivery/delivery_lista_page.dart';
+export 'package:pegasus_pdv/src/view/page/delivery/delivery_persiste_page.dart';
+export 'package:pegasus_pdv/src/view/page/delivery/delivery_acerto_persiste_page.dart';

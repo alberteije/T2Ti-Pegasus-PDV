@@ -41,6 +41,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 
+import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_pdv.dart';
 
@@ -59,10 +60,10 @@ class ParcelamentoReceitasPage extends StatefulWidget {
   const ParcelamentoReceitasPage({Key? key, this.title, this.totalParcelamento}) : super(key: key);
 
   @override
-  _ParcelamentoReceitasPageState createState() => _ParcelamentoReceitasPageState();
+  ParcelamentoReceitasPageState createState() => ParcelamentoReceitasPageState();
 }
 
-class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
+class ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
 
@@ -259,7 +260,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                                   icon: ViewUtilLib.getIconBotaoLookup(),
                                                   onPressed: () async {
                                                     ///chamando o lookup
-                                                    Map<String, dynamic>? _objetoJsonRetorno =
+                                                    Map<String, dynamic>? objetoJsonRetorno =
                                                       await Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
@@ -276,14 +277,14 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                                                           ),
                                                           fullscreenDialog: true,
                                                         ));
-                                                    if (_objetoJsonRetorno != null) {
-                                                      if (_objetoJsonRetorno['nome'] != null) {
-                                                        _importaClienteController.text = _objetoJsonRetorno['nome'];
+                                                    if (objetoJsonRetorno != null) {
+                                                      if (objetoJsonRetorno['nome'] != null) {
+                                                        _importaClienteController.text = objetoJsonRetorno['nome'];
                                                         Sessao.vendaAtual = 
                                                         Sessao.vendaAtual!.copyWith(
-                                                          idCliente: _objetoJsonRetorno['id'],
-                                                          nomeCliente: _objetoJsonRetorno['nome'],
-                                                          cpfCnpjCliente: _objetoJsonRetorno['cpfCnpj'],
+                                                          idCliente: objetoJsonRetorno['id'],
+                                                          nomeCliente: objetoJsonRetorno['nome'],
+                                                          cpfCnpjCliente: objetoJsonRetorno['cpfCnpj'],
                                                         );
                                                       }
                                                     }
@@ -623,7 +624,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
                             : dataPrimeiroVencimento.add(Duration(days: intervaloEntreParcelas * i)),
             valorAReceber: num.parse((widget.totalParcelamento! / quantidadeParcelas).toStringAsFixed(Constantes.decimaisValor)) as double?,
             statusRecebimento: 'A',
-            historico: 'Gerado pela venda número ' + Sessao.vendaAtual!.id.toString() + ' Parcela ' + (i+1).toString() + ' de ' + _quantidadeParcelasController.text,
+            historico: 'Gerado pela venda número ${Sessao.vendaAtual!.id} Parcela ${i+1} de ${_quantidadeParcelasController.text}',
           );
         _listaParcelas.add(parcelaReceber);
         Sessao.listaParcelamento.add(ContasReceberMontado(contasReceber: parcelaReceber));
@@ -652,6 +653,7 @@ class _ParcelamentoReceitasPageState extends State<ParcelamentoReceitasPage> {
       } else {
         gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
           await Sessao.db.contasReceberDao.inserirParcelas(_listaParcelas);
+          if (!mounted) return;
           Navigator.of(context).pop(true);
         });
       }

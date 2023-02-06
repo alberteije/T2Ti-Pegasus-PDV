@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'empresa_segmento_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           EmpresaSegmentos,
 		])
 class EmpresaSegmentoDao extends DatabaseAccessor<AppDatabase> with _$EmpresaSegmentoDaoMixin {
@@ -51,16 +51,16 @@ class EmpresaSegmentoDao extends DatabaseAccessor<AppDatabase> with _$EmpresaSeg
   Future<List<EmpresaSegmento>?> consultarLista() => select(empresaSegmentos).get();
 
   Future<List<EmpresaSegmento>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM EMPRESA_SEGMENTO WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM EMPRESA_SEGMENTO WHERE $campo like '%$valor%'", 
                                 readsFrom: { empresaSegmentos }).map((row) {
-                                  return EmpresaSegmento.fromData(row.data, db);  
+                                  return EmpresaSegmento.fromData(row.data);  
                                 }).get());
   }
 
   Future<EmpresaSegmento?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM EMPRESA_SEGMENTO WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM EMPRESA_SEGMENTO WHERE $campo = '$valor'", 
                                 readsFrom: { empresaSegmentos }).map((row) {
-                                  return EmpresaSegmento.fromData(row.data, db);  
+                                  return EmpresaSegmento.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -70,20 +70,27 @@ class EmpresaSegmentoDao extends DatabaseAccessor<AppDatabase> with _$EmpresaSeg
     return (select(empresaSegmentos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<EmpresaSegmento> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from EMPRESA_SEGMENTO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(EmpresaSegmento pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(empresaSegmentos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<EmpresaSegmento> pObjeto) {
+  Future<bool> alterar(EmpresaSegmento pObjeto) {
     return transaction(() async {
       return update(empresaSegmentos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<EmpresaSegmento> pObjeto) {
+  Future<int> excluir(EmpresaSegmento pObjeto) {
     return transaction(() async {
       return delete(empresaSegmentos).delete(pObjeto);
     });    

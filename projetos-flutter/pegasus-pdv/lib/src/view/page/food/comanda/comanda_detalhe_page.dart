@@ -39,6 +39,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pegasus_pdv/src/controller/controller.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/view/page/page.dart';
@@ -56,10 +57,10 @@ class ComandaDetalhePage extends StatefulWidget {
   const ComandaDetalhePage(this.comandaMontado, {Key? key}) : super(key: key);
 
   @override
-  _ComandaDetalhePageState createState() => _ComandaDetalhePageState();
+  ComandaDetalhePageState createState() => ComandaDetalhePageState();
 }
 
-class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
+class ComandaDetalhePageState extends State<ComandaDetalhePage> {
   final _pesquisaProdutoController = TextEditingController();
   final _focusNode = FocusNode();
   double? _quantidadeInformada = 1;
@@ -172,7 +173,7 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
               return Dismissible(
                 key: UniqueKey(),
                 onDismissed: (direction) {
-                  _excluirProduto(index: index, perguntaAntes: false);
+                  _excluirProduto(index: index, perguntaAntes: true);
                 },
                 background: Container(color: Colors.red),
                 child: _itensDaComanda(context, index),
@@ -185,13 +186,13 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
   }
 
   Widget _itensDaComanda(BuildContext context, int index) {
-    var _item = index + 1;
+    var item = index + 1;
     return Card(      
       color: Color.lerp(Colors.grey[550], Colors.white, 0.6),
       child: ListTile(
         minLeadingWidth: Biblioteca.isTelaPequena(context)! ? 0 : 20,
         leading: Text(
-          _item.toString(),
+          item.toString(),
           style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13.0),
         ),
         title: Row(
@@ -333,10 +334,10 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [            
               Text(
-                "Total do Item " + Biblioteca.formatarValorDecimal(
+                "Total do Item ${Biblioteca.formatarValorDecimal(
                   widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe!.valorTotal! + 
                   widget.comandaMontado.listaComandaDetalheMontado![index].comandaDetalhe!.valorTotalComplemento!
-                ), 
+                )}", 
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -407,7 +408,7 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
       onSelected: onSelectedPopupMenuButton,
       itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
         PopupMenuItem<String>(
-          value: 'excluir:'+index.toString(),
+          value: 'excluir:$index',
           child: Row(
             children: const [
               Icon(
@@ -426,7 +427,7 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
           ),          
         ),
         PopupMenuItem<String>(
-          value: 'complemento:'+index.toString(),
+          value: 'complemento:$index',
           child: Row(
             children: const [
               Icon(
@@ -445,7 +446,7 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
           ),
         ),
         PopupMenuItem<String>(
-          value: 'observacao:'+index.toString(),
+          value: 'observacao:$index',
           child: Row(
             children: const [
               Icon(
@@ -464,7 +465,7 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
           ),
         ),
         PopupMenuItem<String>(
-          value: 'perguntas:'+index.toString(),
+          value: 'perguntas:$index',
           child: Row(
             children: const [
               Icon(
@@ -634,6 +635,15 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
       if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
         String mensagemRetorno = await NfceController.verificarSeAptoParaEmitirNfce();
         if (mensagemRetorno.isNotEmpty) {
+          if (!mounted) return;
+          gerarDialogBoxInformacao(context, mensagemRetorno);
+        } else {
+          podeRealizarVenda = true;
+        }
+      } else if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'SAT') {
+        String mensagemRetorno = await SatController.verificarSeAptoParaEmitirCfe();
+        if (mensagemRetorno.isNotEmpty) {
+          if (!mounted) return;
           gerarDialogBoxInformacao(context, mensagemRetorno);
         } else {
           podeRealizarVenda = true;
@@ -674,10 +684,10 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
         if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
           // verifica se a tributação para o produto está OK antes mesmo de incluí-lo na comanda
           final tributacao = await Sessao.db.tributConfiguraOfGtDao.consultarObjetoMontado(
-            Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao!, _produtoMontado!.tributGrupoTributario!.id!
-          ); 
+            Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao!, _produtoMontado!.tributGrupoTributario!.id!); 
           if (tributacao == null) {
             podeComporItemParaComanda = false;
+            if (!mounted) return;
             gerarDialogBoxErro(context, 'Existe um problema com a tributação deste produto. Informe o Grupo Tributário para o Produto e vincule a Operação Fiscal para o mesmo na tela "Configura Tributação"');
           } else {
             podeComporItemParaComanda = true;
@@ -694,11 +704,11 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
   }
 
   Future _comporItemParaComanda() async {
-    final _quantidadeFutura = (_produtoMontado!.produto!.quantidadeEstoque ?? 0) - _quantidadeInformada!;
+    final quantidadeFutura = (_produtoMontado!.produto!.quantidadeEstoque ?? 0) - _quantidadeInformada!;
 
     if(Sessao.configuracaoPdv!.modulo != 'G' && _produtoMontado!.produto!.idTributGrupoTributario == null) {
       gerarDialogBoxInformacao(context, 'Produto sem Grupo Tributário vinculado.');
-    } else if ((Sessao.configuracaoPdv!.permiteEstoqueNegativo ?? 'S') == 'N' && _quantidadeFutura < 0) {
+    } else if ((Sessao.configuracaoPdv!.permiteEstoqueNegativo ?? 'S') == 'N' && quantidadeFutura < 0) {
       gerarDialogBoxInformacao(context, 'Não é permitido vender um item com estoque negativo.');
     } else {
       ComandaDetalheMontado comandaDetalheMontado = 
@@ -856,14 +866,14 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
 
     var perguntaResposta = '';
     for (var i = 0; i < listaRespostasSelecionadas.length; i++) {
-      perguntaResposta += listaRespostasSelecionadas[i].pergunta + ' [' + listaRespostasSelecionadas[i].resposta + ']\n'; 
+      perguntaResposta += '${listaRespostasSelecionadas[i].pergunta} [${listaRespostasSelecionadas[i].resposta}]\n'; 
     }
 
     final obsGravada = comandaDetalheMontado.comandaDetalhe!.observacao;
 
     if (obsGravada != null && obsGravada != '') {
       comandaDetalheMontado.comandaDetalhe = 
-        comandaDetalheMontado.comandaDetalhe!.copyWith(observacao: obsGravada + '\n' + perguntaResposta,);
+        comandaDetalheMontado.comandaDetalhe!.copyWith(observacao: '$obsGravada\n$perguntaResposta',);
     } else {
       comandaDetalheMontado.comandaDetalhe = 
         comandaDetalheMontado.comandaDetalhe!.copyWith(observacao: perguntaResposta,);
@@ -897,6 +907,7 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
           if (observacao == '') {
             observacao += retorno[i]; 
           } else {
+            // ignore: prefer_interpolation_to_compose_strings
             observacao += '\n' + retorno[i]; 
           }
         }
@@ -908,7 +919,7 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
         });        
       }
     } else if (operacao == 'complemento') {
-      Map<String, dynamic>? _objetoJsonRetorno =
+      Map<String, dynamic>? objetoJsonRetorno =
         await Navigator.push(
           context,
           MaterialPageRoute(
@@ -925,9 +936,9 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
             fullscreenDialog: true,
           )
         );
-      if (_objetoJsonRetorno != null) {
+      if (objetoJsonRetorno != null) {
 
-        _produtoMontado = await Sessao.db.produtoDao.consultarObjetoMontado(campo: 'GTIN', valor: _objetoJsonRetorno['gtin']);   
+        _produtoMontado = await Sessao.db.produtoDao.consultarObjetoMontado(campo: 'GTIN', valor: objetoJsonRetorno['gtin']);   
 
         if (_produtoMontado != null) {
           // TODO: mover esse código e da CaixaPage para um local central, talvez ProdutoController
@@ -935,10 +946,10 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
           if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
             // verifica se a tributação para o produto está OK antes mesmo de incluí-lo na comanda
             final tributacao = await Sessao.db.tributConfiguraOfGtDao.consultarObjetoMontado(
-              Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao!, _produtoMontado!.tributGrupoTributario!.id!
-            ); 
+              Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao!, _produtoMontado!.tributGrupoTributario!.id!); 
             if (tributacao == null) {
               podeComporItemParaComanda = false;
+              if (!mounted) return;
               gerarDialogBoxErro(context, 'Existe um problema com a tributação deste produto. Informe o Grupo Tributário para o Produto e vincule a Operação Fiscal para o mesmo na tela "Configura Tributação"');
             } else {
               podeComporItemParaComanda = true;
@@ -979,6 +990,7 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
   Future _executarFuncaoMenuButtonGeral(String operacao) async {  
     if (operacao == 'salvar_dados') {
       await _salvar();
+      if (!mounted) return;
       Navigator.pop(context);
     } else if (operacao == 'desconto') {
       final retorno = await Navigator.push(
@@ -996,6 +1008,7 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
       });
     } else if (operacao == 'imprimir_comanda') {
       await _salvar();
+      if (!mounted) return;
       Navigator.of(context)
         .push(MaterialPageRoute(
           builder: (BuildContext context) { 
@@ -1013,6 +1026,7 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
       await _emitirNota();
     } else if (operacao == 'sair') {
       await _salvar();
+      if (!mounted) return;
       Navigator.pop(context);
     }
   }
@@ -1080,6 +1094,7 @@ class _ComandaDetalhePageState extends State<ComandaDetalhePage> {
         Sessao.listaVendaAtualDetalhe.add(vendaDetalheComplemento);
       }
     }
+    if (!mounted) return;
     Sessao.emitirNotaDaComanda(context);
   }
 

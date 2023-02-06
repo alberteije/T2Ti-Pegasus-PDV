@@ -69,10 +69,10 @@ class ProdutoPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ProdutoPageState createState() => _ProdutoPageState();
+  ProdutoPageState createState() => ProdutoPageState();
 }
 
-class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin {
+class ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin {
   TabController? _abasController;
   String _estiloBotoesAba = 'iconsAndText';
 
@@ -107,7 +107,7 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
 
     myFocusNode = FocusNode();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _carregarListas());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _carregarListas());
   }
 
   Future _carregarListas() async {
@@ -249,6 +249,12 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
   void _salvarProduto() async {
     if (_salvarForms()) {  
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
+        // remove pontos do NCM e do CEST
+        widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(
+          codigoNcm: widget.produtoMontado!.produto!.codigoNcm?.replaceAll('.', ''),
+          codigoCest: widget.produtoMontado!.produto!.codigoCest?.replaceAll('.', ''),
+        );
+
         bool tudoCerto = false;
         if (widget.operacao == 'A') {
           await Sessao.db.produtoDao.alterar(
@@ -269,10 +275,12 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
             );
             tudoCerto = true;
           } else {
+            if (!mounted) return;
             showInSnackBar('Já existe um produto cadastrado com o GTIN informado.', context);
           }
         }
         if (tudoCerto) {
+          if (!mounted) return;
           Navigator.of(context).pop();
         }
       });
@@ -284,7 +292,8 @@ class _ProdutoPageState extends State<ProdutoPage> with TickerProviderStateMixin
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
       widget.produtoMontado!.produto = widget.produtoMontado!.produto!.copyWith(situacao: 'I');
-      Sessao.db.produtoDao.excluir(widget.produtoMontado!);
+      await Sessao.db.produtoDao.excluir(widget.produtoMontado!);
+      if (!mounted) return;
       Navigator.of(context).pop();
     },
     mensagemPersonalizada: 'Deseja marcar esse produto como Inativo? Ele não será excluído do banco de dados.');

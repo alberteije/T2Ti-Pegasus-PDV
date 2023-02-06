@@ -40,7 +40,8 @@ import 'package:pegasus_pdv/src/database/database_classes.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
@@ -53,10 +54,10 @@ class PdvTipoPagamentoListaPage extends StatefulWidget {
   const PdvTipoPagamentoListaPage({Key? key}) : super(key: key);
 
   @override
-  _PdvTipoPagamentoListaPageState createState() => _PdvTipoPagamentoListaPageState();
+  PdvTipoPagamentoListaPageState createState() => PdvTipoPagamentoListaPageState();
 }
 
-class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
+class PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -78,7 +79,7 @@ class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -99,12 +100,12 @@ class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
   
   @override
   Widget build(BuildContext context) {
-    final _listaPdvTipoPagamento = Sessao.db.pdvTipoPagamentoDao.listaPdvTipoPagamento;
+    final listaPdvTipoPagamento = Sessao.db.pdvTipoPagamentoDao.listaPdvTipoPagamento;
 
-    final _PdvTipoPagamentoDataSource _pdvTipoPagamentoDataSource = _PdvTipoPagamentoDataSource(_listaPdvTipoPagamento, context, _refrescarTela);
+    final _PdvTipoPagamentoDataSource pdvTipoPagamentoDataSource = _PdvTipoPagamentoDataSource(listaPdvTipoPagamento, context, _refrescarTela);
 
     void _sort<T>(Comparable<T>? Function(PdvTipoPagamento pdvTipoPagamento) getField, int columnIndex, bool ascending) {
-      _pdvTipoPagamentoDataSource._sort<T>(getField, ascending);
+      pdvTipoPagamentoDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -144,7 +145,7 @@ class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
-              child: _listaPdvTipoPagamento == null
+              child: listaPdvTipoPagamento == null
               ? const Center(child: CircularProgressIndicator())
               : ListView(
                 padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
@@ -160,7 +161,7 @@ class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
                     sortColumnIndex: _sortColumnIndex,
                     sortAscending: _sortAscending,
                     columns: _pegarColunas(_sort),                    
-                    source: _pdvTipoPagamentoDataSource,
+                    source: pdvTipoPagamentoDataSource,
                   ),
                 ],
               ),
@@ -171,52 +172,52 @@ class _PdvTipoPagamentoListaPageState extends State<PdvTipoPagamentoListaPage> {
     );
   }
 
-  List<DataColumn> _pegarColunas(Function _sort) {
-    final List<DataColumn> _colunas = [];
-    _colunas.add(
+  List<DataColumn> _pegarColunas(Function sort) {
+    final List<DataColumn> colunas = [];
+    colunas.add(
       DataColumn(
         numeric: true,
         label: const Text('Id'),
         tooltip: 'Id',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<num>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.id, columnIndex, ascending),
+          sort<num>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.id, columnIndex, ascending),
       ),
     );
-    _colunas.add(
+    colunas.add(
       DataColumn(
         label: const Text('Codigo'),
         tooltip: 'Conteúdo para o campo Codigo',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<String>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.codigo, columnIndex, ascending),
+          sort<String>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.codigo, columnIndex, ascending),
       ),
     );
     if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
-      _colunas.add(   
+      colunas.add(   
         DataColumn(
           label: const Text('Código NFC-e'),
           tooltip: 'Conteúdo para o campo Código da NFC-e',
           onSort: (int columnIndex, bool ascending) =>
-            _sort<String>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.codigoPagamentoNfce, columnIndex, ascending),
+            sort<String>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.codigoPagamentoNfce, columnIndex, ascending),
         ),
       );
     }
-    _colunas.add(
+    colunas.add(
       DataColumn(
         label: const Text('Descricao'),
         tooltip: 'Conteúdo para o campo Descricao',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<String>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.descricao, columnIndex, ascending),
+          sort<String>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.descricao, columnIndex, ascending),
       ),
     );
-    _colunas.add(
+    colunas.add(
       DataColumn(
         label: const Text('Gera Parcelas'),
         tooltip: 'Conteúdo para o campo Gera Parcelas',
         onSort: (int columnIndex, bool ascending) =>
-          _sort<String>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.geraParcelas, columnIndex, ascending),
+          sort<String>((PdvTipoPagamento pdvTipoPagamento) => pdvTipoPagamento.geraParcelas, columnIndex, ascending),
       ),
     );
-    return _colunas;
+    return colunas;
   }
   void _inserir() {
     Navigator.of(context)
@@ -302,36 +303,36 @@ class _PdvTipoPagamentoDataSource extends DataTableSource {
 
   List<DataCell> _pegarCelulas(int index) {
     final PdvTipoPagamento pdvTipoPagamento = listaPdvTipoPagamento![index];
-    List<DataCell> _celulas = [];
-    _celulas.add(
-        DataCell(Text('${pdvTipoPagamento.id ?? ''}'), onTap: () {
+    List<DataCell> celulas = [];
+    celulas.add(
+        DataCell(Text('${pdvTipoPagamento.id}'), onTap: () {
           _detalharPdvTipoPagamento(pdvTipoPagamento, context, refrescarTela);
         }),
     );
-    _celulas.add(
+    celulas.add(
         DataCell(Text(pdvTipoPagamento.codigo ?? ''), onTap: () {
           _detalharPdvTipoPagamento(pdvTipoPagamento, context, refrescarTela);
         }),
     );
     if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
-      _celulas.add(
+      celulas.add(
         DataCell(Text(pdvTipoPagamento.codigoPagamentoNfce ?? ''), onTap: () {
           _detalharPdvTipoPagamento(pdvTipoPagamento, context, refrescarTela);
         }),
       );
     }
-    _celulas.add(
+    celulas.add(
         DataCell(Text(pdvTipoPagamento.descricao ?? ''), onTap: () {
           _detalharPdvTipoPagamento(pdvTipoPagamento, context, refrescarTela);
         }),
     );
-    _celulas.add(
+    celulas.add(
         DataCell(Text(pdvTipoPagamento.geraParcelas ?? ''), onTap: () {
           _detalharPdvTipoPagamento(pdvTipoPagamento, context, refrescarTela);
         }),
     );
   
-    return _celulas;
+    return celulas;
   }
 
   @override
@@ -345,7 +346,7 @@ class _PdvTipoPagamentoDataSource extends DataTableSource {
 }
 
 void _detalharPdvTipoPagamento(PdvTipoPagamento pdvTipoPagamento, BuildContext context, Function refrescarTela) {
-  if (pdvTipoPagamento.id != 1) {
+  if (pdvTipoPagamento.id != 1 && pdvTipoPagamento.codigo != '99') {
     Navigator.of(context)
       .push(MaterialPageRoute(
         builder: (BuildContext context) => PdvTipoPagamentoPersistePage(
@@ -353,5 +354,7 @@ void _detalharPdvTipoPagamento(PdvTipoPagamento pdvTipoPagamento, BuildContext c
       .then((_) async {    
         await refrescarTela();
     });
+  } else {
+    showInSnackBar("Esse tipo de pagamento não pode ser editado ou excluído.", context);          
   }
 }

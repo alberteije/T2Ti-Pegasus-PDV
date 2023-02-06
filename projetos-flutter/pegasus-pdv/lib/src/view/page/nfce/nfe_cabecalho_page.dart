@@ -34,7 +34,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 import 'dart:async';
-import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
@@ -71,10 +71,10 @@ class NfeCabecalhoPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _NfeCabecalhoPageState createState() => _NfeCabecalhoPageState();
+  NfeCabecalhoPageState createState() => NfeCabecalhoPageState();
 }
 
-class _NfeCabecalhoPageState extends State<NfeCabecalhoPage> with SingleTickerProviderStateMixin {
+class NfeCabecalhoPageState extends State<NfeCabecalhoPage> with SingleTickerProviderStateMixin {
   TabController? _abasController;
   String _estiloBotoesAba = 'iconsAndText';
 
@@ -170,40 +170,79 @@ class _NfeCabecalhoPageState extends State<NfeCabecalhoPage> with SingleTickerPr
   }
 
   void _baixarDanfe() async {
-    NfceAcbrService servicoNfce = NfceAcbrService();
+    gerarDialogBoxEspera(context);
     try {
-      await servicoNfce.conectar(
-        context, 
-        formaEmissao: '1',
-        operacao: 'IMPRIMIR_DANFE', 
-        chaveAcesso: widget.nfeCabecalhoMontado!.nfeCabecalho!.chaveAcesso,
-        funcaoDeCallBack: _imprimirDanfe, 
-      ).then((socket) {
-        socket!.write('NFE.ImprimirDANFEPDF("' 
-          + Sessao.configuracaoNfce!.caminhoSalvarXml! 
-          + Biblioteca.formatarDataAAAAMM(DateTime.now())
-          + '\\NFCe\\'
-          + widget.nfeCabecalhoMontado!.nfeCabecalho!.chaveAcesso! 
-          + '-nfe.xml")\r\n.\r\n');
-      });                 
+      NfceService nfceService = NfceService();
+      final retorno = await nfceService.gerarPdfDanfe(widget.nfeCabecalhoMontado!.nfeCabecalho!.chaveAcesso!); 
+      if (!mounted) return;       
+      if (retorno != null) {
+        if (retorno is String) {
+          Sessao.fecharDialogBoxEspera(context);
+          gerarDialogBoxErro(context, 'Ocorreu um problema na geração da NFC-e: \n$retorno');          
+        } else if (retorno is Uint8List) {
+          _imprimirDanfe(retorno);
+        }
+      } else {
+        Sessao.fecharDialogBoxEspera(context);
+      }
     } catch (e) {
-      gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: ' + e.toString());
+      Sessao.fecharDialogBoxEspera(context);
+      gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: $e');
     }   
-
   }
 
-  Future _imprimirDanfe(String danfeBase64) async {
-    var decodeB64 = base64.decode(danfeBase64); 
+  Future _imprimirDanfe(Uint8List danfe) async {
+    Sessao.fecharDialogBoxEspera(context);
     Navigator.of(context)
       .push(MaterialPageRoute(
         builder: (BuildContext context) => PdfPage(
-          arquivoPdf: decodeB64, title: 'NFC-e')
+          arquivoPdf: danfe, title: 'NFC-e')
         )
       ).then(
         (value) {
         }
       );          
-  }   
+  }  
+
+
+  /////////////////////////////////////////
+  /// Utilize o código abaixo para se comunicar diretamente com o ACBrMonitor
+  /////////////////////////////////////////
+  // void _baixarDanfe() async {
+  //   NfceAcbrService servicoNfce = NfceAcbrService();
+  //   try {
+  //     await servicoNfce.conectar(
+  //       context, 
+  //       formaEmissao: '1',
+  //       operacao: 'IMPRIMIR_DANFE', 
+  //       chaveAcesso: widget.nfeCabecalhoMontado!.nfeCabecalho!.chaveAcesso,
+  //       funcaoDeCallBack: _imprimirDanfe, 
+  //     ).then((socket) {
+  //       socket!.write('NFE.ImprimirDANFEPDF("' 
+  //         + Sessao.configuracaoNfce!.caminhoSalvarXml! 
+  //         + Biblioteca.formatarDataAAAAMM(DateTime.now())
+  //         + '\\NFCe\\'
+  //         + widget.nfeCabecalhoMontado!.nfeCabecalho!.chaveAcesso! 
+  //         + '-nfe.xml")\r\n.\r\n');
+  //     });                 
+  //   } catch (e) {
+  //     gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: ' + e.toString());
+  //   }   
+
+  // }
+
+  // Future _imprimirDanfe(String danfeBase64) async {
+  //   var decodeB64 = base64.decode(danfeBase64); 
+  //   Navigator.of(context)
+  //     .push(MaterialPageRoute(
+  //       builder: (BuildContext context) => PdfPage(
+  //         arquivoPdf: decodeB64, title: 'NFC-e')
+  //       )
+  //     ).then(
+  //       (value) {
+  //       }
+  //     );          
+  // }   
 
   void _atualizarAbas() {
     _todasAsAbas.clear();

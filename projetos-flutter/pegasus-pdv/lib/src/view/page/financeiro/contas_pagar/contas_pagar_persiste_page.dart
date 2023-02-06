@@ -42,6 +42,7 @@ import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -62,10 +63,10 @@ class ContasPagarPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ContasPagarPersistePageState createState() => _ContasPagarPersistePageState();
+  ContasPagarPersistePageState createState() => ContasPagarPersistePageState();
 }
 
-class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
+class ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -109,16 +110,16 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _taxaJuroController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasPagar?.taxaJuro ?? 0);
-    final _importaFornecedorController = TextEditingController();
-    _importaFornecedorController.text = widget.contasPagarMontado!.fornecedor?.nome ?? '';
-    final _taxaMultaController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasPagar?.taxaMulta ?? 0);
-    final _taxaDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasPagar?.taxaDesconto ?? 0);
-    final _valorJuroController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasPagar?.valorJuro ?? 0);
-    final _valorMultaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasPagar?.valorMulta ?? 0);
-    final _valorDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasPagar?.valorDesconto ?? 0);
-    final _valorPagoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasPagar?.valorPago ?? 0);
-    final _valorAPagarController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasPagar?.valorAPagar ?? 0);
+    final taxaJuroController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasPagar?.taxaJuro ?? 0);
+    final importaFornecedorController = TextEditingController();
+    importaFornecedorController.text = widget.contasPagarMontado!.fornecedor?.nome ?? '';
+    final taxaMultaController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasPagar?.taxaMulta ?? 0);
+    final taxaDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: _contasPagar?.taxaDesconto ?? 0);
+    final valorJuroController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasPagar?.valorJuro ?? 0);
+    final valorMultaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasPagar?.valorMulta ?? 0);
+    final valorDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasPagar?.valorDesconto ?? 0);
+    final valorPagoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasPagar?.valorPago ?? 0);
+    final valorAPagarController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: _contasPagar?.valorAPagar ?? 0);
 	
     return FocusableActionDetector(
       actions: _actionMap,
@@ -161,7 +162,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                   child: SizedBox(
                                     child: TextFormField(
                                       validator: ValidaCampoFormulario.validarObrigatorio,
-                                      controller: _importaFornecedorController,
+                                      controller: importaFornecedorController,
                                       readOnly: true,
                                       decoration: getInputDecoration(
                                         'Conteúdo para o campo Fornecedor',
@@ -183,7 +184,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                     icon: ViewUtilLib.getIconBotaoLookup(),
                                     onPressed: () async {
                                       ///chamando o lookup
-                                      Map<String, dynamic>? _objetoJsonRetorno =
+                                      Map<String, dynamic>? objetoJsonRetorno =
                                         await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -200,12 +201,12 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                             ),
                                             fullscreenDialog: true,
                                           ));
-                                      if (_objetoJsonRetorno != null) {
-                                        if (_objetoJsonRetorno['nome'] != null) {
-                                          _importaFornecedorController.text = _objetoJsonRetorno['nome'];
-                                          _contasPagar = _contasPagar!.copyWith(idFornecedor: _objetoJsonRetorno['id']);
+                                      if (objetoJsonRetorno != null) {
+                                        if (objetoJsonRetorno['nome'] != null) {
+                                          importaFornecedorController.text = objetoJsonRetorno['nome'];
+                                          _contasPagar = _contasPagar!.copyWith(idFornecedor: objetoJsonRetorno['id']);
                                           widget.contasPagarMontado!.fornecedor = widget.contasPagarMontado!.fornecedor!.copyWith(
-                                            nome: _objetoJsonRetorno['nome'],
+                                            nome: objetoJsonRetorno['nome'],
                                           );          
                                         }
                                       }
@@ -356,7 +357,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.end,
-                                controller: _valorAPagarController,
+                                controller: valorAPagarController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Valor a Pagar',
@@ -364,7 +365,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasPagar = _contasPagar!.copyWith(valorAPagar: _valorAPagarController.numberValue);
+                                  _contasPagar = _contasPagar!.copyWith(valorAPagar: valorAPagarController.numberValue);
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
                                 },
@@ -379,7 +380,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.end,
-                                controller: _taxaDescontoController,
+                                controller: taxaDescontoController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Taxa Desconto',
@@ -387,10 +388,10 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  if (_taxaDescontoController.numberValue >= 100) {
-                                    _taxaDescontoController.updateValue(99.9);
+                                  if (taxaDescontoController.numberValue >= 100) {
+                                    taxaDescontoController.updateValue(99.9);
                                   }
-                                  _contasPagar = _contasPagar!.copyWith(taxaDesconto: _taxaDescontoController.numberValue);
+                                  _contasPagar = _contasPagar!.copyWith(taxaDesconto: taxaDescontoController.numberValue);
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
                                 },
@@ -406,7 +407,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                 keyboardType: TextInputType.number,
                                 readOnly: true,
                                 textAlign: TextAlign.end,
-                                controller: _valorDescontoController,
+                                controller: valorDescontoController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Valor Desconto',
@@ -415,7 +416,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasPagar = _contasPagar!.copyWith(valorDesconto: _valorDescontoController.numberValue);
+                                  _contasPagar = _contasPagar!.copyWith(valorDesconto: valorDescontoController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -435,7 +436,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.end,
-                                controller: _taxaJuroController,
+                                controller: taxaJuroController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Taxa Juros',
@@ -443,7 +444,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasPagar = _contasPagar!.copyWith(taxaJuro: _taxaJuroController.numberValue);
+                                  _contasPagar = _contasPagar!.copyWith(taxaJuro: taxaJuroController.numberValue);
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
                                 },
@@ -459,7 +460,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                 keyboardType: TextInputType.number,
                                 readOnly: true,
                                 textAlign: TextAlign.end,
-                                controller: _valorJuroController,
+                                controller: valorJuroController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Valor Juros',
@@ -468,7 +469,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasPagar = _contasPagar!.copyWith(valorJuro: _valorJuroController.numberValue);
+                                  _contasPagar = _contasPagar!.copyWith(valorJuro: valorJuroController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -482,7 +483,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                 enableInteractiveSelection: !Biblioteca.isDesktop(),
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.end,
-                                controller: _taxaMultaController,
+                                controller: taxaMultaController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Taxa Multa',
@@ -490,7 +491,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasPagar = _contasPagar!.copyWith(taxaMulta: _taxaMultaController.numberValue);
+                                  _contasPagar = _contasPagar!.copyWith(taxaMulta: taxaMultaController.numberValue);
                                   _formFoiAlterado = true;
                                   _atualizarTotais();
                                 },
@@ -506,7 +507,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                 keyboardType: TextInputType.number,
                                 readOnly: true,
                                 textAlign: TextAlign.end,
-                                controller: _valorMultaController,
+                                controller: valorMultaController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Valor Multa',
@@ -515,7 +516,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  _contasPagar = _contasPagar!.copyWith(valorMulta: _valorMultaController.numberValue);
+                                  _contasPagar = _contasPagar!.copyWith(valorMulta: valorMultaController.numberValue);
                                   _formFoiAlterado = true;
                                 },
                               ),
@@ -534,7 +535,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                               keyboardType: TextInputType.number,
                               readOnly: true,
                               textAlign: TextAlign.end,
-                              controller: _valorPagoController,
+                              controller: valorPagoController,
                               decoration: getInputDecoration(
                                 '',
                                 'Valor Pago',
@@ -543,7 +544,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
                               onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                _contasPagar = _contasPagar!.copyWith(valorPago: _valorPagoController.numberValue);
+                                _contasPagar = _contasPagar!.copyWith(valorPago: valorPagoController.numberValue);
                                 _formFoiAlterado = true;
                               },
                             ),
@@ -587,7 +588,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
       _autoValidate = AutovalidateMode.always;
       showInSnackBar(Constantes.mensagemCorrijaErrosFormSalvar, context);
     } else {
-      gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
+      gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () {
         _contasPagar = _contasPagar!.copyWith(statusPagamento: 'A');
         form.save();
         if (_contasPagar!.dataPagamento != null) {
@@ -617,6 +618,7 @@ class _ContasPagarPersistePageState extends State<ContasPagarPersistePage> {
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
       await Sessao.db.contasPagarDao.excluir(_contasPagar!);
+      if (!mounted) return;
       Navigator.of(context).pop();
     });
   }  

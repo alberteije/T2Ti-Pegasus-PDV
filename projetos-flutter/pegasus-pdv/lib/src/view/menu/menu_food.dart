@@ -37,8 +37,10 @@ Based on: Flutter UIKit by Pawan Kumar - https://github.com/iampawan/Flutter-UI-
 *******************************************************************************/
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:pegasus_pdv/src/controller/controller.dart';
 
 import 'package:pegasus_pdv/src/view/page/page.dart';
+import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
 
 import 'package:pegasus_pdv/src/view/shared/custom_background.dart';
 import 'package:pegasus_pdv/src/view/shared/profile_tile.dart';
@@ -115,6 +117,7 @@ class MenuFood extends StatelessWidget {
                   const MenuTituloGrupoMenuInterno(titulo: "Cadastros"),
                   MenuInternoBotoes(
                     primeiroBotao: BotaoMenu(
+                        // ignore: deprecated_member_use
                         icon: FontAwesomeIcons.hamburger,
                         label: "Cozinha",
                         circleColor: Colors.blue,
@@ -142,6 +145,7 @@ class MenuFood extends StatelessWidget {
                         circleColor: Colors.purple,
                         rota: "/taxaEntregaLista"),
                     quartoBotao: BotaoMenu(
+                        // ignore: deprecated_member_use
                         icon: FontAwesomeIcons.handPaper,
                         label: "Comanda OBS Padrão",
                         circleColor: Colors.purple,
@@ -183,15 +187,35 @@ class MenuFood extends StatelessWidget {
                           );                          
                         }
                       ),
-                    terceiroBotao: null,
-                    // terceiroBotao: BotaoMenu(
-                    //     icon: FontAwesomeIcons.bicycle,
-                    //     label: "Delivery",
-                    //     circleColor: Colors.blueGrey,
-                    //     rota: "/deliveryLista"),
+                    terceiroBotao: BotaoMenu(
+                        icon: FontAwesomeIcons.iCursor,
+                        label: "iFood",
+                        circleColor: Colors.blueGrey,
+                        // rota: "/deliveryLista"
+                        onPressed: () async { 
+                          await IfoodController.gerarComanda().
+                          then((value) {
+                            showInSnackBar('Procedimento Realizado com Sucesso.', context, corFundo: Colors.blue);  
+                          });
+                        }
+                      ),
                     quartoBotao: null,
                   ),
-               ],
+                   MenuInternoBotoes(
+                    primeiroBotao: null,
+                    segundoBotao: null,
+                    terceiroBotao: BotaoMenu(
+                        icon: FontAwesomeIcons.optinMonster,
+                        label: "Cardápio Digital",
+                        circleColor: Colors.blue,
+                        rota: "/cardapioPage"),
+                    quartoBotao: BotaoMenu(
+                        icon: FontAwesomeIcons.bicycle,
+                        label: "Delivery",
+                        circleColor: Colors.yellowAccent.shade400,
+                        rota: "/deliveryLista"),
+                  ),
+              ],
               ),
             ),
           ),

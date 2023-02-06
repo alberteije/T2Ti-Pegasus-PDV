@@ -39,11 +39,12 @@ import 'package:flutter/gestures.dart';
 import 'package:intl/intl.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
@@ -57,10 +58,10 @@ class ContasReceberListaPage extends StatefulWidget {
   const ContasReceberListaPage({Key? key}) : super(key: key);
 
   @override
-  _ContasReceberListaPageState createState() => _ContasReceberListaPageState();
+  ContasReceberListaPageState createState() => ContasReceberListaPageState();
 }
 
-class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
+class ContasReceberListaPageState extends State<ContasReceberListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -91,7 +92,7 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -114,10 +115,10 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
   Widget build(BuildContext context) {
     _listaContasReceberMontado = Sessao.db.contasReceberDao.listaContasReceberMontado;
 
-    final _ContasReceberDataSource _contasReceberDataSource = _ContasReceberDataSource(_listaContasReceberMontado, context, _refrescarTela);
+    final _ContasReceberDataSource contasReceberDataSource = _ContasReceberDataSource(_listaContasReceberMontado, context, _refrescarTela);
 
     void _sort<T>(Comparable<T>? Function(ContasReceberMontado contasReceberMontado) getField, int columnIndex, bool ascending) {
-      _contasReceberDataSource._sort<T>(getField, ascending);
+      contasReceberDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -335,7 +336,7 @@ class _ContasReceberListaPageState extends State<ContasReceberListaPage> {
                             _sort<String>((ContasReceberMontado contasReceberMontado) => contasReceberMontado.contasReceber!.statusRecebimento, columnIndex, ascending),
                         ),
                       ],
-                      source: _contasReceberDataSource,
+                      source: contasReceberDataSource,
                     ),
                   ],
                 ),
@@ -483,7 +484,7 @@ class _ContasReceberDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
-        DataCell(Text('${contasReceber.id ?? ''}'), onTap: () {
+        DataCell(Text('${contasReceber.id}'), onTap: () {
           _detalharContasReceber(contasReceberMontado, context, refrescarTela);
         }),
         DataCell(Text(contasReceberMontado.cliente?.nome ?? ''), onTap: () {

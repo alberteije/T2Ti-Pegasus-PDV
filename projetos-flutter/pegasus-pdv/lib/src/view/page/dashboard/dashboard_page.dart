@@ -50,10 +50,10 @@ class DashboardPage extends StatefulWidget {
   const DashboardPage({Key? key}) : super(key: key);
 
   @override
-  _DashboardPageState createState() => _DashboardPageState();
+  DashboardPageState createState() => DashboardPageState();
 }
 
-class _DashboardPageState extends State<DashboardPage> {
+class DashboardPageState extends State<DashboardPage> {
   List<double> _totaisVendasSemanal = [0];
   List<double> _totaisVendasMensal = [0];
   List<double> _totaisVendasAnual = [0];
@@ -103,7 +103,7 @@ class _DashboardPageState extends State<DashboardPage> {
       gutterSize: Constantes.flutterBootstrapGutterSize,
     );
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _carregarDados());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _carregarDados());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -344,8 +344,10 @@ class _DashboardPageState extends State<DashboardPage> {
                                       endIndent: 10,
                                       thickness: 2,
                                     ),
+                                    // ignore: deprecated_member_use
                                     _getItemFinanceiro('A Receber', _totalReceber, Colors.blueAccent.shade100, Colors.blue.shade900, FontAwesomeIcons.handHoldingUsd),            
                                     _getItemFinanceiro('A Pagar', _totalPagar, Colors.redAccent.shade100, Colors.red.shade900, FontAwesomeIcons.fileInvoiceDollar),            
+                                    // ignore: deprecated_member_use
                                     _getItemFinanceiro('Saldo', _totalReceber - _totalPagar, Colors.greenAccent.shade100, Colors.green.shade900, FontAwesomeIcons.searchDollar),            
                                   ],
                                 ),
@@ -597,6 +599,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               child: const Center(
                                   child: Padding(
                                 padding: EdgeInsets.all(16.0),
+                                // ignore: deprecated_member_use
                                 child: Icon(FontAwesomeIcons.truckLoading,
                                     color: Colors.white, size: 30.0),
                               ))

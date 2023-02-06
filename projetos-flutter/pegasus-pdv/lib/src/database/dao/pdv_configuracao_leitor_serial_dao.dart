@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'pdv_configuracao_leitor_serial_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           PdvConfiguracaoLeitorSerials,
 		])
 class PdvConfiguracaoLeitorSerialDao extends DatabaseAccessor<AppDatabase> with _$PdvConfiguracaoLeitorSerialDaoMixin {
@@ -51,9 +51,9 @@ class PdvConfiguracaoLeitorSerialDao extends DatabaseAccessor<AppDatabase> with 
   Future<List<PdvConfiguracaoLeitorSerial>> consultarLista() => select(pdvConfiguracaoLeitorSerials).get();
 
   Future<List<PdvConfiguracaoLeitorSerial>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM PDV_CONFIGURACAO_LEITOR_SERIAL WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM PDV_CONFIGURACAO_LEITOR_SERIAL WHERE $campo like '%$valor%'", 
                                 readsFrom: { pdvConfiguracaoLeitorSerials }).map((row) {
-                                  return PdvConfiguracaoLeitorSerial.fromData(row.data, db);  
+                                  return PdvConfiguracaoLeitorSerial.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,20 +63,27 @@ class PdvConfiguracaoLeitorSerialDao extends DatabaseAccessor<AppDatabase> with 
     return (select(pdvConfiguracaoLeitorSerials)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<PdvConfiguracaoLeitorSerial> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from PDV_CONFIGURACAO_LEITOR_SERIAL").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(PdvConfiguracaoLeitorSerial pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(pdvConfiguracaoLeitorSerials).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<PdvConfiguracaoLeitorSerial> pObjeto) {
+  Future<bool> alterar(PdvConfiguracaoLeitorSerial pObjeto) {
     return transaction(() async {
       return update(pdvConfiguracaoLeitorSerials).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<PdvConfiguracaoLeitorSerial> pObjeto) {
+  Future<int> excluir(PdvConfiguracaoLeitorSerial pObjeto) {
     return transaction(() async {
       return delete(pdvConfiguracaoLeitorSerials).delete(pObjeto);
     });    

@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'nfe_numero_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           NfeNumeros,
 		])
 class NfeNumeroDao extends DatabaseAccessor<AppDatabase> with _$NfeNumeroDaoMixin {
@@ -51,9 +51,9 @@ class NfeNumeroDao extends DatabaseAccessor<AppDatabase> with _$NfeNumeroDaoMixi
   Future<List<NfeNumero>> consultarLista() => select(nfeNumeros).get();
 
   Future<List<NfeNumero>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM NFE_NUMERO WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM NFE_NUMERO WHERE $campo like '%$valor%'", 
                                 readsFrom: { nfeNumeros }).map((row) {
-                                  return NfeNumero.fromData(row.data, db);  
+                                  return NfeNumero.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,14 +63,21 @@ class NfeNumeroDao extends DatabaseAccessor<AppDatabase> with _$NfeNumeroDaoMixi
     return (select(nfeNumeros)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<NfeNumero> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from NFE_NUMERO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(NfeNumero pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(nfeNumeros).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<NfeNumero> pObjeto) {
+  Future<bool> alterar(NfeNumero pObjeto) {
     return transaction(() async {
       return update(nfeNumeros).replace(pObjeto);
     });    
@@ -80,7 +87,7 @@ class NfeNumeroDao extends DatabaseAccessor<AppDatabase> with _$NfeNumeroDaoMixi
     return customUpdate("update NFE_NUMERO set NUMERO = NUMERO + 1");
   } 
 
-  Future<int> excluir(Insertable<NfeNumero> pObjeto) {
+  Future<int> excluir(NfeNumero pObjeto) {
     return transaction(() async {
       return delete(nfeNumeros).delete(pObjeto);
     });    

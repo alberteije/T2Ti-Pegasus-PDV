@@ -38,6 +38,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 
+import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
@@ -59,10 +60,10 @@ class TributPisPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _TributPisPersistePageState createState() => _TributPisPersistePageState();
+  TributPisPersistePageState createState() => TributPisPersistePageState();
 }
 
-class _TributPisPersistePageState extends State<TributPisPersistePage> {
+class TributPisPersistePageState extends State<TributPisPersistePage> {
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
@@ -96,7 +97,7 @@ class _TributPisPersistePageState extends State<TributPisPersistePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _aliquotaPorcentoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributPis?.aliquotaPorcento ?? 0);
+    final aliquotaPorcentoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributPis?.aliquotaPorcento ?? 0);
 
     widget.tributConfiguraOfGtMontado!.tributPis ??= TributPis(id: null);
 
@@ -183,7 +184,7 @@ class _TributPisPersistePageState extends State<TributPisPersistePage> {
                             child: TextFormField(
                               readOnly: true,
                               keyboardType: TextInputType.number,
-                              controller: _aliquotaPorcentoController,
+                              controller: aliquotaPorcentoController,
                               decoration: getInputDecoration(
                                 'Informe a Alíquota do Porcento',
                                 'Alíquota Porcento',
@@ -192,7 +193,7 @@ class _TributPisPersistePageState extends State<TributPisPersistePage> {
                               },
                               onChanged: (text) {
                                 widget.tributConfiguraOfGtMontado!.tributPis = 
-                                widget.tributConfiguraOfGtMontado!.tributPis!.copyWith(aliquotaPorcento: _aliquotaPorcentoController.numberValue);
+                                widget.tributConfiguraOfGtMontado!.tributPis!.copyWith(aliquotaPorcento: aliquotaPorcentoController.numberValue);
                                 paginaMestreDetalheFoiAlterada = true;
                               },
                             ),

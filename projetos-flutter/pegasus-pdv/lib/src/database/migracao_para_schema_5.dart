@@ -1,8 +1,6 @@
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
-
-import 'database_classes.dart';
 
 class MigracaoParaSchema5 extends DatabaseAccessor<AppDatabase> {
 
@@ -43,6 +41,7 @@ class MigracaoParaSchema5 extends DatabaseAccessor<AppDatabase> {
   $TaxaEntregasTable get	taxaEntregas => attachedDatabase.taxaEntregas;
   $EmpresaCnaesTable get	empresaCnaes => attachedDatabase.empresaCnaes;
   $ProdutoImagemsTable get	produtoImagems => attachedDatabase.produtoImagems;
+  $ClienteFiadosTable get	clienteFiados => attachedDatabase.clienteFiados;
 
   Future<void> migrarParaSchema5(Migrator m, int from, int to) async {
     // adicionando novas colunas em tabelas existentes
@@ -57,6 +56,7 @@ class MigracaoParaSchema5 extends DatabaseAccessor<AppDatabase> {
     await m.addColumn(clientes, clientes.fidelidadeAviso);        
     await m.addColumn(clientes, clientes.fidelidadeQuantidade);        
     await m.addColumn(clientes, clientes.fidelidadeValor);        
+    await m.addColumn(clientes, clientes.fiadoValorTeto);        
     
         // criando novas tabelas
     await m.createTable(cardapios);
@@ -86,5 +86,6 @@ class MigracaoParaSchema5 extends DatabaseAccessor<AppDatabase> {
     await m.createTable(taxaEntregas);
     await m.createTable(empresaCnaes);
     await m.createTable(produtoImagems);
+    await m.createTable(clienteFiados);
   }
 }

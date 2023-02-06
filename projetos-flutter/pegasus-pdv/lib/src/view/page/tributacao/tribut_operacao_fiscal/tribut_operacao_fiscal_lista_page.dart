@@ -35,12 +35,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'package:flutter/material.dart';
 
+import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
@@ -53,10 +54,10 @@ class TributOperacaoFiscalListaPage extends StatefulWidget {
   const TributOperacaoFiscalListaPage({Key? key}) : super(key: key);
 
   @override
-  _TributOperacaoFiscalListaPageState createState() => _TributOperacaoFiscalListaPageState();
+  TributOperacaoFiscalListaPageState createState() => TributOperacaoFiscalListaPageState();
 }
 
-class _TributOperacaoFiscalListaPageState extends State<TributOperacaoFiscalListaPage> {
+class TributOperacaoFiscalListaPageState extends State<TributOperacaoFiscalListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -78,7 +79,7 @@ class _TributOperacaoFiscalListaPageState extends State<TributOperacaoFiscalList
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
   
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -99,12 +100,12 @@ class _TributOperacaoFiscalListaPageState extends State<TributOperacaoFiscalList
   
   @override
   Widget build(BuildContext context) {
-    final _listaTributOperacaoFiscal = Sessao.db.tributOperacaoFiscalDao.listaTributOperacaoFiscal;
+    final listaTributOperacaoFiscal = Sessao.db.tributOperacaoFiscalDao.listaTributOperacaoFiscal;
   
-    final _TributOperacaoFiscalDataSource _tributOperacaoFiscalDataSource = _TributOperacaoFiscalDataSource(_listaTributOperacaoFiscal, context, _refrescarTela);
+    final _TributOperacaoFiscalDataSource tributOperacaoFiscalDataSource = _TributOperacaoFiscalDataSource(listaTributOperacaoFiscal, context, _refrescarTela);
 
     void _sort<T>(Comparable<T>? Function(TributOperacaoFiscal tributOperacaoFiscal) getField, int columnIndex, bool ascending) {
-      _tributOperacaoFiscalDataSource._sort<T>(getField, ascending);
+      tributOperacaoFiscalDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -144,7 +145,7 @@ class _TributOperacaoFiscalListaPageState extends State<TributOperacaoFiscalList
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
-              child: _listaTributOperacaoFiscal == null
+              child: listaTributOperacaoFiscal == null
               ? const Center(child: CircularProgressIndicator())
               : ListView(
                 padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
@@ -180,7 +181,7 @@ class _TributOperacaoFiscalListaPageState extends State<TributOperacaoFiscalList
                           _sort<String>((TributOperacaoFiscal tributOperacaoFiscal) => tributOperacaoFiscal.observacao, columnIndex, ascending),
                       ),
                     ],
-                    source: _tributOperacaoFiscalDataSource,
+                    source: tributOperacaoFiscalDataSource,
                   ),
                 ],
               ),
@@ -269,7 +270,7 @@ class _TributOperacaoFiscalDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
-        DataCell(Text('${tributOperacaoFiscal.id ?? ''}'), onTap: () {
+        DataCell(Text('${tributOperacaoFiscal.id}'), onTap: () {
           _detalharTributOperacaoFiscal(tributOperacaoFiscal, context, refrescarTela);
         }),
         DataCell(Text(tributOperacaoFiscal.descricao ?? ''), onTap: () {

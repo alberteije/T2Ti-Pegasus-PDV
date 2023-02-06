@@ -36,6 +36,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:flutter/material.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -49,10 +50,10 @@ class TributConfiguraOfGtListaPage extends StatefulWidget {
   const TributConfiguraOfGtListaPage({Key? key}) : super(key: key);
 
   @override
-  _TributConfiguraOfGtListaPageState createState() => _TributConfiguraOfGtListaPageState();
+  TributConfiguraOfGtListaPageState createState() => TributConfiguraOfGtListaPageState();
 }
 
-class _TributConfiguraOfGtListaPageState extends State<TributConfiguraOfGtListaPage> {
+class TributConfiguraOfGtListaPageState extends State<TributConfiguraOfGtListaPage> {
   int? _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -71,7 +72,7 @@ class _TributConfiguraOfGtListaPageState extends State<TributConfiguraOfGtListaP
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -86,12 +87,12 @@ class _TributConfiguraOfGtListaPageState extends State<TributConfiguraOfGtListaP
   
   @override
   Widget build(BuildContext context) {
-    final _listaTributConfiguraOfGtMontado = Sessao.db.tributConfiguraOfGtDao.listaTributConfiguraOfGtMontado;
+    final listaTributConfiguraOfGtMontado = Sessao.db.tributConfiguraOfGtDao.listaTributConfiguraOfGtMontado;
 
-    final _TributConfiguraOfGtDataSource _tributConfiguraOfGtDataSource = _TributConfiguraOfGtDataSource(_listaTributConfiguraOfGtMontado, context, _refrescarTela);
+    final _TributConfiguraOfGtDataSource tributConfiguraOfGtDataSource = _TributConfiguraOfGtDataSource(listaTributConfiguraOfGtMontado, context, _refrescarTela);
 
     void _sort<T>(Comparable<T>? Function(TributConfiguraOfGtMontado tributConfiguraOfGt) getField, int columnIndex, bool ascending) {
-      _tributConfiguraOfGtDataSource._sort<T>(getField, ascending);
+      tributConfiguraOfGtDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -127,7 +128,7 @@ class _TributConfiguraOfGtListaPageState extends State<TributConfiguraOfGtListaP
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
-              child: _listaTributConfiguraOfGtMontado == null
+              child: listaTributConfiguraOfGtMontado == null
               ? const Center(child: CircularProgressIndicator())
               : ListView(
                 padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
@@ -163,7 +164,7 @@ class _TributConfiguraOfGtListaPageState extends State<TributConfiguraOfGtListaP
                           _sort<String>((TributConfiguraOfGtMontado tributConfiguraOfGt) => tributConfiguraOfGt.tributOperacaoFiscal?.descricao, columnIndex, ascending),
                       ),
                     ],
-                    source: _tributConfiguraOfGtDataSource,
+                    source: tributConfiguraOfGtDataSource,
                   ),
                 ],
               ),
@@ -240,7 +241,7 @@ class _TributConfiguraOfGtDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
-        DataCell(Text('${tributConfiguraOfGt.id ?? ''}'), onTap: () {
+        DataCell(Text('${tributConfiguraOfGt.id}'), onTap: () {
           _detalharTributConfiguraOfGt(tributConfiguraOfGtMontado, context, refrescarTela);
         }),
         DataCell(Text(tributConfiguraOfGtMontado.tributGrupoTributario?.descricao ?? ''), onTap: () {

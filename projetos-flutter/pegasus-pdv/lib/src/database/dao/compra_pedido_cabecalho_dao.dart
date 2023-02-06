@@ -33,14 +33,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'dart:convert';
+
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 part 'compra_pedido_cabecalho_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           CompraPedidoCabecalhos,
           CompraPedidoDetalhes,
           Fornecedors,
@@ -60,9 +63,9 @@ class CompraPedidoCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$Comp
   }
 
   Future<List<CompraPedidoCabecalho>?> consultarListaFiltro(String campo, String valor) async {
-    listaCompraPedidoCabecalho = await (customSelect("SELECT * FROM COMPRA_PEDIDO_CABECALHO WHERE " + campo + " like '%" + valor + "%'", 
+    listaCompraPedidoCabecalho = await (customSelect("SELECT * FROM COMPRA_PEDIDO_CABECALHO WHERE $campo like '%$valor%'", 
                                 readsFrom: { compraPedidoCabecalhos }).map((row) {
-                                  return CompraPedidoCabecalho.fromData(row.data, db);  
+                                  return CompraPedidoCabecalho.fromData(row.data);  
                                 }).get());
     return listaCompraPedidoCabecalho;
   }
@@ -101,17 +104,24 @@ class CompraPedidoCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$Comp
     return (select(compraPedidoCabecalhos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<CompraPedidoCabecalho> pObjeto, List<CompraDetalhe> listaCompraDetalhe) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from COMPRA_PEDIDO_CABECALHO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(CompraPedidoCabecalho pObjeto, List<CompraDetalhe> listaCompraDetalhe) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(compraPedidoCabecalhos).insert(pObjeto);
       await inserirFilhos(idInserido, listaCompraDetalhe);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<CompraPedidoCabecalho> pObjeto, List<CompraDetalhe> listaCompraDetalhe, {bool? atualizaEstoque}) {
+  Future<bool> alterar(CompraPedidoCabecalho pObjeto, List<CompraDetalhe> listaCompraDetalhe, {bool? atualizaEstoque}) {
     return transaction(() async {
-      await excluirFilhos((pObjeto as CompraPedidoCabecalho).id!);
+      await excluirFilhos(pObjeto.id!);
       await inserirFilhos(pObjeto.id!, listaCompraDetalhe);
       if (atualizaEstoque ?? false) {
         await db.produtoDao.incrementarEstoque(listaCompraDetalhe: listaCompraDetalhe);  
@@ -120,15 +130,15 @@ class CompraPedidoCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$Comp
     });    
   } 
 
-  Future<bool> atualizarCabecalho(Insertable<CompraPedidoCabecalho> pObjeto) {
+  Future<bool> atualizarCabecalho(CompraPedidoCabecalho pObjeto) {
     return transaction(() async {
       return update(compraPedidoCabecalhos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<CompraPedidoCabecalho> pObjeto, List<CompraDetalhe> listaCompraDetalhe) {
+  Future<int> excluir(CompraPedidoCabecalho pObjeto, List<CompraDetalhe> listaCompraDetalhe) {
     return transaction(() async {
-      if (((pObjeto as CompraPedidoCabecalho).atualizouEstoque ?? '') == 'S') {
+      if ((pObjeto.atualizouEstoque ?? '') == 'S') {
         await db.produtoDao.decrementarEstoque(listaCompraDetalhe: listaCompraDetalhe);  
       }
       if ((pObjeto.geraFinanceiro ?? '') == 'S') {
@@ -141,13 +151,23 @@ class CompraPedidoCabecalhoDao extends DatabaseAccessor<AppDatabase> with _$Comp
 
   Future<void> inserirFilhos(int idMestre, List<CompraDetalhe> listaCompraDetalhe) async {
     for (var objeto in listaCompraDetalhe) {
-      objeto.compraPedidoDetalhe = objeto.compraPedidoDetalhe!.copyWith(idCompraPedidoCabecalho: idMestre);
+      var maxId = await db.compraPedidoDetalheDao.ultimoId();
+      objeto.compraPedidoDetalhe = objeto.compraPedidoDetalhe!.copyWith(id: maxId+1, idCompraPedidoCabecalho: idMestre);
       await into(compraPedidoDetalhes).insert(objeto.compraPedidoDetalhe!);  
     }
   }
   
   Future<void> excluirFilhos(int idMestre) async {
     await (delete(compraPedidoDetalhes)..where((t) => t.idCompraPedidoCabecalho.equals(idMestre))).go();
+  }
+
+  Future<void> sincronizar(ObjetoSincroniza objetoSincroniza) async {
+    (delete(compraPedidoCabecalhos)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = CompraPedidoCabecalho.fromJson(objetoJson);
+      into(compraPedidoCabecalhos).insertOnConflictUpdate(objetoDart);
+    }
   }
 
 	static List<String> campos = <String>[

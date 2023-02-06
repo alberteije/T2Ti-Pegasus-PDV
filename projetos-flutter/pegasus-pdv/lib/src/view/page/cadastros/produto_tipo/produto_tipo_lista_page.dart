@@ -36,11 +36,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:flutter/material.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
@@ -53,10 +54,10 @@ class ProdutoTipoListaPage extends StatefulWidget {
   const ProdutoTipoListaPage({Key? key}) : super(key: key);
 
   @override
-  _ProdutoTipoListaPageState createState() => _ProdutoTipoListaPageState();
+  ProdutoTipoListaPageState createState() => ProdutoTipoListaPageState();
 }
 
-class _ProdutoTipoListaPageState extends State<ProdutoTipoListaPage> {
+class ProdutoTipoListaPageState extends State<ProdutoTipoListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -78,7 +79,7 @@ class _ProdutoTipoListaPageState extends State<ProdutoTipoListaPage> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
   
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -99,12 +100,12 @@ class _ProdutoTipoListaPageState extends State<ProdutoTipoListaPage> {
   
   @override
   Widget build(BuildContext context) {
-    final _listaProdutoTipo = Sessao.db.produtoTipoDao.listaProdutoTipo;
+    final listaProdutoTipo = Sessao.db.produtoTipoDao.listaProdutoTipo;
 
-    final _ProdutoTipoDataSource _produtoTipoDataSource = _ProdutoTipoDataSource(_listaProdutoTipo, context, _refrescarTela);
+    final _ProdutoTipoDataSource produtoTipoDataSource = _ProdutoTipoDataSource(listaProdutoTipo, context, _refrescarTela);
   
     void _sort<T>(Comparable<T>? Function(ProdutoTipo produtoTipo) getField, int columnIndex, bool ascending) {
-      _produtoTipoDataSource._sort<T>(getField, ascending);
+      produtoTipoDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -144,7 +145,7 @@ class _ProdutoTipoListaPageState extends State<ProdutoTipoListaPage> {
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
-              child: _listaProdutoTipo == null
+              child: listaProdutoTipo == null
               ? const Center(child: CircularProgressIndicator())
               : ListView(
                 padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
@@ -180,7 +181,7 @@ class _ProdutoTipoListaPageState extends State<ProdutoTipoListaPage> {
                           _sort<String>((ProdutoTipo produtoTipo) => produtoTipo.descricao, columnIndex, ascending),
                       ),
                     ],
-                    source: _produtoTipoDataSource,
+                    source: produtoTipoDataSource,
                   ),
                 ],
               ),
@@ -268,7 +269,7 @@ class _ProdutoTipoDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
-        DataCell(Text(produtoTipo.id?.toString() ?? ''), onTap: () {
+        DataCell(Text(produtoTipo.id.toString()), onTap: () {
           _detalharProdutoTipo(produtoTipo, context, refrescarTela);
         }),
         DataCell(Text(produtoTipo.codigo ?? ''), onTap: () {

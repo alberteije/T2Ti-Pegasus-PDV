@@ -37,11 +37,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
@@ -52,10 +53,10 @@ class EmpresaListaPage extends StatefulWidget {
   const EmpresaListaPage({Key? key}) : super(key: key);
 
   @override
-  _EmpresaListaPageState createState() => _EmpresaListaPageState();
+  EmpresaListaPageState createState() => EmpresaListaPageState();
 }
 
-class _EmpresaListaPageState extends State<EmpresaListaPage> {
+class EmpresaListaPageState extends State<EmpresaListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -77,7 +78,7 @@ class _EmpresaListaPageState extends State<EmpresaListaPage> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -98,12 +99,12 @@ class _EmpresaListaPageState extends State<EmpresaListaPage> {
   
   @override
   Widget build(BuildContext context) {
-    final _listaEmpresa = Sessao.db.empresaDao.listaEmpresa;
+    final listaEmpresa = Sessao.db.empresaDao.listaEmpresa;
 
-    final _EmpresaDataSource _empresaDataSource = _EmpresaDataSource(_listaEmpresa, context, _refrescarTela);
+    final _EmpresaDataSource empresaDataSource = _EmpresaDataSource(listaEmpresa, context, _refrescarTela);
 
     void _sort<T>(Comparable<T>? Function(Empresa empresa) getField, int columnIndex, bool ascending) {
-      _empresaDataSource._sort<T>(getField, ascending);
+      empresaDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -143,7 +144,7 @@ class _EmpresaListaPageState extends State<EmpresaListaPage> {
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
-              child: _listaEmpresa == null
+              child: listaEmpresa == null
               ? const Center(child: CircularProgressIndicator())
               : ListView(
                 padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
@@ -269,7 +270,7 @@ class _EmpresaListaPageState extends State<EmpresaListaPage> {
                           _sort<String>((Empresa empresa) => empresa.contato, columnIndex, ascending),
                       ),
                     ],
-                    source: _empresaDataSource,
+                    source: empresaDataSource,
                   ),
                 ],
               ),
@@ -361,7 +362,7 @@ class _EmpresaDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
-        DataCell(Text('${empresa.id ?? ''}'), onTap: () {
+        DataCell(Text('${empresa.id}'), onTap: () {
           _detalharEmpresa(empresa, context, refrescarTela);
         }),
         DataCell(Text(empresa.razaoSocial ?? ''), onTap: () {

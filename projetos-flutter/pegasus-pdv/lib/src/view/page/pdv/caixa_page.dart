@@ -35,7 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 
@@ -46,6 +46,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_pdv.dart';
@@ -68,10 +69,10 @@ class CaixaPage extends StatefulWidget {
   const CaixaPage({Key? key}) : super(key: key);
 
   @override
-  _CaixaPageState createState() => _CaixaPageState();
+  CaixaPageState createState() => CaixaPageState();
 }
 
-class _CaixaPageState extends State<CaixaPage> {
+class CaixaPageState extends State<CaixaPage> {
   final BottomRevealController _menuController = BottomRevealController();
   final _pesquisaProdutoController = TextEditingController();
   final _focusNode = FocusNode();
@@ -108,9 +109,9 @@ class _CaixaPageState extends State<CaixaPage> {
 
     Sessao.refrescarCaixaCallBack = refresh;
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _verificarRegistro());
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _verificarNotasPendentesContingencia());
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _verificarPlanoNfcePertoExpirar());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _verificarRegistro());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _verificarNotasPendentesContingencia());
+    // TODO: comentado para fazer testes para o SAT - descomente para produção WidgetsBinding.instance.addPostFrameCallback((_) => _verificarPlanoNfcePertoExpirar());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -156,90 +157,94 @@ class _CaixaPageState extends State<CaixaPage> {
       enabled: !_emitindoNota, // libera os atalhos se não tiver emitindo nota
       actions: _actionMap,
       shortcuts: _shortcutMap,
+      descendantsAreFocusable: true,
       child: Focus(
         autofocus: true,
         child: AbsorbPointer(
           absorbing: _emitindoNota, // desabilita os controles se tiver emitindo nota
-          child: Scaffold(
-            key: _keyScaffold,
-            endDrawer: const MenuLateralPDV(),
-            appBar: AppBar(
-              title: Column(
-                children: [
-                  Text(_tituloJanela),
-                  Text(_modulo,
-                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 9.0, color: Colors.white, fontStyle: FontStyle.italic)
-                  ),
-                ],
-              ),
-              actions: _getBotoesAppBar(context: context),
-              ),
-            body: BottomReveal(
-              openIcon: Icons.menu,
-              closeIcon: Icons.close,
-              revealWidth: Biblioteca.isTelaPequena(context)! ? 90 : 100,
-              revealHeight: Biblioteca.isTelaPequena(context)! ? 120 : 100,
-              backColor: Colors.grey.shade600,
-              frontColor: Colors.grey.shade300,
-              rightContent: menuInternoDireita(context),
-              bottomContent: menuInternoRodape(context),
-              controller: _menuController,
-              body: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10, bottom: 5, left: 10, right: 10),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          flex: 1,
-                          child: SizedBox(
-                            child: TextField(
-                              readOnly: _emitindoNota, // deixa somente leitura se tiver emitindo nota
-                              focusNode: _focusNode,
-                              // autofocus: true,
-                              controller: _pesquisaProdutoController,
-                              onSubmitted: (value) { _localizarProduto(value); _pesquisaProdutoController.text = ''; },
-                              decoration: getInputDecoration(
-                                'Pesquise Nome ou Código de Barras',
-                                'Pesquisar Produto',
-                                false),
-                              onChanged: (text) {
+          child: GestureDetector(
+            onTap: () { _focusNode.requestFocus(); },
+            child: Scaffold(
+              key: _keyScaffold,
+              endDrawer: const MenuLateralPDV(),
+              appBar: AppBar(
+                title: Column(
+                  children: [
+                    Text(_tituloJanela),
+                    Text(_modulo,
+                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 9.0, color: Colors.white, fontStyle: FontStyle.italic)
+                    ),
+                  ],
+                ),
+                actions: _getBotoesAppBar(context: context),
+                ),
+              body: BottomReveal(
+                openIcon: Icons.menu,
+                closeIcon: Icons.close,
+                revealWidth: Biblioteca.isTelaPequena(context)! ? 90 : 100,
+                revealHeight: Biblioteca.isTelaPequena(context)! ? 120 : 100,
+                backColor: Colors.grey.shade600,
+                frontColor: Colors.grey.shade300,
+                rightContent: menuInternoDireita(context),
+                bottomContent: menuInternoRodape(context),
+                controller: _menuController,
+                body: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10, bottom: 5, left: 10, right: 10),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: SizedBox(
+                              child: TextField(
+                                readOnly: _emitindoNota, // deixa somente leitura se tiver emitindo nota
+                                focusNode: _focusNode,
+                                // autofocus: true,
+                                controller: _pesquisaProdutoController,
+                                onSubmitted: (value) { _localizarProduto(value); _pesquisaProdutoController.text = ''; },
+                                decoration: getInputDecoration(
+                                  'Pesquise Nome ou Código de Barras',
+                                  'Pesquisar Produto',
+                                  false),
+                                onChanged: (text) {
+                                },
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 0,
+                            child: IconButton(
+                              tooltip: 'Pesquisar Produto',
+                              icon: ViewUtilLib.getIconBotaoLookup(),
+                              onPressed: () {
+                                _localizarProduto(_pesquisaProdutoController.text); _pesquisaProdutoController.text = '';
                               },
                             ),
                           ),
-                        ),
-                        Expanded(
-                          flex: 0,
-                          child: IconButton(
-                            tooltip: 'Pesquisar Produto',
-                            icon: ViewUtilLib.getIconBotaoLookup(),
-                            onPressed: () {
-                              _localizarProduto(_pesquisaProdutoController.text); _pesquisaProdutoController.text = '';
+                        ],
+                      ),
+                    ),
+                    Flexible(
+                      child: ListView.builder(
+                        itemCount: Sessao.listaVendaAtualDetalhe.length,
+                        itemBuilder: (context, index) {
+                          return Dismissible(
+                            key: UniqueKey(),
+                            onDismissed: (direction) {
+                              _excluirProduto(index: index, perguntaAntes: false);
                             },
-                          ),
-                        ),
-                      ],
+                            background: Container(color: Colors.red),
+                            child: itensDaVenda(context, index, onDelete: () => _excluirProduto(index: index, perguntaAntes: true)),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                  Flexible(
-                    child: ListView.builder(
-                      itemCount: Sessao.listaVendaAtualDetalhe.length,
-                      itemBuilder: (context, index) {
-                        return Dismissible(
-                          key: UniqueKey(),
-                          onDismissed: (direction) {
-                            _excluirProduto(index: index, perguntaAntes: false);
-                          },
-                          background: Container(color: Colors.red),
-                          child: itensDaVenda(context, index, onDelete: () => _excluirProduto(index: index, perguntaAntes: true)),
-                        );
-                      },
-                    ),
-                  ),
-                  clienteSelecionado(context),
-                  vendedorSelecionado(context),
-                  rodape(context)
-                ],
+                    clienteSelecionado(context),
+                    vendedorSelecionado(context),
+                    rodape(context)
+                  ],
+                ),
               ),
             ),
           ),
@@ -251,7 +256,7 @@ class _CaixaPageState extends State<CaixaPage> {
 // #region widgets Caixa
 
   Widget itensDaVenda(BuildContext context, int index, {Function? onDelete}) {
-    var _item = index + 1;
+    var item = index + 1;
     return Card(child:
       ListTile(
         minLeadingWidth: Biblioteca.isTelaPequena(context)! ? 0 : 20,
@@ -278,7 +283,7 @@ class _CaixaPageState extends State<CaixaPage> {
           : const TextStyle(fontWeight: FontWeight.w600, fontSize: 18.0),
         ),
         leading: Text(
-          _item.toString(),
+          item.toString(),
           style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13.0),
         ),
         subtitle: Row(          
@@ -315,13 +320,14 @@ class _CaixaPageState extends State<CaixaPage> {
 
   String montarDescricaoItem(int index) {
     if ((Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe!.valorDesconto ?? 0) > 0 ) {
-      String retorno = Sessao.listaVendaAtualDetalhe[index].produto!.gtin! + ' - ' + Sessao.listaVendaAtualDetalhe[index].produto!.nome!;
+      String retorno = '${Sessao.listaVendaAtualDetalhe[index].produto!.gtin!} - ${Sessao.listaVendaAtualDetalhe[index].produto!.nome!}';
+      // ignore: prefer_interpolation_to_compose_strings
       retorno = retorno + ' [desconto: (' + 
       Constantes.formatoDecimalValor.format(Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe!.taxaDesconto ?? 0) + '%) R\$ ' + 
       Constantes.formatoDecimalValor.format(Sessao.listaVendaAtualDetalhe[index].pdvVendaDetalhe!.valorDesconto ?? 0) + ']';
       return retorno;
     } else {
-      return Sessao.listaVendaAtualDetalhe[index].produto!.gtin! + ' - ' + Sessao.listaVendaAtualDetalhe[index].produto!.nome!;
+      return '${Sessao.listaVendaAtualDetalhe[index].produto!.gtin!} - ${Sessao.listaVendaAtualDetalhe[index].produto!.nome!}';
     }
   }
 
@@ -336,6 +342,7 @@ class _CaixaPageState extends State<CaixaPage> {
             Padding(
               padding: const EdgeInsets.only(top: 5, bottom: 5, left: 0, right: 0),
               child: Text(
+                // ignore: prefer_interpolation_to_compose_strings
                 "Cliente: " + (Sessao.vendaAtual!.nomeCliente ?? '') + ' - CPF: ' + (Sessao.vendaAtual!.cpfCnpjCliente ?? ''),
                 style: const TextStyle(
                   fontSize: 12,
@@ -360,7 +367,7 @@ class _CaixaPageState extends State<CaixaPage> {
             Padding(
               padding: const EdgeInsets.only(top: 5, bottom: 5, left: 0, right: 0),
               child: Text(
-                "Vendedor: " + Sessao.vendaAtual!.idColaborador.toString(),
+                "Vendedor: ${Sessao.vendaAtual!.idColaborador}",
                 style: const TextStyle(
                   fontSize: 12,
                   color: Colors.white),
@@ -387,7 +394,7 @@ class _CaixaPageState extends State<CaixaPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 30, bottom: 0, left: 10, right: 10),
                     child: Text(
-                      "Itens: " + Sessao.listaVendaAtualDetalhe.length.toString(), 
+                      "Itens: ${Sessao.listaVendaAtualDetalhe.length}", 
                       style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
@@ -414,8 +421,6 @@ class _CaixaPageState extends State<CaixaPage> {
                 SizedBox(
                   width: Biblioteca.isTelaPequena(context)! ? 130 : 180,
                   child: ElevatedButton(
-                    child: Text(Biblioteca.isTelaPequena(context)! ? "Encerrar Venda" : "Encerrar Venda [F7]", 
-                      style: Biblioteca.isTelaPequena(context)! ? const TextStyle(fontSize: 15) : const TextStyle(fontSize: 16)),
                     style: ElevatedButton.styleFrom(
                       elevation: 4,
                       padding: Biblioteca.isTelaPequena(context)! 
@@ -427,6 +432,8 @@ class _CaixaPageState extends State<CaixaPage> {
                     onPressed: () {
                       _encerrarVenda();
                     },
+                    child: Text(Biblioteca.isTelaPequena(context)! ? "Encerrar Venda" : "Encerrar Venda [F7]", 
+                      style: Biblioteca.isTelaPequena(context)! ? const TextStyle(fontSize: 15) : const TextStyle(fontSize: 16)),
                   ),
                 ),
               ],
@@ -465,7 +472,7 @@ class _CaixaPageState extends State<CaixaPage> {
         const SizedBox(width: 10.0),
         getBotaoInternoCaixa(
           texto: Constantes.botaoCaixaOpcoes,
-            icone: FontAwesomeIcons.portrait,
+            icone: FontAwesomeIcons.imagePortrait,
             tamanhoIcone: 35,
             corBotao: Colors.black38,
             paddingAll: 15,
@@ -483,7 +490,7 @@ class _CaixaPageState extends State<CaixaPage> {
         children: <Widget>[
           getBotaoInternoCaixa(
               texto: Constantes.botaoCaixaSalvar,
-              icone: FontAwesomeIcons.save,
+              icone: FontAwesomeIcons.floppyDisk,
               tamanhoIcone: 30,
               corBotao: Colors.blue.shade900,
               paddingAll: 0,
@@ -493,7 +500,7 @@ class _CaixaPageState extends State<CaixaPage> {
           const SizedBox(height: 10.0),
           getBotaoInternoCaixa(
               texto: Constantes.botaoCaixaCancelar,
-              icone: FontAwesomeIcons.windowClose,
+              icone: FontAwesomeIcons.doorClosed,
               tamanhoIcone: 30,
               corBotao: Colors.red.shade900,
               paddingAll: 0,
@@ -503,7 +510,7 @@ class _CaixaPageState extends State<CaixaPage> {
           const SizedBox(height: 10.0),
           getBotaoInternoCaixa(
             texto: Constantes.botaoCaixaRecuperar,
-            icone: FontAwesomeIcons.redo,
+            icone: FontAwesomeIcons.receipt,
             tamanhoIcone: 30,
             corBotao: Colors.orange.shade900,
             paddingAll: 0,
@@ -514,7 +521,7 @@ class _CaixaPageState extends State<CaixaPage> {
           const SizedBox(height: 10.0),
           getBotaoInternoCaixa(
               texto: Constantes.botaoCaixaDesconto,
-              icone: FontAwesomeIcons.percentage,
+              icone: FontAwesomeIcons.moneyBill,
               tamanhoIcone: 30,
               corBotao: Colors.green.shade900,
               paddingAll: 0,
@@ -562,7 +569,7 @@ class _CaixaPageState extends State<CaixaPage> {
               _codigoDeBarras = await FlutterBarcodeScanner.scanBarcode(
                   "#ff6666", "Cancelar", true, ScanMode.BARCODE);
             } catch (e) {
-              throw ('Erro lendo código de barras: ' + DateTime.now().toIso8601String() + ' - ' + e.toString());
+              throw ('Erro lendo código de barras: ${DateTime.now().toIso8601String()} - $e');
             }
             _localizarProduto(_codigoDeBarras);
           },
@@ -631,6 +638,9 @@ class _CaixaPageState extends State<CaixaPage> {
             await Sessao.db.pdvVendaCabecalhoDao.alterar(Sessao.vendaAtual!, Sessao.listaVendaAtualDetalhe, listaDadosPagamento: Sessao.listaDadosPagamento);
             if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
               await _encerrarVendaComNfce();
+            }
+            else if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'SAT') {
+              await _encerrarVendaComCfe();
             } else {
               _imprimirRecibo();
             }
@@ -645,31 +655,108 @@ class _CaixaPageState extends State<CaixaPage> {
     }
   }
 
+  Future _encerrarVendaComCfe() async {
+    gerarDialogBoxEspera(context);
+    final gerouDadosOK = await SatController.gerarDadosCfe();
+    if (gerouDadosOK) {
+      Sessao.ultimoIniCfeEnviado = await SatController.montarCfe();
+      final retorno = await ACBrMonitorController.emitirCfe();        
+      _imprimirCupomSat(retorno);
+    } else {
+      if (!mounted) return;
+      Sessao.fecharDialogBoxEspera(context);
+      gerarDialogBoxErro(context, 'Ocorreu um problema na geração do Cfe-Sat');
+    }      
+  }
+
   Future _encerrarVendaComNfce() async {
-    NfceAcbrService servicoNfce = NfceAcbrService();
-    Socket? socket;
-    try {
-      // ignore: close_sinks
-      socket = await servicoNfce.conectar(
-        context, 
-        funcaoDeCallBack: _imprimirDanfe, 
-        operacao: 'INICIO', 
-        formaEmissao: '1'
-      );
-      final gerouDadosOK = await NfceController.gerarDadosNfce();
-      if (gerouDadosOK) {
-        Sessao.ultimoIniNfceEnviado = await NfceController.montarNfce();
-        socket!.write('NFE.SetFormaEmissao(1)")\r\n.\r\n'); // 1=normal
+    gerarDialogBoxEspera(context);
+    final gerouDadosOK = await NfceController.gerarDadosNfce();
+    if (gerouDadosOK) {
+      Sessao.ultimoIniNfceEnviado = await NfceController.montarNfce();
+      final bytesNfce = utf8.encode(Sessao.ultimoIniNfceEnviado);      
+      NfceService nfceService = NfceService();
+      final retorno = await nfceService.emitirNfce(
+        base64.encode(bytesNfce),
+        Sessao.numeroNfce!.numero!.toString()
+      );        
+      if (!mounted) return;
+      if (retorno != null) {
+        if (retorno is String) {
+          if (retorno.contains('12002') || retorno.contains('109') || retorno.contains('999')) {
+            Sessao.fecharDialogBoxEspera(context);
+            gerarDialogBoxConfirmacao(context, 
+              'O servidor da Sefaz não responde. Deseja IMPRIMIR a nota em contingência off-line?', 
+              () async {
+                gerarDialogBoxEspera(context);
+                if (await NfceController.gerarDadosNfceContingencia()) {
+                  final bytesNfceContingencia = utf8.encode(Sessao.ultimoIniNfceEnviado);      
+                  NfceService nfceService = NfceService();
+                  final retornoContingencia = await nfceService.emitirNfceContingencia(
+                    base64.encode(bytesNfceContingencia),
+                    Sessao.numeroNfce!.numero!.toString()
+                  );       
+                  if (!mounted) return; 
+                  if (retornoContingencia != null) {
+                    if (retornoContingencia is String) {
+                      Sessao.fecharDialogBoxEspera(context);
+                      gerarDialogBoxErro(context, 'Ocorreu um problema na geração da NFC-e: \n$retorno');          
+                    } else if (retornoContingencia is Uint8List) {
+                      await NfceController.atualizarDadosNfce(chaveAcesso: Sessao.ultimaChaveDeAcesso, statusNota: '6'); // 6=contingencia
+                      _imprimirDanfe(retornoContingencia);
+                    }
+                  }
+                }
+              },
+              onCancelPressed: () {
+                Sessao.fecharDialogBoxEspera(context);
+              }
+            );
+          } else {
+            Sessao.fecharDialogBoxEspera(context);
+            gerarDialogBoxErro(context, 'Ocorreu um problema na geração da NFC-e: \n$retorno');          
+          }
+        } else if (retorno is Uint8List) {
+          await NfceController.atualizarDadosNfce(chaveAcesso: Sessao.ultimaChaveDeAcesso, statusNota: '4'); // 4=autorizada
+          _imprimirDanfe(retorno);
+        }
       } else {
-        gerarDialogBoxErro(context, 'Ocorreu um problema na geração da NFC-e');
+        Sessao.fecharDialogBoxEspera(context);
       }
-    } catch (e) {
-      if (socket != null) {
-        socket.close();
-        socket.destroy();
-      }
-      gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar emitir a NFC-e: ' + e.toString());
-    }
+    } else {
+      if (!mounted) return;
+      Sessao.fecharDialogBoxEspera(context);
+      gerarDialogBoxErro(context, 'Ocorreu um problema na geração da NFC-e');
+    }      
+
+    /////////////////////////////////////////
+    /// Utilize o código abaixo para se comunicar diretamente com o ACBrMonitor
+    /////////////////////////////////////////
+
+    // NfceAcbrService servicoNfce = NfceAcbrService();
+    // Socket? socket;
+    // try {
+    //   // ignore: close_sinks
+    //   socket = await servicoNfce.conectar(
+    //     context, 
+    //     funcaoDeCallBack: _imprimirDanfe, 
+    //     operacao: 'INICIO', 
+    //     formaEmissao: '1'
+    //   );
+    //   final gerouDadosOK = await NfceController.gerarDadosNfce();
+    //   if (gerouDadosOK) {
+    //     Sessao.ultimoIniNfceEnviado = await NfceController.montarNfce();
+    //     socket!.write('NFE.SetFormaEmissao(1)")\r\n.\r\n'); // 1=normal
+    //   } else {
+    //     gerarDialogBoxErro(context, 'Ocorreu um problema na geração da NFC-e');
+    //   }
+    // } catch (e) {
+    //   if (socket != null) {
+    //     socket.close();
+    //     socket.destroy();
+    //   }
+    //   gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar emitir a NFC-e: ' + e.toString());
+    // }
   }
 
   void _imprimirRecibo() {
@@ -689,13 +776,12 @@ class _CaixaPageState extends State<CaixaPage> {
       });
   }
 
-  void _imprimirDanfe(String danfeBase64) {
-    // Sessao.fecharDialogBoxEspera(context);
-    var decodeB64 = base64.decode(danfeBase64); 
+  void _imprimirDanfe(Uint8List danfe) {
+    Sessao.fecharDialogBoxEspera(context);
     Navigator.of(context)
       .push(MaterialPageRoute(
         builder: (BuildContext context) => PdfPage(
-          arquivoPdf: decodeB64, title: 'NFC-e')
+          arquivoPdf: danfe, title: 'NFC-e')
         )
       ).then(
         (value) {
@@ -703,6 +789,37 @@ class _CaixaPageState extends State<CaixaPage> {
         }
       );          
   }
+
+  void _imprimirCupomSat(Uint8List cupom) {
+    Sessao.fecharDialogBoxEspera(context);
+    Navigator.of(context)
+      .push(MaterialPageRoute(
+        builder: (BuildContext context) => PdfPage(
+          arquivoPdf: cupom, title: 'Cfe-Sat')
+        )
+      ).then(
+        (value) {
+          _configurarDadosTelaPadrao();
+        }
+      );          
+  }
+
+  /////////////////////////////////////////
+  /// Utilize o código abaixo para se comunicar diretamente com o ACBrMonitor
+  /////////////////////////////////////////
+  // void _imprimirDanfe(String danfeBase64) {
+  //   var decodeB64 = base64.decode(danfeBase64); 
+  //   Navigator.of(context)
+  //     .push(MaterialPageRoute(
+  //       builder: (BuildContext context) => PdfPage(
+  //         arquivoPdf: decodeB64, title: 'NFC-e')
+  //       )
+  //     ).then(
+  //       (value) {
+  //         _configurarDadosTelaPadrao();
+  //       }
+  //     );          
+  // }
 
   void _reimprimirRecibo() async {
     if (Sessao.statusCaixa == StatusCaixa.vendaEmAndamento) {
@@ -865,6 +982,8 @@ class _CaixaPageState extends State<CaixaPage> {
       } else {
         if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
           _modulo = 'Pegasus PDV - Versão NFC-e';
+        } else if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'SAT') {
+          _modulo = 'Pegasus PDV - Versão SAT/MFE';
         }
       }
       
@@ -909,6 +1028,15 @@ class _CaixaPageState extends State<CaixaPage> {
       if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
         String mensagemRetorno = await NfceController.verificarSeAptoParaEmitirNfce();
         if (mensagemRetorno.isNotEmpty) {
+          if (!mounted) return;
+          gerarDialogBoxInformacao(context, mensagemRetorno);
+        } else {
+          podeRealizarVenda = true;
+        }
+      } else if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'SAT') {
+        String mensagemRetorno = await SatController.verificarSeAptoParaEmitirCfe();
+        if (mensagemRetorno.isNotEmpty) {
+          if (!mounted) return;
           gerarDialogBoxInformacao(context, mensagemRetorno);
         } else {
           podeRealizarVenda = true;
@@ -948,11 +1076,11 @@ class _CaixaPageState extends State<CaixaPage> {
         bool podeComporItemParaVenda = true;
         if (Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
           // verifica se a tributação para o produto está OK antes mesmo de incluí-lo na venda
-          final produtoMontado = await Sessao.db.produtoDao.consultarObjetoMontado(pId: _produto!.id);
+          final produtoMontado = await Sessao.db.produtoDao.consultarObjetoMontado(pId: _produto!.id!);
           final tributacao = await Sessao.db.tributConfiguraOfGtDao.consultarObjetoMontado(
-            Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao!, produtoMontado!.tributGrupoTributario!.id!
-          ); 
+            Sessao.configuracaoPdv!.idTributOperacaoFiscalPadrao!, produtoMontado!.tributGrupoTributario!.id!); 
           if (tributacao == null) {
+            if (!mounted) return;
             podeComporItemParaVenda = false;
             gerarDialogBoxErro(context, 'Existe um problema com a tributação deste produto. Informe o Grupo Tributário para o Produto e vincule a Operação Fiscal para o mesmo na tela "Configura Tributação"');
           } else {
@@ -970,11 +1098,11 @@ class _CaixaPageState extends State<CaixaPage> {
   }
 
   void _comporItemParaVenda() {
-    final _quantidadeFutura = (_produto!.quantidadeEstoque ?? 0) - _quantidadeInformada!;
+    final quantidadeFutura = (_produto!.quantidadeEstoque ?? 0) - _quantidadeInformada!;
 
     if(Sessao.configuracaoPdv!.modulo != 'G' && _produto!.idTributGrupoTributario == null) {
       _exibirMensagemGrupoTributario();
-    } else if ((Sessao.configuracaoPdv!.permiteEstoqueNegativo ?? 'S') == 'N' && _quantidadeFutura < 0) {
+    } else if ((Sessao.configuracaoPdv!.permiteEstoqueNegativo ?? 'S') == 'N' && quantidadeFutura < 0) {
       _exibirMensagemEstoqueNegativo();
     } else {
       PdvVendaDetalhe pdvVendaDetalhe = 
@@ -1159,8 +1287,9 @@ class _CaixaPageState extends State<CaixaPage> {
     if (Sessao.configuracaoPdv!.modulo == 'F' && Sessao.configuracaoPdv!.moduloFiscalPrincipal == 'NFC') {
       final notasEmContingencia = await Sessao.db.nfeCabecalhoDao.consultarListaFiltro('STATUS_NOTA', '6');
       if (notasEmContingencia != null && notasEmContingencia.isNotEmpty) {
+        if (!mounted) return;
         gerarDialogBoxConfirmacao(context, 
-          'Existem ' + notasEmContingencia.length.toString() + ' notas impressas em contingência. Deseja transmiti-las agora?', 
+          'Existem ${notasEmContingencia.length} notas impressas em contingência. Deseja transmiti-las agora?', 
           () {
             Navigator.of(context)
               .push(MaterialPageRoute(
@@ -1204,6 +1333,7 @@ class _CaixaPageState extends State<CaixaPage> {
             );
             await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv!);                 
             Sessao.db.nfcePlanoPagamentoDao.excluir(Sessao.nfcePlanoPagamento!);
+            if (!mounted) return;
             Navigator.of(context)
               .push(MaterialPageRoute(
                   builder: (BuildContext context) =>

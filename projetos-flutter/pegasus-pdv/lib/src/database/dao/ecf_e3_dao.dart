@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'ecf_e3_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           EcfE3s,
 		])
 class EcfE3Dao extends DatabaseAccessor<AppDatabase> with _$EcfE3DaoMixin {
@@ -51,9 +51,9 @@ class EcfE3Dao extends DatabaseAccessor<AppDatabase> with _$EcfE3DaoMixin {
   Future<List<EcfE3>> consultarLista() => select(ecfE3s).get();
 
   Future<List<EcfE3>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM ECF_E3 WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM ECF_E3 WHERE $campo like '%$valor%'", 
                                 readsFrom: { ecfE3s }).map((row) {
-                                  return EcfE3.fromData(row.data, db);  
+                                  return EcfE3.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,20 +63,20 @@ class EcfE3Dao extends DatabaseAccessor<AppDatabase> with _$EcfE3DaoMixin {
     return (select(ecfE3s)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<EcfE3> pObjeto) {
+  Future<int> inserir(EcfE3 pObjeto) {
     return transaction(() async {
       final idInserido = await into(ecfE3s).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<EcfE3> pObjeto) {
+  Future<bool> alterar(EcfE3 pObjeto) {
     return transaction(() async {
       return update(ecfE3s).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<EcfE3> pObjeto) {
+  Future<int> excluir(EcfE3 pObjeto) {
     return transaction(() async {
       return delete(ecfE3s).delete(pObjeto);
     });    

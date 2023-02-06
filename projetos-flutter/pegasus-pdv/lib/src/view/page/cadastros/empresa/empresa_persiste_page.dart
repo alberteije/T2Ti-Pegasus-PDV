@@ -39,7 +39,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -62,10 +62,10 @@ class EmpresaPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _EmpresaPersistePageState createState() => _EmpresaPersistePageState();
+  EmpresaPersistePageState createState() => EmpresaPersistePageState();
 }
 
-class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
+class EmpresaPersistePageState extends State<EmpresaPersistePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -104,7 +104,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
     };
     _foco.requestFocus();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _consultarCnae());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _consultarCnae());
   }
 
   Future _consultarCnae() async {
@@ -791,7 +791,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SizedBox(
-                                width: 200,
+                                width: Biblioteca.isTelaPequena(context)! ? 150 : 200,
                                 child: getBotaoGenericoPdv(
                                   descricao: 'Alterar Opção MEI',
                                   cor: Colors.green, 
@@ -811,7 +811,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
                                 width: 10,
                               ), 
                               SizedBox(
-                                width: 200,
+                                width: Biblioteca.isTelaPequena(context)! ? 150 : 200,
                                 child: getBotaoGenericoPdv(
                                   descricao: 'Sair sem Salvar',
                                   cor: Colors.red, 
@@ -922,6 +922,8 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
       setState(() {
       });
     } else {
+      // https://dart-lang.github.io/linter/lints/use_build_context_synchronously.html
+      if (!mounted) return;
       showInSnackBar('Ocorreu um problema ao tentar consultar os dados da empresa no Servidor.', context, corFundo: Colors.red);
     }
   }
@@ -948,7 +950,8 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
           EmpresaModel? empresa = EmpresaModel.fromDB(Sessao.empresa!);
           EmpresaService servico = EmpresaService();
           gerarDialogBoxEspera(context);
-          empresa = await (servico.atualizar(empresa));        
+          empresa = await (servico.atualizar(empresa)); 
+          if (!mounted) return;       
           Sessao.fecharDialogBoxEspera(context);
           if (empresa != null) {
             await _salvarDadosLocais();
@@ -965,6 +968,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
   Future _salvarDadosLocais() async {
     await Sessao.db.empresaDao.alterar(Sessao.empresa!, Sessao.configuracaoPdv!.modulo != 'G');
     Sessao.empresa = await Sessao.db.empresaDao.consultarObjeto(1);
+    if (!mounted) return;
     showInSnackBar('Dados salvos com sucesso.', context, corFundo: Colors.blue);
     Navigator.of(context).pop();
   }

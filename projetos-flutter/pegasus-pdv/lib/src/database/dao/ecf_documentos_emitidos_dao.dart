@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'ecf_documentos_emitidos_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           EcfDocumentosEmitidoss,
 		])
 class EcfDocumentosEmitidosDao extends DatabaseAccessor<AppDatabase> with _$EcfDocumentosEmitidosDaoMixin {
@@ -51,9 +51,9 @@ class EcfDocumentosEmitidosDao extends DatabaseAccessor<AppDatabase> with _$EcfD
   Future<List<EcfDocumentosEmitidos>> consultarLista() => select(ecfDocumentosEmitidoss).get();
 
   Future<List<EcfDocumentosEmitidos>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM ECF_DOCUMENTOS_EMITIDOS WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM ECF_DOCUMENTOS_EMITIDOS WHERE $campo like '%$valor%'", 
                                 readsFrom: { ecfDocumentosEmitidoss }).map((row) {
-                                  return EcfDocumentosEmitidos.fromData(row.data, db);  
+                                  return EcfDocumentosEmitidos.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,20 +63,20 @@ class EcfDocumentosEmitidosDao extends DatabaseAccessor<AppDatabase> with _$EcfD
     return (select(ecfDocumentosEmitidoss)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<EcfDocumentosEmitidos> pObjeto) {
+  Future<int> inserir(EcfDocumentosEmitidos pObjeto) {
     return transaction(() async {
       final idInserido = await into(ecfDocumentosEmitidoss).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<EcfDocumentosEmitidos> pObjeto) {
+  Future<bool> alterar(EcfDocumentosEmitidos pObjeto) {
     return transaction(() async {
       return update(ecfDocumentosEmitidoss).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<EcfDocumentosEmitidos> pObjeto) {
+  Future<int> excluir(EcfDocumentosEmitidos pObjeto) {
     return transaction(() async {
       return delete(ecfDocumentosEmitidoss).delete(pObjeto);
     });    

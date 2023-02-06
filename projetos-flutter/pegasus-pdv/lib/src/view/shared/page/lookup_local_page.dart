@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 /*
 Title: T2Ti ERP 3.0                                                                
 Description: Página de lookup para consultas no banco de dados local
@@ -40,7 +42,7 @@ import 'package:recase/recase.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_pdv.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
 
@@ -72,10 +74,10 @@ class LookupLocalPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _LookupLocalPageState createState() => _LookupLocalPageState();
+  LookupLocalPageState createState() => LookupLocalPageState();
 }
 
-class _LookupLocalPageState extends State<LookupLocalPage> {
+class LookupLocalPageState extends State<LookupLocalPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   static Map<String, dynamic> _resultadoFiltro = {};
   static bool _dadosCarregados = true;
@@ -101,7 +103,7 @@ class _LookupLocalPageState extends State<LookupLocalPage> {
     }
     if (widget.valorPesquisaPadrao != null) {
       _valorFiltroController.text = widget.valorPesquisaPadrao!; 
-      WidgetsBinding.instance!.addPostFrameCallback((_) => _efetuarConsulta());
+      WidgetsBinding.instance.addPostFrameCallback((_) => _efetuarConsulta());
     }
     _focusNode.requestFocus();
   }

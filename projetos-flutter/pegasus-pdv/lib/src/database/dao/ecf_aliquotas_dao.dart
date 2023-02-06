@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'ecf_aliquotas_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           EcfAliquotass,
 		])
 class EcfAliquotasDao extends DatabaseAccessor<AppDatabase> with _$EcfAliquotasDaoMixin {
@@ -51,9 +51,9 @@ class EcfAliquotasDao extends DatabaseAccessor<AppDatabase> with _$EcfAliquotasD
   Future<List<EcfAliquotas>> consultarLista() => select(ecfAliquotass).get();
 
   Future<List<EcfAliquotas>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM ECF_ALIQUOTAS WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM ECF_ALIQUOTAS WHERE $campo like '%$valor%'", 
                                 readsFrom: { ecfAliquotass }).map((row) {
-                                  return EcfAliquotas.fromData(row.data, db);  
+                                  return EcfAliquotas.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,20 +63,20 @@ class EcfAliquotasDao extends DatabaseAccessor<AppDatabase> with _$EcfAliquotasD
     return (select(ecfAliquotass)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<EcfAliquotas> pObjeto) {
+  Future<int> inserir(EcfAliquotas pObjeto) {
     return transaction(() async {
       final idInserido = await into(ecfAliquotass).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<EcfAliquotas> pObjeto) {
+  Future<bool> alterar(EcfAliquotas pObjeto) {
     return transaction(() async {
       return update(ecfAliquotass).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<EcfAliquotas> pObjeto) {
+  Future<int> excluir(EcfAliquotas pObjeto) {
     return transaction(() async {
       return delete(ecfAliquotass).delete(pObjeto);
     });    

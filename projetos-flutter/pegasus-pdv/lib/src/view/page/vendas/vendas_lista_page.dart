@@ -35,13 +35,19 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:backdrop/backdrop.dart';
 import 'package:flutter/gestures.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+
+import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+
+import 'package:pegasus_pdv/src/model/model.dart';
+import 'package:pegasus_pdv/src/view/shared/page/pdf_page.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
@@ -60,10 +66,10 @@ class VendasListaPage extends StatefulWidget {
   const VendasListaPage({Key? key}) : super(key: key);
 
   @override
-  _VendasListaPageState createState() => _VendasListaPageState();
+  VendasListaPageState createState() => VendasListaPageState();
 }
 
-class _VendasListaPageState extends State<VendasListaPage> {
+class VendasListaPageState extends State<VendasListaPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
@@ -93,7 +99,7 @@ class _VendasListaPageState extends State<VendasListaPage> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
 
   @override
@@ -114,11 +120,11 @@ class _VendasListaPageState extends State<VendasListaPage> {
   Widget build(BuildContext context) {
     _listaPdvVendaCabecalho = Sessao.db.pdvVendaCabecalhoDao.listaPdvVendaCabecalho;
 
-    final _PdvVendaCabecalhoDataSource _pdvVendaCabecalhoDataSource = 
+    final _PdvVendaCabecalhoDataSource pdvVendaCabecalhoDataSource = 
       _PdvVendaCabecalhoDataSource(_listaPdvVendaCabecalho, context, _refrescarTela, _cancelarVenda);
 
     void _sort<T>(Comparable<T>? Function(PdvVendaCabecalho pdvVendaCabecalho) getField, int columnIndex, bool ascending) {
-      _pdvVendaCabecalhoDataSource._sort<T>(getField, ascending);
+      pdvVendaCabecalhoDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -224,6 +230,10 @@ class _VendasListaPageState extends State<VendasListaPage> {
                         const DataColumn(
                           label: Text('Cancelar'),
                           tooltip: 'Cancelar',
+                        ),
+                        const DataColumn(
+                          label: Text('Devolver'),
+                          tooltip: 'Devolver',
                         ),
                         DataColumn(
                           numeric: true,
@@ -336,7 +346,7 @@ class _VendasListaPageState extends State<VendasListaPage> {
                           tooltip: 'Dados da NFC-e',                          
                         ),
                       ],
-                      source: _pdvVendaCabecalhoDataSource,
+                      source: pdvVendaCabecalhoDataSource,
                     ),
                   ],
                 ),
@@ -409,28 +419,30 @@ class _VendasListaPageState extends State<VendasListaPage> {
   }
 
   void _baixarXmls() async {
-    NfceService servicoNfce = NfceService();
-    gerarDialogBoxEspera(context);
-    final periodo = Biblioteca.formatarDataAAAAMM(_mesAno);
-    final retorno = await servicoNfce.baixarArquivosXml(periodo);
-    final diretorio = await getApplicationDocumentsDirectory();
+    gerarDialogBoxConfirmacao(context, 'Deseja baixar o arquivo compactado contendo os XMLs das notas de ${Biblioteca.formatarMesAno(_mesAno)}?', () async {
+      NfceService servicoNfce = NfceService();
+      gerarDialogBoxEspera(context);
+      final periodo = Biblioteca.formatarDataAAAAMM(_mesAno);
+      final retorno = await servicoNfce.baixarArquivosXml(periodo);
+      final diretorio = await getApplicationDocumentsDirectory();
 
-    if (retorno != null) {
-      final caminhoArquivo = '${diretorio.path}\\notasFiscais_$periodo.zip';
-      final arquivoZip = File(caminhoArquivo);
-      arquivoZip.writeAsBytesSync(retorno);
-      Sessao.fecharDialogBoxEspera(context); 
+      if (!mounted) return;
+      if (retorno != null) {
+        final caminhoArquivo = '${diretorio.path}\\notasFiscais_$periodo.zip';
+        final arquivoZip = File(caminhoArquivo);
+        arquivoZip.writeAsBytesSync(retorno);
+        Sessao.fecharDialogBoxEspera(context); 
 
-      if (Platform.isWindows) {
-        gerarDialogBoxInformacao(context, 'Arquivo salvo em: ' + caminhoArquivo + '.');
+        if (Platform.isWindows) {
+          gerarDialogBoxInformacao(context, 'Arquivo salvo em: $caminhoArquivo.');
+        } else {
+          Share.shareFiles([caminhoArquivo], subject: 'Arquivos XML do mês - Notas Fiscais', text: 'Seguem os arquivos das notas para o movimento $periodo');
+        }
       } else {
-        Share.shareFiles([caminhoArquivo], subject: 'Arquivos XML do mês - Notas Fiscais', text: 'Seguem os arquivos das notas para o movimento $periodo');
+        Sessao.fecharDialogBoxEspera(context); 
+        showInSnackBar('Ocorreu um erro ao tentar baixar os arquivos.', context);
       }
-    } else {
-      Sessao.fecharDialogBoxEspera(context); 
-      showInSnackBar('Ocorreu um erro ao tentar baixar os arquivos.', context);
-    }
-
+    }); 
   }
 
   Future _refrescarTela() async {
@@ -458,21 +470,31 @@ class _VendasListaPageState extends State<VendasListaPage> {
   }
 
   Future _cancelarVenda() async {
-    final recebimentos = await Sessao.db.contasReceberDao.consultarRecebimentosDeUmaVenda(Sessao.vendaAtual!.id!, 'R');
-    if (recebimentos!.isNotEmpty) {
-      showInSnackBar("Essa venda não pode ser cancelada, pois já existem parcelas com o status Recebido.", context);          
+    final movimento = await Sessao.db.pdvMovimentoDao.consultarObjetoPorId(Sessao.vendaAtual!.idPdvMovimento!);
+    if (!mounted) return; 
+    if (movimento?.statusMovimento == 'F') {
+      showInSnackBar("Essa venda não pode ser cancelada, pois seu movimento já foi encerrado.", context);          
     } else {
-      if (Sessao.vendaAtual!.tipoOperacao == 'NFC') {
-        gerarDialogBoxConfirmacao(context, 'Essa venda é vinculada a uma NFC-e. Deseja cancelar a Nota Fiscal e a Venda?', () async {
-          await _cancelarNfce(context);
-        });
-      } else { // sistema gratuito só cancela a venda
-        gerarDialogBoxConfirmacao(context, 'Deseja cancelar a venda selecionada?', () async {
-          await _cancelarOperacaoVenda();
-        });
+      final recebimentos = await Sessao.db.contasReceberDao.consultarRecebimentosDeUmaVenda(Sessao.vendaAtual!.id!, 'R');
+      if (!mounted) return;
+      if (recebimentos!.isNotEmpty) {
+        showInSnackBar("Essa venda não pode ser cancelada, pois já existem parcelas com o status Recebido.", context);          
+      } else {
+        if (Sessao.vendaAtual!.tipoOperacao == 'NFC') {
+          gerarDialogBoxConfirmacao(context, 'Essa venda é vinculada a uma NFC-e. Deseja cancelar a Nota Fiscal e a Venda?', () async {
+            await _cancelarNfce(context);
+          });
+        } else if (Sessao.vendaAtual!.tipoOperacao == 'SAT') {
+          gerarDialogBoxConfirmacao(context, 'Essa venda é vinculada a um Cupom CF-e. Deseja cancelar o Cupom e a Venda?', () async {
+            await _cancelarCfe(context);
+          });
+        } else { // sistema gratuito só cancela a venda
+          gerarDialogBoxConfirmacao(context, 'Deseja cancelar a venda selecionada?', () async {
+            await _cancelarOperacaoVenda();
+          });
+        }
       }
-
-    }
+    }  
   }
 
   Future _cancelarOperacaoVenda() async {
@@ -483,11 +505,14 @@ class _VendasListaPageState extends State<VendasListaPage> {
       valorCancelado: Sessao.vendaAtual!.valorFinal,
     );
     await Sessao.db.pdvVendaCabecalhoDao.cancelarVenda(Sessao.vendaAtual!).then((value) async => await _refrescarTela());
+    if (!mounted) return;
+    showInSnackBar('Operação realizada com sucesso.', context, corFundo: Colors.blue);
   }
 
   Future _cancelarNfce(BuildContext context) async {
     // consulta a nota vinculada à venda   
     final nfceCabecalho = await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(Sessao.vendaAtual!.id!);
+    if (!mounted) return;
     if (nfceCabecalho == null) {
       gerarDialogBoxErro(context, 'Não existe uma NFC-e vinculada a esta venda ou a nota foi emitida em Contingência e ainda não foi autorizada.');
     } else {
@@ -498,30 +523,103 @@ class _VendasListaPageState extends State<VendasListaPage> {
           return const InformaValorPage(title: 'Cancelar NFC-e', operacao: 'CANCELAR_NFCE', );
         });
 
+      if (!mounted) return;
       if (motivoCancelamento != false) { // só será false se o cara tiver teclado ESC no no botão CANCELAR
         if (motivoCancelamento == '') {
           gerarDialogBoxErro(context, 'É necessário informar um motivo para o cancelamento da nota.');
         } else {
-          NfceAcbrService servicoNfce = NfceAcbrService();
-          try {
-            await servicoNfce.conectar(
-              context, 
-              formaEmissao: '1',
-              funcaoDeCallBack: _cancelarOperacaoVenda, 
-              operacao: 'CANCELAR', 
-              chaveAcesso: nfceCabecalho.chaveAcesso,
-              motivoCancelamento: motivoCancelamento,
-            ).then((socket) async {
-              socket!.write('NFe.CANCELARNFE("' + nfceCabecalho.chaveAcesso! + '", "' + motivoCancelamento + '", "' + Sessao.empresa!.cnpj! + '")\r\n.\r\n');
-            });                 
-          } catch (e) {
-            gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: ' + e.toString());
-          }   
+          await _processarCancelamento(motivoCancelamento as String);
         }
       }
     }
   }
 
+  Future _processarCancelamento(String motivoCancelamento) async {
+    gerarDialogBoxEspera(context);
+    try {
+      NfceService nfceService = NfceService();
+      ObjetoNfe objetoNfe = ObjetoNfe(
+        cnpj: Sessao.empresa!.cnpj!, 
+        justificativa: motivoCancelamento, 
+        chaveAcesso: NfceController.nfeCabecalhoMontado!.nfeCabecalho!.chaveAcesso,
+      );
+      final retorno = await nfceService.cancelarNota(objetoNfe); 
+      if (!mounted) return; 
+      Sessao.fecharDialogBoxEspera(context);
+      if (retorno.isNotEmpty) {
+        if (retorno.contains('ERRO')) {
+          gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: \n$retorno');          
+        } else {
+          NfceController.nfeCabecalhoMontado!.nfeCabecalho = NfceController.nfeCabecalhoMontado!.nfeCabecalho!.copyWith(
+            statusNota: '5', // 5=cancelada
+            informacoesAddContribuinte: motivoCancelamento,
+          );
+          await Sessao.db.nfeCabecalhoDao.alterar(NfceController.nfeCabecalhoMontado!, atualizaFilhos: false);
+          await _cancelarOperacaoVenda();
+        }
+      }
+    } catch (e) {
+      Sessao.fecharDialogBoxEspera(context);
+      gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: $e');
+    }  
+  }
+
+  Future _cancelarCfe(BuildContext context) async {
+    // consulta a nota vinculada à venda   
+    final nfceCabecalho = await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(Sessao.vendaAtual!.id!);
+    if (!mounted) return;
+    SatController.instanciarNfceMontado();
+    SatController.nfeCabecalhoMontado!.nfeCabecalho = nfceCabecalho;
+    gerarDialogBoxEspera(context);
+    try {
+      final retorno = await ACBrMonitorController.cancelarCfe(nfceCabecalho!.chaveAcesso!);
+      if (!mounted) return;
+      Sessao.fecharDialogBoxEspera(context);
+      SatController.nfeCabecalhoMontado!.nfeCabecalho = SatController.nfeCabecalhoMontado!.nfeCabecalho!.copyWith(
+        statusNota: '5', // 5=cancelada
+      );
+      await Sessao.db.nfeCabecalhoDao.alterar(SatController.nfeCabecalhoMontado!, atualizaFilhos: false);
+      await _cancelarOperacaoVenda();
+      _imprimirCupomSatCancelamento(retorno);
+    } catch (e) {
+      Sessao.fecharDialogBoxEspera(context);
+      gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: $e');
+    }  
+  }
+
+  void _imprimirCupomSatCancelamento(Uint8List cupom) {
+    Sessao.fecharDialogBoxEspera(context);
+    Navigator.of(context)
+      .push(MaterialPageRoute(
+        builder: (BuildContext context) => PdfPage(
+          arquivoPdf: cupom, title: 'Cfe-Sat')
+        )
+      ).then(
+        (value) {
+        }
+      );          
+  }
+
+  /////////////////////////////////////////
+  /// Utilize o código abaixo para se comunicar diretamente com o ACBrMonitor
+  /////////////////////////////////////////
+  // Future _processarCancelamento() async {
+  //   NfceAcbrService servicoNfce = NfceAcbrService();
+  //   try {
+  //     await servicoNfce.conectar(
+  //       context, 
+  //       formaEmissao: '1',
+  //       funcaoDeCallBack: _cancelarOperacaoVenda, 
+  //       operacao: 'CANCELAR', 
+  //       chaveAcesso: nfceCabecalho.chaveAcesso,
+  //       motivoCancelamento: motivoCancelamento,
+  //     ).then((socket) async {
+  //       socket!.write('NFe.CANCELARNFE("' + nfceCabecalho.chaveAcesso! + '", "' + motivoCancelamento + '", "' + Sessao.empresa!.cnpj! + '")\r\n.\r\n');
+  //     });                 
+  //   } catch (e) {
+  //     gerarDialogBoxErro(context, 'Ocorreu um problema ao tentar realizar o procedimento: ' + e.toString());
+  //   }   
+  // }
 }
 
 
@@ -581,7 +679,34 @@ class _PdvVendaCabecalhoDataSource extends DataTableSource {
               }
             ),
         ),
-        DataCell(Text('${pdvVendaCabecalho.id ?? ''}'), ),
+        DataCell(
+          ((pdvVendaCabecalho.cupomCancelado != null) && (pdvVendaCabecalho.cupomCancelado == 'S'))
+          ? const Text('Cancelada')
+          : getBotaoGenericoPdv(
+            descricao: 'Devolver Item',
+            cor: Colors.red.shade400,
+            padding: const EdgeInsets.all(5),
+            onPressed: () async {
+              NfeCabecalhoMontado? nfeCabecalhoMontado =  await NfceController.getDetalhesNfce(pdvVendaCabecalho.id!);
+              if (nfeCabecalhoMontado == null) {
+                // ignore: use_build_context_synchronously
+                gerarDialogBoxErro(context, "Venda não vinculada a uma NFC-e ou NFC-e não autorizada");
+              } else {
+                // ignore: use_build_context_synchronously
+                Navigator.of(context)
+                    .push(MaterialPageRoute(
+                        builder: (BuildContext context) => NfeDevolucaoPage(
+                              nfeCabecalhoMontado: nfeCabecalhoMontado,
+                              title: 'Devolução de Mercadoria',
+                            )))
+                    .then((_) async {
+                  await refrescarTela();
+                });
+              }
+            }
+          ),
+        ),
+        DataCell(Text('${pdvVendaCabecalho.id}'), ),
         DataCell(Text('${pdvVendaCabecalho.idPdvMovimento ?? ''}'), ),
         DataCell(Text(pdvVendaCabecalho.dataVenda != null ? DateFormat('dd/MM/yyyy').format(pdvVendaCabecalho.dataVenda!) : ''), ),
         DataCell(Text(pdvVendaCabecalho.horaVenda ?? ''), ),
@@ -610,8 +735,10 @@ class _PdvVendaCabecalhoDataSource extends DataTableSource {
                 onPressed: () async {
                   final nfeCabecalhoMontado = await Sessao.db.nfeCabecalhoDao.consultarObjetoMontado('ID_PDV_VENDA_CABECALHO', pdvVendaCabecalho.id.toString());
                   if (nfeCabecalhoMontado?.nfeCabecalho == null) {
+                    // ignore: use_build_context_synchronously
                     gerarDialogBoxInformacao(context, 'Nota fiscal não autorizada. Verifique se foi contigenciada e se está pendente de autorização.');
                   } else {
+                    // ignore: use_build_context_synchronously
                     Navigator.of(context)
                       .push(MaterialPageRoute(
                         builder: (BuildContext context) => NfeCabecalhoPage(

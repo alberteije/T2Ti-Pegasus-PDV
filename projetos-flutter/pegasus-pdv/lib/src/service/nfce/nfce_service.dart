@@ -40,7 +40,6 @@ import 'package:http/http.dart' show Client;
 import 'package:pegasus_pdv/src/infra/infra.dart';
 
 import 'package:pegasus_pdv/src/service/service_base.dart';
-import 'package:pegasus_pdv/src/model/filtro.dart';
 import 'package:pegasus_pdv/src/model/model.dart';
 
 /// classe responsável por requisições ao servidor REST
@@ -60,7 +59,7 @@ class NfceService extends ServiceBase {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
-          var parsed = json.decode(response.body) as List<dynamic>;
+          var parsed = json.decode(Biblioteca.decifrar(response.body)) as List<dynamic>;
           for (var pdvTipoPlano in parsed) {
             final tipoPlano = PdvTipoPlanoModel.fromJson(pdvTipoPlano);
             if (tipoPlano.moduloFiscal == 'NFC') {
@@ -107,16 +106,27 @@ class NfceService extends ServiceBase {
   Future<NfcePlanoPagamentoModel?> verificarPlano() async {  
     try {
       ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
-                            ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa!.cnpj!} 
-                            : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa!.cnpj!};      
-      final response = await clienteHTTP.get(Uri.tryParse('$endpoint/pdv-plano-pagamento/'+Sessao.empresa!.cnpj!)!, headers: ServiceBase.cabecalhoRequisicao);
+                            ? {
+                              "content-type": "application/json", 
+                              "authentication": "Bearer ${Sessao.tokenJWT}", 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!)
+                              } 
+                            : {
+                              "content-type": "application/json", 
+                              "authorization": "Bearer ${Sessao.tokenJWT}", 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!)
+                              };      
+      final response = await clienteHTTP.get(
+        Uri.tryParse('$endpoint/pdv-plano-pagamento/consulta-plano/')!, 
+        headers: ServiceBase.cabecalhoRequisicao
+      );
 
       if (response.statusCode == 200) {
         if (response.headers["content-type"]!.contains("html")) {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
-          var objetoJson = json.decode(response.body);
+          var objetoJson = json.decode(Biblioteca.decifrar(response.body));
           return NfcePlanoPagamentoModel.fromJson(objetoJson);
         }
       } else if (response.statusCode == 404) {
@@ -137,40 +147,56 @@ class NfceService extends ServiceBase {
     */  
   }  
 
-  Future<Uint8List?> baixarArquivosXml(String periodo) async { 
+  Future<int?> confirmarTransacao(String codigoTransacao) async {
     try {
       ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
-                            ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa!.cnpj!, "periodo": periodo} 
-                            : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa!.cnpj!, "periodo": periodo};      
-      final response = await clienteHTTP.get(Uri.tryParse('$endpoint/nfe-configuracao')!, headers: ServiceBase.cabecalhoRequisicao);
+                            ? {
+                              "content-type": "application/json", 
+                              "authentication": "Bearer ${Sessao.tokenJWT}", 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!),
+                              "codigo": Biblioteca.cifrar(codigoTransacao)
+                              } 
+                            : {
+                              "content-type": "application/json", 
+                              "authorization": "Bearer ${Sessao.tokenJWT}", 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!),
+                              "codigo": Biblioteca.cifrar(codigoTransacao)
+                              };      
+      final response = await clienteHTTP.post(
+        Uri.tryParse('$endpoint/pdv-plano-pagamento/confirma-transacao/')!,
+        headers: ServiceBase.cabecalhoRequisicao,
+        // body: {"vazio": "vazio"} ,
+      );
 
-      if (response.statusCode == 200) {
-        if (response.headers["content-type"]!.contains("html")) {
-          tratarRetornoErro(response.body, response.headers);
-          return null;
-        } else {
-          final arquivoZip = response.bodyBytes;
-          return arquivoZip; 
-        }
-      } else {
-        tratarRetornoErro(response.body, response.headers);
-        return null;
-      }
+      return response.statusCode;
     } on Exception catch (e) {
       tratarRetornoErro(null, null, exception: e);
       return null;
     }
-  }  
+    /* use para uma release de testes
+    return 200;
+    */
+  }
 
   Future<NfeConfiguracaoModel?> atualizarConfiguracoesMonitor(NfeConfiguracaoModel nfeConfiguracao, String? cnpj) async {
     try {
       ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
-                            ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "pdv-configuracao": json.encode(Sessao.configuracaoPdv)} 
-                            : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "pdv-configuracao": json.encode(Sessao.configuracaoPdv)};      
+                            ? {
+                              "content-type": "application/json", 
+                              "authentication": "Bearer ${Sessao.tokenJWT}", 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!),
+                              "pdv-configuracao": Biblioteca.cifrar(json.encode(Sessao.configuracaoPdv))
+                              } 
+                            : {
+                              "content-type": "application/json", 
+                              "authorization": "Bearer ${Sessao.tokenJWT}", 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!),
+                              "pdv-configuracao": Biblioteca.cifrar(json.encode(Sessao.configuracaoPdv))
+                              };      
       final response = await clienteHTTP.post(
-        Uri.tryParse('$endpoint/nfe-configuracao/$cnpj')!,
+        Uri.tryParse('$endpoint/nfe-configuracao/atualiza-dados/')!,
         headers: ServiceBase.cabecalhoRequisicao,
-        body: nfeConfiguracao.objetoEncodeJson(nfeConfiguracao),
+        body: Biblioteca.cifrar(nfeConfiguracao.objetoEncodeJson()),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -178,14 +204,7 @@ class NfceService extends ServiceBase {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
-          var configuracaoJson = json.decode(response.body);
-          final enderecoMonitor = response.headers["endereco-monitor"];
-          final portaMonitor = response.headers["porta-monitor"]!;
-          Sessao.configuracaoPdv = Sessao.configuracaoPdv!.copyWith(
-            acbrMonitorEndereco: enderecoMonitor,
-            acbrMonitorPorta: int.tryParse(portaMonitor),
-          );
-          await Sessao.db.pdvConfiguracaoDao.alterar(Sessao.configuracaoPdv!);
+          var configuracaoJson = json.decode(Biblioteca.decifrar(response.body));
           return NfeConfiguracaoModel.fromJson(configuracaoJson);
         }
       } else {
@@ -208,36 +227,63 @@ class NfceService extends ServiceBase {
     */
   }
 
-  Future<int?> confirmarTransacao(String codigoTransacao) async {
+  Future<Uint8List?> baixarArquivosXml(String periodo) async { 
     try {
       ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
-                            ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa!.cnpj!} 
-                            : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "cnpj": Sessao.empresa!.cnpj!};      
-      final response = await clienteHTTP.post(
-        Uri.tryParse('$endpoint/pdv-plano-pagamento/$codigoTransacao')!,
-        headers: ServiceBase.cabecalhoRequisicao,
-        // body: {"vazio": "vazio"} ,
+                            ? {
+                              "content-type": "application/json", 
+                              "authentication": "Bearer ${Sessao.tokenJWT}", 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!),
+                              "periodo": Biblioteca.cifrar(periodo)
+                              } 
+                            : {
+                              "content-type": "application/json", 
+                              "authorization": "Bearer ${Sessao.tokenJWT}", 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!),
+                              "periodo": Biblioteca.cifrar(periodo)
+                              };      
+      final response = await clienteHTTP.get(
+        Uri.tryParse('$endpoint/acbr-monitor/download-xml-periodo/')!,
+        headers: ServiceBase.cabecalhoRequisicao
       );
 
-      return response.statusCode;
+      if (response.statusCode == 200) {
+        if (response.headers["content-type"]!.contains("html")) {
+          tratarRetornoErro(response.body, response.headers);
+          return null;
+        } else {
+          final arquivoZip = response.bodyBytes;
+          return arquivoZip; 
+        }
+      } else {
+        tratarRetornoErro(response.body, response.headers);
+        return null;
+      }
     } on Exception catch (e) {
       tratarRetornoErro(null, null, exception: e);
       return null;
     }
-    /* use para uma release de testes
-    return 200;
-    */
-  }
+  }  
 
-  Future<bool> atualizarCertificadoDigital(String? arquivoBase64, String senha) async {
+  Future<bool> atualizarCertificadoDigital(String arquivoBase64, String senha) async {
     try {
       ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
-                            ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "hash-registro": senha, "cnpj": Sessao.empresa!.cnpj!} 
-                            : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "hash-registro": senha, "cnpj": Sessao.empresa!.cnpj!};      
+                            ? {
+                              "content-type": "application/json", 
+                              "authentication": "Bearer ${Sessao.tokenJWT}", 
+                              "hash-registro": Biblioteca.cifrar(senha), 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!)
+                              } 
+                            : {
+                              "content-type": "application/json", 
+                              "authorization": "Bearer ${Sessao.tokenJWT}", 
+                              "hash-registro": Biblioteca.cifrar(senha), 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!)
+                              };      
       final response = await clienteHTTP.post(
-        Uri.tryParse('$endpoint/nfe-configuracao')!,
+        Uri.tryParse('$endpoint/acbr-monitor/atualiza-certificado/')!,
         headers: ServiceBase.cabecalhoRequisicao,
-        body: arquivoBase64,
+        body: Biblioteca.cifrar(arquivoBase64),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -254,6 +300,259 @@ class NfceService extends ServiceBase {
     } on Exception catch (e) {
       tratarRetornoErro(null, null, exception: e);
       return false;
+    }
+  }
+
+  /////////////////////////////////////////
+  /// Métodos relacionados ao ACBrMonitor
+  /////////////////////////////////////////
+  Future<dynamic> emitirNfce(String nfceBase64, String numero) async {
+    try {
+      ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
+                            ? {
+                              "content-type": "application/json", 
+                              "authentication": "Bearer ${Sessao.tokenJWT}", 
+                              "numero": Biblioteca.cifrar(numero), 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!)
+                              } 
+                            : {
+                              "content-type": "application/json", 
+                              "authorization": "Bearer ${Sessao.tokenJWT}", 
+                              "numero": Biblioteca.cifrar(numero), 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!)
+                              };      
+      final response = await clienteHTTP.post(
+        Uri.tryParse('$endpoint/acbr-monitor/emite-nfce/')!,
+        headers: ServiceBase.cabecalhoRequisicao,
+        body: Biblioteca.cifrar(nfceBase64),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (response.headers["content-type"]!.contains("html")) {
+          tratarRetornoErro(response.body, response.headers);
+          return null;
+        } else {
+          // Sessao.ultimaChaveDeAcesso = Biblioteca.decifrar(response.headers["chave"] ?? '');
+          final danfe = response.bodyBytes;
+          return danfe;          
+        }
+      } else if (response.statusCode == 418) {
+        return json.decode(response.body)["message"];
+      } else {
+        tratarRetornoErro(response.body, response.headers);
+        return null;
+      }
+    } on Exception catch (e) {
+      tratarRetornoErro(null, null, exception: e);
+      return null;
+    }
+  }
+
+  Future<dynamic> emitirNfceContingencia(String nfceBase64, String numero) async {
+    try {
+      ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
+                            ? {
+                              "content-type": "application/json", 
+                              "authentication": "Bearer ${Sessao.tokenJWT}", 
+                              "numero": Biblioteca.cifrar(numero), 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!)
+                              } 
+                            : {
+                              "content-type": "application/json", 
+                              "authorization": "Bearer ${Sessao.tokenJWT}", 
+                              "numero": Biblioteca.cifrar(numero), 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!)
+                              };      
+      final response = await clienteHTTP.post(
+        Uri.tryParse('$endpoint/acbr-monitor/emite-nfce-contingencia/')!,
+        headers: ServiceBase.cabecalhoRequisicao,
+        body: Biblioteca.cifrar(nfceBase64),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (response.headers["content-type"]!.contains("html")) {
+          tratarRetornoErro(response.body, response.headers);
+          return null;
+        } else {
+          // Sessao.ultimaChaveDeAcesso = Biblioteca.decifrar(response.headers["chave"] ?? '');
+          final danfe = response.bodyBytes;
+          return danfe;          
+        }
+      } else if (response.statusCode == 418) {
+        return json.decode(response.body)["message"];
+      } else {
+        tratarRetornoErro(response.body, response.headers);
+        return null;
+      }
+    } on Exception catch (e) {
+      tratarRetornoErro(null, null, exception: e);
+      return null;
+    }
+  }
+
+  Future<dynamic> transmitirNfceContingenciada(String chave) async {
+    try {
+      ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
+                            ? {
+                              "content-type": "application/json", 
+                              "authentication": "Bearer ${Sessao.tokenJWT}", 
+                              "chave": Biblioteca.cifrar(chave), 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!)
+                              } 
+                            : {
+                              "content-type": "application/json", 
+                              "authorization": "Bearer ${Sessao.tokenJWT}", 
+                              "chave": Biblioteca.cifrar(chave), 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!)
+                              };      
+      final response = await clienteHTTP.post(
+        Uri.tryParse('$endpoint/acbr-monitor/transmite-nfce-contingenciada/')!,
+        headers: ServiceBase.cabecalhoRequisicao,
+        // body: {"vazio": "vazio"} ,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (response.headers["content-type"]!.contains("html")) {
+          tratarRetornoErro(response.body, response.headers);
+          return null;
+        } else {
+          final danfe = response.bodyBytes;
+          return danfe;          
+        }
+      } else if (response.statusCode == 418) {
+        return json.decode(response.body)["message"];
+      } else {
+        tratarRetornoErro(response.body, response.headers);
+        return null;
+      }
+    } on Exception catch (e) {
+      tratarRetornoErro(null, null, exception: e);
+      return null;
+    }
+  }
+
+  Future<String> inutilizarNumeroNfce(ObjetoNfe objetoNfe) async {
+    try {
+      ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
+                            ? {"content-type": "application/json", "authentication": "Bearer ${Sessao.tokenJWT}"} 
+                            : {"content-type": "application/json", "authorization": "Bearer ${Sessao.tokenJWT}"};      
+      final response = await clienteHTTP.post(
+        Uri.tryParse('$endpoint/acbr-monitor/inutiliza-numero-nota/')!,
+        headers: ServiceBase.cabecalhoRequisicao,
+        body: Biblioteca.cifrar(objetoNfe.objetoEncodeJson()),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (response.headers["content-type"]!.contains("html")) {
+          tratarRetornoErro(response.body, response.headers);
+          return '';
+        } else {
+          return Biblioteca.decifrar(response.body);
+        }
+      } else {
+        tratarRetornoErro(response.body, response.headers);
+        return '';
+      }
+    } on Exception catch (e) {
+      tratarRetornoErro(null, null, exception: e);
+      return '';
+    }
+  }
+
+  Future<String> cancelarNota(ObjetoNfe objetoNfe) async {
+    try {
+      ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
+                            ? {"content-type": "application/json", "authentication": "Bearer ${Sessao.tokenJWT}"} 
+                            : {"content-type": "application/json", "authorization": "Bearer ${Sessao.tokenJWT}"};      
+      final response = await clienteHTTP.post(
+        Uri.tryParse('$endpoint/acbr-monitor/cancela-nfce/')!,
+        headers: ServiceBase.cabecalhoRequisicao,
+        body: Biblioteca.cifrar(objetoNfe.objetoEncodeJson()),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (response.headers["content-type"]!.contains("html")) {
+          tratarRetornoErro(response.body, response.headers);
+          return '';
+        } else {
+          return Biblioteca.decifrar(response.body);
+        }
+      } else {
+        tratarRetornoErro(response.body, response.headers);
+          return '';
+      }
+    } on Exception catch (e) {
+      tratarRetornoErro(null, null, exception: e);
+      return '';
+    }
+  }
+
+  Future<String> tratarNotaAnteriorContingencia(ObjetoNfe objetoNfe) async {
+    try {
+      ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
+                            ? {"content-type": "application/json", "authentication": "Bearer ${Sessao.tokenJWT}"} 
+                            : {"content-type": "application/json", "authorization": "Bearer ${Sessao.tokenJWT}"};      
+      final response = await clienteHTTP.post(
+        Uri.tryParse('$endpoint/acbr-monitor/trata-nota-anterior-contingencia/')!,
+        headers: ServiceBase.cabecalhoRequisicao,
+        body: Biblioteca.cifrar(objetoNfe.objetoEncodeJson()),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (response.headers["content-type"]!.contains("html")) {
+          tratarRetornoErro(response.body, response.headers);
+          return '';
+        } else {
+          return Biblioteca.decifrar(response.body);
+        }
+      } else {
+        tratarRetornoErro(response.body, response.headers);
+          return '';
+      }
+    } on Exception catch (e) {
+      tratarRetornoErro(null, null, exception: e);
+      return '';
+    }
+  }
+
+  Future<dynamic> gerarPdfDanfe(String chave) async {
+    try {
+      ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
+                            ? {
+                              "content-type": "application/json", 
+                              "authentication": "Bearer ${Sessao.tokenJWT}", 
+                              "chave": Biblioteca.cifrar(chave), 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!)
+                              } 
+                            : {
+                              "content-type": "application/json", 
+                              "authorization": "Bearer ${Sessao.tokenJWT}", 
+                              "chave": Biblioteca.cifrar(chave), 
+                              "cnpj": Biblioteca.cifrar(Sessao.empresa!.cnpj!)
+                              };      
+      final response = await clienteHTTP.post(
+        Uri.tryParse('$endpoint/acbr-monitor/gera-pdf-danfe-nfce/')!,
+        headers: ServiceBase.cabecalhoRequisicao,
+        // body: {"vazio": "vazio"} ,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (response.headers["content-type"]!.contains("html")) {
+          tratarRetornoErro(response.body, response.headers);
+          return null;
+        } else {
+          final danfe = response.bodyBytes;
+          return danfe;          
+        }
+      } else if (response.statusCode == 418) {
+        return json.decode(response.body)["message"];
+      } else {
+        tratarRetornoErro(response.body, response.headers);
+        return null;
+      }
+    } on Exception catch (e) {
+      tratarRetornoErro(null, null, exception: e);
+      return null;
     }
   }
 

@@ -5,30 +5,12 @@ description: T2Ti ERP - Pegasus PDV
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-# The following defines the version and build number for your application.
-# A version number is three numbers separated by dots, like 1.2.43
-# followed by an optional build number separated by a +.
-# Both the version and the builder number may be overridden in flutter
-# build by specifying --build-name and --build-number, respectively.
-# In Android, build-name is used as versionName while build-number used as versionCode.
-# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
-# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
-# Read more about iOS versioning at
-# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-
 # version:A.B.C+X --> A.B.C represents the versionName such as 1.0.0 - X (the number after the +) represents the versionCode such as 1, 2, 3, etc.
 version: 1.0.9+9
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
-  #sdk: ">=2.15.0-178.1.beta <3.0.0"
+  sdk: ">=2.17.3 <3.0.0"
 
-# Dependencies specify other packages that your package needs in order to work.
-# To automatically upgrade your package dependencies to the latest versions
-# consider running `flutter pub upgrade --major-versions`. Alternatively,
-# dependencies can be manually updated by changing the version numbers below to
-# the latest version available on pub.dev. To see which dependencies have newer
-# versions available, run `flutter pub outdated`.
 dependencies:
   flutter:
     sdk: flutter
@@ -42,20 +24,20 @@ dependencies:
   #flutter_masked_text: any
   extended_masked_text: any
   cpf_cnpj_validator: any
-  flutter_html: any
+  flutter_html: ^2.2.1
   bottomreveal: any
   flutter_barcode_scanner: any
   flutter_bootstrap: any
   #flutter_sparkline: any
-  printing: any
-  moor: any
-  sqlite3_flutter_libs: any
-  path_provider: any
+  printing: ^5.9.1
+  drift: ^1.7.0
+  sqlite3_flutter_libs: ^0.5.7
+  path_provider: ^2.0.11
   path: any
   awesome_dialog: any
   image_picker: any
   catcher: any
-  sentry_flutter: any
+  sentry_flutter: ^6.6.1
   desktop_window: any
   url_launcher: any
   email_validator: any
@@ -70,26 +52,32 @@ dependencies:
   crypto: any
   share_plus: any
   sparkline: any
-
+  platform_device_id: any
+  xml: any
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+dependency_overrides:
+  catcher:
+    git:
+      url: https://github.com/ThexXTURBOXx/catcher.git
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  moor_generator: 4.6.0+1
+  drift_dev: ^1.7.0
   build_runner: any
   msix: any
   flutter_launcher_icons: any
-  
+
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^1.0.0
+  flutter_lints: ^2.0.0
 
 flutter_icons:
   android: true
@@ -99,7 +87,7 @@ flutter_icons:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
-# The following section is specific to Flutter.
+# The following section is specific to Flutter packages.
 flutter:
 
   # The following line ensures that the Material Icons font is

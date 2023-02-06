@@ -40,23 +40,23 @@ import 'package:pegasus_pdv/src/database/database_classes.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
+import 'package:pegasus_pdv/src/view/page/page.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
 import 'package:pegasus_pdv/src/view/shared/caixas_de_dialogo.dart';
 import 'package:pegasus_pdv/src/view/shared/page/filtro_page.dart';
 
-import 'cliente_persiste_page.dart';
-
 class ClienteListaPage extends StatefulWidget {
   const ClienteListaPage({Key? key}) : super(key: key);
 
   @override
-  _ClienteListaPageState createState() => _ClienteListaPageState();
+  ClienteListaPageState createState() => ClienteListaPageState();
 }
 
-class _ClienteListaPageState extends State<ClienteListaPage> {
+class ClienteListaPageState extends State<ClienteListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -78,7 +78,7 @@ class _ClienteListaPageState extends State<ClienteListaPage> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
 
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -99,12 +99,12 @@ class _ClienteListaPageState extends State<ClienteListaPage> {
   
   @override
   Widget build(BuildContext context) {
-    final _listaCliente = Sessao.db.clienteDao.listaCliente;
+    final listaCliente = Sessao.db.clienteDao.listaCliente;
 
-    final _ClienteDataSource _clienteDataSource = _ClienteDataSource(_listaCliente, context, _refrescarTela);
+    final _ClienteDataSource clienteDataSource = _ClienteDataSource(listaCliente, context, _refrescarTela);
 
     void _sort<T>(Comparable<T>? Function(Cliente cliente) getField, int columnIndex, bool ascending) {
-      _clienteDataSource._sort<T>(getField, ascending);
+      clienteDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -144,7 +144,7 @@ class _ClienteListaPageState extends State<ClienteListaPage> {
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
-              child: _listaCliente == null
+              child: listaCliente == null
               ? const Center(child: CircularProgressIndicator())
               : ListView(
                 padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
@@ -160,6 +160,10 @@ class _ClienteListaPageState extends State<ClienteListaPage> {
                     sortColumnIndex: _sortColumnIndex,
                     sortAscending: _sortAscending,
                     columns: <DataColumn>[
+                        const DataColumn(
+                          label: Text('Fiados'),
+                          tooltip: 'Fiados',
+                        ),
                       DataColumn(
                         numeric: true,
                         label: const Text('Id'),
@@ -306,6 +310,13 @@ class _ClienteListaPageState extends State<ClienteListaPage> {
                           _sort<String>((Cliente cliente) => cliente.contato, columnIndex, ascending),
                       ),
                       DataColumn(
+                        numeric: true,
+                        label: const Text('Valor Teto Fiado'),
+                        tooltip: 'Conteúdo para o campo Valor Teto Fiado',
+                        onSort: (int columnIndex, bool ascending) =>
+                          _sort<num>((Cliente cliente) => cliente.fiadoValorTeto, columnIndex, ascending),
+                      ),
+                      DataColumn(
                         label: const Text('Tipo de Fidelidade'),
                         tooltip: 'Conteúdo para o campo Tipo de Fidelidade',
                         onSort: (int columnIndex, bool ascending) =>
@@ -325,7 +336,7 @@ class _ClienteListaPageState extends State<ClienteListaPage> {
                           _sort<num>((Cliente cliente) => cliente.fidelidadeValor, columnIndex, ascending),
                       ),
                     ],
-                    source: _clienteDataSource,
+                    source: clienteDataSource,
                   ),
                 ],
               ),
@@ -416,7 +427,23 @@ class _ClienteDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
-        DataCell(Text('${cliente.id ?? ''}'), onTap: () {
+        DataCell(
+          getBotaoGenericoPdv(
+            descricao: 'Fiados',
+            cor: Colors.green.shade400, 
+            padding: const EdgeInsets.all(5),
+            onPressed: () async {
+              Navigator.of(context)
+                .push(MaterialPageRoute(
+                  builder: (BuildContext context) => ClienteFiadoListaPage(
+                    cliente: cliente, 
+                  )))
+                .then((_) async {    
+              });
+            }
+          ),
+        ),
+        DataCell(Text('${cliente.id}'), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
         DataCell(Text(cliente.tipoPessoa ?? ''), onTap: () {
@@ -486,6 +513,9 @@ class _ClienteDataSource extends DataTableSource {
           _detalharCliente(cliente, context, refrescarTela);
         }),
         DataCell(Text(cliente.contato ?? ''), onTap: () {
+          _detalharCliente(cliente, context, refrescarTela);
+        }),
+        DataCell(Text(Biblioteca.formatarValorDecimal(cliente.fiadoValorTeto)), onTap: () {
           _detalharCliente(cliente, context, refrescarTela);
         }),
         DataCell(Text(cliente.fidelidadeAviso ?? ''), onTap: () {

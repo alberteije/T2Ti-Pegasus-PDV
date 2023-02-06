@@ -33,12 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
+import 'package:catcher/catcher.dart';
 import 'package:flutter/material.dart' hide Key;
 import 'package:flutter/foundation.dart' hide Key;
 import 'package:intl/intl.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class Constantes {
 
@@ -55,8 +57,8 @@ class Constantes {
 // #region Arquivo ENV
   static String chave = '#Sua-Chave-de-32-caracteres-aqui'; // #Sua-Chave-de-32-caracteres-aqui tem que alterar para produção e gerar os valores do ENV com a chave correta
   static Key key = Key.fromUtf8(Constantes.chave);
-  static IV iv = IV.fromUtf8('');
-  static Encrypter encrypter = Encrypter(AES(key, mode: AESMode.ecb));
+  static IV iv = IV.fromUtf8('#Seu-Vetor-aqui#');
+  static Encrypter encrypter = Encrypter(AES(key, mode: AESMode.ctr, padding: null));
 
   static String? sentryDns = (kDebugMode && Biblioteca.isDesktop()) ? dotenv.env['SENTRY_DNS'] : encrypter.decrypt64(dotenv.env['SENTRY_DNS']!, iv: iv);
   static String? linguagemServidor = (kDebugMode && Biblioteca.isDesktop()) ? dotenv.env['LINGUAGEM_SERVIDOR'] : encrypter.decrypt64(dotenv.env['LINGUAGEM_SERVIDOR']!, iv: iv);
@@ -249,6 +251,106 @@ class Constantes {
   static const String nfceBanner = '$imageDir/nfce-banner.png';
   
 // #endregion Imagens
+
+// #region Catcher
+  ///configuração para tratar erros em modo de debug (desenvolvimento)
+  static CatcherOptions debugOptionsDialogo = CatcherOptions(
+    DialogReportMode(),
+    [
+      SentryHandler(
+        SentryClient(SentryOptions(dsn: sentryDns)),
+      ),
+      ConsoleHandler()
+    ],
+    localizationOptions: [
+      LocalizationOptions.buildDefaultPortugueseOptions(),
+    ],
+    customParameters: {"versao-atual": versaoApp}, 
+  );
+
+  ///configuração para tratar erros em modo de release (produção)
+  static CatcherOptions releaseOptionsDialogo = CatcherOptions(
+    DialogReportMode(),
+    [
+      SentryHandler(
+        SentryClient(SentryOptions(dsn: sentryDns)),
+      ),
+      ConsoleHandler(),
+    ],
+    localizationOptions: [
+      LocalizationOptions.buildDefaultPortugueseOptions(),
+    ],
+    customParameters: {"versao-atual": versaoApp}, 
+  );
+
+
+  ///configuração para tratar erros em modo de debug (desenvolvimento) - modo silencioso
+  static CatcherOptions debugOptionsSilencioso = CatcherOptions(
+    SilentReportMode(),
+    [
+      SentryHandler(
+        SentryClient(SentryOptions(dsn: sentryDns)),
+      ),
+      ConsoleHandler()
+    ],
+    localizationOptions: [
+      LocalizationOptions.buildDefaultPortugueseOptions(),
+    ],
+    customParameters: {"versao-atual": versaoApp}, 
+  );
+
+  ///configuração para tratar erros em modo de release (produção) - modo silencioso
+  static CatcherOptions releaseOptionsSilencioso = CatcherOptions(
+    DialogReportMode(),
+    [
+      SentryHandler(
+        SentryClient(SentryOptions(dsn: sentryDns)),
+      ),
+      ConsoleHandler(),
+    ],
+    localizationOptions: [
+      LocalizationOptions.buildDefaultPortugueseOptions(),
+    ],
+    customParameters: {"versao-atual": versaoApp}, 
+  );
+
+  ///configuração para tratar erros em modo de debug (desenvolvimento) - modo página
+  static CatcherOptions debugOptionsPagina = CatcherOptions(
+    PageReportMode(),
+    [
+      SentryHandler(
+        SentryClient(SentryOptions(dsn: sentryDns)),
+      ),
+      ConsoleHandler()
+    ],
+    localizationOptions: [
+      LocalizationOptions.buildDefaultPortugueseOptions(),
+    ],
+    customParameters: {"versao-atual": versaoApp}, 
+  );
+
+  ///configuração para tratar erros em modo de release (produção) - modo página
+  static CatcherOptions releaseOptionsPagina = CatcherOptions(
+    ///Vai mostrar o erro numa página
+    PageReportMode(),
+    ///Vai mostrar o erro numa página
+    // PageReportMode(showStackTrace: true),
+    [
+      //Manda os erros para o Sentry
+      SentryHandler(
+        SentryClient(SentryOptions(dsn: sentryDns)),
+      ),
+
+      ///Imprime os erros no Console
+      ConsoleHandler(),
+    ],
+    localizationOptions: [
+      LocalizationOptions.buildDefaultPortugueseOptions(),
+    ],
+    customParameters: {"versao-atual": versaoApp}, 
+  );
+
+// #endregion Catcher
 
 }
 

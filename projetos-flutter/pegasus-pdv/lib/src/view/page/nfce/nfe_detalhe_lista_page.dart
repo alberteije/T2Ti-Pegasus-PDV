@@ -49,10 +49,10 @@ class NfeDetalheListaPage extends StatefulWidget {
   const NfeDetalheListaPage({Key? key, this.nfeCabecalhoMontado, this.foco}) : super(key: key);
 
   @override
-  _NfeDetalheListaPageState createState() => _NfeDetalheListaPageState();
+  NfeDetalheListaPageState createState() => NfeDetalheListaPageState();
 }
 
-class _NfeDetalheListaPageState extends State<NfeDetalheListaPage> {
+class NfeDetalheListaPageState extends State<NfeDetalheListaPage> {
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
 
@@ -131,9 +131,9 @@ class _NfeDetalheListaPageState extends State<NfeDetalheListaPage> {
   List<DataRow> _getRows() {
     List<DataRow> lista = [];
     for (var nfeDetalheMontado in widget.nfeCabecalhoMontado!.listaNfeDetalheMontado!) {
-      List<DataCell> _celulas = [];
+      List<DataCell> celulas = [];
 
-      _celulas = [
+      celulas = [
         // DataCell(Text('${nfeDetalheMontado.nfeDetalhe.numeroItem ?? ''}'), ),
         DataCell(Text(nfeDetalheMontado.nfeDetalhe!.nomeProduto ?? ''), ),
         DataCell(Text(nfeDetalheMontado.nfeDetalhe!.codigoProduto ?? ''), ),
@@ -146,7 +146,7 @@ class _NfeDetalheListaPageState extends State<NfeDetalheListaPage> {
         DataCell(Text(Biblioteca.formatarValorDecimal(nfeDetalheMontado.nfeDetalhe!.valorTotal)),),
       ];
 
-      lista.add(DataRow(cells: _celulas));
+      lista.add(DataRow(cells: celulas));
     }
     return lista;
   }

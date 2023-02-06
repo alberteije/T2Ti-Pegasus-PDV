@@ -211,7 +211,10 @@ MaterialButton getBotaoInternoCaixa(
       height: height ?? 70.0,
       padding: EdgeInsets.all(paddingAll),
       textColor: Colors.white,
-      minWidth: minWidth ?? 80,          
+      minWidth: minWidth ?? 80,
+      color: corBotao,
+      elevation: 0,
+      onPressed: onPressed as void Function()?,          
       child: Column(
         children: <Widget>[
           FaIcon(icone, size: tamanhoIcone),
@@ -221,9 +224,6 @@ MaterialButton getBotaoInternoCaixa(
           ),
         ],
       ),
-      color: corBotao,
-      elevation: 0,
-      onPressed: onPressed as void Function()?,
     );
 }
 
@@ -277,7 +277,6 @@ ElevatedButton getBotaoGenericoPdv({
     TextStyle? textStyle,
   }) {
   return ElevatedButton(
-    child: Text(descricao),
     style: ElevatedButton.styleFrom(
       fixedSize: tamanho,
       elevation: 2,
@@ -287,6 +286,7 @@ ElevatedButton getBotaoGenericoPdv({
       textStyle: textStyle
     ),
     onPressed: onPressed as void Function()?,
+    child: Text(descricao),
   );
 }
 

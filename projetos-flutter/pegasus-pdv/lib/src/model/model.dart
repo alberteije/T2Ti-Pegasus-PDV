@@ -43,3 +43,33 @@ export 'package:pegasus_pdv/src/model/cadastros/pdv_tipo_plano_model.dart';
 // nfce
 export 'package:pegasus_pdv/src/model/nfce/nfce_plano_pagamento_model.dart';
 export 'package:pegasus_pdv/src/model/nfce/nfe_configuracao_model.dart';
+
+// transiente
+export 'package:pegasus_pdv/src/model/transiente/filtro.dart';
+export 'package:pegasus_pdv/src/model/transiente/objeto_nfe.dart';
+export 'package:pegasus_pdv/src/model/transiente/objeto_sincroniza.dart';
+export 'package:pegasus_pdv/src/model/transiente/retorno_json_erro.dart';
+
+// ifood
+export 'package:pegasus_pdv/src/model/ifood/schedule_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/coordinates_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/delivery_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/delivery_address_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/takeout_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/indoor_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/merchant_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/phone_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/customer_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/option_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/item_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/sponsorship_value_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/benefit_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/additional_fee_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/total_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/method_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/payments_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/picking_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/metadata_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/additional_info_model.dart';
+export 'package:pegasus_pdv/src/model/ifood/root_model.dart';
+

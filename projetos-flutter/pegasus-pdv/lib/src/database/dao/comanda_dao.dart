@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'comanda_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           Comandas,
           ComandaDetalhes,
           ComandaDetalheComplementos,
@@ -64,17 +64,17 @@ class ComandaDao extends DatabaseAccessor<AppDatabase> with _$ComandaDaoMixin {
   }  
 
   Future<List<Comanda>> consultarListaFiltro(String campo, String valor) async {
-    listaComanda = await (customSelect("SELECT * FROM COMANDA WHERE " + campo + " like '%" + valor + "%'", 
+    listaComanda = await (customSelect("SELECT * FROM COMANDA WHERE $campo like '%$valor%'", 
                                 readsFrom: { comandas }).map((row) {
-                                  return Comanda.fromData(row.data, db);  
+                                  return Comanda.fromData(row.data);  
                                 }).get());
     return listaComanda;
   }
 
   Future<List<Comanda>> consultarComandasPorMesa(int idMesa) async {
-    listaComanda = await (customSelect("SELECT * FROM COMANDA WHERE ID_MESA = '" + idMesa.toString() + "'", 
+    listaComanda = await (customSelect("SELECT * FROM COMANDA WHERE ID_MESA = '$idMesa'", 
                                 readsFrom: { comandas }).map((row) {
-                                  return Comanda.fromData(row.data, db);  
+                                  return Comanda.fromData(row.data);  
                                 }).get());
     return listaComanda;
   }
@@ -82,15 +82,15 @@ class ComandaDao extends DatabaseAccessor<AppDatabase> with _$ComandaDaoMixin {
   Future<List<ComandaMontado>> consultarListaMontado({required int idMesa, required int codigoCompartilhado, required String situacao}) async {
     listaComandaMontado.clear();
 
-    String sql = "SELECT * FROM COMANDA WHERE ID_MESA = '" + idMesa.toString() + "'";
+    String sql = "SELECT * FROM COMANDA WHERE ID_MESA = '$idMesa'";
     if (codigoCompartilhado > 0) {
-      sql += " and CODIGO_COMPARTILHADO = '" + codigoCompartilhado.toString() + "'";
+      sql += " and CODIGO_COMPARTILHADO = '$codigoCompartilhado'";
     }
-    sql += " and SITUACAO = '" + situacao + "'";
+    sql += " and SITUACAO = '$situacao'";
 
     listaComanda = await (customSelect(sql, 
                                 readsFrom: { comandas }).map((row) {
-                                  return Comanda.fromData(row.data, db);  
+                                  return Comanda.fromData(row.data);  
                                 }).get());
 
     for (var comanda in listaComanda) {
@@ -98,21 +98,21 @@ class ComandaDao extends DatabaseAccessor<AppDatabase> with _$ComandaDaoMixin {
         comanda: comanda,
 
         // pega o cliente
-        cliente: await (customSelect("SELECT * FROM CLIENTE WHERE ID = '" + comanda.idCliente.toString() + "'", 
+        cliente: await (customSelect("SELECT * FROM CLIENTE WHERE ID = '${comanda.idCliente}'", 
                                 readsFrom: { clientes }).map((row) {
-                                  return Cliente.fromData(row.data, db);  
+                                  return Cliente.fromData(row.data);  
                                 }).getSingleOrNull()),       
 
         // pega o colaborador
-        colaborador: await (customSelect("SELECT * FROM COLABORADOR WHERE ID = '" + comanda.idColaborador.toString() + "'", 
+        colaborador: await (customSelect("SELECT * FROM COLABORADOR WHERE ID = '${comanda.idColaborador}'", 
                                 readsFrom: { colaboradors }).map((row) {
-                                  return Colaborador.fromData(row.data, db);  
+                                  return Colaborador.fromData(row.data);  
                                 }).getSingleOrNull()),       
 
         //pesa a mesa
-        mesa: await (customSelect("SELECT * FROM MESA WHERE ID = '" + comanda.idMesa.toString() + "'", 
+        mesa: await (customSelect("SELECT * FROM MESA WHERE ID = '${comanda.idMesa}'", 
                                 readsFrom: { mesas }).map((row) {
-                                  return Mesa.fromData(row.data, db);  
+                                  return Mesa.fromData(row.data);  
                                 }).getSingleOrNull()),       
 
         // pega os detalhes
@@ -155,7 +155,7 @@ class ComandaDao extends DatabaseAccessor<AppDatabase> with _$ComandaDaoMixin {
     if (campo != null && campo != '') {      
       final coluna = comandas.$columns.where(((coluna) => coluna.$name == campo)).first;
       if (coluna is TextColumn) {
-        consulta.where((coluna as TextColumn).like('%'  + valor + '%'));
+        consulta.where((coluna as TextColumn).like('%$valor%'));
       } else if (coluna is IntColumn) {
         consulta.where(coluna.equals(int.tryParse(valor)));
       } else if (coluna is RealColumn) {
@@ -182,9 +182,9 @@ class ComandaDao extends DatabaseAccessor<AppDatabase> with _$ComandaDaoMixin {
   }
 
   Future<Comanda?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM COMANDA WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM COMANDA WHERE $campo = '$valor'", 
                                 readsFrom: { comandas }).map((row) {
-                                  return Comanda.fromData(row.data, db);  
+                                  return Comanda.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -210,20 +210,27 @@ class ComandaDao extends DatabaseAccessor<AppDatabase> with _$ComandaDaoMixin {
     });    
   } 
 
-  Future<bool> excluir(ComandaMontado pObjeto) {
+  Future<int> excluir(ComandaMontado pObjeto) {
     return transaction(() async {
-      // await excluirFilhos(pObjeto);
-      // return delete(comandas).delete(pObjeto.comanda!);
+      await excluirFilhos(pObjeto);
+      return delete(comandas).delete(pObjeto.comanda!);
+    });    
+  }
+
+  Future<bool> cancelarComanda(ComandaMontado pObjeto) {
+    return transaction(() async {
       return update(comandas).replace(pObjeto.comanda!);
     });    
   }
 
   Future<void> inserirFilhos(ComandaMontado comandaMontado) async {
     for (var comandaDetalheMontado in comandaMontado.listaComandaDetalheMontado ?? []) {
-      comandaDetalheMontado.comandaDetalhe = comandaDetalheMontado.comandaDetalhe.copyWith(idComanda: comandaMontado.comanda!.id); 
+      var maxId = await db.comandaDetalheDao.ultimoId();
+      comandaDetalheMontado.comandaDetalhe = comandaDetalheMontado.comandaDetalhe.copyWith(id: maxId+1, idComanda: comandaMontado.comanda!.id!); 
       final idDetalhe = await into(comandaDetalhes).insert(comandaDetalheMontado.comandaDetalhe);  
       for (var complemento in comandaDetalheMontado.listaComandaDetalheComplemento) {
-        complemento = complemento.copyWith(idComandaDetalhe: idDetalhe);
+        maxId = await db.comandaDetalheComplementoDao.ultimoId();
+        complemento = complemento.copyWith(id: maxId+1, idComandaDetalhe: idDetalhe);
         await into(comandaDetalheComplementos).insert(complemento);  
       }
     }
@@ -231,7 +238,7 @@ class ComandaDao extends DatabaseAccessor<AppDatabase> with _$ComandaDaoMixin {
   
   Future<void> excluirFilhos(ComandaMontado comandaMontado) async {
     for (var comandaDetalheMontado in comandaMontado.listaComandaDetalheMontado!) {
-      await (delete(comandaDetalheComplementos)..where((t) => t.idComandaDetalhe.equals(comandaDetalheMontado.comandaDetalhe!.id ?? 0))).go();
+      await (delete(comandaDetalheComplementos)..where((t) => t.idComandaDetalhe.equals(comandaDetalheMontado.comandaDetalhe!.id!))).go();
     }
     await (delete(comandaDetalhes)..where((t) => t.idComanda.equals(comandaMontado.comanda!.id!))).go();
   }

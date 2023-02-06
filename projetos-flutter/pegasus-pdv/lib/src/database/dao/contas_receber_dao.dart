@@ -34,15 +34,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 import 'dart:async';
+import 'dart:convert';
 
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 part 'contas_receber_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           ContasRecebers,
           Clientes,
 		])
@@ -60,18 +62,17 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
   }
 
   Future<List<ContasReceber>?> consultarListaFiltro(String campo, String valor) async {
-    listaContasReceber = await (customSelect("SELECT * FROM CONTAS_RECEBER WHERE " + campo + " like '%" + valor + "%'", 
+    listaContasReceber = await (customSelect("SELECT * FROM CONTAS_RECEBER WHERE $campo like '%$valor%'", 
                                 readsFrom: { contasRecebers }).map((row) {
-                                  return ContasReceber.fromData(row.data, db);  
+                                  return ContasReceber.fromData(row.data);  
                                 }).get());
     return listaContasReceber;
   }
 
   Future<List<ContasReceber>?> consultarRecebimentosDeUmaVenda(int idPdvVendaCabecalho, String status) async {
-    listaContasReceber = await (customSelect("SELECT * FROM CONTAS_RECEBER WHERE ID_PDV_VENDA_CABECALHO = " 
-                                + idPdvVendaCabecalho.toString() + " AND STATUS_RECEBIMENTO =  '" + status + "'", 
+    listaContasReceber = await (customSelect("SELECT * FROM CONTAS_RECEBER WHERE ID_PDV_VENDA_CABECALHO = $idPdvVendaCabecalho AND STATUS_RECEBIMENTO =  '$status'", 
                                 readsFrom: { contasRecebers }).map((row) {
-                                  return ContasReceber.fromData(row.data, db);  
+                                  return ContasReceber.fromData(row.data);  
                                 }).get());
     return listaContasReceber;
   }
@@ -119,15 +120,7 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
     } else if (periodo.contains('Ano')) {
       diasPeriodo = '360';
     }
-    final sql = "select SUM(VALOR_RECEBIDO) AS TOTAL from CONTAS_RECEBER "
-                "where "
-                "STATUS_RECEBIMENTO='R' "
-                "and " 
-                "( "
-                "date(DATA_RECEBIMENTO, 'unixepoch') "
-                "between "
-                "date('now','-" + diasPeriodo + " day') AND date('now') "
-                ")";
+    final sql = "select SUM(VALOR_RECEBIDO) AS TOTAL from CONTAS_RECEBER where STATUS_RECEBIMENTO='R' and ( date(DATA_RECEBIMENTO, 'unixepoch') between date('now','-$diasPeriodo day') AND date('now') )";
     final resultado = await customSelect(sql).getSingleOrNull();
     return resultado?.data["TOTAL"] ?? 0;
   }
@@ -156,15 +149,7 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
       diasPeriodo = '360';
     }
 
-    final sql = "select SUM(VALOR_A_RECEBER) AS TOTAL from CONTAS_RECEBER "
-                "where "
-                "STATUS_RECEBIMENTO='A' "
-                "and " 
-                "( "
-                "date(DATA_VENCIMENTO, 'unixepoch') "
-                "between "
-                "date('now') AND date('now','+"+ diasPeriodo + " day') "
-                ")";
+    final sql = "select SUM(VALOR_A_RECEBER) AS TOTAL from CONTAS_RECEBER where STATUS_RECEBIMENTO='A' and ( date(DATA_VENCIMENTO, 'unixepoch') between date('now') AND date('now','+$diasPeriodo day') )";
     final resultado = await customSelect(sql).getSingleOrNull();
     return resultado?.data["TOTAL"] ?? 0;
   }
@@ -175,8 +160,15 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
     return (select(contasRecebers)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<ContasReceber> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from CONTAS_RECEBER").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(ContasReceber pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(contasRecebers).insert(pObjeto);
       return idInserido;
     });    
@@ -192,13 +184,13 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
     });    
   } 
 
-  Future<bool> alterar(Insertable<ContasReceber> pObjeto) {
+  Future<bool> alterar(ContasReceber pObjeto) {
     return transaction(() async {
       return update(contasRecebers).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<ContasReceber> pObjeto) {
+  Future<int> excluir(ContasReceber pObjeto) {
     return transaction(() async {
       return delete(contasRecebers).delete(pObjeto);
     });    
@@ -206,6 +198,15 @@ class ContasReceberDao extends DatabaseAccessor<AppDatabase> with _$ContasRecebe
 
   Future<int> excluirReceitasDeUmaVenda(int idPdvVendaCabecalho) async {
     return await (delete(contasRecebers)..where((t) => t.idPdvVendaCabecalho.equals(idPdvVendaCabecalho))).go();
+  }
+
+  Future<void> sincronizar(ObjetoSincroniza objetoSincroniza) async {
+    (delete(contasRecebers)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = ContasReceber.fromJson(objetoJson);
+      into(contasRecebers).insertOnConflictUpdate(objetoDart);
+    }
   }
 
 	static List<String> campos = <String>[

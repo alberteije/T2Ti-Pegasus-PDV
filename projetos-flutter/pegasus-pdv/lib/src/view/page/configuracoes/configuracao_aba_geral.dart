@@ -50,10 +50,10 @@ class ConfiguracaoAbaGeral extends StatefulWidget {
 
   
   @override
-  _ConfiguracaoAbaGeralState createState() => _ConfiguracaoAbaGeralState();
+  ConfiguracaoAbaGeralState createState() => ConfiguracaoAbaGeralState();
 }
 
-class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
+class ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
   bool _permiteEstoqueNegativo = Sessao.configuracaoPdv!.permiteEstoqueNegativo == 'S' ? true : false;
   String? _formatoPagina = Sessao.configuracaoPdv!.reciboFormatoPagina;
   double _larguraPagina = Sessao.configuracaoPdv!.reciboLarguraPagina ?? 57;
@@ -64,7 +64,7 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
 
   @override
@@ -195,8 +195,8 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
               key: GlobalKey(),
               title: 
                 Biblioteca.isTelaPequena(context)! 
-                ? Text('Formato Página: ' + _formatoPagina!)
-                : Text('Formato da Página: ' + _formatoPagina!),                             
+                ? Text('Formato Página: ${_formatoPagina!}')
+                : Text('Formato da Página: ${_formatoPagina!}'),                             
               backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.025),
               children: <Widget>[
                 ListTile(
@@ -246,8 +246,8 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
                 ),
                 title: 
                   Biblioteca.isTelaPequena(context)! 
-                  ? Text("Largura [" + _larguraPagina.toString() + "]")
-                  : Text("Largura Página [" + _larguraPagina.toString() + "]"),                    
+                  ? Text("Largura [$_larguraPagina]")
+                  : Text("Largura Página [$_larguraPagina]"),                    
                 trailing:
                 SizedBox(
                   width: Biblioteca.isTelaPequena(context)! ? 200 : 200,
@@ -287,8 +287,8 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
                 ),
                 title: 
                   Biblioteca.isTelaPequena(context)! 
-                  ? Text("Margens [" + _margensPagina.toString() + "]")
-                  : Text("Margens Página [" + _margensPagina.toString() + "]"),                    
+                  ? Text("Margens [$_margensPagina]")
+                  : Text("Margens Página [$_margensPagina]"),                    
                 trailing:
                 SizedBox(
                   width: Biblioteca.isTelaPequena(context)! ? 150 : 200,
@@ -385,7 +385,7 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
                         icon: ViewUtilLib.getIconBotaoLookup(),
                         onPressed: () async {
                           ///chamando o lookup
-                          Map<String, dynamic>? _objetoJsonRetorno =
+                          Map<String, dynamic>? objetoJsonRetorno =
                             await Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -400,11 +400,11 @@ class _ConfiguracaoAbaGeralState extends State<ConfiguracaoAbaGeral> {
                                   ),
                                   fullscreenDialog: true,
                                 ));
-                          if (_objetoJsonRetorno != null) {
-                            if (_objetoJsonRetorno['descricao'] != null) {
+                          if (objetoJsonRetorno != null) {
+                            if (objetoJsonRetorno['descricao'] != null) {
                               Sessao.configuracaoPdv = 
                               Sessao.configuracaoPdv!.copyWith(
-                                idTributOperacaoFiscalPadrao: _objetoJsonRetorno['id'],
+                                idTributOperacaoFiscalPadrao: objetoJsonRetorno['id'],
                               );                                
                               await _refrescarTela();
                             }

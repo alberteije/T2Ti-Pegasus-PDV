@@ -38,6 +38,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 
+import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
@@ -59,10 +60,10 @@ class TributIcmsUfPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _TributIcmsUfPersistePageState createState() => _TributIcmsUfPersistePageState();
+  TributIcmsUfPersistePageState createState() => TributIcmsUfPersistePageState();
 }
 
-class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
+class TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
@@ -97,11 +98,11 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _aliquotaController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.aliquota ?? 0);
-    final _valorPautaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.valorPauta ?? 0);
-    final _valorPrecoMaximoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.valorPrecoMaximo ?? 0);
-    final _mvaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.mva ?? 0);
-    final _porcentoBcController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.porcentoBc ?? 0);
+    final aliquotaController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.aliquota ?? 0);
+    final valorPautaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.valorPauta ?? 0);
+    final valorPrecoMaximoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.valorPrecoMaximo ?? 0);
+    final mvaController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.mva ?? 0);
+    final porcentoBcController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.porcentoBc ?? 0);
     // final _aliquotaInternaStController = new MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.aliquotaInternaSt ?? 0);
     // final _aliquotaInterestadualStController = new MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.aliquotaInterestadualSt ?? 0);
     // final _porcentoBcStController = new MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributIcmsUf?.porcentoBcSt ?? 0);
@@ -285,7 +286,7 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                     padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                     child: TextFormField(
                                       keyboardType: TextInputType.number,
-                                      controller: _aliquotaController,
+                                      controller: aliquotaController,
                                       decoration: getInputDecoration(
                                         'Informe o Alíquota caso Modalidade BC=3',
                                         'Alíquota',
@@ -295,7 +296,7 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                       },
                                       onChanged: (text) {
                                         widget.tributConfiguraOfGtMontado!.tributIcmsUf = 
-                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(aliquota: _aliquotaController.numberValue);
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(aliquota: aliquotaController.numberValue);
                                         paginaMestreDetalheFoiAlterada = true;
                                         // _formFoiAlterado = true;
                                       },
@@ -314,7 +315,7 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                     padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                     child: TextFormField(
                                       keyboardType: TextInputType.number,
-                                      controller: _valorPautaController,
+                                      controller: valorPautaController,
                                       decoration: getInputDecoration(
                                         'Informe o Valor Pauta, caso Modalidade BC=1',
                                         'Valor Pauta',
@@ -323,7 +324,7 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                       },
                                       onChanged: (text) {
                                         widget.tributConfiguraOfGtMontado!.tributIcmsUf = 
-                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(valorPauta: _valorPautaController.numberValue);
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(valorPauta: valorPautaController.numberValue);
                                         paginaMestreDetalheFoiAlterada = true;
                                         // _formFoiAlterado = true;
                                       },
@@ -336,7 +337,7 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                     padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                     child: TextFormField(
                                       keyboardType: TextInputType.number,
-                                      controller: _valorPrecoMaximoController,
+                                      controller: valorPrecoMaximoController,
                                       decoration: getInputDecoration(
                                         'Informe o Valor Preço Máximo, caso Modalidade BC=2',
                                         'Valor Preço Máximo',
@@ -345,7 +346,7 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                       },
                                       onChanged: (text) {
                                         widget.tributConfiguraOfGtMontado!.tributIcmsUf = 
-                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(valorPrecoMaximo: _valorPrecoMaximoController.numberValue);
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(valorPrecoMaximo: valorPrecoMaximoController.numberValue);
                                         paginaMestreDetalheFoiAlterada = true;
                                         // _formFoiAlterado = true;
                                       },
@@ -364,7 +365,7 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                     padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                     child: TextFormField(
                                       keyboardType: TextInputType.number,
-                                      controller: _mvaController,
+                                      controller: mvaController,
                                       decoration: getInputDecoration(
                                         'Informe o Valor da Margem Valor Agregado',
                                         'Valor MVA',
@@ -373,7 +374,7 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                       },
                                       onChanged: (text) {
                                         widget.tributConfiguraOfGtMontado!.tributIcmsUf = 
-                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(mva: _mvaController.numberValue);
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(mva: mvaController.numberValue);
                                         paginaMestreDetalheFoiAlterada = true;
                                         // _formFoiAlterado = true;
                                       },
@@ -386,7 +387,7 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                     padding: Biblioteca.distanciaEntreColunasQuebraLinha(context)!,
                                     child: TextFormField(
                                       keyboardType: TextInputType.number,
-                                      controller: _porcentoBcController,
+                                      controller: porcentoBcController,
                                       decoration: getInputDecoration(
                                         'Informe o Porcentual da Base de Cálculo',
                                         'Porcento Base Cálculo',
@@ -395,7 +396,7 @@ class _TributIcmsUfPersistePageState extends State<TributIcmsUfPersistePage> {
                                       },
                                       onChanged: (text) {
                                         widget.tributConfiguraOfGtMontado!.tributIcmsUf = 
-                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(porcentoBc: _porcentoBcController.numberValue);
+                                        widget.tributConfiguraOfGtMontado!.tributIcmsUf!.copyWith(porcentoBc: porcentoBcController.numberValue);
                                         paginaMestreDetalheFoiAlterada = true;
                                         // _formFoiAlterado = true;
                                       },

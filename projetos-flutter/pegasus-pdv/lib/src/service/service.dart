@@ -38,3 +38,4 @@ export 'package:pegasus_pdv/src/service/cadastros/usuario_service.dart';
 export 'package:pegasus_pdv/src/service/cadastros/empresa_service.dart';
 export 'package:pegasus_pdv/src/service/nfce/nfce_acbr_service.dart';
 export 'package:pegasus_pdv/src/service/nfce/nfce_service.dart';
+export 'package:pegasus_pdv/src/service/ifood/ifood_service.dart';

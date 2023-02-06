@@ -1,13 +1,15 @@
 import 'dart:io';
 
-import 'package:moor/ffi.dart';
-import 'package:moor/moor.dart';
+import 'package:drift/native.dart';
+import 'package:drift/drift.dart';
 
 import 'package:path_provider/path_provider.dart' as paths;
 import 'package:path/path.dart' as p;
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/database/migracao.dart';
+
+//import 'connection/connection.dart' as impl;
 
 import 'database_classes.dart';
 
@@ -19,7 +21,7 @@ LazyDatabase _openConnection() {
         final dataDir = await paths.getApplicationDocumentsDirectory();
         Sessao.caminhoBancoDados = p.join(dataDir.path, 'pegasus.sqlite');
         final dbFile = File(Sessao.caminhoBancoDados);
-        return VmDatabase(dbFile, logStatements: true);
+        return NativeDatabase(dbFile, logStatements: true);
       });
       return executor;
     } else if (Platform.isWindows) {
@@ -28,22 +30,23 @@ LazyDatabase _openConnection() {
         Sessao.caminhoBancoDados = p.join(dataDir.path, 'pegasus.sqlite');
         final dbFile = File(Sessao.caminhoBancoDados);
         // final dbFile = File('pegasus.sqlite');
-        return VmDatabase(dbFile, logStatements: true);
+        return NativeDatabase(dbFile, logStatements: true);
       });
       return executor;        
     }
     return LazyDatabase(() async {
-      return VmDatabase.memory(logStatements: true);
+      return NativeDatabase.memory(logStatements: true);
     });
 }
 
-@UseMoor(
+@DriftDatabase(
   tables: [
     Cardapios,
     CardapioPerguntaPadraos,
     CardapioRespostaPadraos,
     Cfops,
     Clientes,
+    ClienteFiados,
     Colaboradors,
     Comandas,
     ComandaDetalhes,
@@ -171,6 +174,7 @@ LazyDatabase _openConnection() {
     CardapioRespostaPadraoDao,
     CfopDao,
     ClienteDao,
+    ClienteFiadoDao,
     ColaboradorDao,
     ComandaDao,
     ComandaDetalheDao,
@@ -249,6 +253,7 @@ LazyDatabase _openConnection() {
     TributIpiDao,
     TributIssDao,
     TributPisDao,
+    TributCofinsDao,
   ],
     )
 class AppDatabase extends _$AppDatabase {
@@ -304,6 +309,8 @@ class AppDatabase extends _$AppDatabase {
 }
 
 Future<void> _popularBancoSchema05(AppDatabase db) async {
+  // ---> PDV_TIPO_PAGAMENTO - controle de fiado
+  db.customStatement("INSERT INTO PDV_TIPO_PAGAMENTO (CODIGO, DESCRICAO, TEF, IMPRIME_VINCULADO, PERMITE_TROCO, TEF_TIPO_GP, GERA_PARCELAS) VALUES ('99', 'FIADO', 'N', 'N', 'S', 'N', 'N')");
   // ---> COMANDA_OBSERVACAO_PADRAO
   await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (1, '01', 'Sem Cebola')");
   await db.customStatement("INSERT INTO COMANDA_OBSERVACAO_PADRAO (ID, CODIGO, DESCRICAO) values (2, '02', 'Sem Pimentão')");

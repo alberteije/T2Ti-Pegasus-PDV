@@ -39,6 +39,7 @@ import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -59,10 +60,10 @@ class TributCofinsPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _TributCofinsPersistePageState createState() => _TributCofinsPersistePageState();
+  TributCofinsPersistePageState createState() => TributCofinsPersistePageState();
 }
 
-class _TributCofinsPersistePageState extends State<TributCofinsPersistePage> {
+class TributCofinsPersistePageState extends State<TributCofinsPersistePage> {
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
@@ -96,7 +97,7 @@ class _TributCofinsPersistePageState extends State<TributCofinsPersistePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _aliquotaPorcentoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributCofins?.aliquotaPorcento ?? 0);
+    final aliquotaPorcentoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: widget.tributConfiguraOfGtMontado?.tributCofins?.aliquotaPorcento ?? 0);
 
     widget.tributConfiguraOfGtMontado!.tributCofins ??= TributCofins(id: null);
 
@@ -183,7 +184,7 @@ class _TributCofinsPersistePageState extends State<TributCofinsPersistePage> {
                             child: TextFormField(
                               readOnly: true,
                               keyboardType: TextInputType.number,
-                              controller: _aliquotaPorcentoController,
+                              controller: aliquotaPorcentoController,
                               decoration: getInputDecoration(
                                 'Informe a Alíquota do Porcento',
                                 'Alíquota Porcento',
@@ -192,7 +193,7 @@ class _TributCofinsPersistePageState extends State<TributCofinsPersistePage> {
                               },
                               onChanged: (text) {
                                 widget.tributConfiguraOfGtMontado!.tributCofins = 
-                                widget.tributConfiguraOfGtMontado!.tributCofins!.copyWith(aliquotaPorcento: _aliquotaPorcentoController.numberValue);
+                                widget.tributConfiguraOfGtMontado!.tributCofins!.copyWith(aliquotaPorcento: aliquotaPorcentoController.numberValue);
                                 paginaMestreDetalheFoiAlterada = true;
                               },
                             ),

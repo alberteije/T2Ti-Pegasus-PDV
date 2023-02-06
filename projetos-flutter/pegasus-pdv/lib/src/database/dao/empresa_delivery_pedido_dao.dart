@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'empresa_delivery_pedido_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           EmpresaDeliveryPedidos,
 		])
 class EmpresaDeliveryPedidoDao extends DatabaseAccessor<AppDatabase> with _$EmpresaDeliveryPedidoDaoMixin {
@@ -51,16 +51,16 @@ class EmpresaDeliveryPedidoDao extends DatabaseAccessor<AppDatabase> with _$Empr
   Future<List<EmpresaDeliveryPedido>?> consultarLista() => select(empresaDeliveryPedidos).get();
 
   Future<List<EmpresaDeliveryPedido>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM EMPRESA_DELIVERY_PEDIDO WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM EMPRESA_DELIVERY_PEDIDO WHERE $campo like '%$valor%'", 
                                 readsFrom: { empresaDeliveryPedidos }).map((row) {
-                                  return EmpresaDeliveryPedido.fromData(row.data, db);  
+                                  return EmpresaDeliveryPedido.fromData(row.data);  
                                 }).get());
   }
 
   Future<EmpresaDeliveryPedido?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM EMPRESA_DELIVERY_PEDIDO WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM EMPRESA_DELIVERY_PEDIDO WHERE $campo = '$valor'", 
                                 readsFrom: { empresaDeliveryPedidos }).map((row) {
-                                  return EmpresaDeliveryPedido.fromData(row.data, db);  
+                                  return EmpresaDeliveryPedido.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -70,20 +70,27 @@ class EmpresaDeliveryPedidoDao extends DatabaseAccessor<AppDatabase> with _$Empr
     return (select(empresaDeliveryPedidos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<EmpresaDeliveryPedido> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from EMPRESA_DELIVERY_PEDIDO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(EmpresaDeliveryPedido pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(empresaDeliveryPedidos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<EmpresaDeliveryPedido> pObjeto) {
+  Future<bool> alterar(EmpresaDeliveryPedido pObjeto) {
     return transaction(() async {
       return update(empresaDeliveryPedidos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<EmpresaDeliveryPedido> pObjeto) {
+  Future<int> excluir(EmpresaDeliveryPedido pObjeto) {
     return transaction(() async {
       return delete(empresaDeliveryPedidos).delete(pObjeto);
     });    

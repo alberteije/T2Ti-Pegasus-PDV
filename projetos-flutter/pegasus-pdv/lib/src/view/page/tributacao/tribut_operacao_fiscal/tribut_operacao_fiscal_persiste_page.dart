@@ -38,7 +38,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -58,10 +59,10 @@ class TributOperacaoFiscalPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _TributOperacaoFiscalPersistePageState createState() => _TributOperacaoFiscalPersistePageState();
+  TributOperacaoFiscalPersistePageState createState() => TributOperacaoFiscalPersistePageState();
 }
 
-class _TributOperacaoFiscalPersistePageState extends State<TributOperacaoFiscalPersistePage> {
+class TributOperacaoFiscalPersistePageState extends State<TributOperacaoFiscalPersistePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -223,6 +224,7 @@ class _TributOperacaoFiscalPersistePageState extends State<TributOperacaoFiscalP
         } else {
           await Sessao.db.tributOperacaoFiscalDao.inserir(tributOperacaoFiscal!);
         }
+        if (!mounted) return;
         Navigator.of(context).pop();
       });
     }
@@ -241,6 +243,7 @@ class _TributOperacaoFiscalPersistePageState extends State<TributOperacaoFiscalP
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
       await Sessao.db.tributOperacaoFiscalDao.excluir(tributOperacaoFiscal!);
+      if (!mounted) return;
       Navigator.of(context).pop();
     });
   }  

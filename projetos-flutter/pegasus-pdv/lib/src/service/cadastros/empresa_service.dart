@@ -45,8 +45,8 @@ class EmpresaService extends ServiceBase {
 
   Future<EmpresaConsultaPublica?> consultarObjetoPublico(String? cnpj) async {
     try {
-      final _url = 'https://www.receitaws.com.br/v1/cnpj/$cnpj';
-      final response = await clienteHTTP.get(Uri.tryParse(_url)!);
+      final url = 'https://www.receitaws.com.br/v1/cnpj/$cnpj';
+      final response = await clienteHTTP.get(Uri.tryParse(url)!);
 
       if (response.statusCode == 200) {
         if (response.headers["content-type"]!.contains("html")) {
@@ -71,7 +71,7 @@ class EmpresaService extends ServiceBase {
       final response = await clienteHTTP.post(
         Uri.tryParse('$endpoint/empresa')!,
         headers: ServiceBase.cabecalhoRequisicao,
-        body: empresa.objetoEncodeJson(empresa),
+        body: Biblioteca.cifrar(empresa.objetoEncodeJson()),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -79,7 +79,7 @@ class EmpresaService extends ServiceBase {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
-          var empresaJson = json.decode(response.body);
+          var empresaJson = json.decode(Biblioteca.decifrar(response.body));
           return EmpresaModel.fromJson(empresaJson);
         }
       } else {
@@ -95,13 +95,13 @@ class EmpresaService extends ServiceBase {
   Future<EmpresaModel?> registrar(EmpresaModel empresa) async {
     try {
       ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
-                            ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "operacao": "registrar"} 
-                            : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "operacao": "registrar"};      
+                            ? {"content-type": "application/json", "authentication": "Bearer ${Sessao.tokenJWT}"} 
+                            : {"content-type": "application/json", "authorization": "Bearer ${Sessao.tokenJWT}"};
 
       final response = await clienteHTTP.post(
-        Uri.tryParse('$endpoint/empresa/' + empresa.cnpj!)!,
+        Uri.tryParse('$endpoint/empresa/registra-empresa/')!,
         headers: ServiceBase.cabecalhoRequisicao,
-        body: empresa.objetoEncodeJson(empresa),
+        body: Biblioteca.cifrar(empresa.objetoEncodeJson()),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -109,7 +109,7 @@ class EmpresaService extends ServiceBase {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
-          var empresaJson = json.decode(response.body);
+          var empresaJson = json.decode(Biblioteca.decifrar(response.body));
           return EmpresaModel.fromJson(empresaJson);
         }
       } else {
@@ -129,13 +129,13 @@ class EmpresaService extends ServiceBase {
   Future<bool> reenviarEmail(EmpresaModel empresa) async {
     try {
       ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
-                            ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "operacao": "reenviar-email"} 
-                            : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "operacao": "reenviar-email"};      
+                            ? {"content-type": "application/json", "authentication": "Bearer ${Sessao.tokenJWT}"} 
+                            : {"content-type": "application/json", "authorization": "Bearer ${Sessao.tokenJWT}"};
 
       final response = await clienteHTTP.post(
-        Uri.tryParse('$endpoint/empresa/' + empresa.cnpj!)!,
+        Uri.tryParse('$endpoint/empresa/envia-email-confirmacao/')!,
         headers: ServiceBase.cabecalhoRequisicao,
-        body: empresa.objetoEncodeJson(empresa),
+        body: Biblioteca.cifrar(empresa.objetoEncodeJson()),
       );
 
       if (response.statusCode == 200) {
@@ -158,13 +158,21 @@ class EmpresaService extends ServiceBase {
   Future<EmpresaModel?> conferirCodigoConfirmacao(EmpresaModel empresa, String codigoConfirmacao) async {
     try {
       ServiceBase.cabecalhoRequisicao = Constantes.linguagemServidor == 'delphi' 
-                            ? {"content-type": "application/json", "authentication": "Bearer " + Sessao.tokenJWT, "operacao": "confirmar-codigo", "codigo-confirmacao": codigoConfirmacao} 
-                            : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT, "operacao": "confirmar-codigo", "codigo-confirmacao": codigoConfirmacao};      
+                            ? {
+                              "content-type": "application/json", 
+                              "authentication": "Bearer ${Sessao.tokenJWT}", 
+                              "codigo-confirmacao": Biblioteca.cifrar(codigoConfirmacao)
+                              } 
+                            : {
+                              "content-type": "application/json", 
+                              "authorization": "Bearer ${Sessao.tokenJWT}", 
+                              "codigo-confirmacao": Biblioteca.cifrar(codigoConfirmacao)
+                              };
 
       final response = await clienteHTTP.post(
-        Uri.tryParse('$endpoint/empresa/' + empresa.cnpj!)!,
+        Uri.tryParse('$endpoint/empresa/confere-codigo-confirmacao/')!,
         headers: ServiceBase.cabecalhoRequisicao,
-        body: empresa.objetoEncodeJson(empresa),
+        body: Biblioteca.cifrar(empresa.objetoEncodeJson()),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -172,7 +180,7 @@ class EmpresaService extends ServiceBase {
           tratarRetornoErro(response.body, response.headers);
           return null;
         } else {
-          var empresaJson = json.decode(response.body);
+          var empresaJson = json.decode(Biblioteca.decifrar(response.body));
           return EmpresaModel.fromJson(empresaJson);
         }
       } else {

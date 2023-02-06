@@ -41,6 +41,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:pegasus_pdv/src/controller/controller.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/view/shared/page/lookup_local_page.dart';
@@ -64,10 +65,10 @@ class ProdutoFichaTecnicaPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ProdutoFichaTecnicaPersistePageState createState() => _ProdutoFichaTecnicaPersistePageState();
+  ProdutoFichaTecnicaPersistePageState createState() => ProdutoFichaTecnicaPersistePageState();
 }
 
-class _ProdutoFichaTecnicaPersistePageState extends State<ProdutoFichaTecnicaPersistePage> {
+class ProdutoFichaTecnicaPersistePageState extends State<ProdutoFichaTecnicaPersistePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -107,11 +108,11 @@ class _ProdutoFichaTecnicaPersistePageState extends State<ProdutoFichaTecnicaPer
   
   @override
   Widget build(BuildContext context) {
-    final _quantidadeController = MoneyMaskedTextController(precision: Constantes.decimaisQuantidade, initialValue: widget.produtoFichaTecnica?.quantidade ?? 0);
+    final quantidadeController = MoneyMaskedTextController(precision: Constantes.decimaisQuantidade, initialValue: widget.produtoFichaTecnica?.quantidade ?? 0);
     // final _valorCustoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoFichaTecnica?.valorCusto ?? 0);
     // final _percentualCustoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: widget.produtoFichaTecnica?.percentualCusto ?? 0);
-    final _importaProdutoController = TextEditingController();
-    _importaProdutoController.text = produtoFichaTecnica?.descricao ?? '';
+    final importaProdutoController = TextEditingController();
+    importaProdutoController.text = produtoFichaTecnica?.descricao ?? '';
 
     return FocusableActionDetector(
       actions: _actionMap,
@@ -143,7 +144,7 @@ class _ProdutoFichaTecnicaPersistePageState extends State<ProdutoFichaTecnicaPer
                       padding: Biblioteca.isTelaPequena(context) == true ? ViewUtilLib.paddingBootstrapContainerTelaPequena : ViewUtilLib.paddingBootstrapContainerTelaGrande,
                       children: <Widget>[		
                         const Divider(color: Colors.black,),
-                        Text('Produto Pai: ' + (widget.produto?.nome ?? ''),
+                        Text('Produto Pai: ${widget.produto?.nome ?? ''}',
                           style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18.0, color: Colors.blue, fontStyle: FontStyle.italic),
                         ),
                         const Divider(color: Colors.black,),
@@ -159,7 +160,7 @@ class _ProdutoFichaTecnicaPersistePageState extends State<ProdutoFichaTecnicaPer
                                     child: SizedBox(
                                       child: TextFormField(
                                         validator: ValidaCampoFormulario.validarObrigatorio,
-                                        controller: _importaProdutoController,
+                                        controller: importaProdutoController,
                                         readOnly: true,
                                         decoration: getInputDecoration(
                                           'Conteúdo para o campo Produto',
@@ -181,7 +182,7 @@ class _ProdutoFichaTecnicaPersistePageState extends State<ProdutoFichaTecnicaPer
                                       icon: ViewUtilLib.getIconBotaoLookup(),
                                       onPressed: () async {
                                         ///chamando o lookup
-                                        Map<String, dynamic>? _objetoJsonRetorno =
+                                        Map<String, dynamic>? objetoJsonRetorno =
                                           await Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -198,14 +199,14 @@ class _ProdutoFichaTecnicaPersistePageState extends State<ProdutoFichaTecnicaPer
                                                 ),
                                                 fullscreenDialog: true,
                                               ));
-                                        if (_objetoJsonRetorno != null) {
-                                          if (_objetoJsonRetorno['nome'] != null) {
-                                            _importaProdutoController.text = _objetoJsonRetorno['nome'];
+                                        if (objetoJsonRetorno != null) {
+                                          if (objetoJsonRetorno['nome'] != null) {
+                                            importaProdutoController.text = objetoJsonRetorno['nome'];
                                            produtoFichaTecnica = produtoFichaTecnica!.copyWith
                                                                 (
                                                                   idProduto: widget.produto!.id,
-                                                                  idProdutoFilho: _objetoJsonRetorno['id'],
-                                                                  descricao: _objetoJsonRetorno['nome'],
+                                                                  idProdutoFilho: objetoJsonRetorno['id'],
+                                                                  descricao: objetoJsonRetorno['nome'],
                                                                 );
                                           }
                                         }
@@ -226,7 +227,7 @@ class _ProdutoFichaTecnicaPersistePageState extends State<ProdutoFichaTecnicaPer
                               child: TextFormField(
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.end,
-                                controller: _quantidadeController,
+                                controller: quantidadeController,
                                 decoration: getInputDecoration(
                                   'Informe a Quantidade',
                                   'Quantidade',
@@ -234,7 +235,7 @@ class _ProdutoFichaTecnicaPersistePageState extends State<ProdutoFichaTecnicaPer
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  produtoFichaTecnica = produtoFichaTecnica!.copyWith(quantidade: _quantidadeController.numberValue);
+                                  produtoFichaTecnica = produtoFichaTecnica!.copyWith(quantidade: quantidadeController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                   _formFoiAlterado = true;
                                 },

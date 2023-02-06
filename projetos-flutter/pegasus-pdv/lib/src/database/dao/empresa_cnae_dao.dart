@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'empresa_cnae_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           EmpresaCnaes,
 		])
 class EmpresaCnaeDao extends DatabaseAccessor<AppDatabase> with _$EmpresaCnaeDaoMixin {
@@ -56,17 +56,17 @@ class EmpresaCnaeDao extends DatabaseAccessor<AppDatabase> with _$EmpresaCnaeDao
   }  
 
   Future<List<EmpresaCnae>?> consultarListaFiltro(String campo, String valor) async {
-    listaEmpresaCnae = await (customSelect("SELECT * FROM EMPRESA_CNAE WHERE " + campo + " like '%" + valor + "%'", 
+    listaEmpresaCnae = await (customSelect("SELECT * FROM EMPRESA_CNAE WHERE $campo like '%$valor%'", 
                                 readsFrom: { empresaCnaes }).map((row) {
-                                  return EmpresaCnae.fromData(row.data, db);  
+                                  return EmpresaCnae.fromData(row.data);  
                                 }).get());
     return listaEmpresaCnae;
   }
     
   Future<EmpresaCnae?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM EMPRESA_CNAE WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM EMPRESA_CNAE WHERE $campo = '$valor'", 
                                 readsFrom: { empresaCnaes }).map((row) {
-                                  return EmpresaCnae.fromData(row.data, db);  
+                                  return EmpresaCnae.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -76,20 +76,27 @@ class EmpresaCnaeDao extends DatabaseAccessor<AppDatabase> with _$EmpresaCnaeDao
     return (select(empresaCnaes)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<EmpresaCnae> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from EMPRESA_CNAE").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(EmpresaCnae pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(empresaCnaes).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<EmpresaCnae> pObjeto) {
+  Future<bool> alterar(EmpresaCnae pObjeto) {
     return transaction(() async {
       return update(empresaCnaes).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<EmpresaCnae> pObjeto) {
+  Future<int> excluir(EmpresaCnae pObjeto) {
     return transaction(() async {
       return delete(empresaCnaes).delete(pObjeto);
     });    

@@ -56,10 +56,10 @@ class NfeCabecalhoPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _NfeCabecalhoPersistePageState createState() => _NfeCabecalhoPersistePageState();
+  NfeCabecalhoPersistePageState createState() => NfeCabecalhoPersistePageState();
 }
 
-class _NfeCabecalhoPersistePageState extends State<NfeCabecalhoPersistePage> {
+class NfeCabecalhoPersistePageState extends State<NfeCabecalhoPersistePage> {
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
 

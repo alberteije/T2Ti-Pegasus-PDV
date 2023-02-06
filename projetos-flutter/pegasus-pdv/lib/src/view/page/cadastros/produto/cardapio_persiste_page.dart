@@ -38,6 +38,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:pegasus_pdv/src/controller/controller.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
@@ -61,10 +62,10 @@ class CardapioPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _CardapioPersistePageState createState() => _CardapioPersistePageState();
+  CardapioPersistePageState createState() => CardapioPersistePageState();
 }
 
-class _CardapioPersistePageState extends State<CardapioPersistePage> {
+class CardapioPersistePageState extends State<CardapioPersistePage> {
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
@@ -101,8 +102,8 @@ class _CardapioPersistePageState extends State<CardapioPersistePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _perguntaController = TextEditingController();
-    final _respostaController = TextEditingController();
+    final perguntaController = TextEditingController();
+    final respostaController = TextEditingController();
 
     return FocusableActionDetector(
       actions: _actionMap,
@@ -264,7 +265,7 @@ class _CardapioPersistePageState extends State<CardapioPersistePage> {
                                 Expanded(
                                   flex: 1,
                                   child: TextFormField(
-                                    controller: _perguntaController,
+                                    controller: perguntaController,
                                     decoration: getInputDecoration(
                                       'Informe uma pergunta',
                                       'Pergunta',
@@ -282,13 +283,13 @@ class _CardapioPersistePageState extends State<CardapioPersistePage> {
                                     tooltip: 'Adiciona Pergunta',
                                     icon: const Icon(Icons.add),
                                     onPressed: () {       
-                                      if (_perguntaController.text.isEmpty) {
+                                      if (perguntaController.text.isEmpty) {
                                         showInSnackBar('Por favor, insira uma pergunta.', context, corFundo: Colors.red);
                                       } else {
                                         ProdutoController.listaCardapioPerguntaPadraoMontado.add(
                                           CardapioPerguntaPadraoMontado(
                                             id: ++idMestre,
-                                            cardapioPerguntaPadrao: CardapioPerguntaPadrao(id: null, pergunta: _perguntaController.text),
+                                            cardapioPerguntaPadrao: CardapioPerguntaPadrao(id: null, pergunta: perguntaController.text),
                                             listaCardapioRespostaPadrao: [],
                                           ),
                                         );
@@ -330,7 +331,7 @@ class _CardapioPersistePageState extends State<CardapioPersistePage> {
                                 Expanded(
                                   flex: 1,
                                   child: TextFormField(
-                                    controller: _respostaController,
+                                    controller: respostaController,
                                     decoration: getInputDecoration(
                                       'Informe uma resposta',
                                       'Resposta',
@@ -347,14 +348,14 @@ class _CardapioPersistePageState extends State<CardapioPersistePage> {
                                     tooltip: 'Adiciona Resposta',
                                     icon: const Icon(Icons.add),
                                     onPressed: () async {                                   
-                                      if (_respostaController.text.isEmpty) {
+                                      if (respostaController.text.isEmpty) {
                                         showInSnackBar('Por favor, insira uma resposta.', context, corFundo: Colors.red);
                                       } else {
                                         if (perguntaMontadoSelecionada == null) {
                                           showInSnackBar('Por favor, selecione uma pergunta para incluir respostas.', context, corFundo: Colors.red);
                                         } else {
                                           perguntaMontadoSelecionada!.listaCardapioRespostaPadrao.add(
-                                            CardapioRespostaPadrao(id: null, resposta: _respostaController.text),
+                                            CardapioRespostaPadrao(id: null, resposta: respostaController.text),
                                           );
                                           setState(() {
                                           });
@@ -458,7 +459,7 @@ class _CardapioPersistePageState extends State<CardapioPersistePage> {
   void _excluirPergunta(CardapioPerguntaPadraoMontado perguntaMontado) {
     gerarDialogBoxExclusao(context, () {
       setState(() {
-        if (perguntaMontado.id == perguntaMontadoSelecionada!.id) {
+        if (perguntaMontadoSelecionada != null && perguntaMontado.id == perguntaMontadoSelecionada!.id) {
           perguntaMontadoSelecionada = null;  
         }
         ProdutoController.listaCardapioPerguntaPadraoMontado.removeWhere((item) => item.id == perguntaMontado.id);

@@ -33,15 +33,16 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'delivery_acerto_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           DeliveryAcertos,
+          DeliveryAcertoComandas,
 		])
 class DeliveryAcertoDao extends DatabaseAccessor<AppDatabase> with _$DeliveryAcertoDaoMixin {
   final AppDatabase db;
@@ -51,16 +52,16 @@ class DeliveryAcertoDao extends DatabaseAccessor<AppDatabase> with _$DeliveryAce
   Future<List<DeliveryAcerto>?> consultarLista() => select(deliveryAcertos).get();
 
   Future<List<DeliveryAcerto>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM DELIVERY_ACERTO WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM DELIVERY_ACERTO WHERE $campo like '%$valor%'", 
                                 readsFrom: { deliveryAcertos }).map((row) {
-                                  return DeliveryAcerto.fromData(row.data, db);  
+                                  return DeliveryAcerto.fromData(row.data);  
                                 }).get());
   }
 
   Future<DeliveryAcerto?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM DELIVERY_ACERTO WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM DELIVERY_ACERTO WHERE $campo = '$valor'", 
                                 readsFrom: { deliveryAcertos }).map((row) {
-                                  return DeliveryAcerto.fromData(row.data, db);  
+                                  return DeliveryAcerto.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -70,24 +71,48 @@ class DeliveryAcertoDao extends DatabaseAccessor<AppDatabase> with _$DeliveryAce
     return (select(deliveryAcertos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<DeliveryAcerto> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from DELIVERY_ACERTO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(DeliveryAcerto pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(deliveryAcertos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<DeliveryAcerto> pObjeto) {
+  Future<bool> alterar(DeliveryAcerto pObjeto) {
     return transaction(() async {
       return update(deliveryAcertos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<DeliveryAcerto> pObjeto) {
+  Future<int> excluir(DeliveryAcerto pObjeto) {
     return transaction(() async {
       return delete(deliveryAcertos).delete(pObjeto);
     });    
   }
+
+  Future<bool> atualizar(DeliveryAcertoMontado deliveryAcertoMontado) async {
+    bool deuCerto = false;
+    if (deliveryAcertoMontado.deliveryAcertoComanda!.id != null) {
+      await update(deliveryAcertos).replace(deliveryAcertoMontado.deliveryAcerto!);
+      deuCerto = true;
+    } else {
+      final idInserido = await into(deliveryAcertos).insert(deliveryAcertoMontado.deliveryAcerto!);
+      deliveryAcertoMontado.deliveryAcertoComanda = deliveryAcertoMontado.deliveryAcertoComanda!.copyWith(
+        idDeliveryAcerto: idInserido,
+        idDelivery: deliveryAcertoMontado.delivery!.id,
+      );
+      await into(deliveryAcertoComandas).insert(deliveryAcertoMontado.deliveryAcertoComanda!);
+      deuCerto = true;
+    }
+    return deuCerto;
+  } 
 
   
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 /*
 Title: T2Ti ERP 3.0
 Description: Service utilizado para consumir o ACBrMonitor diretamente
@@ -38,6 +40,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
 import 'package:charcode/ascii.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
@@ -296,7 +299,7 @@ class NfceAcbrService {
               'Deseja IMPRIMIR a nota em contingência? OBS: Imprima o DANFE em DUAS VIAS (uma para o consumidor e outra '
               'para ficar a disposição do Fisco no estabelecimento).', 
               () async {
-                if (await NfceController.gerarDadosNfceContingencia(_chaveAcesso)) {
+                if (await NfceController.gerarDadosNfceContingencia(chaveAcesso: _chaveAcesso)) {
                   _socket!.write('NFE.SetFormaEmissao(9)")\r\n.\r\n'); // 9=offline
                   _formaEmissao = '9';
                   _operacao = 'CONTINGENCIA';

@@ -34,7 +34,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 import 'dart:async';
-import 'dart:io';
+import 'dart:math';
+import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:ini/ini.dart';
@@ -62,20 +63,37 @@ class NfceController {
     return Future.value(nfceFormatoIni);
   }
 
-  static Future<bool> gerarDadosNfceContingencia(String? chaveAcesso) async {
+  static Future<String> montarNfeDevolucao(String chaveAcessoNfceOriginal) async{
+    String nfeFormatoIni = '';
+    nfeFormatoIni =  montarTagInfNFe() + 
+                      montarTagIdentificacao() +
+                      montarTagEmitente() +
+                      montarTagDestinatario() +
+                      montarTagProduto() +
+                      montarTagTotal() +
+                      montarTagTransportador() +
+                      montarTagPagamento() +
+                      montarTagResponsavelTecnico() + 
+                      montarTagDadosAdicionais() +
+                      montarTagDocumentoFiscalReferenciado(chaveAcessoNfceOriginal);
+    return Future.value(nfeFormatoIni);
+  }
+
+  static Future<bool> gerarDadosNfceContingencia({String? chaveAcesso}) async {
     // atualizar a nota atual como off-line para posterior inutilização do número
     nfeCabecalhoMontado!.nfeCabecalho = 
     nfeCabecalhoMontado!.nfeCabecalho!.copyWith(
       dataEntradaContingencia: DateTime.now(),
       justificativaContingencia: 'PROBLEMAS COM ACESSO AO WEBSERVICE',
     );
+    chaveAcesso ??= gerarChaveAcesso(); // se a chave for nula, no caso da contingência, gera a chave localmente.
     await atualizarDadosNfce(chaveAcesso: chaveAcesso, statusNota: '9');
 
     // cria outra nota para emissão off-line
     Sessao.numeroNfce = await Sessao.db.nfeNumeroDao.consultarObjeto(1);
     final novoNumero = Sessao.numeroNfce!.numero! + 1;
     _numeroMontado = novoNumero.toString().padLeft(9, '0');
-    _codigoNumericoMontado = '9' + novoNumero.toString().padLeft(7, '0');
+    _codigoNumericoMontado = '9${novoNumero.toString().padLeft(7, '0')}';
 
     nfeCabecalhoMontado!.nfeCabecalho = _clonarNfceCabecalho();
 
@@ -83,6 +101,32 @@ class NfceController {
 
     final retorno = await _atualizarNota();
     return retorno;
+  }
+
+  static String gerarChaveAcesso() {
+    // (02) cUF – Esse é o código do estado onde a empresa que vai emitir a NF-e está localizada.
+    // (04) AAMM –  representa o mês e o ano da emissão da NF-e;
+    // (14) CNPJ – CNPJ do emitente;
+    // (02) mod – é a identificação do modelo do documento fiscal;
+    // (03) Série – Série do Documento Fiscal;
+    // (09) nNF – Número da Nota Fiscal Eletrônica;
+    // (01) tpEmis – tipo de emissão do documento;
+    // (08) cNF – código numérico da Chave de Acesso;
+    // (01) cDV – Dígito Verificador da Chave de Acesso.
+
+    final chaveSemDigito = 
+      // ignore: prefer_interpolation_to_compose_strings
+      Biblioteca.retornarCodigoIbgeUf(Sessao.empresa!.uf!).toString() +
+      Biblioteca.formatarDataAAMM(nfeCabecalhoMontado!.nfeCabecalho!.dataHoraEmissao!) +
+      Sessao.empresa!.cnpj! +
+      '65' + 
+      Sessao.numeroNfce!.serie!.padLeft(3, '0') + 
+      nfeCabecalhoMontado!.nfeCabecalho!.numero! +
+      "1" +
+      nfeCabecalhoMontado!.nfeCabecalho!.codigoNumerico!;
+
+    final digito = Biblioteca.calcularModulo11(chaveSemDigito, 1, 9, true);
+    return chaveSemDigito + digito;    
   }
 
   static void instanciarNfceMontado() {
@@ -101,10 +145,12 @@ class NfceController {
     final cabecalho = await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(Sessao.vendaAtual!.id!);
 
     if (cabecalho == null) {
-      Sessao.numeroNfce= await Sessao.db.nfeNumeroDao.consultarObjeto(1);
+      Sessao.numeroNfce = await Sessao.db.nfeNumeroDao.consultarObjeto(1);
       final novoNumero = Sessao.numeroNfce!.numero! + 1;
       _numeroMontado = novoNumero.toString().padLeft(9, '0');
-      _codigoNumericoMontado = '9' + novoNumero.toString().padLeft(7, '0');
+      // Para evitar acessos indevidos, o código numérico deve ser aleatorio e diferente do número da nota.
+      //_codigoNumericoMontado = '9' + novoNumero.toString().padLeft(7, '0');
+      _codigoNumericoMontado = Random().nextInt(99999999).toString().padLeft(8, '0');
     } else {
       _numeroMontado = cabecalho.numero;
       _codigoNumericoMontado = cabecalho.codigoNumerico;
@@ -264,9 +310,15 @@ class NfceController {
   }
 
   static Future<bool> _atualizarNota() async {
+    Sessao.ultimaChaveDeAcesso = gerarChaveAcesso();
+    nfeCabecalhoMontado!.nfeCabecalho = nfeCabecalhoMontado!.nfeCabecalho!.copyWith(
+      chaveAcesso: Sessao.ultimaChaveDeAcesso,
+    );
+
     int? idNfceCabecalho;
     if (nfeCabecalhoMontado!.nfeCabecalho!.statusNota == '0') {
       idNfceCabecalho = await Sessao.db.nfeCabecalhoDao.inserir(nfeCabecalhoMontado!); // só insere a nota se o seu status for '0'
+      Sessao.numeroNfce = await Sessao.db.nfeNumeroDao.consultarObjeto(1);
     } else {
       idNfceCabecalho = _idNotaRecuperada; // venda está sendo recuperada e já existe uma nota armazenada no banco
     }
@@ -282,6 +334,218 @@ class NfceController {
     }
   }
 
+  static Future<NfeCabecalhoMontado?> getDetalhesNfce(int idVenda) async {
+    final cabecalho = await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(idVenda, status: "4");
+    final nfceAutorizada = await Sessao.db.nfeCabecalhoDao.consultarObjetoMontado("id", cabecalho!.id!.toString());
+    return nfceAutorizada!;
+  }
+
+  static Future<bool> gerarDadosNfeDevolucaoMercadoria(int idVenda, List<int> idItensDevolver) async {
+    instanciarNfceMontado();
+
+    // verfifica se já existe nfce vinculada à venda
+    final cabecalho = await Sessao.db.nfeCabecalhoDao.consultarNotaPorVenda(idVenda, status: "4");
+
+    if (cabecalho == null) {
+      return false;
+    } else {
+      Sessao.numeroNfce = await Sessao.db.nfeNumeroDao.consultarObjeto(1);
+      final novoNumero = Sessao.numeroNfce!.numero! + 1;
+      _numeroMontado = novoNumero.toString().padLeft(9, '0');
+      _codigoNumericoMontado = Random().nextInt(99999999).toString().padLeft(8, '0');
+      //_idNotaRecuperada = cabecalho.id;
+    }
+
+    // IDENTIFICACAO    
+    nfeCabecalhoMontado!.nfeCabecalho = nfeCabecalhoMontado!.nfeCabecalho!.copyWith(
+      idPdvVendaCabecalho: idVenda,
+      numero: _numeroMontado,                                                           // nNF - 
+      codigoNumerico: _codigoNumericoMontado,                                           // cNF
+      serie: Sessao.numeroNfce!.serie,                                                  // serie - 
+      naturezaOperacao: 'DEVOLUCAO DE MERCADORIA',                                      // natOp - DEVOLUCAO DE MERCADORIA
+      codigoModelo: '55',                                                               // mod=55 - NF-e
+      dataHoraEmissao: DateTime.now(),                                                  // dhEmi
+      tipoOperacao: '0',                                                                // tpNF - 0=entrada
+      finalidadeEmissao: '4',                                                           // finNFe - 4 (Devolução de Mercadoria)
+      consumidorOperacao: '1',                                                          // indFinal - 1=consumidor final
+      consumidorPresenca: '1',                                                          // indPres - 1=operação presencial 
+      localDestino: '1',                                                                // idDest - 1=operação interna
+      formatoImpressaoDanfe: "1",                                                       // tpimp - 1=Retrato
+      ambiente: cabecalho.ambiente,                                                     // tpAmb - 1=produção 2=homologação
+      valorTotal: 0,                                                                    // vNF
+      baseCalculoIcms: 0,                                                               // vBC
+      valorTotalProdutos: 0,                                                            // vProd
+      valorDesconto: 0,                                                                 // vDesc                        
+      valorPis: 0,                                                                      // vPIS 
+      valorCofins: 0,                                                                   // vCOFINS  
+      ufEmitente: Sessao.empresa!.codigoIbgeUf,                                         // cUF 
+      codigoMunicipio: Sessao.empresa!.codigoIbgeCidade,                                // cMunFG 
+      statusNota: '0',                                                                  // "0-Em Edição"-"1-Salva"-"2-Validada"-"3-Assinada"-"4-Autorizada"-"5-Inutilizada"        
+    );
+
+    // EMITENTE - Não precisa preencher a tabela, pegamos tudo da EMPRESA
+
+    // DESTINATARIO (No caso de uma devolucao o destinatario é a propria empresa)
+    nfeCabecalhoMontado!.nfeDestinatario = nfeCabecalhoMontado!.nfeDestinatario!.copyWith(
+      cnpj: Sessao.empresa!.cnpj,
+      nome: Sessao.empresa!.razaoSocial,                                                // xNome
+      inscricaoEstadual: Sessao.empresa!.inscricaoEstadual,                            // ie
+      email: Sessao.empresa!.email,                                                    // email
+      logradouro: Sessao.empresa!.logradouro,                                          // xLgr
+      numero: Sessao.empresa!.numero,                                                  // nro
+      complemento: Sessao.empresa!.complemento,                                        // xCpl
+      bairro: Sessao.empresa!.bairro,                                                  // xBairro
+      codigoMunicipio: Sessao.empresa!.codigoIbgeCidade,                                // cMun
+      nomeMunicipio: Sessao.empresa!.cidade,                                           // xMun
+      uf: Sessao.empresa!.uf,                                                          // UF
+      cep: Sessao.empresa!.cep!.replaceAll('-', ''),                                                        // CEP
+      telefone: Sessao.empresa!.fone,                                                   // fone
+      codigoPais: 1058,                                                                 // cPais
+      nomePais: 'BRASIL',                                                               // xPais
+    );
+    
+    // PRODUTO
+    final nfceAutorizada = await Sessao.db.nfeCabecalhoDao.consultarObjetoMontado("id", cabecalho.id!.toString());
+
+    for (var vendaDetalhe in nfceAutorizada!.listaNfeDetalheMontado!) {
+      if (idItensDevolver.contains(vendaDetalhe.nfeDetalhe!.id)) {
+        NfeDetalhe itemDevolucao = NfeDetalhe(id: null,
+          idNfeCabecalho: vendaDetalhe.nfeDetalhe!.idNfeCabecalho,
+          numeroItem: vendaDetalhe.nfeDetalhe!.numeroItem,
+          codigoProduto: vendaDetalhe.nfeDetalhe!.codigoProduto,
+          gtin: vendaDetalhe.nfeDetalhe!.gtin,
+          nomeProduto: vendaDetalhe.nfeDetalhe!.nomeProduto,
+          ncm: vendaDetalhe.nfeDetalhe!.ncm,
+          nve: vendaDetalhe.nfeDetalhe!.nve,
+          cest: vendaDetalhe.nfeDetalhe!.cest,
+          indicadorEscalaRelevante: vendaDetalhe.nfeDetalhe!.indicadorEscalaRelevante,
+          cnpjFabricante: vendaDetalhe.nfeDetalhe!.cnpjFabricante,
+          codigoBeneficioFiscal: vendaDetalhe.nfeDetalhe!.codigoBeneficioFiscal,
+          exTipi: vendaDetalhe.nfeDetalhe!.exTipi,
+          // Exercício: Qual CFOP de devolução deve ser utilizado? Consulte um contador para obter essa informação.
+          cfop: vendaDetalhe.nfeDetalhe!.cfop == 5102 ? 1202 : 1201,
+          unidadeComercial: vendaDetalhe.nfeDetalhe!.unidadeComercial,
+          quantidadeComercial: vendaDetalhe.nfeDetalhe!.quantidadeComercial,
+          numeroPedidoCompra: vendaDetalhe.nfeDetalhe!.numeroPedidoCompra,
+          itemPedidoCompra: vendaDetalhe.nfeDetalhe!.itemPedidoCompra,
+          numeroFci: vendaDetalhe.nfeDetalhe!.numeroFci,
+          numeroRecopi: vendaDetalhe.nfeDetalhe!.numeroRecopi,
+          valorUnitarioComercial: vendaDetalhe.nfeDetalhe!.valorUnitarioComercial,
+          valorBrutoProduto: vendaDetalhe.nfeDetalhe!.valorBrutoProduto,
+          gtinUnidadeTributavel: vendaDetalhe.nfeDetalhe!.gtinUnidadeTributavel,
+          unidadeTributavel: vendaDetalhe.nfeDetalhe!.unidadeTributavel,
+          quantidadeTributavel: vendaDetalhe.nfeDetalhe!.quantidadeTributavel,
+          valorUnitarioTributavel: vendaDetalhe.nfeDetalhe!.valorUnitarioTributavel,
+          valorFrete: vendaDetalhe.nfeDetalhe!.valorFrete,
+          valorSeguro: vendaDetalhe.nfeDetalhe!.valorSeguro,
+          valorDesconto: vendaDetalhe.nfeDetalhe!.valorDesconto,
+          valorOutrasDespesas: vendaDetalhe.nfeDetalhe!.valorOutrasDespesas,
+          entraTotal: vendaDetalhe.nfeDetalhe!.entraTotal,
+          valorTotalTributos: vendaDetalhe.nfeDetalhe!.valorTotalTributos,
+          percentualDevolvido: 100,
+          valorIpiDevolvido: vendaDetalhe.nfeDetalhe!.valorIpiDevolvido,
+          informacoesAdicionais: vendaDetalhe.nfeDetalhe!.informacoesAdicionais,
+          valorSubtotal: vendaDetalhe.nfeDetalhe!.valorSubtotal,
+          valorTotal: vendaDetalhe.nfeDetalhe!.valorTotal,
+        );
+        
+        NfeDetalheImpostoIcms icms = NfeDetalheImpostoIcms(
+          id: null,
+          idNfeDetalhe: vendaDetalhe.nfeDetalheImpostoIcms!.idNfeDetalhe,
+          origemMercadoria: vendaDetalhe.nfeDetalheImpostoIcms!.origemMercadoria,
+          cstIcms: vendaDetalhe.nfeDetalheImpostoIcms!.cstIcms,
+          csosn: vendaDetalhe.nfeDetalheImpostoIcms!.csosn,
+          modalidadeBcIcms: vendaDetalhe.nfeDetalheImpostoIcms!.modalidadeBcIcms,
+          percentualReducaoBcIcms: vendaDetalhe.nfeDetalheImpostoIcms!.percentualReducaoBcIcms,
+          valorBcIcms: vendaDetalhe.nfeDetalheImpostoIcms!.valorBcIcms,
+          aliquotaIcms: vendaDetalhe.nfeDetalheImpostoIcms!.aliquotaIcms,
+          valorIcmsOperacao: vendaDetalhe.nfeDetalheImpostoIcms!.valorIcmsOperacao,
+          percentualDiferimento: vendaDetalhe.nfeDetalheImpostoIcms!.percentualDiferimento,
+          valorIcmsDiferido: vendaDetalhe.nfeDetalheImpostoIcms!.valorIcmsDiferido,
+          valorIcms: vendaDetalhe.nfeDetalheImpostoIcms!.valorIcms,
+          baseCalculoFcp: vendaDetalhe.nfeDetalheImpostoIcms!.baseCalculoFcp,
+          percentualFcp: vendaDetalhe.nfeDetalheImpostoIcms!.percentualFcp,
+          valorFcp: vendaDetalhe.nfeDetalheImpostoIcms!.valorFcp,
+          modalidadeBcIcmsSt: vendaDetalhe.nfeDetalheImpostoIcms!.modalidadeBcIcmsSt,
+          percentualMvaIcmsSt: vendaDetalhe.nfeDetalheImpostoIcms!.percentualMvaIcmsSt,
+          percentualReducaoBcIcmsSt: vendaDetalhe.nfeDetalheImpostoIcms!.percentualReducaoBcIcmsSt,
+          valorBaseCalculoIcmsSt: vendaDetalhe.nfeDetalheImpostoIcms!.valorBaseCalculoIcmsSt,
+          aliquotaIcmsSt: vendaDetalhe.nfeDetalheImpostoIcms!.aliquotaIcmsSt,
+          valorIcmsSt: vendaDetalhe.nfeDetalheImpostoIcms!.valorIcmsSt,
+          baseCalculoFcpSt: vendaDetalhe.nfeDetalheImpostoIcms!.baseCalculoFcpSt,
+          percentualFcpSt: vendaDetalhe.nfeDetalheImpostoIcms!.percentualFcpSt,
+          valorFcpSt: vendaDetalhe.nfeDetalheImpostoIcms!.valorFcpSt,
+          ufSt: vendaDetalhe.nfeDetalheImpostoIcms!.ufSt,
+          percentualBcOperacaoPropria: vendaDetalhe.nfeDetalheImpostoIcms!.percentualBcOperacaoPropria,
+          valorBcIcmsStRetido: vendaDetalhe.nfeDetalheImpostoIcms!.valorBcIcmsStRetido,
+          aliquotaSuportadaConsumidor: vendaDetalhe.nfeDetalheImpostoIcms!.aliquotaSuportadaConsumidor,
+          valorIcmsSubstituto: vendaDetalhe.nfeDetalheImpostoIcms!.valorIcmsSubstituto,
+          valorIcmsStRetido: vendaDetalhe.nfeDetalheImpostoIcms!.valorIcmsStRetido,
+          baseCalculoFcpStRetido: vendaDetalhe.nfeDetalheImpostoIcms!.baseCalculoFcpStRetido,
+          percentualFcpStRetido: vendaDetalhe.nfeDetalheImpostoIcms!.percentualFcpStRetido,
+          valorFcpStRetido: vendaDetalhe.nfeDetalheImpostoIcms!.valorFcpStRetido,
+          motivoDesoneracaoIcms: vendaDetalhe.nfeDetalheImpostoIcms!.motivoDesoneracaoIcms,
+          valorIcmsDesonerado: vendaDetalhe.nfeDetalheImpostoIcms!.valorIcmsDesonerado,
+          aliquotaCreditoIcmsSn: vendaDetalhe.nfeDetalheImpostoIcms!.aliquotaCreditoIcmsSn,
+          valorCreditoIcmsSn: vendaDetalhe.nfeDetalheImpostoIcms!.valorCreditoIcmsSn,
+          valorBcIcmsStDestino: vendaDetalhe.nfeDetalheImpostoIcms!.valorBcIcmsStDestino,
+          valorIcmsStDestino: vendaDetalhe.nfeDetalheImpostoIcms!.valorIcmsStDestino,
+          percentualReducaoBcEfetivo: vendaDetalhe.nfeDetalheImpostoIcms!.percentualReducaoBcEfetivo,
+          valorBcEfetivo: vendaDetalhe.nfeDetalheImpostoIcms!.valorBcEfetivo,
+          aliquotaIcmsEfetivo: vendaDetalhe.nfeDetalheImpostoIcms!.aliquotaIcmsEfetivo,
+          valorIcmsEfetivo: vendaDetalhe.nfeDetalheImpostoIcms!.valorIcmsEfetivo        
+        );
+        
+        NfeDetalheImpostoCofins cofins = NfeDetalheImpostoCofins(
+          id: null,
+          idNfeDetalhe: vendaDetalhe.nfeDetalheImpostoCofins!.idNfeDetalhe,
+          cstCofins: vendaDetalhe.nfeDetalheImpostoCofins!.cstCofins,
+          baseCalculoCofins: vendaDetalhe.nfeDetalheImpostoCofins!.baseCalculoCofins,
+          aliquotaCofinsPercentual: vendaDetalhe.nfeDetalheImpostoCofins!.aliquotaCofinsPercentual,
+          quantidadeVendida: vendaDetalhe.nfeDetalheImpostoCofins!.quantidadeVendida,
+          aliquotaCofinsReais: vendaDetalhe.nfeDetalheImpostoCofins!.aliquotaCofinsReais,
+          valorCofins: vendaDetalhe.nfeDetalheImpostoCofins!.valorCofins          
+        );
+        NfeDetalheImpostoPis pis = NfeDetalheImpostoPis(
+          id: null,
+          idNfeDetalhe: vendaDetalhe.nfeDetalheImpostoPis!.idNfeDetalhe,
+          cstPis: vendaDetalhe.nfeDetalheImpostoPis!.cstPis,
+          valorBaseCalculoPis: vendaDetalhe.nfeDetalheImpostoPis!.valorBaseCalculoPis,
+          aliquotaPisPercentual: vendaDetalhe.nfeDetalheImpostoPis!.aliquotaPisPercentual,
+          valorPis: vendaDetalhe.nfeDetalheImpostoPis!.valorPis,
+          quantidadeVendida: vendaDetalhe.nfeDetalheImpostoPis!.quantidadeVendida,
+          aliquotaPisReais: vendaDetalhe.nfeDetalheImpostoPis!.aliquotaPisReais          
+        );
+        NfeDetalheMontado detalheMontado = NfeDetalheMontado(nfeDetalhe: itemDevolucao, nfeDetalheImpostoIcms: icms, nfeDetalheImpostoCofins: cofins, nfeDetalheImpostoPis: pis);
+
+        // atualiza o cabeçalho
+        nfeCabecalhoMontado!.nfeCabecalho = nfeCabecalhoMontado!.nfeCabecalho!.copyWith(
+          valorTotalProdutos: nfeCabecalhoMontado!.nfeCabecalho!.valorTotalProdutos! + vendaDetalhe.nfeDetalhe!.valorTotal!,
+          valorTotal: nfeCabecalhoMontado!.nfeCabecalho!.valorTotalProdutos! + vendaDetalhe.nfeDetalhe!.valorTotal!,
+          valorIcms: (nfeCabecalhoMontado!.nfeCabecalho!.valorIcms ?? 0) + vendaDetalhe.nfeDetalheImpostoIcms!.valorIcms!,
+          baseCalculoIcms: nfeCabecalhoMontado!.nfeCabecalho!.baseCalculoIcms! + vendaDetalhe.nfeDetalheImpostoIcms!.valorBcIcms!,
+          valorTotalTributos: (nfeCabecalhoMontado!.nfeCabecalho!.valorTotalTributos ?? 0) + vendaDetalhe.nfeDetalhe!.valorTotalTributos!,
+          valorDesconto: nfeCabecalhoMontado!.nfeCabecalho!.valorDesconto! + vendaDetalhe.nfeDetalhe!.valorDesconto!
+        );
+
+        nfeCabecalhoMontado!.listaNfeDetalheMontado!.add(detalheMontado);
+      }
+    }
+
+    // PAGAMENTO
+    NfeInformacaoPagamento nfceInformacaoPagamento = NfeInformacaoPagamento(
+      id: null,
+      indicadorPagamento: '0',                                    // indPag - 0= Pagamento à Vista 1= Pagamento à Prazo      
+      meioPagamento: '90',                                        // tPag - 90(Sem Pagamento)
+      valor: 0,                                                   // vPag
+      troco: 0,                                                   // vTroco
+    );
+    nfeCabecalhoMontado!.listaNfeInformacaoPagamento!.add(nfceInformacaoPagamento);
+
+    final retorno = await _atualizarNota();
+    return retorno;
+  }
+
   static String montarTagInfNFe() {
     return 
       ' [infNFe]\n'
@@ -291,11 +555,13 @@ class NfceController {
 
   static String montarTagIdentificacao() {
     return 
+      // ignore: prefer_interpolation_to_compose_strings
       ' [Identificacao]\n'
       ' nNF=' + nfeCabecalhoMontado!.nfeCabecalho!.numero! + '\n'
       ' cNF=' + nfeCabecalhoMontado!.nfeCabecalho!.codigoNumerico! + '\n'
       ' serie='+ nfeCabecalhoMontado!.nfeCabecalho!.serie! +'\n'
       ' natOp=' + nfeCabecalhoMontado!.nfeCabecalho!.naturezaOperacao! + '\n'
+      ' finNFe=' + (nfeCabecalhoMontado!.nfeCabecalho!.finalidadeEmissao ?? '1') + '\n'
       ' mod=' + nfeCabecalhoMontado!.nfeCabecalho!.codigoModelo! + '\n'
       ' dhEmi=' + Biblioteca.formatarDataHora(nfeCabecalhoMontado!.nfeCabecalho!.dataHoraEmissao) + '\n'
       ' tpNF=' + nfeCabecalhoMontado!.nfeCabecalho!.tipoOperacao! + '\n'
@@ -315,6 +581,7 @@ class NfceController {
 
   static String montarTagEmitente() {
     return 
+      // ignore: prefer_interpolation_to_compose_strings
       ' [Emitente]\n'
       ' CNPJCPF=' + Sessao.empresa!.cnpj! + '\n'                                      
       ' xNome='+ Sessao.empresa!.razaoSocial! +'\n'                                   
@@ -339,8 +606,10 @@ class NfceController {
   static String montarTagDestinatario() {
     if (nfeCabecalhoMontado!.nfeDestinatario != null) {
       return 
+        // ignore: prefer_interpolation_to_compose_strings
         ' [Destinatario]\n'
-        ' CNPJCPF=' + (nfeCabecalhoMontado!.nfeDestinatario!.cpf ?? '') + '\n'
+        ' CNPJCPF=' + ((nfeCabecalhoMontado!.nfeDestinatario!.cpf ?? nfeCabecalhoMontado!.nfeDestinatario!.cnpj) ?? '') + '\n'
+        ' IE=' + (nfeCabecalhoMontado!.nfeDestinatario!.inscricaoEstadual ?? '') + '\n'
         ' xNome=' + (nfeCabecalhoMontado!.nfeDestinatario!.nome ?? '') + '\n'
         ' indIEDest=9\n'
         ' email=' + (nfeCabecalhoMontado!.nfeDestinatario!.email ?? '') + '\n'
@@ -365,6 +634,7 @@ class NfceController {
     String tagProduto = '';
     int contador = 0;
     for (var detalhe in nfeCabecalhoMontado!.listaNfeDetalheMontado!) {      
+      // ignore: prefer_interpolation_to_compose_strings
       tagProduto = tagProduto + '\n'
         ' [Produto' + (++contador).toString().padLeft(3, '0') + ']\n'
         ' CFOP=' + detalhe.nfeDetalhe!.cfop.toString() + '\n'
@@ -411,6 +681,7 @@ class NfceController {
 
   static String montarTagTotal() {
     return 
+      // ignore: prefer_interpolation_to_compose_strings
       ' [Total]\n'
       ' vNF=' + nfeCabecalhoMontado!.nfeCabecalho!.valorTotal.toString() + '\n'
       ' vBC=' + nfeCabecalhoMontado!.nfeCabecalho!.baseCalculoIcms.toString() + '\n'
@@ -434,6 +705,7 @@ class NfceController {
     String tagPagamento = '';
     int contador = 0;
     for (var pagamento in nfeCabecalhoMontado!.listaNfeInformacaoPagamento!) {      
+      // ignore: prefer_interpolation_to_compose_strings
       tagPagamento = tagPagamento + '\n'
       ' [PAG' + (++contador).toString().padLeft(3, '0') + ']\n'
       ' tpag=' + pagamento.meioPagamento! + '\n'                         
@@ -447,6 +719,7 @@ class NfceController {
 
   static String montarTagResponsavelTecnico() {
     return 
+      // ignore: prefer_interpolation_to_compose_strings
       ' [INFRESPTEC]\n'                                                   
       ' CNPJ='+ (Sessao.configuracaoNfce!.respTecCnpj ?? '') + '\n'
       ' xContato='+ (Sessao.configuracaoNfce!.respTecContato ?? '') + '\n'
@@ -459,8 +732,17 @@ class NfceController {
 
   static String montarTagDadosAdicionais() {
     return 
+      // ignore: prefer_interpolation_to_compose_strings
       ' [DadosAdicionais]\n'
       ' infCpl=NUMERO DA VENDA: ' + Sessao.vendaAtual!.id.toString() + '\n'
+      ' \n';
+  }
+
+  static String montarTagDocumentoFiscalReferenciado(String chaveAcesso) {
+    return 
+      // ignore: prefer_interpolation_to_compose_strings
+      ' [NFRef001]\n'
+      ' refNFe=' + chaveAcesso + '\n'
       ' \n';
   }
 
@@ -514,21 +796,25 @@ class NfceController {
     return retorno;
   }
 
-  static Future<bool> atualizarDadosNfce({String? chaveAcesso, String? statusNota, String? motivoCancelamento}) async {
+  static Future<bool> atualizarDadosNfce({String? chaveAcesso, String? statusNota, String? motivoCancelamento, bool atualizaFilhos = false}) async {
     nfeCabecalhoMontado!.nfeCabecalho = 
       NfceController.nfeCabecalhoMontado!.nfeCabecalho!.copyWith(
         chaveAcesso: chaveAcesso,
         statusNota: statusNota,
         informacoesAddContribuinte: motivoCancelamento,
       );
-    final retorno = await Sessao.db.nfeCabecalhoDao.alterar(NfceController.nfeCabecalhoMontado!, atualizaFilhos: false);
+    final retorno = await Sessao.db.nfeCabecalhoDao.alterar(NfceController.nfeCabecalhoMontado!, atualizaFilhos: atualizaFilhos);
     return retorno;
+  }
+
+  static Future<int> marcaItemDevolvido(List<int> listaIdNfeDetalhe) async {
+    return Sessao.db.nfeCabecalhoDao.marcaItemDevolvido(listaIdNfeDetalhe);
   }
 
   static String? retornarChaveDoIni(String conteudoIni) {
     conteudoIni = removerPrimeiraLinhaDoIni(conteudoIni);
     config = Config.fromString(conteudoIni);
-    final chaveNota = 'NFe' + int.tryParse(NfceController.nfeCabecalhoMontado!.nfeCabecalho!.numero!).toString(); // faz o parse para tirar os zeros a esquerda do número que foi armazenado no banco de dados como String
+    final chaveNota = 'NFe${int.tryParse(NfceController.nfeCabecalhoMontado!.nfeCabecalho!.numero!)}'; // faz o parse para tirar os zeros a esquerda do número que foi armazenado no banco de dados como String
     return config.get(chaveNota, 'chDFe');
   }
 
@@ -565,20 +851,20 @@ class NfceController {
     return chaveNota;
   }
 
-  static void enviarComandoInutilizacaoNumero(
-    {required Socket socket, required String cnpj, required String justificativa, required String ano, required String modelo, required String serie, 
-    required String numeroInicial, required String numeroFinal}
-  ) {
-    socket.write('NFE.InutilizarNFe('
-        +cnpj +', '
-        +justificativa+', '
-        +ano+', '
-        +modelo+', '
-        +serie+', '
-        +numeroInicial+', '
-        +numeroFinal+
-      ')\r\n.\r\n');
-  }
+  // static void enviarComandoInutilizacaoNumero(
+  //   {required Socket socket, required String cnpj, required String justificativa, required String ano, required String modelo, required String serie, 
+  //   required String numeroInicial, required String numeroFinal}
+  // ) {
+  //   socket.write('NFE.InutilizarNFe('
+  //       +cnpj +', '
+  //       +justificativa+', '
+  //       +ano+', '
+  //       +modelo+', '
+  //       +serie+', '
+  //       +numeroInicial+', '
+  //       +numeroFinal+
+  //     ')\r\n.\r\n');
+  // }
 
   static bool ufPermiteContingenciaOffLine(String? uf) {
     switch (uf) {

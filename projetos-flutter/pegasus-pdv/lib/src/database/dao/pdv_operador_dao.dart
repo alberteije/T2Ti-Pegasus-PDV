@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'pdv_operador_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           PdvOperadors,
 		])
 class PdvOperadorDao extends DatabaseAccessor<AppDatabase> with _$PdvOperadorDaoMixin {
@@ -51,9 +51,9 @@ class PdvOperadorDao extends DatabaseAccessor<AppDatabase> with _$PdvOperadorDao
   Future<List<PdvOperador>> consultarLista() => select(pdvOperadors).get();
 
   Future<List<PdvOperador>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM PDV_OPERADOR WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM PDV_OPERADOR WHERE $campo like '%$valor%'", 
                                 readsFrom: { pdvOperadors }).map((row) {
-                                  return PdvOperador.fromData(row.data, db);  
+                                  return PdvOperador.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,20 +63,27 @@ class PdvOperadorDao extends DatabaseAccessor<AppDatabase> with _$PdvOperadorDao
     return (select(pdvOperadors)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<PdvOperador> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from PDV_OPERADOR").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(PdvOperador pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(pdvOperadors).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<PdvOperador> pObjeto) {
+  Future<bool> alterar(PdvOperador pObjeto) {
     return transaction(() async {
       return update(pdvOperadors).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<PdvOperador> pObjeto) {
+  Future<int> excluir(PdvOperador pObjeto) {
     return transaction(() async {
       return delete(pdvOperadors).delete(pObjeto);
     });    

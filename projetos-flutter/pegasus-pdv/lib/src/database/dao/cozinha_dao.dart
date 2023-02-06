@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'cozinha_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           Cozinhas,
           ComandaPedidos,
 		])
@@ -57,17 +57,17 @@ class CozinhaDao extends DatabaseAccessor<AppDatabase> with _$CozinhaDaoMixin {
   }  
 
   Future<List<Cozinha>?> consultarListaFiltro(String campo, String valor) async {
-    listaCozinha = await (customSelect("SELECT * FROM COZINHA WHERE " + campo + " like '%" + valor + "%'", 
+    listaCozinha = await (customSelect("SELECT * FROM COZINHA WHERE $campo like '%$valor%'", 
                                 readsFrom: { cozinhas }).map((row) {
-                                  return Cozinha.fromData(row.data, db);  
+                                  return Cozinha.fromData(row.data);  
                                 }).get());
     return listaCozinha;
   }
     
   Future<Cozinha?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM COZINHA WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM COZINHA WHERE $campo = '$valor'", 
                                 readsFrom: { cozinhas }).map((row) {
-                                  return Cozinha.fromData(row.data, db);  
+                                  return Cozinha.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -77,20 +77,27 @@ class CozinhaDao extends DatabaseAccessor<AppDatabase> with _$CozinhaDaoMixin {
     return (select(cozinhas)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<Cozinha> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from COZINHA").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(Cozinha pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(cozinhas).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Cozinha> pObjeto) {
+  Future<bool> alterar(Cozinha pObjeto) {
     return transaction(() async {
       return update(cozinhas).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<Cozinha> pObjeto) {
+  Future<int> excluir(Cozinha pObjeto) {
     return transaction(() async {
       return delete(cozinhas).delete(pObjeto);
     });    

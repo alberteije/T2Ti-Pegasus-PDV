@@ -35,6 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'package:flutter/material.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
@@ -44,10 +45,10 @@ class ComandaCardapioPerguntaLookupPage extends StatefulWidget {
   const ComandaCardapioPerguntaLookupPage(this.cardapio, {Key? key}) : super(key: key);
   
   @override
-  _ComandaCardapioPerguntaLookupPageState createState() => _ComandaCardapioPerguntaLookupPageState();
+  ComandaCardapioPerguntaLookupPageState createState() => ComandaCardapioPerguntaLookupPageState();
 }
 
-class _ComandaCardapioPerguntaLookupPageState extends State<ComandaCardapioPerguntaLookupPage> {
+class ComandaCardapioPerguntaLookupPageState extends State<ComandaCardapioPerguntaLookupPage> {
   List<CardapioPerguntaPadraoMontado> listaCardapioPerguntaPadraoMontado = [];
   List<RespostasSelecionadas> listaRespostasSelecionadas = [];
 
@@ -55,7 +56,7 @@ class _ComandaCardapioPerguntaLookupPageState extends State<ComandaCardapioPergu
   void initState() {
     super.initState();
     
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
 
   @override
@@ -117,7 +118,7 @@ class _ComandaCardapioPerguntaLookupPageState extends State<ComandaCardapioPergu
                     ),
                     const Padding(
                       padding: EdgeInsets.all(10),
-                      child: Text('Faça as seguintes perguntas ao cliente bom base no produto que ele escolheu.', textAlign: TextAlign.center,),                
+                      child: Text('Faça as seguintes perguntas ao cliente com base no produto que ele escolheu.', textAlign: TextAlign.center,),                
                     ),                      
                     const Divider(
                       indent: 10,

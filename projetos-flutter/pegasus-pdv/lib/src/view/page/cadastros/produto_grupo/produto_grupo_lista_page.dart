@@ -36,11 +36,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'package:flutter/material.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
 
-import 'package:pegasus_pdv/src/model/filtro.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 import 'package:pegasus_pdv/src/view/shared/view_util_lib.dart';
 import 'package:pegasus_pdv/src/view/shared/botoes.dart';
@@ -53,10 +54,10 @@ class ProdutoGrupoListaPage extends StatefulWidget {
   const ProdutoGrupoListaPage({Key? key}) : super(key: key);
 
   @override
-  _ProdutoGrupoListaPageState createState() => _ProdutoGrupoListaPageState();
+  ProdutoGrupoListaPageState createState() => ProdutoGrupoListaPageState();
 }
 
-class _ProdutoGrupoListaPageState extends State<ProdutoGrupoListaPage> {
+class ProdutoGrupoListaPageState extends State<ProdutoGrupoListaPage> {
   int? _rowsPerPage = Constantes.paginatedDataTableLinhasPorPagina;
   int? _sortColumnIndex;
   bool _sortAscending = true;
@@ -78,7 +79,7 @@ class _ProdutoGrupoListaPageState extends State<ProdutoGrupoListaPage> {
       ),
     };
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _refrescarTela());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refrescarTela());
   }
   
   void _tratarAcoesAtalhos(AtalhoTelaIntent intent) {
@@ -99,12 +100,12 @@ class _ProdutoGrupoListaPageState extends State<ProdutoGrupoListaPage> {
   
   @override
   Widget build(BuildContext context) {
-    final _listaProdutoGrupo = Sessao.db.produtoGrupoDao.listaProdutoGrupo;
+    final listaProdutoGrupo = Sessao.db.produtoGrupoDao.listaProdutoGrupo;
 
-    final _ProdutoGrupoDataSource _produtoGrupoDataSource = _ProdutoGrupoDataSource(_listaProdutoGrupo, context, _refrescarTela);
+    final _ProdutoGrupoDataSource produtoGrupoDataSource = _ProdutoGrupoDataSource(listaProdutoGrupo, context, _refrescarTela);
   
     void _sort<T>(Comparable<T>? Function(ProdutoGrupo produtoGrupo) getField, int columnIndex, bool ascending) {
-      _produtoGrupoDataSource._sort<T>(getField, ascending);
+      produtoGrupoDataSource._sort<T>(getField, ascending);
       setState(() {
         _sortColumnIndex = columnIndex;
         _sortAscending = ascending;
@@ -144,7 +145,7 @@ class _ProdutoGrupoListaPageState extends State<ProdutoGrupoListaPage> {
           body: RefreshIndicator(
             onRefresh: _refrescarTela,
             child: Scrollbar(
-              child: _listaProdutoGrupo == null
+              child: listaProdutoGrupo == null
               ? const Center(child: CircularProgressIndicator())
               : ListView(
                 padding: const EdgeInsets.all(Constantes.paddingListViewListaPage),
@@ -180,7 +181,7 @@ class _ProdutoGrupoListaPageState extends State<ProdutoGrupoListaPage> {
                           _sort<String>((ProdutoGrupo produtoGrupo) => produtoGrupo.descricao, columnIndex, ascending),
                       ),
                     ],
-                    source: _produtoGrupoDataSource,
+                    source: produtoGrupoDataSource,
                   ),
                 ],
               ),
@@ -268,7 +269,7 @@ class _ProdutoGrupoDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: <DataCell>[
-        DataCell(Text(produtoGrupo.id?.toString() ?? ''), onTap: () {
+        DataCell(Text(produtoGrupo.id.toString()), onTap: () {
           _detalharProdutoGrupo(produtoGrupo, context, refrescarTela);
         }),
         DataCell(Text(produtoGrupo.nome ?? ''), onTap: () {

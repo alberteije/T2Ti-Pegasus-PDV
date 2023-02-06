@@ -37,6 +37,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 import 'dart:convert';
 
 import 'package:intl/intl.dart';
+import 'package:pegasus_pdv/src/infra/infra.dart';
 
 class UsuarioModel {
 	int? id;
@@ -63,7 +64,7 @@ class UsuarioModel {
 		// id = jsonDados['id'];
 		email = jsonDados['email'];
 		senha = jsonDados['senha'];
-		dataCadastro = jsonDados['dataCadastro'] != null ? DateTime.tryParse(jsonDados['dataCadastro']) : null;
+		dataCadastro = Biblioteca.tratarDataJson(jsonDados['dataCadastro']);
 		pendente = jsonDados['pendente'];
     modulo = jsonDados['modulo'];
 		whatsapp = jsonDados['whatsapp'];
@@ -85,8 +86,8 @@ class UsuarioModel {
 		return jsonDados;
 	}
 	
-	String objetoEncodeJson(UsuarioModel objeto) {
-	  final jsonDados = objeto.toJson;
+	String objetoEncodeJson() {
+	  final jsonDados = toJson;
 	  return json.encode(jsonDados);
 	}
 	

@@ -39,6 +39,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 
+import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
@@ -64,10 +65,10 @@ class TributConfiguraOfGtPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _TributConfiguraOfGtPersistePageState createState() => _TributConfiguraOfGtPersistePageState();
+  TributConfiguraOfGtPersistePageState createState() => TributConfiguraOfGtPersistePageState();
 }
 
-class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPersistePage> {
+class TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPersistePage> {
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
@@ -101,10 +102,10 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
   
   @override
   Widget build(BuildContext context) {
-    final _importaTributGrupoTributarioController = TextEditingController();
-    _importaTributGrupoTributarioController.text = widget.tributConfiguraOfGtMontado?.tributGrupoTributario?.descricao ?? '';
-    final _importaTributOperacaoFiscalController = TextEditingController();
-    _importaTributOperacaoFiscalController.text = widget.tributConfiguraOfGtMontado?.tributOperacaoFiscal?.descricao ?? '';
+    final importaTributGrupoTributarioController = TextEditingController();
+    importaTributGrupoTributarioController.text = widget.tributConfiguraOfGtMontado?.tributGrupoTributario?.descricao ?? '';
+    final importaTributOperacaoFiscalController = TextEditingController();
+    importaTributOperacaoFiscalController.text = widget.tributConfiguraOfGtMontado?.tributOperacaoFiscal?.descricao ?? '';
 
     return FocusableActionDetector(
       actions: _actionMap,
@@ -141,7 +142,7 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                                   child: SizedBox(
                                     child: TextFormField(
                                       focusNode: _foco,
-                                      controller: _importaTributGrupoTributarioController,
+                                      controller: importaTributGrupoTributarioController,
                                       readOnly: true,
                                       decoration: getInputDecoration(
                                         'Importe o Grupo Tributário Vinculado',
@@ -162,7 +163,7 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                                     icon: ViewUtilLib.getIconBotaoLookup(),
                                     onPressed: () async {
                                       ///chamando o lookup
-                                      Map<String, dynamic>? _objetoJsonRetorno =
+                                      Map<String, dynamic>? objetoJsonRetorno =
                                         await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -177,16 +178,16 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                                               ),
                                               fullscreenDialog: true,
                                             ));
-                                      if (_objetoJsonRetorno != null) {
-                                        if (_objetoJsonRetorno['descricao'] != null) {
-                                          _importaTributGrupoTributarioController.text = _objetoJsonRetorno['descricao'];
+                                      if (objetoJsonRetorno != null) {
+                                        if (objetoJsonRetorno['descricao'] != null) {
+                                          importaTributGrupoTributarioController.text = objetoJsonRetorno['descricao'];
                                           widget.tributConfiguraOfGtMontado!.tributGrupoTributario = TributGrupoTributario(
-                                              id: _objetoJsonRetorno['id'],
-                                              descricao: _objetoJsonRetorno['descricao']
+                                              id: objetoJsonRetorno['id'],
+                                              descricao: objetoJsonRetorno['descricao']
                                           );
                                           widget.tributConfiguraOfGtMontado!.tributConfiguraOfGt = 
                                             widget.tributConfiguraOfGtMontado!.tributConfiguraOfGt!.copyWith(
-                                              idTributGrupoTributario: _objetoJsonRetorno['id'],
+                                              idTributGrupoTributario: objetoJsonRetorno['id'],
                                             );
                                         }
                                       }
@@ -211,7 +212,7 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                                   flex: 1,
                                   child: SizedBox(
                                     child: TextFormField(
-                                      controller: _importaTributOperacaoFiscalController,
+                                      controller: importaTributOperacaoFiscalController,
                                       readOnly: true,
                                       decoration: getInputDecoration(
                                         'Importe a Operação Fiscal Vinculada',
@@ -232,7 +233,7 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                                     icon: ViewUtilLib.getIconBotaoLookup(),
                                     onPressed: () async {
                                       ///chamando o lookup
-                                      Map<String, dynamic>? _objetoJsonRetorno =
+                                      Map<String, dynamic>? objetoJsonRetorno =
                                         await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -247,16 +248,16 @@ class _TributConfiguraOfGtPersistePageState extends State<TributConfiguraOfGtPer
                                               ),
                                               fullscreenDialog: true,
                                             ));
-                                      if (_objetoJsonRetorno != null) {
-                                        if (_objetoJsonRetorno['descricao'] != null) {
-                                          _importaTributOperacaoFiscalController.text = _objetoJsonRetorno['descricao'];
+                                      if (objetoJsonRetorno != null) {
+                                        if (objetoJsonRetorno['descricao'] != null) {
+                                          importaTributOperacaoFiscalController.text = objetoJsonRetorno['descricao'];
                                           widget.tributConfiguraOfGtMontado!.tributOperacaoFiscal = TributOperacaoFiscal(
-                                              id: _objetoJsonRetorno['id'],
-                                              descricao: _objetoJsonRetorno['descricao']
+                                              id: objetoJsonRetorno['id'],
+                                              descricao: objetoJsonRetorno['descricao']
                                           );
                                           widget.tributConfiguraOfGtMontado!.tributConfiguraOfGt = 
                                             widget.tributConfiguraOfGtMontado!.tributConfiguraOfGt!.copyWith(
-                                              idTributOperacaoFiscal: _objetoJsonRetorno['id'],
+                                              idTributOperacaoFiscal: objetoJsonRetorno['id'],
                                             );
                                         }
                                       }

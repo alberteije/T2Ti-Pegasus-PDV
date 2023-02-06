@@ -42,6 +42,7 @@ import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:pegasus_pdv/src/controller/compras/compra_pedido_cabecalho_controller.dart';
 
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -67,10 +68,10 @@ class CompraPedidoCabecalhoPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _CompraPedidoCabecalhoPersistePageState createState() => _CompraPedidoCabecalhoPersistePageState();
+  CompraPedidoCabecalhoPersistePageState createState() => CompraPedidoCabecalhoPersistePageState();
 }
 
-class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalhoPersistePage> {
+class CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalhoPersistePage> {
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
@@ -84,7 +85,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
         onInvoke: _tratarAcoesAtalhos,
       ),
     };
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _verificarDescontoNosItens());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _verificarDescontoNosItens());
     _foco.requestFocus();
   }
 
@@ -100,20 +101,20 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
   
   @override
   Widget build(BuildContext context) {
-    final _valorSubtotalController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.valorSubtotal ?? 0);
-    final _importaColaboradorController = TextEditingController();
-    _importaColaboradorController.text = widget.compraPedidoCabecalhoMontado!.colaborador?.nome ?? '';
-    final _taxaDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.taxaDesconto ?? 0);
-    final _valorDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.valorDesconto ?? 0);
-    final _valorTotalController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.valorTotal ?? 0);
-    final _importaFornecedorController = TextEditingController();
-    _importaFornecedorController.text = widget.compraPedidoCabecalhoMontado!.fornecedor?.nome ?? '';
-    final _diaFixoParcelaController = MaskedTextController(
+    final valorSubtotalController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.valorSubtotal ?? 0);
+    final importaColaboradorController = TextEditingController();
+    importaColaboradorController.text = widget.compraPedidoCabecalhoMontado!.colaborador?.nome ?? '';
+    final taxaDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisTaxa, initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.taxaDesconto ?? 0);
+    final valorDescontoController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.valorDesconto ?? 0);
+    final valorTotalController = MoneyMaskedTextController(precision: Constantes.decimaisValor, initialValue: CompraPedidoCabecalhoController.compraPedidoCabecalho?.valorTotal ?? 0);
+    final importaFornecedorController = TextEditingController();
+    importaFornecedorController.text = widget.compraPedidoCabecalhoMontado!.fornecedor?.nome ?? '';
+    final diaFixoParcelaController = MaskedTextController(
       mask: Constantes.mascaraDIA,
       text: CompraPedidoCabecalhoController.compraPedidoCabecalho?.diaFixoParcela ?? '',
     );
-    final _intervaloEntreParcelasController = TextEditingController();
-    _intervaloEntreParcelasController.text = 
+    final intervaloEntreParcelasController = TextEditingController();
+    intervaloEntreParcelasController.text = 
       (CompraPedidoCabecalhoController.compraPedidoCabecalho?.intervaloEntreParcelas == null ? '' : 
       CompraPedidoCabecalhoController.compraPedidoCabecalho?.intervaloEntreParcelas.toString())!;
 
@@ -179,7 +180,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                     child: TextFormField(
                                       validator: ValidaCampoFormulario.validarObrigatorio,
                                       focusNode: _foco,
-                                      controller: _importaColaboradorController,
+                                      controller: importaColaboradorController,
                                       readOnly: true,
                                       decoration: getInputDecoration(
                                         'Conteúdo para o campo Colaborador',
@@ -199,7 +200,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                     icon: ViewUtilLib.getIconBotaoLookup(),
                                     onPressed: () async {
                                       ///chamando o lookup
-                                      Map<String, dynamic>? _objetoJsonRetorno =
+                                      Map<String, dynamic>? objetoJsonRetorno =
                                         await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -216,17 +217,17 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                               ),
                                               fullscreenDialog: true,
                                             ));
-                                      if (_objetoJsonRetorno != null) {
-                                        if (_objetoJsonRetorno['nome'] != null) {
-                                          _importaColaboradorController.text = _objetoJsonRetorno['nome'];
+                                      if (objetoJsonRetorno != null) {
+                                        if (objetoJsonRetorno['nome'] != null) {
+                                          importaColaboradorController.text = objetoJsonRetorno['nome'];
                                           widget.compraPedidoCabecalhoMontado!.colaborador = 
                                             Colaborador(
-                                              id: _objetoJsonRetorno['id'],
-                                              nome: _objetoJsonRetorno['nome']
+                                              id: objetoJsonRetorno['id'],
+                                              nome: objetoJsonRetorno['nome']
                                             );                                
                                           CompraPedidoCabecalhoController.compraPedidoCabecalho = 
                                             CompraPedidoCabecalhoController.compraPedidoCabecalho!.copyWith(
-                                              idColaborador: _objetoJsonRetorno['id']
+                                              idColaborador: objetoJsonRetorno['id']
                                             );
                                         }
                                       }
@@ -251,7 +252,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                   child: SizedBox(
                                     child: TextFormField(
                                       validator: ValidaCampoFormulario.validarObrigatorio,
-                                      controller: _importaFornecedorController,
+                                      controller: importaFornecedorController,
                                       readOnly: true,
                                       decoration: getInputDecoration(
                                         'Conteúdo para o campo Fornecedor',
@@ -271,7 +272,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                     icon: ViewUtilLib.getIconBotaoLookup(),
                                     onPressed: () async {
                                       ///chamando o lookup
-                                      Map<String, dynamic>? _objetoJsonRetorno =
+                                      Map<String, dynamic>? objetoJsonRetorno =
                                         await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -288,18 +289,18 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                               ),
                                               fullscreenDialog: true,
                                             ));
-                                      if (_objetoJsonRetorno != null) {
-                                        if (_objetoJsonRetorno['nome'] != null) {
+                                      if (objetoJsonRetorno != null) {
+                                        if (objetoJsonRetorno['nome'] != null) {
                                           paginaMestreDetalheFoiAlterada = true;
-                                          _importaFornecedorController.text = _objetoJsonRetorno['nome'];
+                                          importaFornecedorController.text = objetoJsonRetorno['nome'];
                                           widget.compraPedidoCabecalhoMontado!.fornecedor = 
                                             Fornecedor(
-                                              id: _objetoJsonRetorno['id'],
-                                              nome: _objetoJsonRetorno['nome']
+                                              id: objetoJsonRetorno['id'],
+                                              nome: objetoJsonRetorno['nome']
                                             );                                
                                           CompraPedidoCabecalhoController.compraPedidoCabecalho = 
                                             CompraPedidoCabecalhoController.compraPedidoCabecalho!.copyWith(
-                                              idFornecedor: _objetoJsonRetorno['id']
+                                              idFornecedor: objetoJsonRetorno['id']
                                             );
                                         }
                                       }
@@ -540,7 +541,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 keyboardType: TextInputType.number,
                                 readOnly: true,
                                 textAlign: TextAlign.end,
-                                controller: _valorSubtotalController,
+                                controller: valorSubtotalController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Valor Subtotal',
@@ -549,7 +550,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho!.copyWith(valorSubtotal: _valorSubtotalController.numberValue);
+                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho!.copyWith(valorSubtotal: valorSubtotalController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -564,7 +565,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 readOnly: CompraPedidoCabecalhoPage.descontoNosItems,
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.end,
-                                controller: _taxaDescontoController,
+                                controller: taxaDescontoController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Taxa Desconto',
@@ -574,10 +575,10 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  if (_taxaDescontoController.numberValue >= 100) {
-                                    _taxaDescontoController.updateValue(99.9);
+                                  if (taxaDescontoController.numberValue >= 100) {
+                                    taxaDescontoController.updateValue(99.9);
                                   }
-                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho!.copyWith(taxaDesconto: _taxaDescontoController.numberValue);
+                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho!.copyWith(taxaDesconto: taxaDescontoController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                   _atualizarTotais();
                                 },
@@ -593,7 +594,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 keyboardType: TextInputType.number,
                                 readOnly: true,
                                 textAlign: TextAlign.end,
-                                controller: _valorDescontoController,
+                                controller: valorDescontoController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Valor Desconto',
@@ -602,7 +603,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho!.copyWith(valorDesconto: _valorDescontoController.numberValue);
+                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho!.copyWith(valorDesconto: valorDescontoController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -617,7 +618,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 keyboardType: TextInputType.number,
                                 readOnly: true,
                                 textAlign: TextAlign.end,
-                                controller: _valorTotalController,
+                                controller: valorTotalController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Valor Total',
@@ -626,7 +627,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 onSaved: (String? value) {
                                 },
                                 onChanged: (text) {
-                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho!.copyWith(valorTotal: _valorTotalController.numberValue);
+                                  CompraPedidoCabecalhoController.compraPedidoCabecalho = CompraPedidoCabecalhoController.compraPedidoCabecalho!.copyWith(valorTotal: valorTotalController.numberValue);
                                   paginaMestreDetalheFoiAlterada = true;
                                 },
                               ),
@@ -732,7 +733,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                                 keyboardType: TextInputType.number,
                                 maxLength: 2,
                                 maxLines: 1,
-                                controller: _intervaloEntreParcelasController,
+                                controller: intervaloEntreParcelasController,
                                 decoration: getInputDecoration(
                                   '',
                                   'Intervalo entre Parcelas',
@@ -785,7 +786,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
                               child: TextFormField(
                                 maxLength: 2,
                                 keyboardType: TextInputType.number,
-                                controller: _diaFixoParcelaController,
+                                controller: diaFixoParcelaController,
                                 decoration: getInputDecoration(
                                   'Permite informar um dia fixo para as parcelas que serão geradas no Contas a Pagar.',
                                   'Dia Fixo da Parcela',
@@ -886,6 +887,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
           // gera as parcelas
           if (podeGerar) {
             final resultado = await CompraPedidoCabecalhoController.gerarFinanceiro();
+            if (!mounted) return;
             if (resultado) {
               showInSnackBar("Dados financeiros gerados com sucesso no Contas a Pagar.", context, corFundo: ViewUtilLib.getBackgroundColorSnackBarAzul());
             } else {
@@ -904,6 +906,7 @@ class _CompraPedidoCabecalhoPersistePageState extends State<CompraPedidoCabecalh
       } else {
         gerarDialogBoxConfirmacao(context, 'Deseja atualizar o estoque? O pedido não poderá mais ser alterado após essa ação.', () async {
           final resultado = await CompraPedidoCabecalhoController.atualizarEstoque();
+          if (!mounted) return;
           if (resultado) {
             showInSnackBar("Estoque atualizado com sucesso.", context, corFundo: ViewUtilLib.getBackgroundColorSnackBarAzul());
           } else {

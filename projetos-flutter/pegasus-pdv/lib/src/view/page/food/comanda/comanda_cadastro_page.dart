@@ -54,10 +54,10 @@ class ComandaCadastroPage extends StatefulWidget {
   const ComandaCadastroPage(this.comandaMontado, {Key? key}) : super(key: key);
 
   @override
-  _ComandaCadastroPageState createState() => _ComandaCadastroPageState();
+  ComandaCadastroPageState createState() => ComandaCadastroPageState();
 }
 
-class _ComandaCadastroPageState extends State<ComandaCadastroPage> {
+class ComandaCadastroPageState extends State<ComandaCadastroPage> {
   final _importaClienteController = TextEditingController();
   final _importaColaboradorController = TextEditingController();
 
@@ -155,7 +155,7 @@ class _ComandaCadastroPageState extends State<ComandaCadastroPage> {
                   icon: ViewUtilLib.getIconBotaoLookup(),
                   onPressed: () async {
                     ///chamando o lookup
-                    Map<String, dynamic>? _objetoJsonRetorno =
+                    Map<String, dynamic>? objetoJsonRetorno =
                       await Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -172,12 +172,12 @@ class _ComandaCadastroPageState extends State<ComandaCadastroPage> {
                           ),
                           fullscreenDialog: true,
                         ));
-                    if (_objetoJsonRetorno != null) {
-                      if (_objetoJsonRetorno['nome'] != null) {
-                        _importaClienteController.text = _objetoJsonRetorno['nome'];
-                        widget.comandaMontado.comanda = widget.comandaMontado.comanda!.copyWith(idCliente: _objetoJsonRetorno['id']);
+                    if (objetoJsonRetorno != null) {
+                      if (objetoJsonRetorno['nome'] != null) {
+                        _importaClienteController.text = objetoJsonRetorno['nome'];
+                        widget.comandaMontado.comanda = widget.comandaMontado.comanda!.copyWith(idCliente: objetoJsonRetorno['id']);
                         widget.comandaMontado.cliente = widget.comandaMontado.cliente!.copyWith(
-                          nome: _objetoJsonRetorno['nome'],
+                          nome: objetoJsonRetorno['nome'],
                         );          
                       }
                     }
@@ -195,6 +195,7 @@ class _ComandaCadastroPageState extends State<ComandaCadastroPage> {
             children: const [
               SizedBox(width: 1,),
               Icon(
+                // ignore: deprecated_member_use
                 FontAwesomeIcons.portrait,
                 color: Colors.black54,
               ),
@@ -231,7 +232,7 @@ class _ComandaCadastroPageState extends State<ComandaCadastroPage> {
                   icon: ViewUtilLib.getIconBotaoLookup(),
                   onPressed: () async {
                     ///chamando o lookup
-                    Map<String, dynamic>? _objetoJsonRetorno =
+                    Map<String, dynamic>? objetoJsonRetorno =
                       await Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -248,12 +249,12 @@ class _ComandaCadastroPageState extends State<ComandaCadastroPage> {
                           ),
                           fullscreenDialog: true,
                         ));
-                    if (_objetoJsonRetorno != null) {
-                      if (_objetoJsonRetorno['nome'] != null) {
-                        _importaColaboradorController.text = _objetoJsonRetorno['nome'];
-                        widget.comandaMontado.comanda = widget.comandaMontado.comanda!.copyWith(idColaborador: _objetoJsonRetorno['id']);
+                    if (objetoJsonRetorno != null) {
+                      if (objetoJsonRetorno['nome'] != null) {
+                        _importaColaboradorController.text = objetoJsonRetorno['nome'];
+                        widget.comandaMontado.comanda = widget.comandaMontado.comanda!.copyWith(idColaborador: objetoJsonRetorno['id']);
                         widget.comandaMontado.colaborador = widget.comandaMontado.colaborador!.copyWith(
-                          nome: _objetoJsonRetorno['nome'],
+                          nome: objetoJsonRetorno['nome'],
                         );          
                       }
                     }
@@ -314,6 +315,7 @@ class _ComandaCadastroPageState extends State<ComandaCadastroPage> {
 
   Future _salvar() async {
     await Sessao.db.comandaDao.alterar(widget.comandaMontado);
+    if (!mounted) return;
     Navigator.pop(context);
   }
 

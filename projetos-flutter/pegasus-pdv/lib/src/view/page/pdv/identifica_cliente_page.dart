@@ -57,10 +57,10 @@ class IdentificaClientePage extends StatefulWidget {
   const IdentificaClientePage({Key? key, this.title}): super(key: key);
 
   @override
-  _IdentificaClientePageState createState() => _IdentificaClientePageState();
+  IdentificaClientePageState createState() => IdentificaClientePageState();
 }
 
-class _IdentificaClientePageState extends State<IdentificaClientePage> {
+class IdentificaClientePageState extends State<IdentificaClientePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final AutovalidateMode _autoValidate = AutovalidateMode.always;
 
@@ -290,7 +290,7 @@ class _IdentificaClientePageState extends State<IdentificaClientePage> {
                                       cpfCnpjCliente: objetoJsonRetorno['cpfCnpj'],
                                     );
                                     _importaClienteController.text = objetoJsonRetorno['nome'];
-                                    _cpfController.text = objetoJsonRetorno['cpfCnpj'];                                    
+                                    _cpfController.text = objetoJsonRetorno['cpfCnpj'] ?? '';                                    
                                   });
                                 }
                               },

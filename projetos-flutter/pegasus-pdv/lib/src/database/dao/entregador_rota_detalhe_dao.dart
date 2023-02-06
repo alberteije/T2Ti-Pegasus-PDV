@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'entregador_rota_detalhe_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           EntregadorRotaDetalhes,
 		])
 class EntregadorRotaDetalheDao extends DatabaseAccessor<AppDatabase> with _$EntregadorRotaDetalheDaoMixin {
@@ -51,16 +51,16 @@ class EntregadorRotaDetalheDao extends DatabaseAccessor<AppDatabase> with _$Entr
   Future<List<EntregadorRotaDetalhe>?> consultarLista() => select(entregadorRotaDetalhes).get();
 
   Future<List<EntregadorRotaDetalhe>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM ENTREGADOR_ROTA_DETALHE WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM ENTREGADOR_ROTA_DETALHE WHERE $campo like '%$valor%'", 
                                 readsFrom: { entregadorRotaDetalhes }).map((row) {
-                                  return EntregadorRotaDetalhe.fromData(row.data, db);  
+                                  return EntregadorRotaDetalhe.fromData(row.data);  
                                 }).get());
   }
 
   Future<EntregadorRotaDetalhe?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM ENTREGADOR_ROTA_DETALHE WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM ENTREGADOR_ROTA_DETALHE WHERE $campo = '$valor'", 
                                 readsFrom: { entregadorRotaDetalhes }).map((row) {
-                                  return EntregadorRotaDetalhe.fromData(row.data, db);  
+                                  return EntregadorRotaDetalhe.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -70,20 +70,27 @@ class EntregadorRotaDetalheDao extends DatabaseAccessor<AppDatabase> with _$Entr
     return (select(entregadorRotaDetalhes)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<EntregadorRotaDetalhe> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from ENTREGADOR_ROTA_DETALHE").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(EntregadorRotaDetalhe pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(entregadorRotaDetalhes).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<EntregadorRotaDetalhe> pObjeto) {
+  Future<bool> alterar(EntregadorRotaDetalhe pObjeto) {
     return transaction(() async {
       return update(entregadorRotaDetalhes).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<EntregadorRotaDetalhe> pObjeto) {
+  Future<int> excluir(EntregadorRotaDetalhe pObjeto) {
     return transaction(() async {
       return delete(entregadorRotaDetalhes).delete(pObjeto);
     });    

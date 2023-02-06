@@ -60,10 +60,10 @@ class ProdutoSubgrupoPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ProdutoSubgrupoPersistePageState createState() => _ProdutoSubgrupoPersistePageState();
+  ProdutoSubgrupoPersistePageState createState() => ProdutoSubgrupoPersistePageState();
 }
 
-class _ProdutoSubgrupoPersistePageState extends State<ProdutoSubgrupoPersistePage> {
+class ProdutoSubgrupoPersistePageState extends State<ProdutoSubgrupoPersistePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -72,8 +72,6 @@ class _ProdutoSubgrupoPersistePageState extends State<ProdutoSubgrupoPersistePag
   Map<LogicalKeySet, Intent>? _shortcutMap; 
   Map<Type, Action<Intent>>? _actionMap;
   final _foco = FocusNode();
-
-  ProdutoSubgrupo? produtoSubgrupo;
 
   @override
   void initState() {
@@ -89,7 +87,6 @@ class _ProdutoSubgrupoPersistePageState extends State<ProdutoSubgrupoPersistePag
         onInvoke: _tratarAcoesAtalhos,
       ),
     };
-    produtoSubgrupo = widget.produtoSubgrupoMontado!.produtoSubgrupo;
     _foco.requestFocus();
   }
 
@@ -108,8 +105,8 @@ class _ProdutoSubgrupoPersistePageState extends State<ProdutoSubgrupoPersistePag
 
   @override
   Widget build(BuildContext context) {	
-    final _importaProdutoGrupoController = TextEditingController();
-    _importaProdutoGrupoController.text = widget.produtoSubgrupoMontado?.produtoGrupo?.nome ?? '';
+    final importaProdutoGrupoController = TextEditingController();
+    importaProdutoGrupoController.text = widget.produtoSubgrupoMontado?.produtoGrupo?.nome ?? '';
 
     return FocusableActionDetector(
       actions: _actionMap,
@@ -152,7 +149,7 @@ class _ProdutoSubgrupoPersistePageState extends State<ProdutoSubgrupoPersistePag
                                   child: TextFormField(
                                     focusNode: _foco,
                                     validator: ValidaCampoFormulario.validarObrigatorio,
-                                    controller: _importaProdutoGrupoController,
+                                    controller: importaProdutoGrupoController,
                                     readOnly: true,
                                     decoration: getInputDecoration(
                                       'Conteúdo para o campo Grupo',
@@ -171,7 +168,7 @@ class _ProdutoSubgrupoPersistePageState extends State<ProdutoSubgrupoPersistePag
                                     icon: ViewUtilLib.getIconBotaoLookup(),
                                     onPressed: () async {
                                       ///chamando o lookup
-                                      Map<String, dynamic>? _objetoJsonRetorno =
+                                      Map<String, dynamic>? objetoJsonRetorno =
                                         await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -187,11 +184,15 @@ class _ProdutoSubgrupoPersistePageState extends State<ProdutoSubgrupoPersistePag
                                           ),
                                           fullscreenDialog: true,
                                         ));
-                                      if (_objetoJsonRetorno != null) {
-                                        if (_objetoJsonRetorno['nome'] != null) {
-                                          _importaProdutoGrupoController.text = _objetoJsonRetorno['nome'];
+                                      if (objetoJsonRetorno != null) {
+                                        if (objetoJsonRetorno['nome'] != null) {
+                                          importaProdutoGrupoController.text = objetoJsonRetorno['nome'];
+                                          widget.produtoSubgrupoMontado!.produtoSubgrupo = widget.produtoSubgrupoMontado!.produtoSubgrupo!.copyWith(
+                                            idProdutoGrupo: objetoJsonRetorno['id'],
+                                          );
                                           widget.produtoSubgrupoMontado!.produtoGrupo = widget.produtoSubgrupoMontado!.produtoGrupo!.copyWith(
-                                            nome: _objetoJsonRetorno['nome'],
+                                            id: objetoJsonRetorno['id'],
+                                            nome: objetoJsonRetorno['nome'],
                                           );
                                         }
                                       }
@@ -212,7 +213,7 @@ class _ProdutoSubgrupoPersistePageState extends State<ProdutoSubgrupoPersistePag
                             child: TextFormField(
                               maxLength: 100,
                               maxLines: 1,
-                              initialValue: produtoSubgrupo?.nome ?? '',
+                              initialValue: widget.produtoSubgrupoMontado!.produtoSubgrupo?.nome ?? '',
                               decoration: getInputDecoration(
                                 'Informe o Nome',
                                 'Nome',
@@ -221,7 +222,7 @@ class _ProdutoSubgrupoPersistePageState extends State<ProdutoSubgrupoPersistePag
                               },
                               validator: ValidaCampoFormulario.validarAlfanumerico,
                               onChanged: (text) {
-                                produtoSubgrupo = produtoSubgrupo!.copyWith(nome: text);
+                                widget.produtoSubgrupoMontado!.produtoSubgrupo = widget.produtoSubgrupoMontado!.produtoSubgrupo!.copyWith(nome: text);
                                 _formFoiAlterado = true;
                               },
                             ),
@@ -231,7 +232,7 @@ class _ProdutoSubgrupoPersistePageState extends State<ProdutoSubgrupoPersistePag
                             child: TextFormField(
                               maxLength: 250,
                               maxLines: 3,
-                              initialValue: produtoSubgrupo?.descricao ?? '',
+                              initialValue: widget.produtoSubgrupoMontado!.produtoSubgrupo?.descricao ?? '',
                               decoration: getInputDecoration(
                                 'Informe a Descrição',
                                 'Descrição',
@@ -239,7 +240,7 @@ class _ProdutoSubgrupoPersistePageState extends State<ProdutoSubgrupoPersistePag
                               onSaved: (String? value) {
                               },
                               onChanged: (text) {
-                                produtoSubgrupo = produtoSubgrupo!.copyWith(descricao: text);
+                                widget.produtoSubgrupoMontado!.produtoSubgrupo = widget.produtoSubgrupoMontado!.produtoSubgrupo!.copyWith(descricao: text);
                                 _formFoiAlterado = true;
                               },
                             ),
@@ -286,10 +287,11 @@ class _ProdutoSubgrupoPersistePageState extends State<ProdutoSubgrupoPersistePag
       gerarDialogBoxConfirmacao(context, Constantes.perguntaSalvarAlteracoes, () async {
         form.save();
         if (widget.operacao == 'A') {
-          await Sessao.db.produtoSubgrupoDao.alterar(produtoSubgrupo!);
+          await Sessao.db.produtoSubgrupoDao.alterar(widget.produtoSubgrupoMontado!.produtoSubgrupo!);
         } else {
-          await Sessao.db.produtoSubgrupoDao.inserir(produtoSubgrupo!);
+          await Sessao.db.produtoSubgrupoDao.inserir(widget.produtoSubgrupoMontado!.produtoSubgrupo!);
         }
+        if (!mounted) return;
         Navigator.of(context).pop();
         showInSnackBar("Registro salvo com sucesso!", context, corFundo: Colors.green);
       });
@@ -308,7 +310,8 @@ class _ProdutoSubgrupoPersistePageState extends State<ProdutoSubgrupoPersistePag
   
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-	  await Sessao.db.produtoSubgrupoDao.excluir(produtoSubgrupo!);
+	    await Sessao.db.produtoSubgrupoDao.excluir(widget.produtoSubgrupoMontado!.produtoSubgrupo!);
+      if (!mounted) return;
       Navigator.of(context).pop();
       showInSnackBar("Registro excluído com sucesso!", context, corFundo: Colors.green);
     });

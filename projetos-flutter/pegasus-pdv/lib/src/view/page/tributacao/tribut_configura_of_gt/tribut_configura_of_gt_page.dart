@@ -70,10 +70,10 @@ class TributConfiguraOfGtPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _TributConfiguraOfGtPageState createState() => _TributConfiguraOfGtPageState();
+  TributConfiguraOfGtPageState createState() => TributConfiguraOfGtPageState();
 }
 
-class _TributConfiguraOfGtPageState extends State<TributConfiguraOfGtPage> with SingleTickerProviderStateMixin {
+class TributConfiguraOfGtPageState extends State<TributConfiguraOfGtPage> with SingleTickerProviderStateMixin {
   TabController? _abasController;
   String _estiloBotoesAba = 'iconsAndText';
 
@@ -268,6 +268,7 @@ class _TributConfiguraOfGtPageState extends State<TributConfiguraOfGtPage> with 
         } else {
           await Sessao.db.tributConfiguraOfGtDao.inserir(widget.tributConfiguraOfGtMontado);
         }
+        if (!mounted) return;
         Navigator.pop(context);
       });
     } else {
@@ -278,6 +279,7 @@ class _TributConfiguraOfGtPageState extends State<TributConfiguraOfGtPage> with 
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
       await Sessao.db.tributConfiguraOfGtDao.excluir(widget.tributConfiguraOfGtMontado!);
+      if (!mounted) return;
       Navigator.of(context).pop();
   	  showInSnackBar("Registro excluído com sucesso!", context, corFundo: Colors.green);
     });

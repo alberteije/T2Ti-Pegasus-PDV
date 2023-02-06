@@ -38,7 +38,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -58,10 +58,10 @@ class CozinhaPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _CozinhaPersistePageState createState() => _CozinhaPersistePageState();
+  CozinhaPersistePageState createState() => CozinhaPersistePageState();
 }
 
-class _CozinhaPersistePageState extends State<CozinhaPersistePage> {
+class CozinhaPersistePageState extends State<CozinhaPersistePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -237,6 +237,7 @@ class _CozinhaPersistePageState extends State<CozinhaPersistePage> {
         } else {
           await Sessao.db.cozinhaDao.inserir(cozinha!);
         }
+        if (!mounted) return;
         Navigator.of(context).pop();
         showInSnackBar("Registro salvo com sucesso!", context, corFundo: Colors.green);
       });
@@ -255,7 +256,8 @@ class _CozinhaPersistePageState extends State<CozinhaPersistePage> {
   
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-	  await Sessao.db.cozinhaDao.excluir(cozinha!);
+	    await Sessao.db.cozinhaDao.excluir(cozinha!);
+      if (!mounted) return;
       Navigator.of(context).pop();
       showInSnackBar("Registro excluído com sucesso!", context, corFundo: Colors.green);
     });

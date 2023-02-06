@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'ecf_log_totais_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           EcfLogTotaiss,
 		])
 class EcfLogTotaisDao extends DatabaseAccessor<AppDatabase> with _$EcfLogTotaisDaoMixin {
@@ -51,9 +51,9 @@ class EcfLogTotaisDao extends DatabaseAccessor<AppDatabase> with _$EcfLogTotaisD
   Future<List<EcfLogTotais>> consultarLista() => select(ecfLogTotaiss).get();
 
   Future<List<EcfLogTotais>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM ECF_LOG_TOTAIS WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM ECF_LOG_TOTAIS WHERE $campo like '%$valor%'", 
                                 readsFrom: { ecfLogTotaiss }).map((row) {
-                                  return EcfLogTotais.fromData(row.data, db);  
+                                  return EcfLogTotais.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,20 +63,20 @@ class EcfLogTotaisDao extends DatabaseAccessor<AppDatabase> with _$EcfLogTotaisD
     return (select(ecfLogTotaiss)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<EcfLogTotais> pObjeto) {
+  Future<int> inserir(EcfLogTotais pObjeto) {
     return transaction(() async {
       final idInserido = await into(ecfLogTotaiss).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<EcfLogTotais> pObjeto) {
+  Future<bool> alterar(EcfLogTotais pObjeto) {
     return transaction(() async {
       return update(ecfLogTotaiss).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<EcfLogTotais> pObjeto) {
+  Future<int> excluir(EcfLogTotais pObjeto) {
     return transaction(() async {
       return delete(ecfLogTotaiss).delete(pObjeto);
     });    

@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'pdv_configuracao_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           PdvConfiguracaos,
 		])
 class PdvConfiguracaoDao extends DatabaseAccessor<AppDatabase> with _$PdvConfiguracaoDaoMixin {
@@ -51,9 +51,9 @@ class PdvConfiguracaoDao extends DatabaseAccessor<AppDatabase> with _$PdvConfigu
   Future<List<PdvConfiguracao>> consultarLista() => select(pdvConfiguracaos).get();
 
   Future<List<PdvConfiguracao>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM PDV_CONFIGURACAO WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM PDV_CONFIGURACAO WHERE $campo like '%$valor%'", 
                                 readsFrom: { pdvConfiguracaos }).map((row) {
-                                  return PdvConfiguracao.fromData(row.data, db);  
+                                  return PdvConfiguracao.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,20 +63,27 @@ class PdvConfiguracaoDao extends DatabaseAccessor<AppDatabase> with _$PdvConfigu
     return (select(pdvConfiguracaos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<PdvConfiguracao> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from PDV_CONFIGURACAO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(PdvConfiguracao pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(pdvConfiguracaos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<PdvConfiguracao> pObjeto) {
+  Future<bool> alterar(PdvConfiguracao pObjeto) {
     return transaction(() async {
       return update(pdvConfiguracaos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<PdvConfiguracao> pObjeto) {
+  Future<int> excluir(PdvConfiguracao pObjeto) {
     return transaction(() async {
       return delete(pdvConfiguracaos).delete(pObjeto);
     });    

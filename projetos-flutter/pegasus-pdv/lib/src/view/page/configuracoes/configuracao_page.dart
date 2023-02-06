@@ -43,10 +43,10 @@ class ConfiguracaoPage extends StatefulWidget {
 
 
   @override
-  _ConfiguracaoPageState createState() => _ConfiguracaoPageState();
+  ConfiguracaoPageState createState() => ConfiguracaoPageState();
 }
 
-class _ConfiguracaoPageState extends State<ConfiguracaoPage> {
+class ConfiguracaoPageState extends State<ConfiguracaoPage> {
   int _currentIndex = 0;
   PageController? _pageController;
 

@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'fidelidade_historico_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           FidelidadeHistoricos,
 		])
 class FidelidadeHistoricoDao extends DatabaseAccessor<AppDatabase> with _$FidelidadeHistoricoDaoMixin {
@@ -51,16 +51,16 @@ class FidelidadeHistoricoDao extends DatabaseAccessor<AppDatabase> with _$Fideli
   Future<List<FidelidadeHistorico>?> consultarLista() => select(fidelidadeHistoricos).get();
 
   Future<List<FidelidadeHistorico>?> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM FIDELIDADE_HISTORICO WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM FIDELIDADE_HISTORICO WHERE $campo like '%$valor%'", 
                                 readsFrom: { fidelidadeHistoricos }).map((row) {
-                                  return FidelidadeHistorico.fromData(row.data, db);  
+                                  return FidelidadeHistorico.fromData(row.data);  
                                 }).get());
   }
 
   Future<FidelidadeHistorico?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM FIDELIDADE_HISTORICO WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM FIDELIDADE_HISTORICO WHERE $campo = '$valor'", 
                                 readsFrom: { fidelidadeHistoricos }).map((row) {
-                                  return FidelidadeHistorico.fromData(row.data, db);  
+                                  return FidelidadeHistorico.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -70,20 +70,27 @@ class FidelidadeHistoricoDao extends DatabaseAccessor<AppDatabase> with _$Fideli
     return (select(fidelidadeHistoricos)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<FidelidadeHistorico> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from FIDELIDADE_HISTORICO").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(FidelidadeHistorico pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(fidelidadeHistoricos).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<FidelidadeHistorico> pObjeto) {
+  Future<bool> alterar(FidelidadeHistorico pObjeto) {
     return transaction(() async {
       return update(fidelidadeHistoricos).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<FidelidadeHistorico> pObjeto) {
+  Future<int> excluir(FidelidadeHistorico pObjeto) {
     return transaction(() async {
       return delete(fidelidadeHistoricos).delete(pObjeto);
     });    

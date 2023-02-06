@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'ecf_r03_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           EcfR03s,
 		])
 class EcfR03Dao extends DatabaseAccessor<AppDatabase> with _$EcfR03DaoMixin {
@@ -51,9 +51,9 @@ class EcfR03Dao extends DatabaseAccessor<AppDatabase> with _$EcfR03DaoMixin {
   Future<List<EcfR03>> consultarLista() => select(ecfR03s).get();
 
   Future<List<EcfR03>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM ECF_R03 WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM ECF_R03 WHERE $campo like '%$valor%'", 
                                 readsFrom: { ecfR03s }).map((row) {
-                                  return EcfR03.fromData(row.data, db);  
+                                  return EcfR03.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,20 +63,20 @@ class EcfR03Dao extends DatabaseAccessor<AppDatabase> with _$EcfR03DaoMixin {
     return (select(ecfR03s)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<EcfR03> pObjeto) {
+  Future<int> inserir(EcfR03 pObjeto) {
     return transaction(() async {
       final idInserido = await into(ecfR03s).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<EcfR03> pObjeto) {
+  Future<bool> alterar(EcfR03 pObjeto) {
     return transaction(() async {
       return update(ecfR03s).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<EcfR03> pObjeto) {
+  Future<int> excluir(EcfR03 pObjeto) {
     return transaction(() async {
       return delete(ecfR03s).delete(pObjeto);
     });    

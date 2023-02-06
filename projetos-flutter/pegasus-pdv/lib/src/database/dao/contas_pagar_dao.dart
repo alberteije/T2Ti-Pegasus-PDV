@@ -34,15 +34,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 @version 1.0.0
 *******************************************************************************/
 import 'dart:async';
+import 'dart:convert';
 
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 part 'contas_pagar_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           ContasPagars,
           Fornecedors,
 		])
@@ -60,9 +62,9 @@ class ContasPagarDao extends DatabaseAccessor<AppDatabase> with _$ContasPagarDao
   }
 
   Future<List<ContasPagar>?> consultarListaFiltro(String campo, String valor) async {
-    listaContasPagar = (await (customSelect("SELECT * FROM CONTAS_PAGAR WHERE " + campo + " like '%" + valor + "%'", 
+    listaContasPagar = (await (customSelect("SELECT * FROM CONTAS_PAGAR WHERE $campo like '%$valor%'", 
                                 readsFrom: { contasPagars }).map((row) {
-                                  return ContasPagar.fromData(row.data, db);  
+                                  return ContasPagar.fromData(row.data);  
                                 }).get())).cast<ContasPagar>();
     return listaContasPagar;
   }
@@ -112,15 +114,7 @@ class ContasPagarDao extends DatabaseAccessor<AppDatabase> with _$ContasPagarDao
       diasPeriodo = '360';
     }
 
-    final sql = "select SUM(VALOR_PAGO) AS TOTAL from CONTAS_PAGAR "
-                "where "
-                "STATUS_PAGAMENTO='P' "
-                "and " 
-                "( "
-                "date(DATA_PAGAMENTO, 'unixepoch') "
-                "between "
-                "date('now','-"+ diasPeriodo + " day') AND date('now') "
-                ")";
+    final sql = "select SUM(VALOR_PAGO) AS TOTAL from CONTAS_PAGAR where STATUS_PAGAMENTO='P' and ( date(DATA_PAGAMENTO, 'unixepoch') between date('now','-$diasPeriodo day') AND date('now') )";
     final resultado = await customSelect(sql).getSingleOrNull();
     return resultado?.data["TOTAL"] ?? 0;
   }
@@ -149,15 +143,7 @@ class ContasPagarDao extends DatabaseAccessor<AppDatabase> with _$ContasPagarDao
       diasPeriodo = '360';
     }
 
-    final sql = "select SUM(VALOR_A_PAGAR) AS TOTAL from CONTAS_PAGAR "
-                "where "
-                "STATUS_PAGAMENTO='A' "
-                "and " 
-                "( "
-                "date(DATA_VENCIMENTO, 'unixepoch') "
-                "between "
-                "date('now') AND date('now','+"+ diasPeriodo + " day') "
-                ")";
+    final sql = "select SUM(VALOR_A_PAGAR) AS TOTAL from CONTAS_PAGAR where STATUS_PAGAMENTO='A' and ( date(DATA_VENCIMENTO, 'unixepoch') between date('now') AND date('now','+$diasPeriodo day') )";
     final resultado = await customSelect(sql).getSingleOrNull();
     return resultado?.data["TOTAL"] ?? 0;
   }
@@ -168,8 +154,15 @@ class ContasPagarDao extends DatabaseAccessor<AppDatabase> with _$ContasPagarDao
     return (select(contasPagars)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<ContasPagar> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from CONTAS_PAGAR").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(ContasPagar pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(contasPagars).insert(pObjeto);
       return idInserido;
     });    
@@ -185,13 +178,13 @@ class ContasPagarDao extends DatabaseAccessor<AppDatabase> with _$ContasPagarDao
     });    
   } 
 
-  Future<bool> alterar(Insertable<ContasPagar> pObjeto) {
+  Future<bool> alterar(ContasPagar pObjeto) {
     return transaction(() async {
       return update(contasPagars).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<ContasPagar> pObjeto) {
+  Future<int> excluir(ContasPagar pObjeto) {
     return transaction(() async {
       return delete(contasPagars).delete(pObjeto);
     });    
@@ -201,6 +194,15 @@ class ContasPagarDao extends DatabaseAccessor<AppDatabase> with _$ContasPagarDao
     return transaction(() async {
       return (delete(contasPagars)..where((t) => t.idCompraPedidoCabecalho.equals(idPedidoCompra))).go();
     });    
+  }
+
+  Future<void> sincronizar(ObjetoSincroniza objetoSincroniza) async {
+    (delete(contasPagars)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = ContasPagar.fromJson(objetoJson);
+      into(contasPagars).insertOnConflictUpdate(objetoDart);
+    }
   }
 
 	static List<String> campos = <String>[

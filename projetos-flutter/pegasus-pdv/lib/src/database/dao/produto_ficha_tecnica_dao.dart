@@ -33,14 +33,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'dart:convert';
+
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 part 'produto_ficha_tecnica_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           ProdutoFichaTecnicas,
 		])
 class ProdutoFichaTecnicaDao extends DatabaseAccessor<AppDatabase> with _$ProdutoFichaTecnicaDaoMixin {
@@ -56,17 +59,17 @@ class ProdutoFichaTecnicaDao extends DatabaseAccessor<AppDatabase> with _$Produt
   }  
 
   Future<List<ProdutoFichaTecnica>> consultarListaFiltro(String campo, String valor) async {
-    listaProdutoFichaTecnica = await (customSelect("SELECT * FROM PRODUTO_FICHA_TECNICA WHERE " + campo + " like '%" + valor + "%'", 
+    listaProdutoFichaTecnica = await (customSelect("SELECT * FROM PRODUTO_FICHA_TECNICA WHERE $campo like '%$valor%'", 
                                 readsFrom: { produtoFichaTecnicas }).map((row) {
-                                  return ProdutoFichaTecnica.fromData(row.data, db);  
+                                  return ProdutoFichaTecnica.fromData(row.data);  
                                 }).get());
     return listaProdutoFichaTecnica;
   }
     
   Future<ProdutoFichaTecnica?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM PRODUTO_FICHA_TECNICA WHERE " + campo + " = '" + valor + "'", 
+    return (customSelect("SELECT * FROM PRODUTO_FICHA_TECNICA WHERE $campo = '$valor'", 
                                 readsFrom: { produtoFichaTecnicas }).map((row) {
-                                  return ProdutoFichaTecnica.fromData(row.data, db);  
+                                  return ProdutoFichaTecnica.fromData(row.data);  
                                 }).getSingleOrNull());
   }  
   
@@ -76,26 +79,40 @@ class ProdutoFichaTecnicaDao extends DatabaseAccessor<AppDatabase> with _$Produt
     return (select(produtoFichaTecnicas)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<ProdutoFichaTecnica> pObjeto) {
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from PRODUTO_FICHA_TECNICA").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(ProdutoFichaTecnica pObjeto) {
     return transaction(() async {
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(produtoFichaTecnicas).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<ProdutoFichaTecnica> pObjeto) {
+  Future<bool> alterar(ProdutoFichaTecnica pObjeto) {
     return transaction(() async {
       return update(produtoFichaTecnicas).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<ProdutoFichaTecnica> pObjeto) {
+  Future<int> excluir(ProdutoFichaTecnica pObjeto) {
     return transaction(() async {
       return delete(produtoFichaTecnicas).delete(pObjeto);
     });    
   }
 
-  
+  Future<void> sincronizar(ObjetoSincroniza objetoSincroniza) async {
+    (delete(produtoFichaTecnicas)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = ProdutoFichaTecnica.fromJson(objetoJson);
+      into(produtoFichaTecnicas).insertOnConflictUpdate(objetoDart);
+    }
+  }  
   
   static List<String> campos = <String>[
     'ID', 

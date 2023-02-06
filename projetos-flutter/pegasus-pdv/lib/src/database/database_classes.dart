@@ -39,6 +39,8 @@ export 'package:pegasus_pdv/src/database/tabela/cfop.dart';
 export 'package:pegasus_pdv/src/database/dao/cfop_dao.dart';
 export 'package:pegasus_pdv/src/database/tabela/cliente.dart';
 export 'package:pegasus_pdv/src/database/dao/cliente_dao.dart';
+export 'package:pegasus_pdv/src/database/tabela/cliente_fiado.dart';
+export 'package:pegasus_pdv/src/database/dao/cliente_fiado_dao.dart';
 export 'package:pegasus_pdv/src/database/tabela/colaborador.dart';
 export 'package:pegasus_pdv/src/database/dao/colaborador_dao.dart';
 export 'package:pegasus_pdv/src/database/tabela/compra_pedido_cabecalho.dart';
@@ -194,6 +196,7 @@ export 'package:pegasus_pdv/src/database/dao/tribut_icms_uf_dao.dart';
 export 'package:pegasus_pdv/src/database/dao/tribut_ipi_dao.dart';
 export 'package:pegasus_pdv/src/database/dao/tribut_iss_dao.dart';
 export 'package:pegasus_pdv/src/database/dao/tribut_pis_dao.dart';
+export 'package:pegasus_pdv/src/database/dao/tribut_cofins_dao.dart';
 
 export 'package:pegasus_pdv/src/database/tabela/nfce_plano_pagamento.dart';
 export 'package:pegasus_pdv/src/database/dao/nfce_plano_pagamento_dao.dart';

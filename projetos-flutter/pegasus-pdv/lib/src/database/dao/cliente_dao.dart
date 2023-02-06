@@ -33,14 +33,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'dart:convert';
+
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
 
 part 'cliente_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           Clientes,
 		])
 class ClienteDao extends DatabaseAccessor<AppDatabase> with _$ClienteDaoMixin {
@@ -57,9 +60,9 @@ class ClienteDao extends DatabaseAccessor<AppDatabase> with _$ClienteDaoMixin {
   }
 
   Future<List<Cliente>?> consultarListaFiltro(String campo, String valor) async {
-    listaCliente = await (customSelect("SELECT * FROM CLIENTE WHERE " + campo + " like '%" + valor + "%'", 
+    listaCliente = await (customSelect("SELECT * FROM CLIENTE WHERE $campo like '%$valor%'", 
                                 readsFrom: { clientes }).map((row) {
-                                  return Cliente.fromData(row.data, db);  
+                                  return Cliente.fromData(row.data);  
                                 }).get());
     aplicarDomains();
     return listaCliente;
@@ -71,25 +74,48 @@ class ClienteDao extends DatabaseAccessor<AppDatabase> with _$ClienteDaoMixin {
     return (select(clientes)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<Cliente> pObjeto) {
+  Future<Cliente?> consultarObjetoFiltro(String campo, String valor) async {
+    return (customSelect("SELECT * FROM CLIENTE WHERE $campo = '$valor'", 
+                                readsFrom: { clientes }).map((row) {
+                                  return Cliente.fromData(row.data);  
+                                }).getSingleOrNull());
+  }  
+
+  Future<int> ultimoId() async {
+    final resultado = await customSelect("select MAX(ID) as ULTIMO from CLIENTE").getSingleOrNull();
+    return resultado?.data["ULTIMO"] ?? 0;
+  } 
+
+  Future<int> inserir(Cliente pObjeto) {
     return transaction(() async {
-      final cliente = removerDomains(pObjeto as Cliente);
+      final cliente = removerDomains(pObjeto);
+      final maxId = await ultimoId();
+      pObjeto = pObjeto.copyWith(id: maxId + 1);
       final idInserido = await into(clientes).insert(cliente);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Cliente> pObjeto) {
+  Future<bool> alterar(Cliente pObjeto) {
     return transaction(() async {
-      final cliente = removerDomains(pObjeto as Cliente);
+      final cliente = removerDomains(pObjeto);
       return update(clientes).replace(cliente);
     });    
   } 
 
-  Future<int> excluir(Insertable<Cliente> pObjeto) {
+  Future<int> excluir(Cliente pObjeto) {
     return transaction(() async {
       return delete(clientes).delete(pObjeto);
     });    
+  }
+
+  Future<void> sincronizar(ObjetoSincroniza objetoSincroniza) async {
+    (delete(clientes)..where((t) => t.id.isNotNull())).go();      
+    var parsed = json.decode(objetoSincroniza.registros!) as List<dynamic>;
+    for (var objetoJson in parsed) {
+      final objetoDart = Cliente.fromJson(objetoJson);
+      into(clientes).insertOnConflictUpdate(objetoDart);
+    }
   }
 
   Cliente removerDomains(Cliente cliente) {

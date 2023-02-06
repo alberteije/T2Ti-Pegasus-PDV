@@ -38,7 +38,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+import 'package:pegasus_pdv/src/database/database.dart';
 
 import 'package:pegasus_pdv/src/infra/infra.dart';
 import 'package:pegasus_pdv/src/infra/atalhos_desktop_web.dart';
@@ -58,10 +58,10 @@ class ComandaObservacaoPadraoPersistePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ComandaObservacaoPadraoPersistePageState createState() => _ComandaObservacaoPadraoPersistePageState();
+  ComandaObservacaoPadraoPersistePageState createState() => ComandaObservacaoPadraoPersistePageState();
 }
 
-class _ComandaObservacaoPadraoPersistePageState extends State<ComandaObservacaoPadraoPersistePage> {
+class ComandaObservacaoPadraoPersistePageState extends State<ComandaObservacaoPadraoPersistePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -216,6 +216,7 @@ class _ComandaObservacaoPadraoPersistePageState extends State<ComandaObservacaoP
         } else {
           await Sessao.db.comandaObservacaoPadraoDao.inserir(comandaObservacaoPadrao!);
         }
+        if (!mounted) return;
         Navigator.of(context).pop();
         showInSnackBar("Registro salvo com sucesso!", context, corFundo: Colors.green);
       });
@@ -234,7 +235,8 @@ class _ComandaObservacaoPadraoPersistePageState extends State<ComandaObservacaoP
   
   void _excluir() {
     gerarDialogBoxExclusao(context, () async {
-	  await Sessao.db.comandaObservacaoPadraoDao.excluir(comandaObservacaoPadrao!);
+	    await Sessao.db.comandaObservacaoPadraoDao.excluir(comandaObservacaoPadrao!);
+      if (!mounted) return;
       Navigator.of(context).pop();
       showInSnackBar("Registro excluído com sucesso!", context, corFundo: Colors.green);
     });

@@ -84,8 +84,8 @@ class PdvTipoPlanoModel {
       }
     }
 
-	String objetoEncodeJson(PdvTipoPlanoModel objeto) {
-	  final jsonDados = objeto.toJson;
+	String objetoEncodeJson() {
+	  final jsonDados = toJson;
 	  return json.encode(jsonDados);
 	}
 	

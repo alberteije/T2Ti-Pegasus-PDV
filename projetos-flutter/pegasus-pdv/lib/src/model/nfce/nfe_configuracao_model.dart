@@ -35,8 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 import 'dart:convert';
 
-import 'package:pegasus_pdv/src/database/database_classes.dart';
-
+import 'package:pegasus_pdv/src/database/database.dart';
 
 class NfeConfiguracaoModel {
 	int? id;
@@ -305,8 +304,8 @@ class NfeConfiguracaoModel {
 	}
 	
 
-	String objetoEncodeJson(NfeConfiguracaoModel objeto) {
-	  final jsonDados = objeto.toJson;
+	String objetoEncodeJson() {
+	  final jsonDados = toJson;
 	  return json.encode(jsonDados);
 	}
 	

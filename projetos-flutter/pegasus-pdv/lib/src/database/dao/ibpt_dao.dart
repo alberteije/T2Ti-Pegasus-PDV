@@ -33,14 +33,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'package:pegasus_pdv/src/database/database.dart';
 import 'package:pegasus_pdv/src/database/database_classes.dart';
 
 part 'ibpt_dao.g.dart';
 
-@UseDao(tables: [
+@DriftAccessor(tables: [
           Ibpts,
 		])
 class IbptDao extends DatabaseAccessor<AppDatabase> with _$IbptDaoMixin {
@@ -51,9 +51,9 @@ class IbptDao extends DatabaseAccessor<AppDatabase> with _$IbptDaoMixin {
   Future<List<Ibpt>> consultarLista() => select(ibpts).get();
 
   Future<List<Ibpt>> consultarListaFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM IBPT WHERE " + campo + " like '%" + valor + "%'", 
+    return (customSelect("SELECT * FROM IBPT WHERE $campo like '%$valor%'", 
                                 readsFrom: { ibpts }).map((row) {
-                                  return Ibpt.fromData(row.data, db);  
+                                  return Ibpt.fromData(row.data);  
                                 }).get());
   }
 
@@ -63,20 +63,20 @@ class IbptDao extends DatabaseAccessor<AppDatabase> with _$IbptDaoMixin {
     return (select(ibpts)..where((t) => t.id.equals(pId))).getSingleOrNull();
   } 
 
-  Future<int> inserir(Insertable<Ibpt> pObjeto) {
+  Future<int> inserir(Ibpt pObjeto) {
     return transaction(() async {
       final idInserido = await into(ibpts).insert(pObjeto);
       return idInserido;
     });    
   } 
 
-  Future<bool> alterar(Insertable<Ibpt> pObjeto) {
+  Future<bool> alterar(Ibpt pObjeto) {
     return transaction(() async {
       return update(ibpts).replace(pObjeto);
     });    
   } 
 
-  Future<int> excluir(Insertable<Ibpt> pObjeto) {
+  Future<int> excluir(Ibpt pObjeto) {
     return transaction(() async {
       return delete(ibpts).delete(pObjeto);
     });    
